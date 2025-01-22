@@ -15,6 +15,28 @@ export default {
         monzo: ["var(--font-monzo)", ...fontFamily.sans],
         brSonoma: ["var(--font-br-sonoma)", ...fontFamily.sans],
       },
+      colors: {
+        primary2: "#3C2875",
+        pesaRaise10: "#F1E0CB",
+        raiz: {
+          gray: {
+            50: "#FCFCFD",
+            100: "#F3F1F6",
+            200: "#E4E0EA",
+            400: "#B5A8C4",
+            500: "#A89AB9",
+            600: "#6F5B86",
+            700: "#443852",
+            800: "#2C2435",
+            950: "#19151E",
+          },
+          success: {
+            500: "#17B26A",
+          },
+          error: "#DC180D",
+        },
+        background: "rgba(234, 236, 255, 0.6)",
+      },
     },
   },
   plugins: [],
