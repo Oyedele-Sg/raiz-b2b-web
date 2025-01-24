@@ -15,7 +15,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
       <main
         className={`${
           shouldShowSideNav
-            ? "w-[80.555%] left-[19.444%] relative min-h-[100vh] px-8 pt-[30px] "
+            ? "w-[80.555%] left-[19.444%] relative min-h-[100vh] px-4 xl:px-8 pt-[30px] "
             : "w-full p-0"
         } `}
       >

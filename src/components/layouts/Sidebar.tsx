@@ -28,7 +28,7 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="w-[19.444%] pt-8  fixed top-0 bottom-0 left-0 z-20 bg-raiz-gray-50 border-r border-raiz-gray-200 h-[100vh]">
+    <aside className="w-[19.444%] pt-8  fixed top-0 bottom-0 left-0 z-20 bg-raiz-gray-50 border-r border-raiz-gray-200 h-[100vh] overflow-y-scroll">
       <div className="px-6">
         <Image
           className="w-12 h-12"
@@ -81,18 +81,16 @@ const Sidebar = () => {
               </Link>
             </div>
           </div>
-          <div className="flex gap-3  justify-between mt-6 w-full">
+          <div className="flex gap-1.5 xl:gap-3  justify-between mt-6 w-full">
             <Image
               src={"/images/pfp.png"}
               width={40}
               height={40}
               alt="profile image"
             />
-            <div className="flex flex-col gap-1 text-sm font-inter leading-tight">
-              <p className="text-raiz-gray-700   font-semibold">
-                Kaywear Store
-              </p>
-              <p className="text-raiz-gray-600">Kaywear@gmail.com</p>
+            <div className="flex flex-col gap-1 text-xs xl:text-sm font-inter leading-tight">
+              <p className="text-raiz-gray-700 font-semibold">Kaywear Store</p>
+              <p className="text-raiz-gray-600 ">Kaywear@gmail.com</p>
             </div>
             <button>
               <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
