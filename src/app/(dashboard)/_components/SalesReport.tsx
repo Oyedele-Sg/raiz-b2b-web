@@ -30,7 +30,7 @@ const mockData: Record<
     ),
   },
   "30 days": {
-    labels: Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`),
+    labels: Array.from({ length: 30 }, (_, i) => `${i + 1}`),
     data: Array.from({ length: 30 }, () => Math.floor(Math.random() * 120)),
     actualData: Array.from({ length: 30 }, () =>
       Math.floor(Math.random() * 12000)

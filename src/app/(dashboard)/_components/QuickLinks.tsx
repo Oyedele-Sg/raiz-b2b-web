@@ -27,7 +27,7 @@ const Links = [
 
 const QuickLinks = () => {
   return (
-    <div className="p-3 xl:p-6 rounded-[20px] border border-raiz-gray-200 flex-col justify-start items-start gap-5 inline-flex overflow-x-scroll">
+    <div className="p-3 xl:p-6 rounded-[20px] border border-raiz-gray-200 flex-col justify-start items-start gap-5 inline-flex">
       <div className="flex justify-between items-center w-full">
         <h6 className="text-raiz-gray-900 font-semibold font-monzo leading-snug">
           Quick Links
@@ -41,7 +41,7 @@ const QuickLinks = () => {
           />
         </button>
       </div>
-      <div className="flex justify-between gap-3 w-full">
+      <div className="flex justify-between gap-3 w-full overflow-x-scroll">
         {Links.map((each, i) => (
           <button
             key={i}

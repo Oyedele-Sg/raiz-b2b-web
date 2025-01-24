@@ -15,7 +15,7 @@ const Sidebar = () => {
       <Link
         key={index}
         href={item.link}
-        className={`flex items-center gap-3 py-2 px-3 font-bold font-monzo leading-tight hover:bg-[#eaecff]/40 hover:rounded-md outline-none ${
+        className={`flex items-center gap-3 py-2 px-2 xl:px-3 font-bold text-[15px] xl:text-base font-monzo leading-tight hover:bg-[#eaecff]/40 hover:rounded-md outline-none ${
           isActive
             ? "bg-[#eaecff]/40 rounded-[6px] text-primary2"
             : "text-raiz-gray-600 "
@@ -28,7 +28,7 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="w-[19.444%] pt-8  fixed top-0 bottom-0 left-0 z-20 bg-raiz-gray-50 border-r border-raiz-gray-200 h-[100vh] overflow-y-scroll">
+    <aside className="w-[19.444%] pt-8  fixed top-0 bottom-0 left-0 z-20 bg-raiz-gray-50 border-r border-raiz-gray-200 h-[100vh] overflow-x-hidden overflow-y-scroll">
       <div className="px-6">
         <Image
           className="w-12 h-12"
@@ -38,12 +38,12 @@ const Sidebar = () => {
           alt="Raiz logo"
         />
       </div>
-      <section className="flex flex-col justify-between h-[85%] mt-8 px-4">
+      <section className="flex flex-col justify-between h-[85%] mt-8 px-4 gap-8">
         <nav className="flex flex-col gap-1">
           {SidebarMenus.map((item, index) => renderMenuItem(item, index))}
         </nav>
         <div>
-          <div className=" px-4 py-5 bg-[#eaecff]/40 rounded-lg flex-col justify-start items-start gap-3 inline-flex">
+          <div className="px-3 xl:px-4 py-5 bg-[#eaecff]/40 rounded-lg flex-col justify-start items-start gap-3 inline-flex">
             <div className="w-12 h-12 relative bg-[#fcfcfd] rounded-[66.67px] flex items-center justify-center ">
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                 <path
@@ -69,28 +69,32 @@ const Sidebar = () => {
             <div className="flex items-center gap-3">
               <Link
                 href={"#"}
-                className="text-raiz-gray-500 text-sm font-bold font-monzo leading-[16.80px]"
+                className="text-raiz-gray-500 text-xs xl:text-sm font-bold font-monzo leading-[16.80px]"
               >
                 Learn more
               </Link>
               <Link
                 href={"#"}
-                className="text-primary2 text-sm font-bold font-monzo leading-[16.80px]"
+                className="text-primary2 text-xs xl:text-sm font-bold font-monzo leading-[16.80px]"
               >
                 Upgrade
               </Link>
             </div>
           </div>
-          <div className="flex gap-1.5 xl:gap-3  justify-between mt-6 w-full">
+          <div className="flex gap-1.5 xl:gap-3  justify-between mt-6 w-full pb-5">
             <Image
               src={"/images/pfp.png"}
               width={40}
               height={40}
               alt="profile image"
             />
-            <div className="flex flex-col gap-1 text-xs xl:text-sm font-inter leading-tight">
-              <p className="text-raiz-gray-700 font-semibold">Kaywear Store</p>
-              <p className="text-raiz-gray-600 ">Kaywear@gmail.com</p>
+            <div className="flex flex-col gap-1  font-inter leading-tight">
+              <p className="text-raiz-gray-700 font-semibold text-xs xl:text-sm">
+                Kaywear Store
+              </p>
+              <p className="text-raiz-gray-600 text-[10px] xl:text-sm ">
+                Kaywear@gmail.com
+              </p>
             </div>
             <button>
               <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
