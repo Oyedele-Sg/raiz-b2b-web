@@ -1,0 +1,28 @@
+/* Custom pagination dot styles */
+.swiper-pagination-bullet {
+  width: 62.8px !important;
+  height: 2.6px !important;
+  background-color: #d9d9d980 !important;
+  opacity: 1; /* Ensure visibility */
+  transition: background-color 0.3s ease;
+  border-radius: 4px !important;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #fafafa !important; /* Active color */
+  transform: scale(1.2); /* Slightly larger for active dot */
+}
+
+.custom-dot {
+  color: #fafafa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  width: 62.8px;
+  height: 2.6px;
+}
+
+.swiper-slide {
+  height: auto !important;
+}

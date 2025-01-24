@@ -17,7 +17,15 @@ export default {
       },
       colors: {
         primary2: "#3C2875",
+        secondary: {
+          white: "#F4F4F4",
+        },
         pesaRaise10: "#F1E0CB",
+        text: {
+          terttiary: {
+            600: "#475467",
+          },
+        },
         raiz: {
           gray: {
             50: "#FCFCFD",
@@ -28,6 +36,7 @@ export default {
             600: "#6F5B86",
             700: "#443852",
             800: "#2C2435",
+            900: "#1E1924",
             950: "#19151E",
           },
           success: {

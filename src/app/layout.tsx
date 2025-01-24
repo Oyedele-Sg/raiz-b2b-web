@@ -3,6 +3,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Provider from "@/utils/ReactQueryProvider";
 import localFont from "next/font/local";
+import { Suspense } from "react";
+import Loading from "./loading";
+import MainLayout from "@/components/layouts/MainLayout";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -119,11 +122,14 @@ export default function RootLayout({
         />
         <link rel="manifest" href="/favicon/site.webmanifest"></link>
       </head>
-
       <body
         className={`${inter.variable}  ${monzoSans.variable} ${brSonoma.variable} `}
       >
-        <Provider>{children}</Provider>
+        <Provider>
+          <MainLayout>
+            <Suspense fallback={<Loading />}>{children}</Suspense>
+          </MainLayout>
+        </Provider>
       </body>
     </html>
   );
