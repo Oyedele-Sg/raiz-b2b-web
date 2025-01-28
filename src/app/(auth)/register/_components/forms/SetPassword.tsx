@@ -2,12 +2,13 @@
 import AuthInputField from "@/components/ui/AuthInputField";
 import Image from "next/image";
 import React, { useState } from "react";
+import { RegisterFormProps } from "./CreateAccount";
 
-const SetPassword = () => {
+const SetPassword = ({ goBack, formik }: RegisterFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <section className="xl:h-full flex flex-col -mt-2">
-      <button>
+      <button onClick={goBack}>
         <Image
           src={"/icons/arrow-left.svg"}
           alt="back"
@@ -47,12 +48,12 @@ const SetPassword = () => {
         <div className="flex flex-col xl:pb-20">
           <AuthInputField
             label="Password"
-            name="password"
             type={showPassword ? "text" : "password"}
             icon={!showPassword ? "/icons/eye-hide.svg" : "/icons/eye.svg"}
             onClick={() => setShowPassword(!showPassword)}
             iconPosition="right"
             status="error"
+            {...formik.getFieldProps("password")}
           />
           <div className="flex flex-col gap-[15px] mt-5">
             <div className="flex gap-3">
@@ -130,9 +131,9 @@ const SetPassword = () => {
 
         <div className="border-t border-raiz-gray-200 pt-5 mt-8 ">
           <AuthInputField
-            name="referal"
             label="Referral Code (Optional)"
             placeholder=""
+            {...formik.getFieldProps("referral_code")}
           />
           <span className="text-raiz-gray-600 text-[13px] font-normal font-monzo leading-normal">
             **Please enter an invite code if you have one.

@@ -5,8 +5,16 @@ import Image from "next/image";
 import React, { useState } from "react";
 import CountryOriginInfoModal from "../CountryOriginInfoModal";
 import CountryCodeModal from "../CountryCodeModal";
+import { FormikProps } from "formik";
+import { IRegisterFormValues } from "@/types/misc";
 
-const CreateAccount = () => {
+export interface RegisterFormProps {
+  formik: FormikProps<IRegisterFormValues>;
+  goBack?: () => void;
+  goForward?: () => void;
+}
+
+const CreateAccount = ({ formik }: RegisterFormProps) => {
   const [showCountryInfo, setShowCountryInfo] = useState(false);
   const [showCountryCode, setShowCountryCode] = useState(false);
   return (
@@ -61,10 +69,12 @@ const CreateAccount = () => {
               </button>
             </div>
             <AuthInputField
-              name="email"
               placeholder="Enter your email address"
               label="Email"
               type="email"
+              {...formik.getFieldProps("email")}
+              status={formik.errors.email ? "error" : null}
+              errorMessage={formik.touched.email && formik.errors.email}
             />
             <div className="">
               <InputLabel content="Phone Number" />
@@ -92,8 +102,10 @@ const CreateAccount = () => {
                 </button>
                 <div className="w-[75%]">
                   <AuthInputField
-                    name="phoneNumber"
                     placeholder="Enter phone number"
+                    {...formik.getFieldProps("phone_number")}
+                    status={formik.errors.email ? "error" : null}
+                    errorMessage={formik.touched.email && formik.errors.email}
                   />
                 </div>
               </div>

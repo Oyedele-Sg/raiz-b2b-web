@@ -1,6 +1,7 @@
 import React, { InputHTMLAttributes, ReactNode, useRef } from "react";
 import Image from "next/image";
 import InputLabel from "./InputLabel";
+import ErrorMessage from "./ErrorMessage";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -25,7 +26,7 @@ const AuthInputField: React.FC<InputProps> = ({
   onClick,
   className,
   type = "text",
-  //   errorMessage,
+  errorMessage,
   hidden = false,
   labelClass,
   ...props
@@ -129,7 +130,7 @@ const AuthInputField: React.FC<InputProps> = ({
         )}
       </div>
 
-      {/* {errorMessage && <ErrorMessage message={errorMessage} />} */}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
     </div>
   );
 };

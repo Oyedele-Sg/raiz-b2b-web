@@ -4,9 +4,9 @@ import Image from "next/image";
 import OTPInput from "react-otp-input";
 import { formatTime } from "@/utils";
 import { useTimer } from "@/hooks/useTimer";
+import { RegisterFormProps } from "./CreateAccount";
 
-const RegisterOtp = () => {
-  const [otp, setOtp] = useState("");
+const RegisterOtp = ({ goBack, formik }: RegisterFormProps) => {
   const [isTimerActive, setIsTimerActive] = useState(true);
   const { timeLeft } = useTimer(120, isTimerActive);
 
@@ -17,7 +17,7 @@ const RegisterOtp = () => {
   return (
     <section className="xl:h-full flex flex-col justify-between -mt-2 font-monzo">
       <div>
-        <button>
+        <button onClick={goBack}>
           <Image
             src={"/icons/arrow-left.svg"}
             alt="back"
@@ -50,8 +50,8 @@ const RegisterOtp = () => {
         </p>
         <div className="">
           <OTPInput
-            value={otp}
-            onChange={setOtp}
+            value={formik.values.otp}
+            onChange={(val) => formik.setFieldValue("otp", val)}
             numInputs={4}
             renderSeparator={<span> </span>}
             renderInput={(props) => (
