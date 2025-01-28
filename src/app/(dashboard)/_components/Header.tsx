@@ -54,7 +54,7 @@ const Header = () => {
         <Image
           className="w-10 h-10 rounded-full"
           src={"/images/pfp.png"}
-          alt="search"
+          alt="profile"
           width={40}
           height={40}
         />
