@@ -23,6 +23,6 @@
   height: 2.6px;
 }
 
-.swiper-slide {
-  height: auto !important;
+.swiper-pagination {
+  margin-bottom: 56px !important;
 }
