@@ -42,6 +42,8 @@ const CreateUsername = ({ goBack, formik }: RegisterFormProps) => {
           label="@username"
           placeholder=""
           {...formik.getFieldProps("username")}
+          status={formik.errors.username ? "error" : null}
+          errorMessage={formik.touched.username && formik.errors.username}
         />
         <span className="text-raiz-gray-600 text-[13px] font-normal font-monzo leading-normal">
           Usernames can only contain letters, numbers, underscores, and periods.

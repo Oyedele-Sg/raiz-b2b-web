@@ -37,7 +37,7 @@ const RegisterForm = () => {
 
   const formik = useFormik({
     initialValues,
-    // validationSchema: toFormikValidationSchema(registerFormSchema),
+    validationSchema: toFormikValidationSchema(registerFormSchema),
     onSubmit: (values) => console.log("form values", values),
   });
 
@@ -47,11 +47,10 @@ const RegisterForm = () => {
         return (
           !formik.values.email ||
           !formik.values.country_id ||
-          !formik.values.phone_number
-          // ||
-          // formik.errors.email ||
-          // formik.errors.phone_number ||
-          // formik.errors.country_id
+          !formik.values.phone_number ||
+          formik.errors.email ||
+          formik.errors.phone_number ||
+          formik.errors.country_id
         );
       case 2:
         return !formik.values.password || formik.errors.password;
@@ -65,6 +64,8 @@ const RegisterForm = () => {
         break;
     }
   };
+
+  console.log("errror reg", formik.errors);
 
   const handleNavigate = (direction: "next" | "back") => {
     if (
@@ -143,7 +144,9 @@ const RegisterForm = () => {
             .
           </p>
         )}
-        <Button onClick={btnAction}>Continue</Button>
+        <Button disabled={!!disableProgress()} onClick={btnAction}>
+          Continue
+        </Button>
         {currentStep === 1 && (
           <p className="text-raiz-gray-800 text-[13px] font-normal font-monzo leading-tight mt-3 text-center">
             Already have an account?{" "}

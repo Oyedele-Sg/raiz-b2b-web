@@ -5,6 +5,7 @@ import OTPInput from "react-otp-input";
 import { formatTime } from "@/utils";
 import { useTimer } from "@/hooks/useTimer";
 import { RegisterFormProps } from "./CreateAccount";
+import ErrorMessage from "@/components/ui/ErrorMessage";
 
 const RegisterOtp = ({ goBack, formik }: RegisterFormProps) => {
   const [isTimerActive, setIsTimerActive] = useState(true);
@@ -15,7 +16,7 @@ const RegisterOtp = ({ goBack, formik }: RegisterFormProps) => {
     setIsTimerActive((prev) => !prev);
   };
   return (
-    <section className="xl:h-full flex flex-col justify-between -mt-2 font-monzo">
+    <section className="h-full flex flex-col justify-between -mt-2 font-monzo">
       <div>
         <button onClick={goBack}>
           <Image
@@ -80,6 +81,9 @@ const RegisterOtp = ({ goBack, formik }: RegisterFormProps) => {
               </button>
             )}
           </div>
+          {formik.touched.otp && formik.errors.otp && (
+            <ErrorMessage message={formik.errors.otp} />
+          )}
         </div>
       </div>
       <p className="text-raiz-gray-600 text-[13px] font-normal leading-tight">

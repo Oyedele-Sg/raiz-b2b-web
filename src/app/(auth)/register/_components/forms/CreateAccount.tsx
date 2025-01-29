@@ -104,8 +104,10 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
                   <AuthInputField
                     placeholder="Enter phone number"
                     {...formik.getFieldProps("phone_number")}
-                    status={formik.errors.email ? "error" : null}
-                    errorMessage={formik.touched.email && formik.errors.email}
+                    status={formik.errors.phone_number ? "error" : null}
+                    errorMessage={
+                      formik.touched.phone_number && formik.errors.phone_number
+                    }
                   />
                 </div>
               </div>

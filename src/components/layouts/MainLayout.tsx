@@ -7,7 +7,9 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
   const pathName = usePathname();
 
   const shouldShowSideNav =
-    !pathName.includes("/register") && !pathName.includes("/login");
+    !pathName.includes("/register") &&
+    !pathName.includes("/login") &&
+    !pathName.includes("/forgot-password");
 
   return (
     <section className="w-full flex h-full">

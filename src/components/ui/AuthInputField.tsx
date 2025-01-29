@@ -36,7 +36,8 @@ const AuthInputField: React.FC<InputProps> = ({
   const getBorderColor = () => {
     if (status === "success") return "border-[#2BAC47]";
     if (status === "error") return "border-raiz-error";
-    return "border-none";
+    if (status === "warning") return "border-yellow-500";
+    return "border-raiz-gray-300";
   };
 
   const handleFileClick = () => {
@@ -95,7 +96,7 @@ const AuthInputField: React.FC<InputProps> = ({
             {label && <InputLabel content={label} labelClass={labelClass} />}
             <div className={`flex items-center  ${label ? "mt-2" : ""} `}>
               <input
-                className={`w-full p-[15px] h-[50px] text-sm text-raiz-gray-950 font-monzo border bg-raiz-gray-100 outline-none rounded-lg leading-tight placeholder:text-raiz-gray-400 placeholder:text-sm ${className} ${getBorderColor()}`}
+                className={`w-full p-[15px] h-[50px] text-sm text-raiz-gray-950 font-monzo border bg-raiz-gray-100 focus:bg-white focus:border-raiz-gray-600 active:border-raiz-gray-600  outline-none rounded-lg leading-tight placeholder:text-raiz-gray-400 placeholder:text-sm ${className} ${getBorderColor()}`}
                 name={name}
                 type={type}
                 placeholder={label || ""}
