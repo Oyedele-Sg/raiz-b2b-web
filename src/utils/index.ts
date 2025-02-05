@@ -17,3 +17,7 @@ export const formatTime = (seconds: number) => {
     remainingSeconds
   ).padStart(2, "0")}`;
 };
+
+export const truncateString = (str: string, length: number): string => {
+  return str.length > length ? `${str.substring(0, length - 2)}...` : str;
+};
