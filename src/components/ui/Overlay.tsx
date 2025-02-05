@@ -1,3 +1,4 @@
+import * as motion from "motion/react-client";
 import React, { ReactNode } from "react";
 
 const Overlay = ({
@@ -12,7 +13,15 @@ const Overlay = ({
   close: () => void;
 }) => {
   return (
-    <section
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{
+        duration: 0.25,
+        ease: "easeInOut",
+      }}
+      key="overlay"
       onClick={close}
       className="fixed inset-0 flex items-center justify-center bg-[rgba(0,0,0,0.4)]  z-50"
     >
@@ -28,7 +37,7 @@ const Overlay = ({
       >
         {children}
       </section>
-    </section>
+    </motion.section>
   );
 };
 

@@ -1,20 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
-import OTPInput from "react-otp-input";
-import { formatTime } from "@/utils";
-import { useTimer } from "@/hooks/useTimer";
 import { RegisterFormProps } from "./CreateAccount";
-import ErrorMessage from "@/components/ui/ErrorMessage";
+import OtpInputWithTimer from "@/components/ui/OtpInputWithTimer";
 
 const RegisterOtp = ({ goBack, formik }: RegisterFormProps) => {
-  const [isTimerActive, setIsTimerActive] = useState(true);
-  const { timeLeft } = useTimer(120, isTimerActive);
-
-  const handleResend = () => {
-    console.log("Resending OTP...");
-    setIsTimerActive((prev) => !prev);
-  };
   return (
     <section className="h-full flex flex-col justify-between -mt-2 font-monzo">
       <div>
@@ -49,42 +39,13 @@ const RegisterOtp = ({ goBack, formik }: RegisterFormProps) => {
         <p className="text-raiz-gray-700 text-[15px] font-normal  leading-snug mb-[44px]">
           Please enter the OTP code sent to your Email Address
         </p>
-        <div className="">
-          <OTPInput
-            value={formik.values.otp}
-            onChange={(val) => formik.setFieldValue("otp", val)}
-            numInputs={4}
-            renderSeparator={<span> </span>}
-            renderInput={(props) => (
-              <input
-                {...props}
-                className={` !w-[80px] !h-[80px] p-2 focus:bg-[#fcfcfc] bg-raiz-gray-100 rounded-[14.57px]  code-input border focus:border-raiz-gray-800  outline-none flex-col justify-center items-center gap-2 inline-flex mr-3  text-raiz-gray-950 text-xl font-normal`}
-                // onKeyDown={validateNumber}
-              />
-            )}
-          />
-          <div className="mt-5">
-            {timeLeft > 0 ? (
-              <p className="text-sm text-raiz-gray-500 font-normal  leading-normal ">
-                We can send you another code in{" "}
-                <span className="text-raiz-gray-950">
-                  {" "}
-                  {formatTime(timeLeft)}
-                </span>
-              </p>
-            ) : (
-              <button
-                onClick={handleResend}
-                className="text-raiz-gray-600 text-[15px] font-semibold  hover:underline"
-              >
-                Resend OTP
-              </button>
-            )}
-          </div>
-          {formik.touched.otp && formik.errors.otp && (
-            <ErrorMessage message={formik.errors.otp} />
-          )}
-        </div>
+        <OtpInputWithTimer
+          value={formik.values.otp}
+          onChange={(val) => formik.setFieldValue("otp", val)}
+          error={formik.errors.otp}
+          touched={formik.touched.otp}
+          onResend={() => console.log("Resending OTP...")}
+        />
       </div>
       <p className="text-raiz-gray-600 text-[13px] font-normal leading-tight">
         **Do not forget to check your spam/junk email folder.

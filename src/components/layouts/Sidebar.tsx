@@ -1,16 +1,24 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ISidebarMenuItem } from "@/types/misc";
 import { SidebarMenus } from "@/constants/SidebarMenuData";
+import SideModalWrapper from "@/app/(dashboard)/_components/SideModalWrapper";
+import AccountSetup from "@/app/(dashboard)/_components/account-setup/AccountSetup";
+import { AnimatePresence } from "motion/react";
 
 const Sidebar = () => {
   const pathName = usePathname();
 
+  const [showAcctSetupModal, setShowAcctSetupModal] = useState(false);
+  const closeModal = () => {
+    setShowAcctSetupModal(false);
+  };
   const renderMenuItem = (item: ISidebarMenuItem, index: number) => {
     const isActive = pathName === item.link;
+
     return (
       <Link
         key={index}
@@ -28,7 +36,7 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="w-[19.444%] pt-8  fixed top-0 bottom-0 left-0 z-20 bg-raiz-gray-50 border-r border-raiz-gray-200 h-[100vh] overflow-x-hidden overflow-y-scroll">
+    <aside className="w-[19.444%] pt-8 hidden lg:block  fixed top-0 bottom-0 left-0 z-20 bg-raiz-gray-50 border-r border-raiz-gray-200 h-[100vh] overflow-x-hidden overflow-y-scroll">
       <div className="px-6">
         <Image
           className="w-12 h-12"
@@ -73,12 +81,12 @@ const Sidebar = () => {
               >
                 Learn more
               </Link>
-              <Link
-                href={"#"}
+              <button
+                onClick={() => setShowAcctSetupModal(true)}
                 className="text-primary2 text-xs xl:text-sm font-bold font-monzo leading-[16.80px]"
               >
                 Upgrade
-              </Link>
+              </button>
             </div>
           </div>
           <div className="flex gap-1.5 xl:gap-3  justify-between mt-6 w-full pb-5">
@@ -117,6 +125,13 @@ const Sidebar = () => {
           </div>
         </div>
       </section>
+      <AnimatePresence>
+        {showAcctSetupModal ? (
+          <SideModalWrapper close={closeModal}>
+            <AccountSetup close={closeModal} />
+          </SideModalWrapper>
+        ) : null}
+      </AnimatePresence>
     </aside>
   );
 };

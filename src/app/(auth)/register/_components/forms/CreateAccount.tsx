@@ -1,5 +1,5 @@
 "use client";
-import AuthInputField from "@/components/ui/AuthInputField";
+
 import InputLabel from "@/components/ui/InputLabel";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -7,6 +7,7 @@ import CountryOriginInfoModal from "../CountryOriginInfoModal";
 import CountryCodeModal from "../CountryCodeModal";
 import { FormikProps } from "formik";
 import { IRegisterFormValues } from "@/types/misc";
+import InputField from "@/components/ui/InputField";
 
 export interface RegisterFormProps {
   formik: FormikProps<IRegisterFormValues>;
@@ -68,7 +69,7 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
                 />
               </button>
             </div>
-            <AuthInputField
+            <InputField
               placeholder="Enter your email address"
               label="Email"
               type="email"
@@ -101,7 +102,7 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
                   />
                 </button>
                 <div className="w-[75%]">
-                  <AuthInputField
+                  <InputField
                     placeholder="Enter phone number"
                     {...formik.getFieldProps("phone_number")}
                     status={formik.errors.phone_number ? "error" : null}

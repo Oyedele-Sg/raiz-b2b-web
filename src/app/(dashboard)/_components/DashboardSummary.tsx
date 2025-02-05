@@ -5,6 +5,7 @@ import SalesReport from "./SalesReport";
 import SideModalWrapper from "./SideModalWrapper";
 import Send from "./send/Send";
 import Image from "next/image";
+import { AnimatePresence } from "motion/react";
 
 const DashboardSummary = () => {
   const [showBalance, setShowBalance] = useState(false);
@@ -103,11 +104,13 @@ const DashboardSummary = () => {
 
       <CustomersInfo />
       <SalesReport />
-      {openModal && (
-        <SideModalWrapper close={closeModal}>
-          {displayScreen()}
-        </SideModalWrapper>
-      )}
+      <AnimatePresence>
+        {openModal ? (
+          <SideModalWrapper close={closeModal}>
+            {displayScreen()}
+          </SideModalWrapper>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 };
