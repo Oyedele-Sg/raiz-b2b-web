@@ -5,6 +5,7 @@ import VerifyPhone from "./VerifyPhone";
 import { useAccountSetupStore } from "@/store/useAccountSetupStore";
 import SetupPin from "./SetupPin";
 import SetupAddress from "./SetupAddress";
+import { ProgressBar } from "@/components/ui/Progressbar";
 
 const steps: AccountSetupStep[] = [
   {
@@ -179,16 +180,14 @@ const AccountSetup = ({ close }: { close: () => void }) => {
             experience
           </p>
 
-          {/* Progresss bar */}
+          {/* Progresss */}
           <div className="w-full mt-5">
-            <div className=" h-2.5 bg-raiz-gray-300 rounded-[10px]">
-              <span
-                className={" h-2.5 bg-[#493260] rounded-lg block"}
-                style={{
-                  width: `${(completedSteps.length / steps.length) * 100}%`,
-                }}
-              />
-            </div>
+            <ProgressBar
+              value={(completedSteps.length / steps.length) * 100}
+              type="linear"
+              color="#493260"
+              thickness={10}
+            />
             <div className="flex justify-between mt-3">
               <span className="text-raiz-gray-700 text-[13px] leading-tight">
                 {completedSteps.length}/{steps.length}

@@ -43,8 +43,12 @@ const DashboardSummary = () => {
             </p>
             <button onClick={() => setShowBalance(!showBalance)}>
               <Image
-                src={"/icons/show-balance.svg"}
-                alt="show balance"
+                src={`${
+                  !showBalance
+                    ? "/icons/show-balance.svg"
+                    : "/icons/hide-balance.svg"
+                }`}
+                alt={`${!showBalance ? "show balance" : "hide balance"} `}
                 width={32}
                 height={32}
               />

@@ -289,26 +289,63 @@ const Notifications = ({ close }: { close: () => void }) => {
           </div>
         </div>
         <div className="flex flex-col gap-[49px] mt-3 h-full overflow-y-scroll no-scrollbar pb-[100px]">
-          {Object.keys(groupedNotifications).map((dateLabel) => (
-            <div key={dateLabel}>
-              <h4 className="text-raiz-gray-950 text-base font-medium font-brSonoma leading-tight">
-                {dateLabel}
-              </h4>
-              <div className="flex flex-col gap-2 mt-2">
-                {groupedNotifications[dateLabel].map((notification, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedNotification(notification)}
-                    className="text-left w-full"
-                    aria-label={`View notification: ${notification.notification_title}`}
-                    role="button"
-                  >
-                    <NotificationItem {...notification} />
-                  </button>
-                ))}
+          {Object.keys(groupedNotifications).length > 0 ? (
+            Object.keys(groupedNotifications).map((dateLabel) => (
+              <div key={dateLabel}>
+                <h4 className="text-raiz-gray-950 text-base font-medium font-brSonoma leading-tight">
+                  {dateLabel}
+                </h4>
+                <div className="flex flex-col gap-2 mt-2">
+                  {groupedNotifications[dateLabel].map(
+                    (notification, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedNotification(notification)}
+                        className="text-left w-full"
+                        aria-label={`View notification: ${notification.notification_title}`}
+                        role="button"
+                      >
+                        <NotificationItem {...notification} />
+                      </button>
+                    )
+                  )}
+                </div>
               </div>
+            ))
+          ) : (
+            <div className="flex flex-col justify-center h-full items-center">
+              <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                <path
+                  d="M58.6669 24V42.6667C58.6669 47.0933 55.0935 50.6667 50.6669 50.6667H21.3335C19.2802 50.6667 17.4402 49.8933 16.0269 48.64L19.7335 45.3333H42.6669C47.0935 45.3333 50.6669 41.76 50.6669 37.3333V18.6667C50.6669 17.7333 50.5069 16.8267 50.1869 16H50.6669C55.0935 16 58.6669 19.5733 58.6669 24Z"
+                  fill="#444B8C"
+                />
+                <path
+                  d="M58.6667 37.4136V54.5602C58.6667 58.0269 54.5868 59.8402 52.0001 57.5469L41.2534 48.0002H53.3334V38.4536L58.6667 37.4136Z"
+                  fill="#444B8C"
+                />
+                <path
+                  opacity="0.35"
+                  d="M42.6668 10.6665H13.3335C8.91483 10.6665 5.3335 14.2478 5.3335 18.6665V49.2372C5.3335 52.6878 9.41083 54.5198 11.9922 52.2265L19.7442 45.3332H42.6668C47.0855 45.3332 50.6668 41.7518 50.6668 37.3332V18.6665C50.6668 14.2478 47.0855 10.6665 42.6668 10.6665Z"
+                  fill="#5633E3"
+                />
+                <path
+                  d="M7.99985 58.6665C7.31719 58.6665 6.63452 58.4052 6.11452 57.8852C5.07185 56.8425 5.07185 55.1572 6.11452 54.1145L54.1145 6.11452C55.1572 5.07185 56.8425 5.07185 57.8852 6.11452C58.9279 7.15719 58.9279 8.84252 57.8852 9.88519L9.88519 57.8852C9.36519 58.4052 8.68252 58.6665 7.99985 58.6665Z"
+                  fill="#1E1924"
+                />
+              </svg>
+              <h2 className="text-raiz-gray-950 text-lg font-bold mb-8 leading-snug">
+                You have no messages yet
+              </h2>
+              <p className="text-center text-raiz-gray-950 text-sm font-normal  leading-tight">
+                If there were any new updates or important messages for you they
+                would appear here.
+              </p>
+              <p className="text-center text-raiz-gray-950 text-sm font-normal  leading-tight mt-6">
+                Keep exploring and engaging with the app to stay connected and
+                receive timely notifcations
+              </p>
             </div>
-          ))}
+          )}
         </div>
       </div>
       {selectedNotification ? (

@@ -1,4 +1,5 @@
 import { months } from "@/constants/misc";
+import { toast } from "sonner";
 
 export const getLastThreeMonths = () => {
   const currentMonth = new Date().getMonth();
@@ -20,4 +21,15 @@ export const formatTime = (seconds: number) => {
 
 export const truncateString = (str: string, length: number): string => {
   return str.length > length ? `${str.substring(0, length - 2)}...` : str;
+};
+
+export const copyToClipboard = (value: string) => {
+  navigator.clipboard
+    .writeText(value)
+    .then(() => {
+      toast.success("Copied to clipboard");
+    })
+    .catch((error) => {
+      toast.error("Unable to copy to clipboard:", error);
+    });
 };
