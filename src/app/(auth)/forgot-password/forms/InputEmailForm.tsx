@@ -2,11 +2,11 @@
 import React from "react";
 import Image from "next/image";
 import { useFormik } from "formik";
-import AuthInputField from "@/components/ui/AuthInputField";
 import Button from "@/components/ui/Button";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { useRouter } from "next/navigation";
+import InputField from "@/components/ui/InputField";
 
 const InputEmailForm = ({
   setEmail,
@@ -69,7 +69,7 @@ const InputEmailForm = ({
         <p className="text-raiz-gray-700 text-[15px] font-normal font-monzo leading-snug mb-[44px]">
           Enter the email registered with your account to reset your password
         </p>
-        <AuthInputField
+        <InputField
           placeholder="Enter your email address"
           label="Email"
           type="email"

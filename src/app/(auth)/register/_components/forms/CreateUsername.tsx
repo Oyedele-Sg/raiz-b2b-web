@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
-import AuthInputField from "@/components/ui/AuthInputField";
 import { RegisterFormProps } from "./CreateAccount";
+import InputField from "@/components/ui/InputField";
 
 const CreateUsername = ({ goBack, formik }: RegisterFormProps) => {
   return (
@@ -38,7 +38,7 @@ const CreateUsername = ({ goBack, formik }: RegisterFormProps) => {
       </p>
 
       <div className="">
-        <AuthInputField
+        <InputField
           label="@username"
           placeholder=""
           {...formik.getFieldProps("username")}

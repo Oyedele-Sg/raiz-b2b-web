@@ -1,10 +1,10 @@
 "use client";
-import AuthInputField from "@/components/ui/AuthInputField";
 import Button from "@/components/ui/Button";
 import InputLabel from "@/components/ui/InputLabel";
 import { useFormik } from "formik";
 import Link from "next/link";
 import React, { useState } from "react";
+import InputField from "@/components/ui/InputField";
 
 const WelcomeBack = ({ setPage }: { setPage: (arg: number) => void }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -38,7 +38,7 @@ const WelcomeBack = ({ setPage }: { setPage: (arg: number) => void }) => {
             Forgot your password?
           </button>
         </div>
-        <AuthInputField
+        <InputField
           type={showPassword ? "text" : "password"}
           icon={!showPassword ? "/icons/eye-hide.svg" : "/icons/eye.svg"}
           onClick={() => setShowPassword(!showPassword)}

@@ -1,56 +1,64 @@
 import Image from "next/image";
 import React from "react";
 
-const billRequests = [
-  {
-    id: 1,
-    requester: "James B",
-    time: "Today, 15:05",
-    amount: 4000000,
-    imageUrl: "/images/pfp.png",
-  },
-  {
-    id: 2,
-    requester: "Sarah K",
-    time: "Yesterday, 14:20",
-    amount: 2500000,
-    imageUrl: "/images/pfp.png",
-  },
-  {
-    id: 3,
-    requester: "Michael D",
-    time: "2 hours ago",
-    amount: 1500000,
-    imageUrl: "/images/pfp.png",
-  },
-  {
-    id: 4,
-    requester: "Linda W",
-    time: "Today, 12:40",
-    amount: 3200000,
-    imageUrl: "/images/pfp.png",
-  },
-  {
-    id: 5,
-    requester: "David T",
-    time: "3 hours ago",
-    amount: 500000,
-    imageUrl: "/images/pfp.png",
-  },
-  {
-    id: 6,
-    requester: "Jessica L",
-    time: "Yesterday, 10:15",
-    amount: 4500000,
-    imageUrl: "/images/pfp.png",
-  },
-  {
-    id: 7,
-    requester: "Kevin M",
-    time: "Today, 16:00",
-    amount: 1200000,
-    imageUrl: "/images/pfp.png",
-  },
+interface BillRequest {
+  id: number;
+  requester: string;
+  time: string;
+  amount: number;
+  imageUrl: string;
+}
+
+const billRequests: BillRequest[] = [
+  // {
+  //   id: 1,
+  //   requester: "James B",
+  //   time: "Today, 15:05",
+  //   amount: 4000000,
+  //   imageUrl: "/images/pfp.png",
+  // },
+  // {
+  //   id: 2,
+  //   requester: "Sarah K",
+  //   time: "Yesterday, 14:20",
+  //   amount: 2500000,
+  //   imageUrl: "/images/pfp.png",
+  // },
+  // {
+  //   id: 3,
+  //   requester: "Michael D",
+  //   time: "2 hours ago",
+  //   amount: 1500000,
+  //   imageUrl: "/images/pfp.png",
+  // },
+  // {
+  //   id: 4,
+  //   requester: "Linda W",
+  //   time: "Today, 12:40",
+  //   amount: 3200000,
+  //   imageUrl: "/images/pfp.png",
+  // },
+  // {
+  //   id: 5,
+  //   requester: "David T",
+  //   time: "3 hours ago",
+  //   amount: 500000,
+  //   imageUrl: "/images/pfp.png",
+  // },
+  // {
+  //   id: 6,
+  //   requester: "Jessica L",
+  //   time: "Yesterday, 10:15",
+  //   amount: 4500000,
+  //   imageUrl: "/images/pfp.png",
+  // },
+  // {
+  //   id: 7,
+  //   requester: "Kevin M",
+  //   time: "Today, 16:00",
+  //   amount: 1200000,
+  //   imageUrl: "/images/pfp.png",
+  // },
 ];
 
 const BillRequests = () => {
@@ -70,53 +78,78 @@ const BillRequests = () => {
         </button>
       </div>
       <section className="flex flex-col gap-4 w-full max-h-[568px] overflow-y-scroll">
-        {billRequests.map((request) => (
-          <div
-            key={request.id}
-            className="w-full px-[15px] py-[18px] bg-[#f3eee9] rounded-[20px] flex-col justify-center items-start gap-4 inline-flex"
-          >
-            <div className="font-monzo flex items-center justify-between w-full">
-              <div className="flex gap-2 ">
-                <Image
-                  src={request.imageUrl}
-                  width={38}
-                  height={38}
-                  alt="requester"
-                />
-                <div className="flex flex-col gap-0.5">
-                  <p className="text-raiz-gray-900 text-[13px] xl:text-sm font-semibold leading-tight">
-                    {request.requester}
-                  </p>
-                  <p className="text-raiz-gray-800 text-[11px] xl:text-[13px] font-normal  leading-none">
-                    {request.time}
-                  </p>
-                </div>
-              </div>
-              <span className="text-raiz-gray-900 text-sm xl:text-base font-semibold ">
-                ₦{request.amount.toLocaleString()}
-              </span>
-            </div>
-            <div className="flex w-full justify-between items-center gap-2">
-              <button className="w-1/2 h-10 px-5 py-2 bg-[#f1e0cb] rounded-3xl justify-center items-center gap-1.5 inline-flex">
-                <span className="text-raiz-gray-800 text-sm font-medium font-brSonoma leading-[16.80px]">
-                  Reject
-                </span>
-              </button>
-              <button className="w-1/2 h-10 px-5 py-2 bg-[#3c2875] rounded-3xl justify-center items-center gap-1.5 inline-flex">
-                <svg width="17" height="16" viewBox="0 0 17 16" fill="none">
-                  <path
-                    d="M11.2601 1.97336L5.24008 3.97336C1.19341 5.3267 1.19341 7.53336 5.24008 8.88003L7.02674 9.47336L7.62008 11.26C8.96674 15.3067 11.1801 15.3067 12.5267 11.26L14.5334 5.2467C15.4267 2.5467 13.9601 1.07336 11.2601 1.97336ZM11.4734 5.56003L8.94008 8.1067C8.84008 8.2067 8.71341 8.25336 8.58674 8.25336C8.46008 8.25336 8.33341 8.2067 8.23341 8.1067C8.04008 7.91336 8.04008 7.59336 8.23341 7.40003L10.7667 4.85336C10.9601 4.66003 11.2801 4.66003 11.4734 4.85336C11.6667 5.0467 11.6667 5.3667 11.4734 5.56003Z"
-                    fill="#F4F4F4"
+        {billRequests?.length > 0 ? (
+          billRequests.map((request) => (
+            <div
+              key={request.id}
+              className="w-full px-[15px] py-[18px] bg-[#f3eee9] rounded-[20px] flex-col justify-center items-start gap-4 inline-flex"
+            >
+              <div className="font-monzo flex items-center justify-between w-full">
+                <div className="flex gap-2 ">
+                  <Image
+                    src={request.imageUrl}
+                    width={38}
+                    height={38}
+                    alt="requester"
                   />
-                </svg>
-
-                <span className="text-secondary-white text-sm font-medium font-brSonoma leading-[16.80px]">
-                  Accept
+                  <div className="flex flex-col gap-0.5">
+                    <p className="text-raiz-gray-900 text-[13px] xl:text-sm font-semibold leading-tight">
+                      {request.requester}
+                    </p>
+                    <p className="text-raiz-gray-800 text-[11px] xl:text-[13px] font-normal  leading-none">
+                      {request.time}
+                    </p>
+                  </div>
+                </div>
+                <span className="text-raiz-gray-900 text-sm xl:text-base font-semibold ">
+                  ₦{request.amount.toLocaleString()}
                 </span>
-              </button>
+              </div>
+              <div className="flex w-full justify-between items-center gap-2">
+                <button className="w-1/2 h-10 px-5 py-2 bg-[#f1e0cb] rounded-3xl justify-center items-center gap-1.5 inline-flex">
+                  <span className="text-raiz-gray-800 text-sm font-medium font-brSonoma leading-[16.80px]">
+                    Reject
+                  </span>
+                </button>
+                <button className="w-1/2 h-10 px-5 py-2 bg-[#3c2875] rounded-3xl justify-center items-center gap-1.5 inline-flex">
+                  <svg width="17" height="16" viewBox="0 0 17 16" fill="none">
+                    <path
+                      d="M11.2601 1.97336L5.24008 3.97336C1.19341 5.3267 1.19341 7.53336 5.24008 8.88003L7.02674 9.47336L7.62008 11.26C8.96674 15.3067 11.1801 15.3067 12.5267 11.26L14.5334 5.2467C15.4267 2.5467 13.9601 1.07336 11.2601 1.97336ZM11.4734 5.56003L8.94008 8.1067C8.84008 8.2067 8.71341 8.25336 8.58674 8.25336C8.46008 8.25336 8.33341 8.2067 8.23341 8.1067C8.04008 7.91336 8.04008 7.59336 8.23341 7.40003L10.7667 4.85336C10.9601 4.66003 11.2801 4.66003 11.4734 4.85336C11.6667 5.0467 11.6667 5.3667 11.4734 5.56003Z"
+                      fill="#F4F4F4"
+                    />
+                  </svg>
+
+                  <span className="text-secondary-white text-sm font-medium font-brSonoma leading-[16.80px]">
+                    Accept
+                  </span>
+                </button>
+              </div>
             </div>
+          ))
+        ) : (
+          <div className="flex items-center gap-[14px]">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect width="48" height="48" rx="24" fill="#EBEDF4" />
+              <path
+                d="M34 24C34 29.52 29.52 34 24 34C18.48 34 14 29.52 14 24C14 18.48 18.48 14 24 14C29.52 14 34 18.48 34 24Z"
+                stroke="#443852"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M27.7099 27.1798L24.6099 25.3298C24.0699 25.0098 23.6299 24.2398 23.6299 23.6098V19.5098"
+                stroke="#443852"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <p className=" text-raiz-gray-600 text-sm font-semibold font-monzoo">
+              No bill request yet
+            </p>
           </div>
-        ))}
+        )}
       </section>
     </div>
   );
