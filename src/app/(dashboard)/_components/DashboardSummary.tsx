@@ -6,8 +6,10 @@ import SideModalWrapper from "./SideModalWrapper";
 import Send from "./send/Send";
 import Image from "next/image";
 import { AnimatePresence } from "motion/react";
+import { useCurrencyStore } from "@/store/useCurrencyStore";
 
 const DashboardSummary = () => {
+  const { selectedCurrency } = useCurrencyStore();
   const [showBalance, setShowBalance] = useState(false);
   const [openModal, setOpenModal] = useState<
     "send" | "request" | "swap" | null
@@ -39,7 +41,9 @@ const DashboardSummary = () => {
           </p>
           <div className="flex gap-2 items-center">
             <p className="text-raiz-gray-950 text-[2rem] font-semibold font-monzo leading-[38.40px]">
-              {showBalance ? `₦10,000,000.00` : `₦••••••••`}
+              {showBalance
+                ? `${selectedCurrency.sign}10,000,000.00`
+                : `${selectedCurrency.sign}XXX`}
             </p>
             <button onClick={() => setShowBalance(!showBalance)}>
               <Image
