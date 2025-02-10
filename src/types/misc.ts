@@ -1,3 +1,4 @@
+import { ACCOUNT_CURRENCIES } from "@/constants/misc";
 import { ReactNode } from "react";
 
 export interface ISidebarMenuItem {
@@ -27,6 +28,9 @@ export interface AccountSetupStep {
   status: "completed" | "in-complete";
   icon: ReactNode;
 }
+
+export type AccountCurrencyType =
+  (typeof ACCOUNT_CURRENCIES)[keyof typeof ACCOUNT_CURRENCIES];
 
 export interface AccountSetupProps {
   selectedStep: AccountSetupStep;

@@ -52,3 +52,8 @@ export const nigeriaStates = [
   { value: "zamfara", label: "Zamfara" },
   { value: "fct", label: "Federal Capital Territory" },
 ];
+
+export const ACCOUNT_CURRENCIES = {
+  USD: { name: "USD", sign: "$" } as const,
+  NGN: { name: "NGN", sign: "₦" } as const,
+} as const;

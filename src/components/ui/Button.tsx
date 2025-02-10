@@ -48,7 +48,7 @@ const Button: React.FC<ButtonProps> = ({
     <button
       onClick={onClick}
       className={`${baseStyles} ${selectedStyles} ${widthStyles[width]} ${className} flex items-center justify-center `}
-      disabled={disabled}
+      disabled={disabled || loading}
       type={type}
     >
       {loading ? (

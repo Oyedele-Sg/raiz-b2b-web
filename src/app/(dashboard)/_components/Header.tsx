@@ -6,14 +6,24 @@ import SideModalWrapper from "./SideModalWrapper";
 import Notifications from "./notification/Notifications";
 import { AnimatePresence } from "motion/react";
 import Rewards from "./rewards/Rewards";
+import SelectAccount from "./SelectAccount";
+import CreateNgnAcct from "./createNgnAcct/CreateNgnAcct";
+import AddBvnModal from "./createNgnAcct/AddBvnModal";
+import NgnSuccessModal from "./createNgnAcct/NgnSuccessModal";
 
 const Header = () => {
   const [showModal, setShowModal] = useState<
-    "notifications" | "rewards" | null
+    "notifications" | "rewards" | "selectAcct" | "createNGN" | null
   >(null);
+  const [showBvnModal, setShowBvnModal] = useState(false);
+  const [successful, setSuccessful] = useState(false);
 
   const handleCloseModal = () => {
     setShowModal(null);
+  };
+
+  const openNGNModal = () => {
+    setShowModal("createNGN");
   };
 
   const displayModal = () => {
@@ -22,6 +32,13 @@ const Header = () => {
         return <Notifications close={handleCloseModal} />;
       case "rewards":
         return <Rewards close={handleCloseModal} />;
+      case "createNGN":
+        return (
+          <CreateNgnAcct
+            close={handleCloseModal}
+            openBvnModal={() => setShowBvnModal(true)}
+          />
+        );
       default:
         break;
     }
@@ -73,18 +90,28 @@ const Header = () => {
           className="pl-10 h-full bg-raiz-gray-50 rounded-[20px] border border-raiz-gray-200 justify-start items-center gap-2 inline-flex w-full outline-none"
         />
       </div>
-      <div className="flex gap-2 xl:gap-3 items-center">
-        <Image
-          className="w-10 h-10 rounded-full"
-          src={"/images/pfp.png"}
-          alt="profile"
-          width={40}
-          height={40}
-        />
-        <div className="flex flex-col gap-1 text-sm font-semibold">
-          <p className="text-gray-700  font-semibold ">Kaywear Store</p>
-          <p className="text-gray-600  font-normal">Kaywear@gmail.com</p>
-        </div>
+      <div className="flex gap-4 items-center">
+        <button
+          onClick={() => setShowModal("selectAcct")}
+          className="flex gap-2 items-center "
+        >
+          <Image
+            className="w-10 h-10 rounded-full"
+            src={"/images/pfp.png"}
+            alt="profile"
+            width={40}
+            height={40}
+          />
+          <div className="flex items-start flex-col gap-1 text-sm font-semibold">
+            <p className="text-gray-700 text-sm  font-semibold ">
+              Kaywear Store
+            </p>
+            <p className="text-gray-600 text-xs xl:text-sm  font-normal">
+              Kaywear@gmail.com
+            </p>
+          </div>
+          <Image src={"/icons/arrow-down.svg"} alt="" width={20} height={20} />
+        </button>
         <button
           onClick={() => setShowModal("rewards")}
           className="pl-2 pr-2.5 py-1.5 bg-[#f8eebb] rounded-3xl justify-center items-center gap-0.5 inline-flex"
@@ -113,12 +140,27 @@ const Header = () => {
         </button>
       </div>
       <AnimatePresence>
-        {showModal && (
-          <SideModalWrapper close={handleCloseModal}>
+        {showModal !== null && showModal !== "selectAcct" && (
+          <SideModalWrapper
+            close={handleCloseModal}
+            wrapperStyle={showModal === "createNGN" ? "!bg-primary2" : ""}
+          >
             {displayModal()}
           </SideModalWrapper>
         )}
       </AnimatePresence>
+      <AnimatePresence>
+        {showBvnModal && (
+          <AddBvnModal
+            close={() => setShowBvnModal(false)}
+            openSuccessModal={() => setSuccessful(true)}
+          />
+        )}
+      </AnimatePresence>
+      {showModal === "selectAcct" && (
+        <SelectAccount close={handleCloseModal} openNgnModal={openNGNModal} />
+      )}
+      {successful && <NgnSuccessModal close={() => setSuccessful(false)} />}
     </div>
   );
 };
