@@ -85,7 +85,7 @@ const SalesReport = () => {
         <h6 className="text-raiz-gray-950 text-lg font-bold font-monzo  leading-snug">
           Sales report
         </h6>
-        <button className="h-[37px]  px-3.5 py-2.5 bg-raiz-gray-50 rounded-lg shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] border border-raiz-gray-100 justify-center items-center gap-1 inline-flex ">
+        <button className="h-[37px]  px-3.5 py-2.5 bg-raiz-gray-50 hover:border-raiz-gray-200 rounded-lg shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] border border-raiz-gray-100 justify-center items-center gap-1 inline-flex ">
           <span className="text-raiz-gray-700 text-sm font-bold font-monzo leading-[16.80px]">
             View report
           </span>

@@ -16,6 +16,7 @@ export default {
         brSonoma: ["var(--font-br-sonoma)", ...fontFamily.sans],
       },
       colors: {
+        primary: "#4B0082",
         primary2: "#3C2875",
         secondary: {
           white: "#F4F4F4",
@@ -31,6 +32,7 @@ export default {
             50: "#FCFCFD",
             100: "#F3F1F6",
             200: "#E4E0EA",
+            300: "#D0C8D9",
             400: "#B5A8C4",
             500: "#A89AB9",
             600: "#6F5B86",
@@ -38,6 +40,12 @@ export default {
             800: "#2C2435",
             900: "#1E1924",
             950: "#19151E",
+          },
+          usd: {
+            primary: "#0D6494",
+          },
+          purple: {
+            90: "#54098b",
           },
           success: {
             500: "#17B26A",
