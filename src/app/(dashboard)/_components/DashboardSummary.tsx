@@ -3,10 +3,11 @@ import React, { useState } from "react";
 import CustomersInfo from "./CustomersInfo";
 import SalesReport from "./SalesReport";
 import SideModalWrapper from "./SideModalWrapper";
-import Send from "./send/Send";
 import Image from "next/image";
 import { AnimatePresence } from "motion/react";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
+import NgnSend from "./send/naira/NgnSend";
+import UsdSend from "./send/usd/UsdSend";
 
 const DashboardSummary = () => {
   const { selectedCurrency } = useCurrencyStore();
@@ -22,7 +23,11 @@ const DashboardSummary = () => {
   const displayScreen = () => {
     switch (openModal) {
       case "send":
-        return <Send />;
+        return selectedCurrency.name === "NGN" ? (
+          <NgnSend />
+        ) : (
+          <UsdSend close={closeModal} />
+        );
       case "request":
         return <h1>Request</h1>;
       case "swap":

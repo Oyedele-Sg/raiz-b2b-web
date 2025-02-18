@@ -1,7 +1,7 @@
 import React from "react";
 import FindRecipient from "./FindRecipient";
 
-const Send = () => {
+const NgnSend = () => {
   return (
     <div>
       <FindRecipient />
@@ -9,4 +9,4 @@ const Send = () => {
   );
 };
 
-export default Send;
+export default NgnSend;
