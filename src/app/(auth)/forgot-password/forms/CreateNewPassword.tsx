@@ -4,8 +4,8 @@ import Image from "next/image";
 import { useFormik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
-import AuthInputField from "@/components/ui/AuthInputField";
 import Button from "@/components/ui/Button";
+import InputField from "@/components/ui/InputField";
 
 const CreateNewPassword = ({ setPage }: { setPage: (arg: number) => void }) => {
   const [showPassword1, setShowPassword1] = useState(false);
@@ -95,7 +95,7 @@ const CreateNewPassword = ({ setPage }: { setPage: (arg: number) => void }) => {
           </svg>
         </header>
         <div className="mt-[44px] flex flex-col gap-5">
-          <AuthInputField
+          <InputField
             label="Password"
             type={showPassword1 ? "text" : "password"}
             icon={!showPassword1 ? "/icons/eye-hide.svg" : "/icons/eye.svg"}
@@ -104,7 +104,7 @@ const CreateNewPassword = ({ setPage }: { setPage: (arg: number) => void }) => {
             status={formik.errors.password ? "error" : null}
             {...formik.getFieldProps("password")}
           />
-          <AuthInputField
+          <InputField
             label="Confirm Password"
             type={showPassword2 ? "text" : "password"}
             icon={!showPassword2 ? "/icons/eye-hide.svg" : "/icons/eye.svg"}

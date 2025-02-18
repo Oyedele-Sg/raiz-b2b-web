@@ -4,8 +4,13 @@ import CustomersInfo from "./CustomersInfo";
 import SalesReport from "./SalesReport";
 import SideModalWrapper from "./SideModalWrapper";
 import Send from "./send/Send";
+import Image from "next/image";
+import { AnimatePresence } from "motion/react";
+import { useCurrencyStore } from "@/store/useCurrencyStore";
 
 const DashboardSummary = () => {
+  const { selectedCurrency } = useCurrencyStore();
+  const [showBalance, setShowBalance] = useState(false);
   const [openModal, setOpenModal] = useState<
     "send" | "request" | "swap" | null
   >(null);
@@ -34,14 +39,30 @@ const DashboardSummary = () => {
           <p className="text-text-terttiary-600   font-normal font-inter leading-normal">
             Total balance
           </p>
-          <p className="text-raiz-gray-950 text-[2rem] font-semibold font-monzo leading-[38.40px]">
-            ₦10,000,000.00
-          </p>
+          <div className="flex gap-2 items-center">
+            <p className="text-raiz-gray-950 text-[2rem] font-semibold font-monzo leading-[38.40px]">
+              {showBalance
+                ? `${selectedCurrency.sign}10,000,000.00`
+                : `${selectedCurrency.sign}XXX`}
+            </p>
+            <button onClick={() => setShowBalance(!showBalance)}>
+              <Image
+                src={`${
+                  !showBalance
+                    ? "/icons/show-balance.svg"
+                    : "/icons/hide-balance.svg"
+                }`}
+                alt={`${!showBalance ? "show balance" : "hide balance"} `}
+                width={32}
+                height={32}
+              />
+            </button>
+          </div>
         </div>
         <div className="flex gap-4 items-center">
           <button
             onClick={() => setOpenModal("send")}
-            className="h-10 w-[138px] px-[18px] py-2 bg-primary2 rounded-3xl justify-center items-center gap-1.5 inline-flex"
+            className="h-10 w-[138px] px-[18px] py-2 bg-raiz-usd-primary rounded-3xl justify-center items-center gap-1.5 inline-flex"
           >
             <svg width="21" height="20" viewBox="0 0 21 20" fill="none">
               <path
@@ -55,7 +76,7 @@ const DashboardSummary = () => {
           </button>
           <button
             onClick={() => setOpenModal("request")}
-            className="h-10 w-[138px] px-[18px] py-2 bg-primary2 rounded-3xl justify-center items-center gap-1.5 inline-flex"
+            className="h-10 w-[138px] px-[18px] py-2 bg-raiz-usd-primary rounded-3xl justify-center items-center gap-1.5 inline-flex"
           >
             <svg width="21" height="20" viewBox="0 0 21 20" fill="none">
               <path
@@ -73,7 +94,7 @@ const DashboardSummary = () => {
           </button>
           <button
             onClick={() => setOpenModal("swap")}
-            className="h-10 w-[138px] px-[18px] py-2 bg-primary2 rounded-3xl justify-center items-center gap-1.5 inline-flex"
+            className="h-10 w-[138px] px-[18px] py-2 bg-raiz-usd-primary rounded-3xl justify-center items-center gap-1.5 inline-flex"
           >
             <svg width="21" height="20" viewBox="0 0 21 20" fill="none">
               <path
@@ -91,11 +112,13 @@ const DashboardSummary = () => {
 
       <CustomersInfo />
       <SalesReport />
-      {openModal && (
-        <SideModalWrapper close={closeModal}>
-          {displayScreen()}
-        </SideModalWrapper>
-      )}
+      <AnimatePresence>
+        {openModal ? (
+          <SideModalWrapper close={closeModal}>
+            {displayScreen()}
+          </SideModalWrapper>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 };

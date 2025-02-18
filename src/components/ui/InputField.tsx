@@ -17,7 +17,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   labelClass?: string;
 }
 
-const AuthInputField: React.FC<InputProps> = ({
+const InputField: React.FC<InputProps> = ({
   label,
   status,
   icon,
@@ -37,7 +37,7 @@ const AuthInputField: React.FC<InputProps> = ({
     if (status === "success") return "border-[#2BAC47]";
     if (status === "error") return "border-raiz-error";
     if (status === "warning") return "border-yellow-500";
-    return "border-raiz-gray-300";
+    return "border-raiz-gray-100";
   };
 
   const handleFileClick = () => {
@@ -136,4 +136,4 @@ const AuthInputField: React.FC<InputProps> = ({
   );
 };
 
-export default AuthInputField;
+export default InputField;

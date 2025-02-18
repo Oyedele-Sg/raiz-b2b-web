@@ -1,8 +1,8 @@
 "use client";
-import AuthInputField from "@/components/ui/AuthInputField";
 import Image from "next/image";
 import React, { useState } from "react";
 import { RegisterFormProps } from "./CreateAccount";
+import InputField from "@/components/ui/InputField";
 
 const SetPassword = ({ goBack, formik }: RegisterFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -46,7 +46,7 @@ const SetPassword = ({ goBack, formik }: RegisterFormProps) => {
 
       <div className="mt-8 xl:mt-[44px]">
         <div className="flex flex-col xl:pb-20">
-          <AuthInputField
+          <InputField
             label="Password"
             type={showPassword ? "text" : "password"}
             icon={!showPassword ? "/icons/eye-hide.svg" : "/icons/eye.svg"}
@@ -154,7 +154,7 @@ const SetPassword = ({ goBack, formik }: RegisterFormProps) => {
         </div>
 
         <div className="border-t border-raiz-gray-200 pt-5 mt-8 ">
-          <AuthInputField
+          <InputField
             label="Referral Code (Optional)"
             placeholder=""
             {...formik.getFieldProps("referral_code")}

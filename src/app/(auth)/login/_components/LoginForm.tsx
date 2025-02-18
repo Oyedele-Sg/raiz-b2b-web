@@ -1,10 +1,10 @@
 "use client";
-import AuthInputField from "@/components/ui/AuthInputField";
 import Button from "@/components/ui/Button";
 import InputLabel from "@/components/ui/InputLabel";
 import { useFormik } from "formik";
 import Link from "next/link";
 import React, { useState } from "react";
+import InputField from "@/components/ui/InputField";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,7 +27,7 @@ const LoginForm = () => {
           onSubmit={formik.handleSubmit}
           className="flex flex-col gap-5 mt-[44px]"
         >
-          <AuthInputField
+          <InputField
             placeholder="Enter your email address"
             label="Email"
             type="email"
@@ -45,7 +45,7 @@ const LoginForm = () => {
             </Link>
           </div>
 
-          <AuthInputField
+          <InputField
             type={showPassword ? "text" : "password"}
             icon={!showPassword ? "/icons/eye-hide.svg" : "/icons/eye.svg"}
             onClick={() => setShowPassword(!showPassword)}

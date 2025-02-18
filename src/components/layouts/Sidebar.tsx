@@ -1,16 +1,48 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ISidebarMenuItem } from "@/types/misc";
 import { SidebarMenus } from "@/constants/SidebarMenuData";
+import SideModalWrapper from "@/app/(dashboard)/_components/SideModalWrapper";
+import AccountSetup from "@/app/(dashboard)/_components/account-setup/AccountSetup";
+import { AnimatePresence } from "motion/react";
+import CreateNgnAcct from "@/app/(dashboard)/_components/createNgnAcct/CreateNgnAcct";
+import AddBvnModal from "@/app/(dashboard)/_components/createNgnAcct/AddBvnModal";
+import NgnSuccessModal from "@/app/(dashboard)/_components/createNgnAcct/NgnSuccessModal";
 
 const Sidebar = () => {
   const pathName = usePathname();
+  const [showModal, setShowModal] = useState<"acctSetup" | "getNgn" | null>(
+    null
+  );
+  const [showBvnModal, setShowBvnModal] = useState(false);
+  const [successful, setSuccessful] = useState(false);
+
+  const handleCloseModal = () => {
+    setShowModal(null);
+  };
+
+  const displayModal = () => {
+    switch (showModal) {
+      case "acctSetup":
+        return <AccountSetup close={handleCloseModal} />;
+      case "getNgn":
+        return (
+          <CreateNgnAcct
+            close={handleCloseModal}
+            openBvnModal={() => setShowBvnModal(true)}
+          />
+        );
+      default:
+        break;
+    }
+  };
 
   const renderMenuItem = (item: ISidebarMenuItem, index: number) => {
     const isActive = pathName === item.link;
+
     return (
       <Link
         key={index}
@@ -28,7 +60,7 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="w-[19.444%] pt-8  fixed top-0 bottom-0 left-0 z-20 bg-raiz-gray-50 border-r border-raiz-gray-200 h-[100vh] overflow-x-hidden overflow-y-scroll">
+    <aside className="w-[19.444%] pt-8 hidden lg:block  fixed top-0 bottom-0 left-0 z-20 bg-raiz-gray-50 border-r border-raiz-gray-200 h-[100vh] overflow-x-hidden overflow-y-scroll">
       <div className="px-6">
         <Image
           className="w-12 h-12"
@@ -43,7 +75,8 @@ const Sidebar = () => {
           {SidebarMenus.map((item, index) => renderMenuItem(item, index))}
         </nav>
         <div>
-          <div className="px-3 xl:px-4 py-5 bg-[#eaecff]/40 rounded-lg flex-col justify-start items-start gap-3 inline-flex">
+          {/* Acct setup */}
+          {/* <div className="px-3 xl:px-4 py-5 bg-[#eaecff]/40 rounded-lg flex-col justify-start items-start gap-3 inline-flex">
             <div className="w-12 h-12 relative bg-[#fcfcfd] rounded-[66.67px] flex items-center justify-center ">
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                 <path
@@ -73,14 +106,37 @@ const Sidebar = () => {
               >
                 Learn more
               </Link>
-              <Link
-                href={"#"}
+              <button
+                onClick={() => setShowModal("acctSetup")}
                 className="text-primary2 text-xs xl:text-sm font-bold font-monzo leading-[16.80px]"
               >
                 Upgrade
-              </Link>
+              </button>
             </div>
+          </div> */}
+
+          {/* Get NGN aza */}
+          <div className="px-3 xl:px-4 py-5 bg-[#eaecff]/40 rounded-lg flex-col justify-start items-start gap-3 inline-flex">
+            <div className="w-12 h-12 relative bg-[#fcfcfd] rounded-[66.67px] flex items-center justify-center ">
+              <Image src={"/icons/ngn.svg"} width={32} height={32} alt="NGN" />
+            </div>
+            <h5 className="text-raiz-gray-900 text-sm font-bold font-monzo leading-[16.80px]">
+              Get a Naira (NGN) Account
+            </h5>
+            <p className="text-gray-600 text-sm font-normal font-monzo leading-tight">
+              Manage funds and make transactions in Naira, simplifying local
+              payments and daily finances.
+            </p>
+
+            <button
+              onClick={() => setShowModal("getNgn")}
+              className="text-primary2 text-sm font-bold font-monzo leading-[16.80px]"
+            >
+              Get Naira Wallet
+            </button>
           </div>
+
+          {/* Acct & Logout */}
           <div className="flex gap-1.5 xl:gap-3  justify-between mt-6 w-full pb-5">
             <Image
               src={"/images/pfp.png"}
@@ -117,6 +173,25 @@ const Sidebar = () => {
           </div>
         </div>
       </section>
+      <AnimatePresence>
+        {showModal ? (
+          <SideModalWrapper
+            close={handleCloseModal}
+            wrapperStyle={showModal === "getNgn" ? "!bg-primary2" : ""}
+          >
+            {displayModal()}
+          </SideModalWrapper>
+        ) : null}
+      </AnimatePresence>
+      <AnimatePresence>
+        {showBvnModal && (
+          <AddBvnModal
+            close={() => setShowBvnModal(false)}
+            openSuccessModal={() => setSuccessful(true)}
+          />
+        )}
+      </AnimatePresence>
+      {successful && <NgnSuccessModal close={() => setSuccessful(false)} />}
     </aside>
   );
 };

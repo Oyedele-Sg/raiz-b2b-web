@@ -43,8 +43,8 @@ const CountryCodeModal = ({ close }: Props) => {
         {/* Countries */}
 
         <div className="flex flex-col gap-[30px] font-brSonoma">
-          {countryCodes.map((country) => (
-            <button key={country.code} className="flex justify-between">
+          {countryCodes.map((country, index) => (
+            <button key={index} className="flex justify-between">
               <div className="flex items-center gap-2">
                 <Image
                   className="w-[22px] h-[15px] rounded-full"
