@@ -13,7 +13,7 @@ import Slide from "./Slide";
 
 const Slider = () => {
   return (
-    <div className="relative hidden md:block w-[50%] xl:w-[54%] ">
+    <div className="relative hidden md:block w-[50%] xl:w-[54%] h-full ">
       <Swiper
         spaceBetween={30}
         effect={"fade"}
