@@ -1,28 +1,28 @@
 import React from "react";
 import Image from "next/image";
 
-const recents = [
-  {
-    name: "Desirae B",
-    username: "@desirae123",
-    image: "/images/pfp.png",
-  },
-  {
-    name: "Desirae cc",
-    username: "@desirae23",
-    image: "/images/pfp.png",
-  },
-  {
-    name: "Desirae c",
-    username: "@desirae13",
-    image: "/images/pfp.png",
-  },
-  {
-    name: "Desirae D",
-    username: "@desirae12",
-    image: "/images/pfp.png",
-  },
-];
+// const recents = [
+//   {
+//     name: "Desirae B",
+//     username: "@desirae123",
+//     image: "/images/pfp.png",
+//   },
+//   {
+//     name: "Desirae cc",
+//     username: "@desirae23",
+//     image: "/images/pfp.png",
+//   },
+//   {
+//     name: "Desirae c",
+//     username: "@desirae13",
+//     image: "/images/pfp.png",
+//   },
+//   {
+//     name: "Desirae D",
+//     username: "@desirae12",
+//     image: "/images/pfp.png",
+//   },
+// ];
 
 const RaizerRecipient = () => {
   return (

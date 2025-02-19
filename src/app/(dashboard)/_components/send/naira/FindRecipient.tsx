@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
-import RaizerRecipient from "./toRaizer/RaizerRecipient";
+import RaizerRecipient from "../toRaizer/RaizerRecipient";
 
 const FindRecipient = () => {
   const [type, setType] = useState<"raizer" | "others">("raizer");
