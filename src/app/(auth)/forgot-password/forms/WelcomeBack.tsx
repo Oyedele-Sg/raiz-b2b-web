@@ -5,14 +5,19 @@ import { useFormik } from "formik";
 import Link from "next/link";
 import React, { useState } from "react";
 import InputField from "@/components/ui/InputField";
+import { useRouter } from "next/navigation";
 
 const WelcomeBack = ({ setPage }: { setPage: (arg: number) => void }) => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const formik = useFormik({
     initialValues: {
       password: "",
     },
-    onSubmit: (val) => console.log("submit", val),
+    onSubmit: (val) => {
+      console.log("submit", val);
+      router.push("/");
+    },
   });
   return (
     <form

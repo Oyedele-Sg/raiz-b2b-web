@@ -10,12 +10,14 @@ export interface ISidebarMenuItem {
 export interface IRegisterFormValues {
   email: string;
   password: string;
-  username: string;
-  phone_number: string;
-  country_id: string;
+  // username: string;
+  // phone_number: string;
+  // country_id: string;
   referral_code?: string;
   otp: string;
-  useCases?: number[];
+  // useCases?: number[];
+  firstName: string;
+  lastName: string;
 }
 
 export interface AccountSetupStep {
