@@ -55,3 +55,10 @@ export interface NotificationItemProps {
     updated_at: Date;
   };
 }
+
+export type IUsdSendOptions =
+  | "to Raizer"
+  | "bank transfer"
+  | "to debit card"
+  | "to zelle"
+  | "to cashapp";
