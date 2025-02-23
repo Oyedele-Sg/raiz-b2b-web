@@ -10,6 +10,7 @@ import WelcomeBack from "./forms/WelcomeBack";
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
   const [page, setPage] = useState(1);
+  // test
 
   const displayPage = () => {
     switch (page) {
