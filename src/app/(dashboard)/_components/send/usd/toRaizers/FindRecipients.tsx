@@ -70,6 +70,7 @@ const FindRecipients = ({ setStep, goBack }: Props) => {
   const [loading, setLoading] = useState(false);
   const recentsArr = recentUsers;
 
+  console.log(setStep, selectedUser);
   // Simulated search function (instead of API call)
   const fetchSuggestions = (query: string) => {
     if (!query) {

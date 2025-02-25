@@ -1,9 +1,9 @@
 import React from "react";
 import Image from "next/image";
 import { RegisterFormProps } from "./CreateAccount";
-import InputField from "@/components/ui/InputField";
+// import InputField from "@/components/ui/InputField";
 
-const CreateUsername = ({ goBack, formik }: RegisterFormProps) => {
+const CreateUsername = ({ goBack }: RegisterFormProps) => {
   return (
     <section className="h-full flex flex-col -mt-2">
       <button onClick={goBack}>
@@ -38,13 +38,13 @@ const CreateUsername = ({ goBack, formik }: RegisterFormProps) => {
       </p>
 
       <div className="">
-        <InputField
+        {/* <InputField
           label="@username"
           placeholder=""
           {...formik.getFieldProps("username")}
           status={formik.errors.username ? "error" : null}
           errorMessage={formik.touched.username && formik.errors.username}
-        />
+        /> */}
         <span className="text-raiz-gray-600 text-[13px] font-normal font-monzo leading-normal">
           Usernames can only contain letters, numbers, underscores, and periods.
         </span>
