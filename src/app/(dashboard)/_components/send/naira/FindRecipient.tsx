@@ -1,9 +1,19 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
+import RaizerRecipient from "../toRaizer/RaizerRecipient";
 
 const FindRecipient = () => {
   const [type, setType] = useState<"raizer" | "others">("raizer");
+
+  const displayType = () => {
+    switch (type) {
+      case "raizer":
+        return <RaizerRecipient />;
+      default:
+        break;
+    }
+  };
   return (
     <div className="font-monzo">
       <div className="flex justify-between items-center mb-4">
@@ -14,7 +24,8 @@ const FindRecipient = () => {
           <Image src={"/icons/qr.svg"} width={18} height={19.2} alt="qr code" />
         </button>
       </div>
-      <div className="flex  h-11 p-1 bg-raiz-gray-100 rounded-2xl justify-center items-center gap-1 mt-5 transition-all duration-200 ease-in-out">
+      {/* Type toggle */}
+      <div className="flex  h-11 p-1 bg-raiz-gray-100 rounded-2xl justify-center items-center gap-1 mt-5 transition-all duration-200 ease-in-out mb-5">
         <button
           onClick={() => setType("raizer")}
           className={`p-2 rounded-xl  w-1/2 transition-all duration-300 ease-in-out text-sm ${
@@ -36,6 +47,8 @@ const FindRecipient = () => {
           <span>Send to other bank</span>
         </button>
       </div>
+
+      <div>{displayType()}</div>
     </div>
   );
 };

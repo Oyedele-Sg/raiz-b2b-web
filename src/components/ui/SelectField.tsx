@@ -78,7 +78,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
       //   paddingLeft: "14px",
       //   paddingRight: "14px",
     }),
-    // eslint-disable-next-line no-unused-vars
+
     option: (provided: any, state: any) => ({
       ...provided,
       fontSize: "14px",

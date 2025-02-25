@@ -15,10 +15,14 @@ const SelectAccount = ({ close, openNgnModal }: Props) => {
   const handleNgn = () => {
     if (hasNGNWallet) {
       setSelectedCurrency("NGN");
-    } else {
       close();
+    } else {
       openNgnModal();
     }
+  };
+  const handleUsd = () => {
+    setSelectedCurrency("USD");
+    close();
   };
   return (
     <Overlay close={close} width="375px">
@@ -27,7 +31,7 @@ const SelectAccount = ({ close, openNgnModal }: Props) => {
         <div className="flex flex-col mt-4">
           {/* USD */}
           <button
-            onClick={() => setSelectedCurrency("USD")}
+            onClick={handleUsd}
             className={`px-3 py-4  justify-between items-center gap-10 rounded-[20px] w-full  inline-flex ${
               selectedCurrency.name === "USD" ? "bg-[#eaecff]/60" : "bg-white"
             }`}
