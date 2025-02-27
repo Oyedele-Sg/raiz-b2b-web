@@ -6,6 +6,8 @@ import CountryCodeModal from "../CountryCodeModal";
 import { FormikProps } from "formik";
 import { IRegisterFormValues } from "@/types/misc";
 import InputField from "@/components/ui/InputField";
+import InputLabel from "@/components/ui/InputLabel";
+import ErrorMessage from "@/components/ui/ErrorMessage";
 
 export interface RegisterFormProps {
   formik: FormikProps<IRegisterFormValues>;
@@ -15,7 +17,8 @@ export interface RegisterFormProps {
 
 const CreateAccount = ({ formik }: RegisterFormProps) => {
   const [showCountryInfo, setShowCountryInfo] = useState(false);
-  const [showCountryCode, setShowCountryCode] = useState(false);
+  const [showCountry, setShowCountry] = useState(false);
+
   return (
     <section className=" flex flex-col">
       <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
@@ -43,7 +46,7 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
       <div className="flex flex-col justify-between h-full">
         <div>
           <div className="mt-[44px] flex flex-col gap-5 ">
-            {/* <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2">
               <div className="flex gap-2 items-center">
                 <InputLabel content="Country of Origin" />
                 <button onClick={() => setShowCountryInfo(true)}>
@@ -55,9 +58,20 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
                   />
                 </button>
               </div>
-              <button className="flex justify-between w-full h-[50px] p-[15px] bg-raiz-gray-100 rounded-lg  items-center">
-                <span className="text-raiz-gray-400 text-sm font-normal font-monzo leading-tight">
-                  Enter country
+              <button
+                onClick={() => setShowCountry(true)}
+                className="flex justify-between w-full h-[50px] p-[15px] bg-raiz-gray-100 rounded-lg  items-center"
+              >
+                <span
+                  className={`${
+                    formik.values.country_name
+                      ? "text-raiz-gray-950"
+                      : "text-raiz-gray-400"
+                  } text-sm font-normal font-monzo leading-tight`}
+                >
+                  {formik.values.country_id && formik.values.country_name
+                    ? formik.values?.country_name
+                    : "Enter country"}
                 </span>
                 <Image
                   src={"/icons/arrow-down.svg"}
@@ -66,19 +80,30 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
                   height={16}
                 />
               </button>
-            </div> */}
+              {formik.touched.country_id && formik.errors.country_id && (
+                <ErrorMessage message={formik.errors.country_id} />
+              )}
+            </div>
             <InputField
               placeholder="Enter first name"
               label="First Name"
               {...formik.getFieldProps("firstName")}
-              status={formik.errors.firstName ? "error" : null}
+              status={
+                formik.touched.firstName && formik.errors.firstName
+                  ? "error"
+                  : null
+              }
               errorMessage={formik.touched.firstName && formik.errors.firstName}
             />
             <InputField
               placeholder="Enter last name"
               label="Last Name"
               {...formik.getFieldProps("lastName")}
-              status={formik.errors.lastName ? "error" : null}
+              status={
+                formik.touched.lastName && formik.errors.lastName
+                  ? "error"
+                  : null
+              }
               errorMessage={formik.touched.lastName && formik.errors.lastName}
             />
             <InputField
@@ -86,7 +111,9 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
               label="Work Email"
               type="email"
               {...formik.getFieldProps("email")}
-              status={formik.errors.email ? "error" : null}
+              status={
+                formik.touched.email && formik.errors.email ? "error" : null
+              }
               errorMessage={formik.touched.email && formik.errors.email}
             />
             {/* <div className="">
@@ -146,8 +173,8 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
       {showCountryInfo && (
         <CountryOriginInfoModal close={() => setShowCountryInfo(false)} />
       )}
-      {showCountryCode && (
-        <CountryCodeModal close={() => setShowCountryCode(false)} />
+      {showCountry && (
+        <CountryCodeModal close={() => setShowCountry(false)} formik={formik} />
       )}
     </section>
   );

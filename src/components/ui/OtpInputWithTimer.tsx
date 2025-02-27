@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import OTPInput from "react-otp-input";
 import { formatTime } from "@/utils";
-import { useTimer } from "@/hooks/useTimer";
+import { useTimer } from "@/lib/hooks/useTimer";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 
 type OtpInputWithTimerProps = {
@@ -21,7 +21,7 @@ const OtpInputWithTimer = ({
   onResend,
 }: OtpInputWithTimerProps) => {
   const [isTimerActive, setIsTimerActive] = useState(true);
-  const { timeLeft } = useTimer(120, isTimerActive);
+  const { timeLeft } = useTimer(60, isTimerActive);
 
   const handleResend = () => {
     setIsTimerActive(false);

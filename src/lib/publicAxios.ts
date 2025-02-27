@@ -1,3 +1,4 @@
+"use client";
 import axios, {
   AxiosError,
   AxiosInstance,
@@ -5,6 +6,7 @@ import axios, {
   CancelTokenSource,
 } from "axios";
 import { toast } from "sonner";
+import { encryptData, generateNonce } from "./headerEncryption";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -36,6 +38,12 @@ const addNetworkCheckInterceptor = (axiosInstance: AxiosInstance) => {
       try {
         const cancelTokenSource: CancelTokenSource = axios.CancelToken.source();
         requestConfig.cancelToken = cancelTokenSource.token;
+
+        const nonceStr = generateNonce();
+        const signature = encryptData(nonceStr);
+
+        requestConfig.headers["nonce-str"] = nonceStr;
+        requestConfig.headers["signature"] = signature;
         return requestConfig;
       } catch (error) {
         return Promise.reject(error);

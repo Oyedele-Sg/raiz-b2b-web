@@ -12,12 +12,14 @@ export interface IRegisterFormValues {
   password: string;
   // username: string;
   // phone_number: string;
-  // country_id: string;
+  country_id: string;
+  country_name?: string;
   referral_code?: string;
   otp: string;
   // useCases?: number[];
   firstName: string;
   lastName: string;
+  confirmPassword: string;
 }
 
 export interface AccountSetupStep {
@@ -62,3 +64,15 @@ export type IUsdSendOptions =
   | "to debit card"
   | "to zelle"
   | "to cashapp";
+
+export interface ICountry {
+  country_name: string;
+  country_code: string;
+  currency: string;
+  is_supported: boolean;
+  country_flag: string;
+  area_code: string;
+  country_id: string;
+  created_at: string;
+  updated_at: string;
+}

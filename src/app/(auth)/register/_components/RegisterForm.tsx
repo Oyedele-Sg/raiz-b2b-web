@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import CreateAccount from "./forms/CreateAccount";
 import SetPassword from "./forms/SetPassword";
@@ -10,10 +10,17 @@ import RegisterOtp from "./forms/RegisterOtp";
 // import UseCases from "./forms/UseCases";
 import Congrats from "./forms/Congrats";
 import { useFormik } from "formik";
-import { registerFormSchema } from "./validation";
+import { registerFormSchemas } from "./validation";
 import { IRegisterFormValues } from "@/types/misc";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { useRouter } from "next/navigation";
+import ConfirmPassword from "./forms/ConfirmPassword";
+import { useMutation } from "@tanstack/react-query";
+import {
+  IRegisterPayload,
+  SignupApi,
+  SignupVerifyOtpApi,
+} from "@/services/auth";
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -21,6 +28,7 @@ const RegisterForm = () => {
   const steps = [
     "createAccount",
     "setPassword",
+    "confirmPassword",
     "otp",
     // "createUsername",
     // "useCases",
@@ -34,16 +42,47 @@ const RegisterForm = () => {
     password: "",
     // username: "",
     // phone_number: "",
-    // country_id: "uokpk",
+    country_id: "",
     referral_code: "",
     otp: "",
+    confirmPassword: "",
     // useCases: [],
   };
 
+  const validationSchema = useMemo(() => {
+    const schema =
+      registerFormSchemas[currentStep as keyof typeof registerFormSchemas];
+    return toFormikValidationSchema(schema);
+  }, [currentStep]);
+
   const formik = useFormik({
     initialValues,
-    validationSchema: toFormikValidationSchema(registerFormSchema),
+    validationSchema,
     onSubmit: (values) => console.log("form values", values),
+  });
+
+  const signupMutation = useMutation({
+    mutationFn: (data: IRegisterPayload) => SignupApi(data),
+    onSuccess: (response) => {
+      console.log("Signup successful:", response);
+      handleNavigate("next");
+    },
+    onError: (error) => {
+      console.log("Signup failed:", error);
+      formik.setErrors({ confirmPassword: "Signup failed. Please try again." });
+    },
+  });
+
+  const verifyOtpMutation = useMutation({
+    mutationFn: (data: { otp: string }) => SignupVerifyOtpApi(data),
+    onSuccess: (response) => {
+      console.log("Signup successful:", response);
+      handleNavigate("next");
+    },
+    onError: (error) => {
+      console.log("Signup failed:", error);
+      formik.setErrors({ otp: "Signup failed. Please try again." });
+    },
   });
 
   const disableProgress = () => {
@@ -53,24 +92,26 @@ const RegisterForm = () => {
           !formik.values.email ||
           !formik.values.firstName ||
           !formik.values.lastName ||
-          formik.errors.email ||
-          formik.errors.firstName ||
-          formik.errors.lastName
+          !formik.values.country_id ||
+          !!formik.errors.email ||
+          !!formik.errors.firstName ||
+          !!formik.errors.lastName ||
+          !!formik.errors.country_id
         );
       case 2:
-        return !formik.values.password || formik.errors.password;
-
+        return !formik.values.password || !!formik.errors.password;
       case 3:
-        return !formik.values.otp || formik.errors.otp;
-      // case 4:
-      //   return !formik.values.username || formik.errors.username;
-
+        return (
+          !formik.values.confirmPassword || !!formik.errors.confirmPassword
+        );
+      case 4:
+        return !formik.values.otp || !!formik.errors.otp;
+      case 5:
+        return false;
       default:
-        break;
+        return true;
     }
   };
-
-  console.log("errror reg", formik.errors);
 
   const handleNavigate = (direction: "next" | "back") => {
     if (
@@ -79,22 +120,36 @@ const RegisterForm = () => {
       currentStep < steps.length
     ) {
       setCurrentStep((prev) => prev + 1);
+      formik.setErrors({});
+      formik.setTouched({});
     } else if (direction === "back") {
       setCurrentStep((prev) => prev - 1);
+      formik.setErrors({});
+      formik.setTouched({});
     }
   };
 
   const btnAction = () => {
-    if (currentStep === 1 && !disableProgress()) {
-      handleNavigate("next");
-    } else if (currentStep === 2 && !disableProgress()) {
-      console.log("btn actn submit vals", formik.values);
-      handleNavigate("next");
-    } else if (currentStep === 3 && !disableProgress()) {
-      console.log("submit otp", formik.values.otp);
-      handleNavigate("next");
-    } else if (currentStep === steps.length && !disableProgress()) {
-      router.push("/login");
+    if (!disableProgress()) {
+      if (currentStep === 1) {
+        handleNavigate("next");
+      } else if (currentStep === 2) {
+        handleNavigate("next");
+      } else if (currentStep === 3) {
+        const payload: IRegisterPayload = {
+          email: formik.values.email,
+          password: formik.values.password,
+          first_name: formik.values.firstName,
+          last_name: formik.values.lastName,
+          country_id: formik.values.country_id,
+          referral_code: formik.values.referral_code || "",
+        };
+        signupMutation.mutate(payload);
+      } else if (currentStep === 4) {
+        verifyOtpMutation.mutate({ otp: formik.values.otp });
+      } else if (currentStep === steps.length) {
+        router.push("/login");
+      }
     }
   };
 
@@ -108,30 +163,22 @@ const RegisterForm = () => {
         );
       case 3:
         return (
-          // <CreateUsername
-          //   goBack={() => handleNavigate("back")}
-          //   formik={formik}
-          // />
+          <ConfirmPassword
+            goBack={() => handleNavigate("back")}
+            formik={formik}
+          />
+        );
+      case 4:
+        return (
           <RegisterOtp goBack={() => handleNavigate("back")} formik={formik} />
         );
-      // case 4:
-      //   return (
-      //     <RegisterOtp goBack={() => handleNavigate("back")} formik={formik} />
-      //   );
-      // case 5:
-      // return (
-      //   <UseCases
-      //     goBack={() => handleNavigate("back")}
-      //     formik={formik}
-      //     goForward={() => handleNavigate("next")}
-      //   />
-      // );
-      case 4:
+      case 5:
         return <Congrats />;
       default:
     }
   };
-  // console.log("val", formik.values);
+
+  const isLoading = signupMutation.isPending || verifyOtpMutation.isPending;
 
   return (
     <div className="py-4 px-3 xl:px-8 w-[50%] xl:w-[46%] h-full flex flex-col justify-between gap-[60px]">
@@ -160,10 +207,15 @@ const RegisterForm = () => {
           )}
           <Button
             // type={currentStep < steps.length - 1 ? "button" : "submit"}
+            loading={isLoading}
             disabled={!!disableProgress()}
             onClick={btnAction}
           >
-            Continue
+            {isLoading
+              ? currentStep === 3
+                ? "Signing Up..."
+                : "Verifying..."
+              : "Continue"}
           </Button>
           {currentStep === 1 && (
             <p className="text-raiz-gray-800 text-[13px] font-normal font-monzo leading-tight mt-3 text-center">

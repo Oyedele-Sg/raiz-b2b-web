@@ -8,6 +8,7 @@ import React, { useState } from "react";
 import InputField from "@/components/ui/InputField";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { loginSchema } from "../../register/_components/validation";
+import { PublicAxios } from "@/lib/publicAxios";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,7 +19,16 @@ const LoginForm = () => {
       password: "",
     },
     validationSchema: toFormikValidationSchema(loginSchema),
-    onSubmit: (val) => console.log("Submit", val),
+    onSubmit: async (val) => {
+      try {
+        const res = await PublicAxios.post("/business/auth/login", val);
+        console.log("res data", res?.data);
+      } catch (error) {
+        console.error("Login error:", error);
+        // Optionally update Formik errors for user feedback
+        // formik.setErrors({ email: "Login failed. Please check your credentials." });
+      }
+    },
   });
   return (
     <section className="py-4 px-3 xl:px-8 w-[50%] xl:w-[46%] h-full flex flex-col font-monzo justify-between gap-[60px]">
@@ -62,7 +72,12 @@ const LoginForm = () => {
           </form>
         </div>
         <div>
-          <Button disabled={!formik.dirty || !formik.isValid}>Login</Button>
+          <Button
+            onClick={formik.handleSubmit}
+            disabled={!formik.dirty || !formik.isValid}
+          >
+            Login
+          </Button>
           <p className="text-raiz-gray-800 text-[13px] leading-tight text-center mt-6">
             Don&#39;t have an account?{" "}
             <Link href={"/register"} className="leading-[18.20px] font-bold ">
