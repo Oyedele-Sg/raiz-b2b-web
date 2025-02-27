@@ -8,10 +8,21 @@ import React, { useState } from "react";
 import InputField from "@/components/ui/InputField";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { loginSchema } from "../../register/_components/validation";
-import { PublicAxios } from "@/lib/publicAxios";
+import { useMutation } from "@tanstack/react-query";
+import { ILoginPayload, LoginApi } from "@/services/auth";
+// import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+
+  const loginMutation = useMutation({
+    mutationFn: (data: ILoginPayload) => LoginApi(data),
+    onSuccess: () => {
+      router.push("/");
+    },
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -19,15 +30,11 @@ const LoginForm = () => {
       password: "",
     },
     validationSchema: toFormikValidationSchema(loginSchema),
-    onSubmit: async (val) => {
-      try {
-        const res = await PublicAxios.post("/business/auth/login", val);
-        console.log("res data", res?.data);
-      } catch (error) {
-        console.error("Login error:", error);
-        // Optionally update Formik errors for user feedback
-        // formik.setErrors({ email: "Login failed. Please check your credentials." });
-      }
+    onSubmit: (values) => {
+      loginMutation.mutate({
+        email: values.email,
+        password: values.password,
+      });
     },
   });
   return (
@@ -74,7 +81,10 @@ const LoginForm = () => {
         <div>
           <Button
             onClick={formik.handleSubmit}
-            disabled={!formik.dirty || !formik.isValid}
+            disabled={
+              !formik.dirty || !formik.isValid || loginMutation.isPending
+            }
+            loading={loginMutation.isPending}
           >
             Login
           </Button>
