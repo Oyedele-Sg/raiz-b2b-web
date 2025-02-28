@@ -1,3 +1,4 @@
+import { AuthAxios } from "@/lib/authAxios";
 import { PublicAxios } from "@/lib/publicAxios";
 
 export interface ILoginPayload {
@@ -74,5 +75,14 @@ export const ResetPasswordApi = async (data: IResetPasswordPayload) => {
     "/business/auth/reset-password/",
     data
   );
+  return response?.data;
+};
+
+export const LogoutApi = async (token: string) => {
+  const response = await AuthAxios.post("/business/auth/logout/", null, {
+    params: {
+      token,
+    },
+  });
   return response?.data;
 };

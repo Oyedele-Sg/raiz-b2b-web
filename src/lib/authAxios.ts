@@ -17,7 +17,7 @@ interface CustomAxiosError extends AxiosError {
 const handleResponse = (response: AxiosResponse) => response;
 
 const handleError = async (error: CustomAxiosError) => {
-  console.error(JSON.stringify(error, null, 2));
+  console.log(JSON.stringify(error, null, 2));
   const errorMessage = error.response?.data?.message || "An Error Occurred";
   toast.error(errorMessage);
   return Promise.reject(error.response);
