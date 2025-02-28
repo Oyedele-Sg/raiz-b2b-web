@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { toast } from "sonner";
 import { encryptData, generateNonce } from "./headerEncryption";
-import { GetItemFromLocalStorage } from "./localStorageFunc";
+import { GetItemFromLocalStorage } from "../utils/localStorageFunc";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 

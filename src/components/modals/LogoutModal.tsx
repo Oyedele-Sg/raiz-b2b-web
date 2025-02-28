@@ -7,8 +7,9 @@ import { LogoutApi } from "@/services/auth";
 import {
   GetItemFromLocalStorage,
   RemoveItemFromLocalStorage,
-} from "@/lib/localStorageFunc";
+} from "@/utils/localStorageFunc";
 import { useRouter } from "next/navigation";
+import { RemoveItemFromCookie } from "@/utils/CookiesFunc";
 
 const LogoutModal = ({ close }: { close: () => void }) => {
   const router = useRouter();
@@ -17,6 +18,7 @@ const LogoutModal = ({ close }: { close: () => void }) => {
     mutationFn: () => LogoutApi(token),
     onSuccess: () => {
       RemoveItemFromLocalStorage("access_token");
+      RemoveItemFromCookie("accessToken");
       router.push("/login");
       close();
     },
