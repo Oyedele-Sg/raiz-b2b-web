@@ -21,6 +21,7 @@ import {
   SignupApi,
   SignupVerifyOtpApi,
 } from "@/services/auth";
+import { AnimatePresence } from "motion/react";
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -184,7 +185,7 @@ const RegisterForm = () => {
     <div className="py-4 px-3 xl:px-8 w-[50%] xl:w-[46%] h-full flex flex-col justify-between gap-[60px]">
       <Image src={"/icons/Logo.svg"} width={91.78} height={32} alt="Logo" />
       <div className="flex flex-col h-full  justify-between">
-        {displayStep(currentStep)}
+        <AnimatePresence>{displayStep(currentStep)}</AnimatePresence>
         <div className="flex flex-col gap-3 mt-3">
           {currentStep === 1 && (
             <p className="text-raiz-gray-600 text-[13px] font-normal font-monzo leading-tight">

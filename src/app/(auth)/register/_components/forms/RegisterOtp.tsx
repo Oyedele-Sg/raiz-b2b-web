@@ -4,8 +4,9 @@ import Image from "next/image";
 import { RegisterFormProps } from "./CreateAccount";
 import OtpInputWithTimer from "@/components/ui/OtpInputWithTimer";
 import { useMutation } from "@tanstack/react-query";
-import { ResendSignupOtpApi } from "@/services/auth";
 import { toast } from "sonner";
+import { ResendSignupOtpApi } from "@/services/auth";
+import AnimatedSection from "@/components/ui/AnimatedSection";
 
 const RegisterOtp = ({ goBack, formik }: RegisterFormProps) => {
   const resendOtpMutation = useMutation({
@@ -20,7 +21,10 @@ const RegisterOtp = ({ goBack, formik }: RegisterFormProps) => {
     },
   });
   return (
-    <section className="h-full flex flex-col justify-between -mt-2 font-monzo">
+    <AnimatedSection
+      key="register-otp"
+      className="h-full flex flex-col justify-between -mt-2 font-monzo"
+    >
       <div>
         <button onClick={goBack}>
           <Image
@@ -66,7 +70,7 @@ const RegisterOtp = ({ goBack, formik }: RegisterFormProps) => {
       <p className="text-raiz-gray-600 text-[13px] font-normal leading-tight">
         **Do not forget to check your spam/junk email folder.
       </p>
-    </section>
+    </AnimatedSection>
   );
 };
 

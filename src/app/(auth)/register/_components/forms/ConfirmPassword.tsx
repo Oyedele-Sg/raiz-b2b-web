@@ -3,11 +3,15 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { RegisterFormProps } from "./CreateAccount";
 import InputField from "@/components/ui/InputField";
+import AnimatedSection from "@/components/ui/AnimatedSection";
 
 const ConfirmPassword = ({ goBack, formik }: RegisterFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
-    <section className="h-full flex flex-col -mt-2">
+    <AnimatedSection
+      key="confirm-password"
+      className="h-full flex flex-col -mt-2"
+    >
       <button onClick={goBack}>
         <Image
           src={"/icons/arrow-left.svg"}
@@ -59,7 +63,7 @@ const ConfirmPassword = ({ goBack, formik }: RegisterFormProps) => {
           />
         </div>
       </div>
-    </section>
+    </AnimatedSection>
   );
 };
 

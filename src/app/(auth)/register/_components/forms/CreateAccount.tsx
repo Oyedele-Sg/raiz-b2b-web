@@ -8,6 +8,7 @@ import { IRegisterFormValues } from "@/types/misc";
 import InputField from "@/components/ui/InputField";
 import InputLabel from "@/components/ui/InputLabel";
 import ErrorMessage from "@/components/ui/ErrorMessage";
+import AnimatedSection from "@/components/ui/AnimatedSection";
 
 export interface RegisterFormProps {
   formik: FormikProps<IRegisterFormValues>;
@@ -20,7 +21,7 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
   const [showCountry, setShowCountry] = useState(false);
 
   return (
-    <section className=" flex flex-col">
+    <AnimatedSection key="create-acct" className=" flex flex-col">
       <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
         <path
           d="M30 35H10C7.23833 35 5 32.7617 5 30V10C5 7.23833 7.23833 5 10 5H30C32.7617 5 35 7.23833 35 10V30C35 32.7617 32.7617 35 30 35Z"
@@ -176,7 +177,7 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
       {showCountry && (
         <CountryCodeModal close={() => setShowCountry(false)} formik={formik} />
       )}
-    </section>
+    </AnimatedSection>
   );
 };
 

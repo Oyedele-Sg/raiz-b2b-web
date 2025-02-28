@@ -1,3 +1,4 @@
+import AnimatedSection from "@/components/ui/AnimatedSection";
 import React from "react";
 
 const info = [
@@ -220,7 +221,10 @@ const info = [
 
 const Congrats = () => {
   return (
-    <section className="h-full flex flex-col font-monzo">
+    <AnimatedSection
+      key="register-congrats"
+      className="h-full flex flex-col font-monzo"
+    >
       <header className="flex flex-col gap-2">
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
           <path
@@ -281,7 +285,7 @@ const Congrats = () => {
           </div>
         ))}
       </div>
-    </section>
+    </AnimatedSection>
   );
 };
 

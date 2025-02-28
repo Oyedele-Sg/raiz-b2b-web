@@ -4,23 +4,25 @@ import Button from "@/components/ui/Button";
 import InputLabel from "@/components/ui/InputLabel";
 import { useFormik } from "formik";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import InputField from "@/components/ui/InputField";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { loginSchema } from "../../register/_components/validation";
 import { useMutation } from "@tanstack/react-query";
 import { ILoginPayload, LoginApi } from "@/services/auth";
-// import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import AnimatedSection from "@/components/ui/AnimatedSection";
 
-const LoginForm = () => {
-  const router = useRouter();
+const LoginForm = ({
+  setStep,
+}: {
+  setStep: Dispatch<SetStateAction<number>>;
+}) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const loginMutation = useMutation({
     mutationFn: (data: ILoginPayload) => LoginApi(data),
     onSuccess: () => {
-      router.push("/");
+      setStep(2);
     },
   });
 
@@ -38,7 +40,10 @@ const LoginForm = () => {
     },
   });
   return (
-    <section className="py-4 px-3 xl:px-8 w-[50%] xl:w-[46%] h-full flex flex-col font-monzo justify-between gap-[60px]">
+    <AnimatedSection
+      key="login-form"
+      className="py-4 px-3 xl:px-8 w-[50%] xl:w-[46%] h-full flex flex-col font-monzo justify-between gap-[60px]"
+    >
       <Image src={"/icons/Logo.svg"} width={91.78} height={32} alt="Logo" />
       <div className="flex flex-col h-full  justify-between">
         <div>
@@ -97,7 +102,7 @@ const LoginForm = () => {
           </p>
         </div>
       </div>
-    </section>
+    </AnimatedSection>
   );
 };
 

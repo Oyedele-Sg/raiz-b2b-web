@@ -14,9 +14,9 @@ export interface IRegisterPayload {
   referral_code: string;
 }
 
-export async function LoginApi(data: ILoginPayload) {
-  const response = await PublicAxios.post("/business/auth/login/", data);
-  return response.data;
+export interface IResetPasswordPayload {
+  password: string;
+  otp: string;
 }
 
 export async function CountriesApi() {
@@ -44,5 +44,35 @@ export const ResendSignupOtpApi = async (data: { email: string }) => {
       medium: "email",
     },
   });
+  return response?.data;
+};
+
+export async function LoginApi(data: ILoginPayload) {
+  const response = await PublicAxios.post("/business/auth/login/", data);
+  return response.data;
+}
+
+export const LoginOtpApi = async (data: { otp: string }) => {
+  const response = await PublicAxios.post("/business/auth/login/otp/", data, {
+    params: {
+      medium: "email",
+    },
+  });
+  return response?.data;
+};
+
+export const ForgotPasswordApi = async (data: { email: string }) => {
+  const response = await PublicAxios.post(
+    "/business/auth/forgot-password/",
+    data
+  );
+  return response?.data;
+};
+
+export const ResetPasswordApi = async (data: IResetPasswordPayload) => {
+  const response = await PublicAxios.post(
+    "/business/auth/reset-password/",
+    data
+  );
   return response?.data;
 };

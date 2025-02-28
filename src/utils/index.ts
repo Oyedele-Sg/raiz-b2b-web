@@ -33,3 +33,9 @@ export const copyToClipboard = (value: string) => {
       toast.error("Unable to copy to clipboard:", error);
     });
 };
+
+export const getInitials = (firstName: string, lastName: string): string => {
+  const firstInitial = firstName.charAt(0).toUpperCase();
+  const lastInitial = lastName.charAt(0).toUpperCase();
+  return `${firstInitial}${lastInitial}`;
+};
