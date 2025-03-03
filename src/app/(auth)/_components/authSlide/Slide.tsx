@@ -25,8 +25,8 @@ const Slide = ({ title, description, bgImage }: Props) => {
           width={1000}
           height={1000}
         />
-        <div className="h-full w-full flex justify-end flex-col items-center relative z-10">
-          <div className="p-4  flex flex-col justify-center items-center w-[65%] xl:w-[50%] mb-[105px]">
+        <div className="h-full w-full flex justify-end flex-col p-10 relative z-10">
+          <div className="flex flex-col items-center w-[65%] xl:w-[50%] mb-[105px]">
             <h3 className="text-white text-2xl font-medium font-brSonoma leading-[30px] mb-2.5">
               {title}
             </h3>

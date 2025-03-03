@@ -7,7 +7,7 @@ import InputField from "@/components/ui/InputField";
 import SelectField from "@/components/ui/SelectField";
 import { nigeriaStates } from "@/constants/misc";
 import InputLabel from "@/components/ui/InputLabel";
-import CountryCodeModal from "@/app/(auth)/register/_components/CountryCodeModal";
+// import CountryCodeModal from "@/app/(auth)/register/_components/CountryCodeModal";
 import Button from "@/components/ui/Button";
 import DocInfoModal from "./DocInfoModal";
 
@@ -21,7 +21,7 @@ interface formValues {
 }
 
 const SetupAddress = ({ selectedStep, setSelectedStep }: AccountSetupProps) => {
-  const [showCountryCode, setShowCountryCode] = useState(false);
+  // const [showCountryCode, setShowCountryCode] = useState(false);
   const [showAddressInfo, setShowAddressInfo] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const initialValues: formValues = {
@@ -104,7 +104,7 @@ const SetupAddress = ({ selectedStep, setSelectedStep }: AccountSetupProps) => {
               <InputLabel content="Additional Phone Number" />
               <div className="flex gap-3 w-full mt-2">
                 <button
-                  onClick={() => setShowCountryCode(true)}
+                  // onClick={() => setShowCountryCode(true)}
                   className="w-[28%] flex p-[15px] gap-2 rounded-lg bg-raiz-gray-100 items-center"
                 >
                   <Image
@@ -188,9 +188,9 @@ const SetupAddress = ({ selectedStep, setSelectedStep }: AccountSetupProps) => {
         </form>
       </div>
 
-      {showCountryCode && (
+      {/* {showCountryCode && (
         <CountryCodeModal close={() => setShowCountryCode(false)} />
-      )}
+      )} */}
       {showAddressInfo && (
         <DocInfoModal close={() => setShowAddressInfo(false)} />
       )}

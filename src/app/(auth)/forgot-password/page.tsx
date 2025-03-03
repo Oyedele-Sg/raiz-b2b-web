@@ -6,33 +6,52 @@ import InputEmailForm from "./forms/InputEmailForm";
 import ResetOtp from "./forms/ResetOtp";
 import CreateNewPassword from "./forms/CreateNewPassword";
 import WelcomeBack from "./forms/WelcomeBack";
+import AnimatedSection from "@/components/ui/AnimatedSection";
+import LoginOtp from "../login/_components/LoginOtp";
+
+export type WelcomUserProps = {
+  first_name: string;
+  last_name: string;
+};
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
   const [page, setPage] = useState(1);
+  const [otp, setOtp] = useState("");
+  const [user, setUser] = useState<WelcomUserProps>({
+    first_name: "",
+    last_name: "",
+  });
 
   const displayPage = () => {
     switch (page) {
       case 1:
         return <InputEmailForm setEmail={setEmail} setPage={setPage} />;
       case 2:
-        return <ResetOtp email={email} setPage={setPage} />;
+        return <ResetOtp email={email} setPage={setPage} setOtp={setOtp} />;
       case 3:
-        return <CreateNewPassword setPage={setPage} />;
+        return (
+          <CreateNewPassword setPage={setPage} otp={otp} setUser={setUser} />
+        );
       case 4:
-        return <WelcomeBack setPage={setPage} />;
+        return <WelcomeBack setPage={setPage} email={email} user={user} />;
+      case 5:
+        return <LoginOtp from="welcome-back" setStep={setPage} />;
       default:
         break;
     }
   };
   return (
-    <section className="p-6 md:p-12 h-[calc(100vh-2rem)] md:h-[calc(100vh-3rem)]">
-      <Image src={"/icons/Logo.svg"} width={91.78} height={32} alt="Logo" />
-      <div className="flex flex-col  md:flex-row mt-10 h-full gap-4">
+    <section className="p-6 md:p-12 h-[calc(100vh-2rem)] md:h-[100vh]">
+      <div className="flex flex-col  md:flex-row h-full gap-4">
         <Slider />
-        <section className="py-4 px-3 xl:px-8 w-[50%] xl:w-[46%] h-full flex flex-col font-monzo justify-between">
+        <AnimatedSection
+          key="forgot-password"
+          className="py-4 px-3 xl:px-8 w-[50%] xl:w-[46%] h-full flex flex-col font-monzo justify-between gap-[60px]"
+        >
+          <Image src={"/icons/Logo.svg"} width={91.78} height={32} alt="Logo" />
           {displayPage()}
-        </section>
+        </AnimatedSection>
       </div>
     </section>
   );

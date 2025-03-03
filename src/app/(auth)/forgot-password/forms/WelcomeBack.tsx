@@ -5,14 +5,32 @@ import { useFormik } from "formik";
 import Link from "next/link";
 import React, { useState } from "react";
 import InputField from "@/components/ui/InputField";
+import { useMutation } from "@tanstack/react-query";
+import { ILoginPayload, LoginApi } from "@/services/auth";
+import { WelcomUserProps } from "../page";
+import { getInitials } from "@/utils";
 
-const WelcomeBack = ({ setPage }: { setPage: (arg: number) => void }) => {
+interface Props {
+  setPage: (arg: number) => void;
+  email: string;
+  user: WelcomUserProps;
+}
+
+const WelcomeBack = ({ setPage, email, user }: Props) => {
   const [showPassword, setShowPassword] = useState(false);
+  const loginMutation = useMutation({
+    mutationFn: (data: ILoginPayload) => LoginApi(data),
+    onSuccess: () => {
+      setPage(5);
+    },
+  });
   const formik = useFormik({
     initialValues: {
       password: "",
     },
-    onSubmit: (val) => console.log("submit", val),
+    onSubmit: (val) => {
+      loginMutation.mutate({ email, password: val.password });
+    },
   });
   return (
     <form
@@ -22,10 +40,10 @@ const WelcomeBack = ({ setPage }: { setPage: (arg: number) => void }) => {
       <div>
         <header className="flex flex-col justify-center items-center mb-[62px]">
           <span className="bg-primary h-[54px] w-[54px] rounded-full flex justify-center items-center text-center text-[#fcfcfc]  font-semibold ">
-            KA
+            {getInitials(user.first_name, user.last_name)}
           </span>
           <h3 className="text-center text-raiz-gray-950 text-xl font-bold ">
-            Welcome back, Khadijah
+            Welcome back, {user.first_name}
           </h3>
         </header>
 

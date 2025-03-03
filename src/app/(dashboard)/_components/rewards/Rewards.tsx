@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import LevelsModal from "./LevelsModal";
 import InviteModal from "./InviteModal";
 import { copyToClipboard } from "@/utils";
-import useShare from "@/hooks/useShare";
+import useShare from "@/lib/hooks/useShare";
 
 const Rewards = ({ close }: { close: () => void }) => {
   const [showLevelsModal, setShowLevelsModal] = useState(false);

@@ -1,6 +1,4 @@
 "use client";
-
-import InputLabel from "@/components/ui/InputLabel";
 import Image from "next/image";
 import React, { useState } from "react";
 import CountryOriginInfoModal from "../CountryOriginInfoModal";
@@ -8,6 +6,9 @@ import CountryCodeModal from "../CountryCodeModal";
 import { FormikProps } from "formik";
 import { IRegisterFormValues } from "@/types/misc";
 import InputField from "@/components/ui/InputField";
+import InputLabel from "@/components/ui/InputLabel";
+import ErrorMessage from "@/components/ui/ErrorMessage";
+import AnimatedSection from "@/components/ui/AnimatedSection";
 
 export interface RegisterFormProps {
   formik: FormikProps<IRegisterFormValues>;
@@ -17,27 +18,28 @@ export interface RegisterFormProps {
 
 const CreateAccount = ({ formik }: RegisterFormProps) => {
   const [showCountryInfo, setShowCountryInfo] = useState(false);
-  const [showCountryCode, setShowCountryCode] = useState(false);
+  const [showCountry, setShowCountry] = useState(false);
+
   return (
-    <section className="h-full flex flex-col">
-      <header className="flex items-center justify-between">
+    <AnimatedSection key="create-acct" className=" flex flex-col">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <path
+          d="M30 35H10C7.23833 35 5 32.7617 5 30V10C5 7.23833 7.23833 5 10 5H30C32.7617 5 35 7.23833 35 10V30C35 32.7617 32.7617 35 30 35Z"
+          fill="#E9E0EF"
+        />
+        <path
+          d="M20 20C22.7614 20 25 17.7614 25 15C25 12.2386 22.7614 10 20 10C17.2386 10 15 12.2386 15 15C15 17.7614 17.2386 20 20 20Z"
+          fill="#733B9C"
+        />
+        <path
+          d="M24.9998 23.334H14.9998C13.1582 23.334 11.6665 24.8257 11.6665 26.6673C11.6665 28.509 13.1582 30.0007 14.9998 30.0007H24.9998C26.8415 30.0007 28.3332 28.509 28.3332 26.6673C28.3332 24.8257 26.8415 23.334 24.9998 23.334Z"
+          fill="#493260"
+        />
+      </svg>
+      <header className="flex items-center justify-between ">
         <h2 className="text-raiz-gray-950 text-[23px] font-semibold font-monzo leading-10">
           Create your account
         </h2>
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <path
-            d="M30 35H10C7.23833 35 5 32.7617 5 30V10C5 7.23833 7.23833 5 10 5H30C32.7617 5 35 7.23833 35 10V30C35 32.7617 32.7617 35 30 35Z"
-            fill="#E9E0EF"
-          />
-          <path
-            d="M20 20C22.7614 20 25 17.7614 25 15C25 12.2386 22.7614 10 20 10C17.2386 10 15 12.2386 15 15C15 17.7614 17.2386 20 20 20Z"
-            fill="#733B9C"
-          />
-          <path
-            d="M24.9998 23.334H14.9998C13.1582 23.334 11.6665 24.8257 11.6665 26.6673C11.6665 28.509 13.1582 30.0007 14.9998 30.0007H24.9998C26.8415 30.0007 28.3332 28.509 28.3332 26.6673C28.3332 24.8257 26.8415 23.334 24.9998 23.334Z"
-            fill="#493260"
-          />
-        </svg>
       </header>
       <p className="text-raiz-gray-700 text-[15px] font-normal font-monzo leading-snug">
         Let&#39;s start by getting to know you
@@ -57,9 +59,20 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
                   />
                 </button>
               </div>
-              <button className="flex justify-between w-full h-[50px] p-[15px] bg-raiz-gray-100 rounded-lg  items-center">
-                <span className="text-raiz-gray-400 text-sm font-normal font-monzo leading-tight">
-                  Enter country
+              <button
+                onClick={() => setShowCountry(true)}
+                className="flex justify-between w-full h-[50px] p-[15px] bg-raiz-gray-100 rounded-lg  items-center"
+              >
+                <span
+                  className={`${
+                    formik.values.country_name
+                      ? "text-raiz-gray-950"
+                      : "text-raiz-gray-400"
+                  } text-sm font-normal font-monzo leading-tight`}
+                >
+                  {formik.values.country_id && formik.values.country_name
+                    ? formik.values?.country_name
+                    : "Enter country"}
                 </span>
                 <Image
                   src={"/icons/arrow-down.svg"}
@@ -68,16 +81,43 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
                   height={16}
                 />
               </button>
+              {formik.touched.country_id && formik.errors.country_id && (
+                <ErrorMessage message={formik.errors.country_id} />
+              )}
             </div>
             <InputField
-              placeholder="Enter your email address"
-              label="Email"
+              placeholder="Enter first name"
+              label="First Name"
+              {...formik.getFieldProps("firstName")}
+              status={
+                formik.touched.firstName && formik.errors.firstName
+                  ? "error"
+                  : null
+              }
+              errorMessage={formik.touched.firstName && formik.errors.firstName}
+            />
+            <InputField
+              placeholder="Enter last name"
+              label="Last Name"
+              {...formik.getFieldProps("lastName")}
+              status={
+                formik.touched.lastName && formik.errors.lastName
+                  ? "error"
+                  : null
+              }
+              errorMessage={formik.touched.lastName && formik.errors.lastName}
+            />
+            <InputField
+              placeholder="Enter your  work email address"
+              label="Work Email"
               type="email"
               {...formik.getFieldProps("email")}
-              status={formik.errors.email ? "error" : null}
+              status={
+                formik.touched.email && formik.errors.email ? "error" : null
+              }
               errorMessage={formik.touched.email && formik.errors.email}
             />
-            <div className="">
+            {/* <div className="">
               <InputLabel content="Phone Number" />
               <div className="flex gap-3 w-full mt-2">
                 <button
@@ -112,7 +152,7 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="flex gap-2 mt-3 items-start">
             <button className="w-5 h-5">
@@ -134,10 +174,10 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
       {showCountryInfo && (
         <CountryOriginInfoModal close={() => setShowCountryInfo(false)} />
       )}
-      {showCountryCode && (
-        <CountryCodeModal close={() => setShowCountryCode(false)} />
+      {showCountry && (
+        <CountryCodeModal close={() => setShowCountry(false)} formik={formik} />
       )}
-    </section>
+    </AnimatedSection>
   );
 };
 

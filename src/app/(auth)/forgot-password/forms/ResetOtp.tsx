@@ -1,21 +1,21 @@
 "use client";
 import { useFormik } from "formik";
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import Image from "next/image";
 import OTPInput from "react-otp-input";
-import { useTimer } from "@/hooks/useTimer";
+import { useTimer } from "@/lib/hooks/useTimer";
 import { formatTime } from "@/utils";
 import Button from "@/components/ui/Button";
 
-const ResetOtp = ({
-  email,
-  setPage,
-}: {
+interface Props {
   email: string;
   setPage: (arg: number) => void;
-}) => {
+  setOtp: Dispatch<SetStateAction<string>>;
+}
+
+const ResetOtp = ({ email, setPage, setOtp }: Props) => {
   const [isTimerActive, setIsTimerActive] = useState(true);
   const { timeLeft } = useTimer(120, isTimerActive);
 
@@ -34,7 +34,7 @@ const ResetOtp = ({
       })
     ),
     onSubmit: (val) => {
-      console.log(val);
+      setOtp(val.otp);
       setPage(3);
     },
   });

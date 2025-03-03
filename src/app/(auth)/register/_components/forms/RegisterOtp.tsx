@@ -3,10 +3,28 @@ import React from "react";
 import Image from "next/image";
 import { RegisterFormProps } from "./CreateAccount";
 import OtpInputWithTimer from "@/components/ui/OtpInputWithTimer";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { ResendSignupOtpApi } from "@/services/auth";
+import AnimatedSection from "@/components/ui/AnimatedSection";
 
 const RegisterOtp = ({ goBack, formik }: RegisterFormProps) => {
+  const resendOtpMutation = useMutation({
+    mutationFn: (data: { email: string }) => ResendSignupOtpApi(data),
+    onSuccess: (response) => {
+      console.log("Signup successful:", response);
+      toast.success("OTP sent successfully! Check your email");
+    },
+    onError: (error) => {
+      console.log("Signup failed:", error);
+      formik.setErrors({ otp: "Signup failed. Please try again." });
+    },
+  });
   return (
-    <section className="h-full flex flex-col justify-between -mt-2 font-monzo">
+    <AnimatedSection
+      key="register-otp"
+      className="h-full flex flex-col justify-between -mt-2 font-monzo"
+    >
       <div>
         <button onClick={goBack}>
           <Image
@@ -44,13 +62,15 @@ const RegisterOtp = ({ goBack, formik }: RegisterFormProps) => {
           onChange={(val) => formik.setFieldValue("otp", val)}
           error={formik.errors.otp}
           touched={formik.touched.otp}
-          onResend={() => console.log("Resending OTP...")}
+          onResend={() =>
+            resendOtpMutation.mutate({ email: formik.values.email })
+          }
         />
       </div>
       <p className="text-raiz-gray-600 text-[13px] font-normal leading-tight">
         **Do not forget to check your spam/junk email folder.
       </p>
-    </section>
+    </AnimatedSection>
   );
 };
 

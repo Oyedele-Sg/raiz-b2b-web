@@ -1,5 +1,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { toast } from "sonner";
+import { encryptData, generateNonce } from "./headerEncryption";
+import { GetItemFromLocalStorage } from "../utils/localStorageFunc";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -15,7 +17,7 @@ interface CustomAxiosError extends AxiosError {
 const handleResponse = (response: AxiosResponse) => response;
 
 const handleError = async (error: CustomAxiosError) => {
-  console.error(JSON.stringify(error, null, 2));
+  console.log(JSON.stringify(error, null, 2));
   const errorMessage = error.response?.data?.message || "An Error Occurred";
   toast.error(errorMessage);
   return Promise.reject(error.response);
@@ -27,7 +29,13 @@ export const AuthAxios: AxiosInstance = axios.create({
 
 AuthAxios.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("authToken");
+    const token = GetItemFromLocalStorage("access_token");
+    // Generate nonce and signature for every request
+    const nonceStr = generateNonce();
+    const signature = encryptData(nonceStr);
+
+    config.headers["nonce-str"] = nonceStr;
+    config.headers["signature"] = signature;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

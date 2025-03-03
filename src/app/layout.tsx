@@ -1,99 +1,99 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import Provider from "@/utils/ReactQueryProvider";
-import localFont from "next/font/local";
-import { Suspense } from "react";
-import Loading from "./loading";
-import MainLayout from "@/components/layouts/MainLayout";
-import { Toaster } from "sonner";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import Provider from '@/utils/ReactQueryProvider';
+import localFont from 'next/font/local';
+import { Suspense } from 'react';
+import Loading from './loading';
+import MainLayout from '@/components/layouts/MainLayout';
+import { Toaster } from 'sonner';
 
 const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
 });
 
 const monzoSans = localFont({
   src: [
     {
-      path: "../../public/fonts/MonzoSansText-Bold.ttf",
-      weight: "700",
-      style: "normal",
+      path: '../../public/fonts/MonzoSansText-Bold.ttf',
+      weight: '700',
+      style: 'normal',
     },
     {
-      path: "../../public/fonts/MonzoSansText-Bold.woff2",
-      weight: "700",
-      style: "normal",
+      path: '../../public/fonts/MonzoSansText-Bold.woff2',
+      weight: '700',
+      style: 'normal',
     },
     {
-      path: "../../public/fonts/MonzoSansText-Regular.ttf",
-      weight: "400",
-      style: "normal",
+      path: '../../public/fonts/MonzoSansText-Regular.ttf',
+      weight: '400',
+      style: 'normal',
     },
     {
-      path: "../../public/fonts/MonzoSansText-Regular.woff2",
-      weight: "400",
-      style: "normal",
+      path: '../../public/fonts/MonzoSansText-Regular.woff2',
+      weight: '400',
+      style: 'normal',
     },
     {
-      path: "../../public/fonts/MonzoSansText-SemiBold.ttf",
-      weight: "600",
-      style: "normal",
+      path: '../../public/fonts/MonzoSansText-SemiBold.ttf',
+      weight: '600',
+      style: 'normal',
     },
     {
-      path: "../../public/fonts/MonzoSansText-SemiBold.woff2",
-      weight: "600",
-      style: "normal",
+      path: '../../public/fonts/MonzoSansText-SemiBold.woff2',
+      weight: '600',
+      style: 'normal',
     },
   ],
-  variable: "--font-monzo",
+  variable: '--font-monzo',
 });
 
 const brSonoma = localFont({
   src: [
     {
-      path: "../../public/fonts/BRSonoma-Bold.otf",
-      weight: "700",
-      style: "normal",
+      path: '../../public/fonts/BRSonoma-Bold.otf',
+      weight: '700',
+      style: 'normal',
     },
     {
-      path: "../../public/fonts/BRSonoma-ExtraLight.otf",
-      weight: "200",
-      style: "normal",
+      path: '../../public/fonts/BRSonoma-ExtraLight.otf',
+      weight: '200',
+      style: 'normal',
     },
     {
-      path: "../../public/fonts/BRSonoma-Light.otf",
-      weight: "300",
-      style: "normal",
+      path: '../../public/fonts/BRSonoma-Light.otf',
+      weight: '300',
+      style: 'normal',
     },
     {
-      path: "../../public/fonts/BRSonoma-Medium.otf",
-      weight: "500",
-      style: "normal",
+      path: '../../public/fonts/BRSonoma-Medium.otf',
+      weight: '500',
+      style: 'normal',
     },
     {
-      path: "../../public/fonts/BRSonoma-Regular.otf",
-      weight: "400",
-      style: "normal",
+      path: '../../public/fonts/BRSonoma-Regular.otf',
+      weight: '400',
+      style: 'normal',
     },
     {
-      path: "../../public/fonts/BRSonoma-SemiBold.otf",
-      weight: "600",
-      style: "normal",
+      path: '../../public/fonts/BRSonoma-SemiBold.otf',
+      weight: '600',
+      style: 'normal',
     },
     {
-      path: "../../public/fonts/BRSonoma-Thin.otf",
-      weight: "100",
-      style: "normal",
+      path: '../../public/fonts/BRSonoma-Thin.otf',
+      weight: '100',
+      style: 'normal',
     },
   ],
-  variable: "--font-br-sonoma",
+  variable: '--font-br-sonoma',
 });
 
 export const metadata: Metadata = {
-  title: "Raiz B2B",
-  description: "Raiz B2B",
+  title: 'Raiz B2B',
+  description: 'Raiz B2B',
 };
 
 export default function RootLayout({
@@ -134,11 +134,11 @@ export default function RootLayout({
                 unstyled: true,
                 classNames: {
                   default:
-                    "rounded-[20px]  px-5 py-4 shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]  min-w-[303px] justify-start items-center gap-3 inline-flex text-[#fcfcfd] text-sm font-bold font-monzo leading-[16.80px]",
-                  error: "bg-[#db180d]",
-                  success: "bg-[#5ca512] ",
-                  warning: "bg-yellow-400",
-                  info: "bg-[#488ee8]",
+                    'rounded-[20px]  px-5 py-4 shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]  min-w-[303px] justify-start items-center gap-3 inline-flex text-[#fcfcfd] text-sm font-bold font-monzo leading-[16.80px]',
+                  error: 'bg-[#db180d]',
+                  success: 'bg-[#5ca512] ',
+                  warning: 'bg-yellow-400',
+                  info: 'bg-[#488ee8]',
                 },
               }}
               icons={{
@@ -223,3 +223,4 @@ export default function RootLayout({
     </html>
   );
 }
+//

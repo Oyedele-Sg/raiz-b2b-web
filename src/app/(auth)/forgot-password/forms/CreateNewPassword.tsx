@@ -1,15 +1,34 @@
 "use client";
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import Image from "next/image";
 import { useFormik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
 import Button from "@/components/ui/Button";
 import InputField from "@/components/ui/InputField";
+import { useMutation } from "@tanstack/react-query";
+import { IResetPasswordPayload, ResetPasswordApi } from "@/services/auth";
 
-const CreateNewPassword = ({ setPage }: { setPage: (arg: number) => void }) => {
+interface Props {
+  setPage: Dispatch<SetStateAction<number>>;
+  otp: string;
+  setUser: Dispatch<SetStateAction<{ first_name: string; last_name: string }>>;
+}
+
+const CreateNewPassword = ({ setPage, otp, setUser }: Props) => {
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: (data: IResetPasswordPayload) => ResetPasswordApi(data),
+    onSuccess: (response) => {
+      setUser({
+        first_name: response?.data?.first_name,
+        last_name: response?.data?.last_name,
+      });
+      setPage(4);
+    },
+  });
   const formik = useFormik({
     initialValues: { password: "", confirmPassword: "" },
     validationSchema: toFormikValidationSchema(
@@ -40,11 +59,10 @@ const CreateNewPassword = ({ setPage }: { setPage: (arg: number) => void }) => {
         })
     ),
     onSubmit: (val) => {
-      console.log(val);
-      setPage(4);
+      resetPasswordMutation.mutate({ otp, password: val.password });
     },
   });
-  console.log("errrors", formik.errors);
+
   return (
     <form
       onSubmit={formik.handleSubmit}
@@ -214,7 +232,11 @@ const CreateNewPassword = ({ setPage }: { setPage: (arg: number) => void }) => {
           </div>
         </div>
       </div>
-      <Button type="submit" disabled={!formik.isValid || !formik.dirty}>
+      <Button
+        loading={resetPasswordMutation.isPending}
+        type="submit"
+        disabled={!formik.isValid || !formik.dirty}
+      >
         Reset your password
       </Button>
     </form>

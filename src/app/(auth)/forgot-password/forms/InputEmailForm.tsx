@@ -7,15 +7,25 @@ import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { useRouter } from "next/navigation";
 import InputField from "@/components/ui/InputField";
+import { useMutation } from "@tanstack/react-query";
+import { ForgotPasswordApi } from "@/services/auth";
+import { toast } from "sonner";
 
-const InputEmailForm = ({
-  setEmail,
-  setPage,
-}: {
+interface Props {
   setEmail: (arg: string) => void;
   setPage: (arg: number) => void;
-}) => {
+}
+
+const InputEmailForm = ({ setEmail, setPage }: Props) => {
   const router = useRouter();
+
+  const forgotPasswordMutation = useMutation({
+    mutationFn: (data: { email: string }) => ForgotPasswordApi(data),
+    onSuccess: (response) => {
+      toast.success(response?.message);
+      setPage(2);
+    },
+  });
   const formik = useFormik({
     initialValues: { email: "" },
     validationSchema: toFormikValidationSchema(
@@ -24,8 +34,7 @@ const InputEmailForm = ({
       })
     ),
     onSubmit: (val) => {
-      console.log(val);
-      setPage(2);
+      forgotPasswordMutation.mutate({ email: val.email });
     },
   });
   return (
@@ -83,7 +92,11 @@ const InputEmailForm = ({
           errorMessage={formik.touched.email && formik.errors.email}
         />
       </div>
-      <Button type="submit" disabled={!formik.isValid || !formik.dirty}>
+      <Button
+        loading={forgotPasswordMutation.isPending}
+        type="submit"
+        disabled={!formik.isValid || !formik.dirty}
+      >
         Send OTP to email
       </Button>
     </form>

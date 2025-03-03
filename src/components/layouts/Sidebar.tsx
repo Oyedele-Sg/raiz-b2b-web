@@ -11,6 +11,7 @@ import { AnimatePresence } from "motion/react";
 import CreateNgnAcct from "@/app/(dashboard)/_components/createNgnAcct/CreateNgnAcct";
 import AddBvnModal from "@/app/(dashboard)/_components/createNgnAcct/AddBvnModal";
 import NgnSuccessModal from "@/app/(dashboard)/_components/createNgnAcct/NgnSuccessModal";
+import LogoutModal from "../modals/LogoutModal";
 
 const Sidebar = () => {
   const pathName = usePathname();
@@ -19,6 +20,7 @@ const Sidebar = () => {
   );
   const [showBvnModal, setShowBvnModal] = useState(false);
   const [successful, setSuccessful] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleCloseModal = () => {
     setShowModal(null);
@@ -152,7 +154,7 @@ const Sidebar = () => {
                 Kaywear@gmail.com
               </p>
             </div>
-            <button>
+            <button onClick={() => setShowLogoutModal(true)}>
               <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
                 <rect width="36" height="36" rx="18" fill="#F3F1F6" />
                 <path
@@ -192,6 +194,9 @@ const Sidebar = () => {
         )}
       </AnimatePresence>
       {successful && <NgnSuccessModal close={() => setSuccessful(false)} />}
+      {showLogoutModal && (
+        <LogoutModal close={() => setShowLogoutModal(false)} />
+      )}
     </aside>
   );
 };
