@@ -1,4 +1,4 @@
-import { fetchUserApi } from "@/services/auth";
+import { FetchUserApi } from "@/services/user";
 import { useUserStore } from "@/store/useUserStore";
 import { IUser } from "@/types/user";
 import { useQuery } from "@tanstack/react-query";
@@ -16,7 +16,7 @@ export const useUser = () => {
     isError,
   } = useQuery<IUser, AxiosError>({
     queryKey: ["user"],
-    queryFn: fetchUserApi,
+    queryFn: FetchUserApi,
     retry: 2,
   });
 

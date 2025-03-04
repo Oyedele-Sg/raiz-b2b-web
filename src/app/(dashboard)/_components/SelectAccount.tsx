@@ -11,7 +11,7 @@ interface Props {
 const SelectAccount = ({ close, openNgnModal }: Props) => {
   const { selectedCurrency, setSelectedCurrency } = useCurrencyStore();
 
-  const hasNGNWallet = false;
+  const hasNGNWallet = true;
   const handleNgn = () => {
     if (hasNGNWallet) {
       setSelectedCurrency("NGN");

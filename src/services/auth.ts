@@ -1,6 +1,5 @@
 import { AuthAxios } from "@/lib/authAxios";
 import { PublicAxios } from "@/lib/publicAxios";
-import { IUser } from "@/types/user";
 
 export interface ILoginPayload {
   email: string;
@@ -85,10 +84,5 @@ export const LogoutApi = async (token: string) => {
       token,
     },
   });
-  return response?.data;
-};
-
-export const fetchUserApi = async (): Promise<IUser> => {
-  const response = await AuthAxios.get("/business/account_user/me/");
   return response?.data;
 };

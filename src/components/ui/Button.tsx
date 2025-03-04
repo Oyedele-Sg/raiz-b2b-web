@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import Image from "next/image";
+import { useCurrencyStore } from "@/store/useCurrencyStore";
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -28,11 +29,25 @@ const Button: React.FC<ButtonProps> = ({
   iconPosition,
   iconLabel,
 }) => {
+  const { selectedCurrency } = useCurrencyStore();
   const baseStyles = `relative px-6 py-3.5 rounded-[100px] focus:outline-none transition ease-in-out duration-300 text-[15px]`;
   const disabledStyles = `bg-raiz-gray-200 hover:cursor-not-allowed hover:bg-raiz-gray-200 text-raiz-gray-400`;
 
+  const getPrimaryStyles = () => {
+    if (variant !== "primary") return "";
+
+    switch (selectedCurrency.name.toLowerCase()) {
+      case "usd":
+        return "bg-raiz-usd-primary text-[#f9f9f9] hover:bg-raiz-usd-primary/90";
+      case "ngn":
+        return "bg-primary2 text-[#f9f9f9] hover:bg-primary2/90";
+      default:
+        return "bg-primary2 text-[#f9f9f9] hover:bg-primary2/90";
+    }
+  };
+
   const variants = {
-    primary: `bg-primary2 text-[#f9f9f9] hover:bg-primary2/90 `,
+    primary: getPrimaryStyles(),
     secondary: ``,
     tertiary: `border border-[#2EB34A] hover:bg-[#096F3A5D] text-[#2EB34A]`,
   };
@@ -44,10 +59,18 @@ const Button: React.FC<ButtonProps> = ({
 
   const selectedStyles = disabled ? disabledStyles : variants[variant];
 
+  // Check if className contains a width-related class
+  const hasCustomWidth = className.includes("w-");
+
+  // Apply widthStyles only if no custom width is specified in className and width prop is provided
+  const finalClassName = `${baseStyles} ${selectedStyles} ${
+    !hasCustomWidth && width ? widthStyles[width] : ""
+  } ${className} flex items-center justify-center`;
+
   return (
     <button
       onClick={onClick}
-      className={`${baseStyles} ${selectedStyles} ${widthStyles[width]} ${className} flex items-center justify-center `}
+      className={finalClassName}
       disabled={disabled || loading}
       type={type}
     >

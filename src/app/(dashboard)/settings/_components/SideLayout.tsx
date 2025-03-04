@@ -3,22 +3,47 @@ import { SettingsMenus } from "@/constants/SettingsMenuData";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import LevelsModal from "../../_components/rewards/LevelsModal";
 import RaizScoreModal from "./RaizScoreModal";
 import FreezeAcctModal from "./FreezeAcctModal";
 import RaizTagModal from "./RaizTagModal";
+import { toast } from "sonner";
 
 const SideLayout = () => {
   const [showLevels, setShowLevels] = useState(false);
   const [showRaizScore, setShowRaizScore] = useState(false);
   const [showRaizTag, setShowRaizTag] = useState(false);
   const [navModal, setNavModal] = useState<string | null>(null);
+  const [profileImage, setProfileImage] = useState("/images/pfp.png");
   const pathName = usePathname();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const closeLevelsModal = () => {
     setShowLevels(false);
     setShowRaizScore(true);
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Check file size (e.g., max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.warning("Image size should be less than 5MB");
+        return;
+      }
+
+      // Check file type
+      const validTypes = ["image/jpeg", "image/png", "image/jpg"];
+      if (!validTypes.includes(file.type)) {
+        toast.warning("Please upload a valid image file (JPEG, PNG, JPG)");
+        return;
+      }
+
+      // Create a URL for the uploaded image
+      const imageUrl = URL.createObjectURL(file);
+      setProfileImage(imageUrl);
+    }
   };
 
   return (
@@ -28,17 +53,28 @@ const SideLayout = () => {
         {/* Picture */}
         <div className="flex relative w-16 h-16">
           <Image
-            src={"/images/pfp.png"}
+            src={profileImage}
             width={64}
             height={64}
             alt="Profile Picture"
+            className="h-16 w-16 rounded-full"
           />
-          <button className="w-6 h-6 bg-raiz-gray-700 rounded-full border border-[#fefefe] absolute bottom-0 right-0 flex items-center justify-center">
+          <button
+            onClick={() => inputRef.current?.click()}
+            className="w-6 h-6 bg-raiz-gray-700 rounded-full border border-[#fefefe] absolute bottom-0 right-0 flex items-center justify-center"
+          >
             <Image
               src={"/icons/camera.svg"}
               width={14}
               height={14}
               alt="upload picture"
+            />
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/jpg"
+              className="sr-only"
+              onChange={handleImageUpload}
             />
           </button>
         </div>

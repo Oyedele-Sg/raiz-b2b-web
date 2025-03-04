@@ -19,6 +19,7 @@ const LogoutModal = ({ close }: { close: () => void }) => {
     onSuccess: () => {
       RemoveItemFromLocalStorage("access_token");
       RemoveItemFromCookie("accessToken");
+      RemoveItemFromLocalStorage("user-storage");
       router.push("/login");
       close();
     },
