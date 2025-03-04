@@ -4,24 +4,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import OtpInput from "@/components/ui/OtpInput";
 import Button from "@/components/ui/Button";
-import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
-
-const pinSchema = z
-  .object({
-    pin: z
-      .string()
-      .length(4, "PIN must be exactly 4 digits")
-      .regex(/^\d{4}$/, "PIN must contain only numbers"),
-    confirmPin: z
-      .string()
-      .length(4, "PIN must be exactly 4 digits")
-      .regex(/^\d{4}$/, "PIN must contain only numbers"),
-  })
-  .refine((data) => data.pin === data.confirmPin, {
-    message: "PINs must match",
-    path: ["confirmPin"],
-  });
+import { pinSchema } from "@/app/(auth)/register/_components/validation";
 
 const SetupPin = ({ selectedStep, setSelectedStep }: AccountSetupProps) => {
   const [formState, setFormState] = useState<"pin" | "confirmPin">("pin");
@@ -57,7 +41,7 @@ const SetupPin = ({ selectedStep, setSelectedStep }: AccountSetupProps) => {
     }
   };
   return (
-    <div className="font-monzo h-full flex justify-between flex-col">
+    <div className=" h-full flex justify-between flex-col">
       <button onClick={handleBackButton}>
         <Image
           src={"/icons/arrow-left.svg"}

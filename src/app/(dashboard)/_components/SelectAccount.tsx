@@ -26,7 +26,7 @@ const SelectAccount = ({ close, openNgnModal }: Props) => {
   };
   return (
     <Overlay close={close} width="375px">
-      <div className="flex flex-col  h-full py-8 px-5 font-monzo text-raiz-gray-950">
+      <div className="flex flex-col  h-full py-8 px-5  text-raiz-gray-950">
         <h4 className="text-xl font-semibold">Select Account</h4>
         <div className="flex flex-col mt-4">
           {/* USD */}

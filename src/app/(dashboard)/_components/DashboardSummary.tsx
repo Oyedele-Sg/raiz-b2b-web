@@ -45,7 +45,7 @@ const DashboardSummary = () => {
             Total balance
           </p>
           <div className="flex gap-2 items-center">
-            <p className="text-raiz-gray-950 text-[2rem] font-semibold font-monzo leading-[38.40px]">
+            <p className="text-raiz-gray-950 text-[2rem] font-semibold  leading-[38.40px]">
               {showBalance
                 ? `${selectedCurrency.sign}10,000,000.00`
                 : `${selectedCurrency.sign}XXX`}

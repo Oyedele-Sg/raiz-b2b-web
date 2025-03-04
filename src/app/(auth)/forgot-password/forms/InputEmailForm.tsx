@@ -52,7 +52,7 @@ const InputEmailForm = ({ setEmail, setPage }: Props) => {
           />
         </button>
         <header className="flex items-center justify-between mt-2">
-          <h2 className="text-raiz-gray-950 text-[23px] font-semibold font-monzo leading-10">
+          <h2 className="text-raiz-gray-950 text-[23px] font-semibold  leading-10">
             Reset your password
           </h2>
           <svg width="40" height="41" viewBox="0 0 40 41" fill="none">
@@ -75,7 +75,7 @@ const InputEmailForm = ({ setEmail, setPage }: Props) => {
             />
           </svg>
         </header>
-        <p className="text-raiz-gray-700 text-[15px] font-normal font-monzo leading-snug mb-[44px]">
+        <p className="text-raiz-gray-700 text-[15px] font-normal  leading-snug mb-[44px]">
           Enter the email registered with your account to reset your password
         </p>
         <InputField

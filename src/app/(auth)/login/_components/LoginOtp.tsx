@@ -52,7 +52,7 @@ const LoginOtp = ({ setStep, from }: Props) => {
     >
       <Image src={"/icons/Logo.svg"} width={91.78} height={32} alt="Logo" />
       <div className="flex flex-col h-full  justify-between">
-        <section className="h-full flex flex-col justify-between -mt-2 font-monzo">
+        <section className="h-full flex flex-col justify-between -mt-2 ">
           <div>
             <button onClick={goBack}>
               <Image

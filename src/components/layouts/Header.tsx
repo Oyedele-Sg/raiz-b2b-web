@@ -2,16 +2,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
-import SideModalWrapper from "./SideModalWrapper";
-import Notifications from "./notification/Notifications";
+import SideModalWrapper from "../../app/(dashboard)/_components/SideModalWrapper";
+import Notifications from "../../app/(dashboard)/_components/notification/Notifications";
 import { AnimatePresence } from "motion/react";
-import Rewards from "./rewards/Rewards";
-import SelectAccount from "./SelectAccount";
-import CreateNgnAcct from "./createNgnAcct/CreateNgnAcct";
-import AddBvnModal from "./createNgnAcct/AddBvnModal";
-import NgnSuccessModal from "./createNgnAcct/NgnSuccessModal";
+import Rewards from "../../app/(dashboard)/_components/rewards/Rewards";
+import SelectAccount from "../../app/(dashboard)/_components/SelectAccount";
+import CreateNgnAcct from "../../app/(dashboard)/_components/createNgnAcct/CreateNgnAcct";
+import AddBvnModal from "../../app/(dashboard)/_components/createNgnAcct/AddBvnModal";
+import NgnSuccessModal from "../../app/(dashboard)/_components/createNgnAcct/NgnSuccessModal";
+import { usePathname } from "next/navigation";
+// import { useUser } from "@/lib/hooks/useUser";
 
 const Header = () => {
+  const pathName = usePathname();
+  // const { user } = useUser();
+  // console.log("user", user);
+
   const [showModal, setShowModal] = useState<
     "notifications" | "rewards" | "selectAcct" | "createNGN" | null
   >(null);
@@ -45,38 +51,40 @@ const Header = () => {
   };
   return (
     <div className="flex  justify-between pb-5 gap-2">
-      <div className="flex items-center gap-1 xl:gap-2.5 ">
-        <Link
-          className="px-2 py-1 text-raiz-gray-900 text-sm font-semibold font-brSonoma leading-tight "
-          href={"#"}
-        >
-          Overview
-        </Link>
-        <Image
-          src={"/icons/forward.svg"}
-          alt="forward"
-          width={16}
-          height={16}
-        />
-        <Link
-          className="px-2 py-1 text-raiz-gray-700 text-sm font-medium font-brSonoma leading-tight "
-          href={"#"}
-        >
-          Top up
-        </Link>
-        <Image
-          src={"/icons/forward.svg"}
-          alt="forward"
-          width={16}
-          height={16}
-        />
-        <Link
-          className="px-2 py-1 text-raiz-gray-700 text-sm font-medium font-brSonoma leading-tight "
-          href={"#"}
-        >
-          Send
-        </Link>
-      </div>
+      {pathName === "/" && (
+        <div className="flex items-center gap-1 xl:gap-2.5 ">
+          <Link
+            className="px-2 py-1 text-raiz-gray-900 text-sm font-semibold font-brSonoma leading-tight "
+            href={"#"}
+          >
+            Overview
+          </Link>
+          <Image
+            src={"/icons/forward.svg"}
+            alt="forward"
+            width={16}
+            height={16}
+          />
+          <Link
+            className="px-2 py-1 text-raiz-gray-700 text-sm font-medium font-brSonoma leading-tight "
+            href={"#"}
+          >
+            Top up
+          </Link>
+          <Image
+            src={"/icons/forward.svg"}
+            alt="forward"
+            width={16}
+            height={16}
+          />
+          <Link
+            className="px-2 py-1 text-raiz-gray-700 text-sm font-medium font-brSonoma leading-tight "
+            href={"#"}
+          >
+            Send
+          </Link>
+        </div>
+      )}
       <div className="relative h-12 w-[285px] xl:w-[312px] ">
         <Image
           className="absolute top-3.5 left-3"
@@ -126,7 +134,7 @@ const Header = () => {
               fill="#FCF2E3"
             />
           </svg>
-          <span className="text-raiz-gray-950 text-[13px] font-normal font-monzo leading-[18.20px]">
+          <span className="text-raiz-gray-950 text-[13px] font-normal  leading-[18.20px]">
             55
           </span>
         </button>

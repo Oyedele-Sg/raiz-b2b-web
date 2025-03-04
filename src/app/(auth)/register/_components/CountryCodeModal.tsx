@@ -3,12 +3,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import useCountryStore from "@/store/useCountryStore";
 import { debounce } from "lodash";
-import { ICountry, IRegisterFormValues } from "@/types/misc";
+import { ICountry } from "@/types/misc";
 import { FormikProps } from "formik";
 
 interface Props {
   close: () => void;
-  formik: FormikProps<IRegisterFormValues>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  formik: FormikProps<any>;
 }
 
 const CountryCodeModal = ({ close, formik }: Props) => {
@@ -46,7 +47,7 @@ const CountryCodeModal = ({ close, formik }: Props) => {
 
   return (
     <Overlay close={close}>
-      <div className="flex flex-col  h-full py-8 px-5 font-monzo">
+      <div className="flex flex-col  h-full py-8 px-5 ">
         <h5 className="text-raiz-gray-950 text-xl font-bold  leading-normal">
           Select your Country
         </h5>
@@ -67,7 +68,7 @@ const CountryCodeModal = ({ close, formik }: Props) => {
         </div>
 
         {/* Countries */}
-        <div className="flex flex-col gap-[30px] font-brSonoma h-[350px] overflow-y-scroll ">
+        <div className="flex flex-col gap-[20px] font-brSonoma h-[350px] overflow-y-scroll ">
           {loading ? (
             <p className="text-center text-sm text-raiz-gray-600">
               Loading countries...
@@ -77,7 +78,7 @@ const CountryCodeModal = ({ close, formik }: Props) => {
               <button
                 onClick={() => handleSelect(country)}
                 key={index}
-                className="flex justify-between"
+                className="flex justify-between hover:bg-slate-100 p-3 rounded-xl"
               >
                 <div className="flex items-center gap-2">
                   <Image

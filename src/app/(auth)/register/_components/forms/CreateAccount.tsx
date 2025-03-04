@@ -37,11 +37,11 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
         />
       </svg>
       <header className="flex items-center justify-between ">
-        <h2 className="text-raiz-gray-950 text-[23px] font-semibold font-monzo leading-10">
+        <h2 className="text-raiz-gray-950 text-[23px] font-semibold  leading-10">
           Create your account
         </h2>
       </header>
-      <p className="text-raiz-gray-700 text-[15px] font-normal font-monzo leading-snug">
+      <p className="text-raiz-gray-700 text-[15px] font-normal  leading-snug">
         Let&#39;s start by getting to know you
       </p>
       <div className="flex flex-col justify-between h-full">
@@ -68,7 +68,7 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
                     formik.values.country_name
                       ? "text-raiz-gray-950"
                       : "text-raiz-gray-400"
-                  } text-sm font-normal font-monzo leading-tight`}
+                  } text-sm font-normal  leading-tight`}
                 >
                   {formik.values.country_id && formik.values.country_name
                     ? formik.values?.country_name

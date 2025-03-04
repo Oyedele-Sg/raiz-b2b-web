@@ -65,7 +65,7 @@ const BillRequests = () => {
   return (
     <div className="w-full">
       <div className="flex items-center justify-between w-full mb-5">
-        <h6 className="text-raiz-gray-900 text-base font-semibold font-monzo leading-snug">
+        <h6 className="text-raiz-gray-900 text-base font-semibold  leading-snug">
           Bill Request
         </h6>
         <button>
@@ -84,7 +84,7 @@ const BillRequests = () => {
               key={request.id}
               className="w-full px-[15px] py-[18px] bg-[#f3eee9] rounded-[20px] flex-col justify-center items-start gap-4 inline-flex"
             >
-              <div className="font-monzo flex items-center justify-between w-full">
+              <div className=" flex items-center justify-between w-full">
                 <div className="flex gap-2 ">
                   <Image
                     src={request.imageUrl}
@@ -145,7 +145,7 @@ const BillRequests = () => {
                 strokeLinejoin="round"
               />
             </svg>
-            <p className=" text-raiz-gray-600 text-sm font-semibold font-monzoo">
+            <p className=" text-raiz-gray-600 text-sm font-semibold o">
               No bill request yet
             </p>
           </div>

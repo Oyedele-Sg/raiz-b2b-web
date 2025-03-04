@@ -188,7 +188,7 @@ const RegisterForm = () => {
         <AnimatePresence>{displayStep(currentStep)}</AnimatePresence>
         <div className="flex flex-col gap-3 mt-3">
           {currentStep === 1 && (
-            <p className="text-raiz-gray-600 text-[13px] font-normal font-monzo leading-tight">
+            <p className="text-raiz-gray-600 text-[13px] font-normal  leading-tight">
               By continuing, you agree to Raiz&#39;s{" "}
               <Link
                 className="text-raiz-gray-800 font-bold leading-[18.20px]"
@@ -219,7 +219,7 @@ const RegisterForm = () => {
               : "Continue"}
           </Button>
           {currentStep === 1 && (
-            <p className="text-raiz-gray-800 text-[13px] font-normal font-monzo leading-tight mt-3 text-center">
+            <p className="text-raiz-gray-800 text-[13px] font-normal  leading-tight mt-3 text-center">
               Already have an account?{" "}
               <Link className=" font-bold leading-[18.20px]" href={"/login"}>
                 Login

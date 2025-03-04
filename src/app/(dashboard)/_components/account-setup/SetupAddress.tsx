@@ -49,7 +49,7 @@ const SetupAddress = ({ selectedStep, setSelectedStep }: AccountSetupProps) => {
 
   return (
     <>
-      <div className="font-monzo h-full flex flex-col overflow-y-scroll no-scrollbar">
+      <div className=" h-full flex flex-col overflow-y-scroll no-scrollbar">
         <button onClick={() => setSelectedStep(null)}>
           <Image
             src={"/icons/arrow-left.svg"}

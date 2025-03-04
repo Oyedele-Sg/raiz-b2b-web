@@ -28,7 +28,7 @@ const LogoutModal = ({ close }: { close: () => void }) => {
   };
   return (
     <Overlay width="375px" close={close}>
-      <div className="flex flex-col justify-center items-center  h-full py-8 px-5 font-monzo text-center ">
+      <div className="flex flex-col justify-center items-center  h-full py-8 px-5  text-center ">
         <svg width="49" height="48" viewBox="0 0 49 48" fill="none">
           <path
             opacity="0.35"

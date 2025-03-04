@@ -44,7 +44,7 @@ const CustomersInfo = () => {
                     height={28}
                   />
                 </div>
-                <span className="text-gray-950  font-bold font-monzo leading-tight">
+                <span className="text-gray-950  font-bold  leading-tight">
                   {each.title}
                 </span>
               </div>
@@ -59,7 +59,7 @@ const CustomersInfo = () => {
             </div>
             <div className="flex w-full justify-between items-end gap-4">
               <div className="flex items-start gap-1.5">
-                <span className="text-gray-950 text-[1.2rem] xl:text-[2rem] font-semibold font-monzo leading-[38.40px]">
+                <span className="text-gray-950 text-[1.2rem] xl:text-[2rem] font-semibold  leading-[38.40px]">
                   {each.value.toLocaleString()}
                 </span>
                 {value !== "zero" && (
@@ -82,7 +82,7 @@ const CustomersInfo = () => {
                           : value === "negative"
                           ? "text-raiz-error"
                           : "text-raiz-gray-950"
-                      }  text-center text-[11px]  xl:text-sm font-bold font-monzo leading-[16.80px]`}
+                      }  text-center text-[11px]  xl:text-sm font-bold  leading-[16.80px]`}
                     >{`${each.change}%`}</span>
                   </div>
                 )}

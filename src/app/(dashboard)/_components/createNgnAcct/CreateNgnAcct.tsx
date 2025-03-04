@@ -34,7 +34,7 @@ const CreateNgnAcct = ({
   };
   return (
     <>
-      <div className="font-monzo h-full pb-[30px]">
+      <div className=" h-full pb-[30px]">
         <div className=" flex justify-between items-center">
           <button onClick={close}>
             <svg width="19" height="19" viewBox="0 0 19 19" fill="none">
