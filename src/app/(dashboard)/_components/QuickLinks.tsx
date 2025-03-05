@@ -29,7 +29,7 @@ const QuickLinks = () => {
   return (
     <div className="p-3 xl:p-6 rounded-[20px] border border-raiz-gray-200 flex-col justify-start items-start gap-5 inline-flex">
       <div className="flex justify-between items-center w-full">
-        <h6 className="text-raiz-gray-900 font-semibold font-monzo leading-snug">
+        <h6 className="text-raiz-gray-900 font-semibold  leading-snug">
           Quick Links
         </h6>
         <button>

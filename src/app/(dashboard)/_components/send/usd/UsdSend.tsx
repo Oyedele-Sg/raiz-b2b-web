@@ -24,7 +24,7 @@ const UsdSend = ({ close }: Props) => {
         break;
     }
   };
-  return <div className="font-monzo">{displayStep()}</div>;
+  return <div className="">{displayStep()}</div>;
 };
 
 export default UsdSend;

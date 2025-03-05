@@ -163,7 +163,7 @@ const AccountSetup = ({ close }: { close: () => void }) => {
   return (
     <>
       {!selectedStep ? (
-        <div className="font-monzo">
+        <div className="">
           <button onClick={close}>
             <Image
               src={"/icons/arrow-left.svg"}

@@ -66,7 +66,7 @@ const CreateNewPassword = ({ setPage, otp, setUser }: Props) => {
   return (
     <form
       onSubmit={formik.handleSubmit}
-      className="h-full flex flex-col -mt-2 justify-between font-monzo"
+      className="h-full flex flex-col -mt-2 justify-between"
     >
       <div>
         <button onClick={() => setPage(2)} type="button">
@@ -82,7 +82,7 @@ const CreateNewPassword = ({ setPage, otp, setUser }: Props) => {
             <h2 className="text-raiz-gray-950 text-[23px] font-semibold  leading-10">
               Create a new password
             </h2>
-            <p className="text-raiz-gray-700 text-[15px] font-normal font-monzo leading-snug mb-[44px]">
+            <p className="text-raiz-gray-700 text-[15px] font-normal  leading-snug mb-[44px]">
               Create a new password
             </p>
           </div>
@@ -168,7 +168,7 @@ const CreateNewPassword = ({ setPage, otp, setUser }: Props) => {
                 )}
               </div>
               <span
-                className={` text-[13px] font-normal font-monzo leading-[18px] ${
+                className={` text-[13px] font-normal  leading-[18px] ${
                   formik.errors.password &&
                   formik.touched.password &&
                   formik.errors.password.includes(
@@ -214,7 +214,7 @@ const CreateNewPassword = ({ setPage, otp, setUser }: Props) => {
                 )}
               </div>
               <span
-                className={`text-raiz-gray-700 text-[13px] font-normal font-monzo leading-[18px] ${
+                className={`text-raiz-gray-700 text-[13px] font-normal  leading-[18px] ${
                   formik.errors.password &&
                   formik.touched.password &&
                   formik.errors.password.includes(

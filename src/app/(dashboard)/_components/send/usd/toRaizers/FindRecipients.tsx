@@ -95,7 +95,7 @@ const FindRecipients = ({ setStep, goBack }: Props) => {
   }, [searchTerm]);
 
   return (
-    <div className="font-monzo">
+    <div className="">
       <button onClick={goBack}>
         <Image
           src={"/icons/arrow-left.svg"}

@@ -1,11 +1,11 @@
 "use client";
-import { ProgressBar } from "@/components/ui/Progressbar";
 import Image from "next/image";
 import React, { useState } from "react";
 import LevelsModal from "./LevelsModal";
 import InviteModal from "./InviteModal";
 import { copyToClipboard } from "@/utils";
 import useShare from "@/lib/hooks/useShare";
+import RaizScoreProgress from "@/components/ui/RaizScoreProgress";
 
 const Rewards = ({ close }: { close: () => void }) => {
   const [showLevelsModal, setShowLevelsModal] = useState(false);
@@ -14,7 +14,7 @@ const Rewards = ({ close }: { close: () => void }) => {
   const { shareOnWhatsApp, shareOnIMessage, shareOnAll } =
     useShare(referralCode);
   return (
-    <div className="font-monzo h-full overflow-y-scroll  no-scrollbar text-raiz-gray-950 ">
+    <div className=" h-full overflow-y-scroll  no-scrollbar text-raiz-gray-950 ">
       <div className="flex items-center justify-between pb-2.5 mb-[19px]">
         <button onClick={close}>
           <Image
@@ -140,32 +140,7 @@ const Rewards = ({ close }: { close: () => void }) => {
 
       {/* Level Progress */}
       <div className=" px-3 py-5 opacity-80 bg-[#f1f3fe] rounded-[20px] justify-center  inline-flex flex-col w-full mt-6">
-        <div className="w-full">
-          <ProgressBar
-            value={35}
-            type="linear"
-            color="#FDB92D"
-            thickness={10}
-          />
-          <div className="flex justify-between mt-3">
-            <div>
-              <span className="text-raiz-gray-700 text-xs leading-[18px]">
-                50
-              </span>
-              <p className="text-[#dd9d43] text-[13px] font-bold  leading-tight uppercase mt-1">
-                Senior
-              </p>
-            </div>
-            <div>
-              <span className="text-raiz-gray-700 text-xs leading-[18px]">
-                100
-              </span>
-              <p className="text-gray-700 text-[13px] font-bold  leading-tight uppercase mt-1">
-                Professional
-              </p>
-            </div>
-          </div>
-        </div>
+        <RaizScoreProgress />
         <div className="flex gap-2 items-center mt-6">
           <p className="text-sm font-semibold font-brSonoma leading-[21px]">
             Labels

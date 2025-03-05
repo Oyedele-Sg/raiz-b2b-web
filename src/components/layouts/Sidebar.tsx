@@ -49,7 +49,7 @@ const Sidebar = () => {
       <Link
         key={index}
         href={item.link}
-        className={`flex items-center gap-3 py-2 px-2 xl:px-3 font-bold text-[15px] xl:text-base font-monzo leading-tight hover:bg-[#eaecff]/40 hover:rounded-md outline-none ${
+        className={`flex items-center gap-3 py-2 px-2 xl:px-3 font-bold text-[15px] xl:text-base  leading-tight hover:bg-[#eaecff]/40 hover:rounded-md outline-none ${
           isActive
             ? "bg-[#eaecff]/40 rounded-[6px] text-primary2"
             : "text-raiz-gray-600 "
@@ -95,22 +95,22 @@ const Sidebar = () => {
                 />
               </svg>
             </div>
-            <p className="text-raiz-gray-900 text-sm font-bold font-monzo leading-[16.80px]">
+            <p className="text-raiz-gray-900 text-sm font-bold  leading-[16.80px]">
               Complete account set up{" "}
             </p>
-            <p className="text-gray-600 text-sm font-normal font-monzo leading-tight">
+            <p className="text-gray-600 text-sm font-normal  leading-tight">
               Complete Account Set Up and Get unlimited access{" "}
             </p>
             <div className="flex items-center gap-3">
               <Link
                 href={"#"}
-                className="text-raiz-gray-500 text-xs xl:text-sm font-bold font-monzo leading-[16.80px]"
+                className="text-raiz-gray-500 text-xs xl:text-sm font-bold  leading-[16.80px]"
               >
                 Learn more
               </Link>
               <button
                 onClick={() => setShowModal("acctSetup")}
-                className="text-primary2 text-xs xl:text-sm font-bold font-monzo leading-[16.80px]"
+                className="text-primary2 text-xs xl:text-sm font-bold  leading-[16.80px]"
               >
                 Upgrade
               </button>
@@ -122,57 +122,50 @@ const Sidebar = () => {
             <div className="w-12 h-12 relative bg-[#fcfcfd] rounded-[66.67px] flex items-center justify-center ">
               <Image src={"/icons/ngn.svg"} width={32} height={32} alt="NGN" />
             </div>
-            <h5 className="text-raiz-gray-900 text-sm font-bold font-monzo leading-[16.80px]">
+            <h5 className="text-raiz-gray-900 text-sm font-bold  leading-[16.80px]">
               Get a Naira (NGN) Account
             </h5>
-            <p className="text-gray-600 text-sm font-normal font-monzo leading-tight">
+            <p className="text-gray-600 text-sm font-normal  leading-tight">
               Manage funds and make transactions in Naira, simplifying local
               payments and daily finances.
             </p>
 
             <button
               onClick={() => setShowModal("getNgn")}
-              className="text-primary2 text-sm font-bold font-monzo leading-[16.80px]"
+              className="text-primary2 text-sm font-bold  leading-[16.80px]"
             >
               Get Naira Wallet
             </button>
           </div>
 
-          {/* Acct & Logout */}
-          <div className="flex gap-1.5 xl:gap-3  justify-between mt-6 w-full pb-5">
-            <Image
-              src={"/images/pfp.png"}
-              width={40}
-              height={40}
-              alt="profile image"
-            />
-            <div className="flex flex-col gap-1  font-inter leading-tight">
-              <p className="text-raiz-gray-700 font-semibold text-xs xl:text-sm">
-                Kaywear Store
-              </p>
-              <p className="text-raiz-gray-600 text-[10px] xl:text-sm ">
-                Kaywear@gmail.com
-              </p>
-            </div>
-            <button onClick={() => setShowLogoutModal(true)}>
-              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                <rect width="36" height="36" rx="18" fill="#F3F1F6" />
-                <path
-                  opacity="0.35"
-                  d="M25.1998 11.7V24.3C25.1998 25.7913 23.9911 27 22.4998 27H13.4998C12.0085 27 10.7998 25.7913 10.7998 24.3V11.7C10.7998 10.2087 12.0085 9 13.4998 9H22.4998C23.9911 9 25.1998 10.2087 25.1998 11.7Z"
-                  fill="#B3261E"
-                />
-                <path
-                  d="M23.3998 16.2002H17.0998C16.1053 16.2002 15.2998 17.0057 15.2998 18.0002C15.2998 18.9947 16.1053 19.8002 17.0998 19.8002H23.3998V16.2002Z"
-                  fill="#951F38"
-                />
-                <path
-                  d="M22.1211 21.718C22.1211 22.4119 22.9581 22.7611 23.4513 22.2724L26.955 18.802C27.4005 18.3601 27.4005 17.6401 26.955 17.1982L23.4513 13.7278C22.9581 13.24 22.1211 13.5892 22.1211 14.2822V21.718Z"
-                  fill="#951F38"
-                />
-              </svg>
-            </button>
-          </div>
+          {/* Logout */}
+          {/* <div className="flex gap-[15px] justify-between mt-6 w-full pb-5"> */}
+
+          <button
+            className="flex gap-[15px] items-center mt-6 w-full pb-5 pt-4 border-t border-[#eaecf0]"
+            onClick={() => setShowLogoutModal(true)}
+          >
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <rect width="36" height="36" rx="18" fill="#F3F1F6" />
+              <path
+                opacity="0.35"
+                d="M25.1998 11.7V24.3C25.1998 25.7913 23.9911 27 22.4998 27H13.4998C12.0085 27 10.7998 25.7913 10.7998 24.3V11.7C10.7998 10.2087 12.0085 9 13.4998 9H22.4998C23.9911 9 25.1998 10.2087 25.1998 11.7Z"
+                fill="#B3261E"
+              />
+              <path
+                d="M23.3998 16.2002H17.0998C16.1053 16.2002 15.2998 17.0057 15.2998 18.0002C15.2998 18.9947 16.1053 19.8002 17.0998 19.8002H23.3998V16.2002Z"
+                fill="#951F38"
+              />
+              <path
+                d="M22.1211 21.718C22.1211 22.4119 22.9581 22.7611 23.4513 22.2724L26.955 18.802C27.4005 18.3601 27.4005 17.6401 26.955 17.1982L23.4513 13.7278C22.9581 13.24 22.1211 13.5892 22.1211 14.2822V21.718Z"
+                fill="#951F38"
+              />
+            </svg>
+            <span className="text-[#db180d] text-[15px] font-semibold leading-snug">
+              Logout
+            </span>
+          </button>
+          {/* </div> */}
         </div>
       </section>
       <AnimatePresence>

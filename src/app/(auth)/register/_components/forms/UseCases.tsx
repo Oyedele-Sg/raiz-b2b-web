@@ -83,7 +83,7 @@ const UseCases = ({ goBack, formik, goForward }: RegisterFormProps) => {
   //   formik.setFieldValue("useCases", selectedCases);
   // }, [selectedCases]);
   return (
-    <section className="h-full flex flex-col -mt-2 font-monzo">
+    <section className="h-full flex flex-col -mt-2 ">
       <div className="flex items-center justify-between mb-5">
         <button onClick={goBack}>
           <Image
@@ -119,7 +119,7 @@ const UseCases = ({ goBack, formik, goForward }: RegisterFormProps) => {
               }`}
             >
               {each.use_case_emoji}
-              <span className="text-raiz-gray-950 text-[13px] font-normal font-monzo leading-normal">
+              <span className="text-raiz-gray-950 text-[13px] font-normal  leading-normal">
                 {each.use_case_name}
               </span>
             </button>

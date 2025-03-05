@@ -23,7 +23,7 @@ const RegisterOtp = ({ goBack, formik }: RegisterFormProps) => {
   return (
     <AnimatedSection
       key="register-otp"
-      className="h-full flex flex-col justify-between -mt-2 font-monzo"
+      className="h-full flex flex-col justify-between -mt-2 "
     >
       <div>
         <button onClick={goBack}>

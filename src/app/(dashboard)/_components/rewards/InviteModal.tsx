@@ -10,7 +10,7 @@ const InviteModal = ({ close }: { close: () => void }) => {
     useShare(referralCode);
   return (
     <Overlay width="375px" close={close}>
-      <div className="flex flex-col  h-full py-8 px-5 justify-between gap-5 font-monzo text-raiz-gray-950">
+      <div className="flex flex-col  h-full py-8 px-5 justify-between gap-5  text-raiz-gray-950">
         <div className="flex flex-col justify-center items-center ">
           <svg
             width="49"

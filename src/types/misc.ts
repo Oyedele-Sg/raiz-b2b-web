@@ -76,3 +76,22 @@ export interface ICountry {
   created_at: string;
   updated_at: string;
 }
+
+export interface IEntityAddress {
+  country_id: string;
+  state: string;
+  lga: string;
+  building_number: string;
+  street: string;
+  city: string;
+  zip_code: string;
+  address_document_url: string;
+  length_of_stay_months: number;
+  inquiry_id: string;
+  entity_id: string;
+  entity_address_id: string;
+  verification_status: string;
+  created_at: string;
+  updated_at: string;
+  country: ICountry;
+}

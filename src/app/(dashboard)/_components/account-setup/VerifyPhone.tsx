@@ -20,7 +20,7 @@ const VerifyPhone = ({ selectedStep, setSelectedStep }: AccountSetupProps) => {
     },
   });
   return (
-    <div className="font-monzo h-full flex justify-between flex-col">
+    <div className=" h-full flex justify-between flex-col">
       <button onClick={() => setSelectedStep(null)}>
         <Image
           src={"/icons/arrow-left.svg"}

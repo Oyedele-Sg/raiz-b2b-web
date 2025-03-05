@@ -12,7 +12,7 @@ export default {
     extend: {
       fontFamily: {
         inter: ["var(--font-inter)", ...fontFamily.sans],
-        monzo: ["var(--font-monzo)", ...fontFamily.sans],
+        monzo: ["var(--monzo)", ...fontFamily.sans],
         brSonoma: ["var(--font-br-sonoma)", ...fontFamily.sans],
       },
       colors: {

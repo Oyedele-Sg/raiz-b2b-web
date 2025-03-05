@@ -18,7 +18,7 @@ const SetPassword = ({ goBack, formik }: RegisterFormProps) => {
         />
       </button>
       <header className="flex items-center justify-between mt-2">
-        <h2 className="text-raiz-gray-950 text-[23px] font-semibold font-monzo leading-10">
+        <h2 className="text-raiz-gray-950 text-[23px] font-semibold  leading-10">
           Set your password
         </h2>
         <svg width="40" height="41" viewBox="0 0 40 41" fill="none">
@@ -41,7 +41,7 @@ const SetPassword = ({ goBack, formik }: RegisterFormProps) => {
           />
         </svg>
       </header>
-      <p className="text-raiz-gray-700 text-[15px] font-normal font-monzo leading-snug">
+      <p className="text-raiz-gray-700 text-[15px] font-normal  leading-snug">
         Create a password to use when signing in
       </p>
 
@@ -90,7 +90,7 @@ const SetPassword = ({ goBack, formik }: RegisterFormProps) => {
                 )}
               </div>
               <span
-                className={` text-[13px] font-normal font-monzo leading-[18px] ${
+                className={` text-[13px] font-normal  leading-[18px] ${
                   formik.errors.password &&
                   formik.touched.password &&
                   formik.errors.password.includes(
@@ -136,7 +136,7 @@ const SetPassword = ({ goBack, formik }: RegisterFormProps) => {
                 )}
               </div>
               <span
-                className={`text-raiz-gray-700 text-[13px] font-normal font-monzo leading-[18px] ${
+                className={`text-raiz-gray-700 text-[13px] font-normal  leading-[18px] ${
                   formik.errors.password &&
                   formik.touched.password &&
                   formik.errors.password.includes(
@@ -160,7 +160,7 @@ const SetPassword = ({ goBack, formik }: RegisterFormProps) => {
             placeholder=""
             {...formik.getFieldProps("referral_code")}
           />
-          <span className="text-raiz-gray-600 text-[13px] font-normal font-monzo leading-normal">
+          <span className="text-raiz-gray-600 text-[13px] font-normal  leading-normal">
             **Please enter an invite code if you have one.
           </span>
         </div>

@@ -15,7 +15,7 @@ const FindRecipient = () => {
     }
   };
   return (
-    <div className="font-monzo">
+    <div className="">
       <div className="flex justify-between items-center mb-4">
         <h5 className="text-raiz-gray-950 text-base font-bold  leading-tight">
           Find Recipient

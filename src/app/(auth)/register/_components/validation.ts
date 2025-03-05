@@ -41,6 +41,13 @@ export const registerFormSchemas = {
   5: z.object({}),
 };
 
+export const generalOTPFormSchema = z.object({
+  otp: z
+    .string()
+    .length(4, "OTP must be exactly 4 digits")
+    .regex(/^\d{4}$/, "OTP must only contain numbers"),
+});
+
 // export const registerFormSchema = z.object({
 //   firstName: z.string().nonempty("First name is required"),
 //   lastName: z.string().nonempty("Last name is required"),
@@ -92,3 +99,19 @@ export const loginSchema = z.object({
     })
     .min(8, "Password must be at least 8 characters"),
 });
+
+export const pinSchema = z
+  .object({
+    pin: z
+      .string()
+      .length(4, "PIN must be exactly 4 digits")
+      .regex(/^\d{4}$/, "PIN must contain only numbers"),
+    confirmPin: z
+      .string()
+      .length(4, "PIN must be exactly 4 digits")
+      .regex(/^\d{4}$/, "PIN must contain only numbers"),
+  })
+  .refine((data) => data.pin === data.confirmPin, {
+    message: "PINs must match",
+    path: ["confirmPin"],
+  });
