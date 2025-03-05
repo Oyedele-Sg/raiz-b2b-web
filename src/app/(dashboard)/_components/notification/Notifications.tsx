@@ -272,7 +272,7 @@ const Notifications = ({ close }: { close: () => void }) => {
 
   return (
     <>
-      <div className="font-monzo h-full overflow-hidden">
+      <div className=" h-full overflow-hidden">
         <div className="sticky bg-raiz-gray-50 w-full h-[49px] flex  items-center z-10 ">
           <div className="flex  justify-between w-1/2 items-center ">
             <button onClick={close}>

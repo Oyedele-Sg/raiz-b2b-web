@@ -38,7 +38,7 @@ const AddBvnModal = ({ close, openSuccessModal }: Props) => {
     <SideModalWrapper close={close}>
       <form
         onSubmit={formik.handleSubmit}
-        className="font-monzo h-full justify-between flex-col flex  no-scrollbar text-raiz-gray-950 "
+        className=" h-full justify-between flex-col flex  no-scrollbar text-raiz-gray-950 "
       >
         <div>
           <button onClick={close}>
@@ -148,7 +148,7 @@ const AddBvnModal = ({ close, openSuccessModal }: Props) => {
               )}
             </div>
             <span
-              className={` text-[13px] font-normal font-monzo leading-[18px] ${
+              className={` text-[13px] font-normal  leading-[18px] ${
                 formik.touched.bvn && formik.values.bvn.length !== 11
                   ? "text-raiz-error"
                   : "text-raiz-gray-700"

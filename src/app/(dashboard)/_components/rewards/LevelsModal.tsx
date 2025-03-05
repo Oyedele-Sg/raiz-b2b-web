@@ -35,7 +35,7 @@ const levelsArr = [
 const LevelsModal = ({ close }: { close: () => void }) => {
   return (
     <Overlay width="375px" close={close}>
-      <div className="flex flex-col  h-full py-8 px-5 font-monzo text-raiz-gray-950">
+      <div className="flex flex-col  h-full py-8 px-5  text-raiz-gray-950">
         <div className="flex flex-col justify-center items-center">
           <svg width="49" height="48" viewBox="0 0 49 48" fill="none">
             <rect

@@ -21,7 +21,7 @@ export interface IResetPasswordPayload {
 }
 
 export async function CountriesApi() {
-  const response = await PublicAxios.get("/countries");
+  const response = await PublicAxios.get("/countries/");
   return response.data;
 }
 

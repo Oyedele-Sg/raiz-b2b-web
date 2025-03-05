@@ -73,11 +73,11 @@ const Transactions = () => {
   return (
     <div className=" p-6 rounded-[20px] border border-raiz-gray-200 flex-col justify-start items-start gap-5 inline-flex">
       <div className="w-full mb-5 flex justify-between items-center">
-        <h6 className="text-gray-900 text-base font-semibold font-monzo leading-snug">
+        <h6 className="text-gray-900 text-base font-semibold  leading-snug">
           Transactions
         </h6>
         <button className="flex items-center gap-2 ">
-          <span className="text-primary2 text-sm font-bold font-monzo leading-[16.80px]">
+          <span className="text-primary2 text-sm font-bold  leading-[16.80px]">
             Go to Transactions
           </span>
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -93,7 +93,7 @@ const Transactions = () => {
           sampleTrx?.map((each, index) => (
             <div
               key={index}
-              className="font-monzo flex items-center justify-between w-full"
+              className=" flex items-center justify-between w-full"
             >
               <div className="flex gap-[14px]">
                 <Image
@@ -135,7 +135,7 @@ const Transactions = () => {
                 strokeLinejoin="round"
               />
             </svg>
-            <p className=" text-raiz-gray-600 text-sm font-semibold font-monzoo">
+            <p className=" text-raiz-gray-600 text-sm font-semibold o">
               No transactions yet
             </p>
           </div>

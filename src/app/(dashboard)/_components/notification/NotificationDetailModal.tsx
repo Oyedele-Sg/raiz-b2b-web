@@ -11,7 +11,7 @@ interface Props {
 const NotificationDetailModal = ({ close, notification }: Props) => {
   return (
     <Overlay width="375px" close={close}>
-      <div className="flex flex-col  h-full py-8 px-5 font-monzo">
+      <div className="flex flex-col  h-full py-8 px-5 ">
         <Image
           src={"/icons/notif-promo.svg"}
           alt="close"

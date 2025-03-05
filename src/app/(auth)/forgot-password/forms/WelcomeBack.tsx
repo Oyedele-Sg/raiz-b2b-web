@@ -35,7 +35,7 @@ const WelcomeBack = ({ setPage, email, user }: Props) => {
   return (
     <form
       onSubmit={formik.handleSubmit}
-      className="h-full flex flex-col -mt-2 justify-between font-monzo"
+      className="h-full flex flex-col -mt-2 justify-between "
     >
       <div>
         <header className="flex flex-col justify-center items-center mb-[62px]">

@@ -51,6 +51,7 @@ const OtpInputWithTimer = ({
           </p>
         ) : (
           <button
+            type="button"
             onClick={handleResend}
             className="text-raiz-gray-600 text-[15px] font-semibold hover:underline"
           >

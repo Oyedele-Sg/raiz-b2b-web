@@ -6,7 +6,7 @@ import Button from "@/components/ui/Button";
 const NgnSuccessModal = ({ close }: { close: () => void }) => {
   return (
     <Overlay width="375px" close={close}>
-      <div className="flex flex-col justify-center items-center  h-full py-8 px-5 font-monzo text-center ">
+      <div className="flex flex-col justify-center items-center  h-full py-8 px-5  text-center ">
         <Image src={"/icons/tick-circle.svg"} alt="" width={64} height={64} />
         <h4 className="text-raiz-gray-950   text-xl font-bold  leading-relaxed">
           NGN Wallet Created

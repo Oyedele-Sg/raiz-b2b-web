@@ -15,7 +15,7 @@ const CreateUsername = ({ goBack }: RegisterFormProps) => {
         />
       </button>
       <header className="flex items-center justify-between mt-2">
-        <h2 className="text-raiz-gray-950 text-[23px] font-semibold font-monzo leading-10">
+        <h2 className="text-raiz-gray-950 text-[23px] font-semibold  leading-10">
           Choose a username
         </h2>
         <svg width="40" height="41" viewBox="0 0 40 41" fill="none">
@@ -33,7 +33,7 @@ const CreateUsername = ({ goBack }: RegisterFormProps) => {
           />
         </svg>
       </header>
-      <p className="text-raiz-gray-700 text-[15px] font-normal font-monzo leading-snug mb-[44px]">
+      <p className="text-raiz-gray-700 text-[15px] font-normal  leading-snug mb-[44px]">
         Choose a @username, for a more personalised experience
       </p>
 
@@ -45,7 +45,7 @@ const CreateUsername = ({ goBack }: RegisterFormProps) => {
           status={formik.errors.username ? "error" : null}
           errorMessage={formik.touched.username && formik.errors.username}
         /> */}
-        <span className="text-raiz-gray-600 text-[13px] font-normal font-monzo leading-normal">
+        <span className="text-raiz-gray-600 text-[13px] font-normal  leading-normal">
           Usernames can only contain letters, numbers, underscores, and periods.
         </span>
       </div>

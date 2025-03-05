@@ -42,7 +42,7 @@ const LoginForm = ({
   return (
     <AnimatedSection
       key="login-form"
-      className="py-4 px-3 xl:px-8 w-[50%] xl:w-[46%] h-full flex flex-col font-monzo justify-between gap-[60px]"
+      className="py-4 px-3 xl:px-8 w-[50%] xl:w-[46%] h-full flex flex-col  justify-between gap-[60px]"
     >
       <Image src={"/icons/Logo.svg"} width={91.78} height={32} alt="Logo" />
       <div className="flex flex-col h-full  justify-between">

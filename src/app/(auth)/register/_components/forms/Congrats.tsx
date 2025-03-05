@@ -221,10 +221,7 @@ const info = [
 
 const Congrats = () => {
   return (
-    <AnimatedSection
-      key="register-congrats"
-      className="h-full flex flex-col font-monzo"
-    >
+    <AnimatedSection key="register-congrats" className="h-full flex flex-col ">
       <header className="flex flex-col gap-2">
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
           <path

@@ -2,13 +2,14 @@
 import { usePathname } from "next/navigation";
 import React, { ReactNode } from "react";
 import Sidebar from "./Sidebar";
+import Header from "./Header";
 
 const MainLayout = ({ children }: { children: ReactNode }) => {
   const pathName = usePathname();
 
   const shouldShowSideNav =
     !pathName.includes("/register") &&
-    !pathName.includes("/login") &&
+    pathName !== "/login" &&
     !pathName.includes("/forgot-password");
 
   return (
@@ -21,6 +22,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
             : "w-full p-0"
         } `}
       >
+        {shouldShowSideNav && <Header />}
         {children}
       </main>
     </section>

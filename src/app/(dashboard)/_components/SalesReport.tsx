@@ -82,11 +82,11 @@ const SalesReport = () => {
   return (
     <div className=" h-[361px] w-full mt-6 bg-raiz-gray-50 rounded-xl shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] border border-raiz-gray-100 flex-col justify-start items-start inline-flex p-6">
       <div className="flex justify-between items-center w-full">
-        <h6 className="text-raiz-gray-950 text-lg font-bold font-monzo  leading-snug">
+        <h6 className="text-raiz-gray-950 text-lg font-bold   leading-snug">
           Sales report
         </h6>
         <button className="h-[37px]  px-3.5 py-2.5 bg-raiz-gray-50 hover:border-raiz-gray-200 rounded-lg shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] border border-raiz-gray-100 justify-center items-center gap-1 inline-flex ">
-          <span className="text-raiz-gray-700 text-sm font-bold font-monzo leading-[16.80px]">
+          <span className="text-raiz-gray-700 text-sm font-bold  leading-[16.80px]">
             View report
           </span>
         </button>
@@ -105,7 +105,7 @@ const SalesReport = () => {
                 activePeriod === tab.title
                   ? "text-raiz-gray-700 font-bold"
                   : "text-raiz-gray-600 font-semibold"
-              } text-sm  font-monzo leading-[16.80px]`}
+              } text-sm   leading-[16.80px]`}
             >
               {tab.title}
             </span>

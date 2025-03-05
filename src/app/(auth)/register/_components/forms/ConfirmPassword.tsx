@@ -21,7 +21,7 @@ const ConfirmPassword = ({ goBack, formik }: RegisterFormProps) => {
         />
       </button>
       <header className="flex items-center justify-between mt-2">
-        <h2 className="text-raiz-gray-950 text-[23px] font-semibold font-monzo leading-10">
+        <h2 className="text-raiz-gray-950 text-[23px] font-semibold  leading-10">
           Verify your password
         </h2>
         <svg width="40" height="41" viewBox="0 0 40 41" fill="none">
@@ -44,7 +44,7 @@ const ConfirmPassword = ({ goBack, formik }: RegisterFormProps) => {
           />
         </svg>
       </header>
-      <p className="text-raiz-gray-700 text-[15px] font-normal font-monzo leading-snug">
+      <p className="text-raiz-gray-700 text-[15px] font-normal  leading-snug">
         Create a password to use when signing in
       </p>
       <div className="mt-8 xl:mt-[44px]">

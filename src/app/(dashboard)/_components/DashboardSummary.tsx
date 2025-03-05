@@ -8,6 +8,7 @@ import { AnimatePresence } from "motion/react";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
 import NgnSend from "./send/naira/NgnSend";
 import UsdSend from "./send/usd/UsdSend";
+import Button from "@/components/ui/Button";
 
 const DashboardSummary = () => {
   const { selectedCurrency } = useCurrencyStore();
@@ -45,7 +46,7 @@ const DashboardSummary = () => {
             Total balance
           </p>
           <div className="flex gap-2 items-center">
-            <p className="text-raiz-gray-950 text-[2rem] font-semibold font-monzo leading-[38.40px]">
+            <p className="text-raiz-gray-950 text-[2rem] font-semibold  leading-[38.40px]">
               {showBalance
                 ? `${selectedCurrency.sign}10,000,000.00`
                 : `${selectedCurrency.sign}XXX`}
@@ -65,9 +66,9 @@ const DashboardSummary = () => {
           </div>
         </div>
         <div className="flex gap-4 items-center">
-          <button
+          <Button
             onClick={() => setOpenModal("send")}
-            className="h-10 w-[138px] px-[18px] py-2 bg-raiz-usd-primary rounded-3xl justify-center items-center gap-1.5 inline-flex"
+            className="h-10 w-[138px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
           >
             <svg width="21" height="20" viewBox="0 0 21 20" fill="none">
               <path
@@ -78,10 +79,10 @@ const DashboardSummary = () => {
             <span className="text-[#fcfcfc] text-base font-medium font-brSonoma leading-tight tracking-tight">
               Send
             </span>
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setOpenModal("request")}
-            className="h-10 w-[138px] px-[18px] py-2 bg-raiz-usd-primary rounded-3xl justify-center items-center gap-1.5 inline-flex"
+            className="h-10 w-[138px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
           >
             <svg width="21" height="20" viewBox="0 0 21 20" fill="none">
               <path
@@ -96,10 +97,10 @@ const DashboardSummary = () => {
             <span className="text-[#fcfcfc] text-base font-medium font-brSonoma leading-tight tracking-tight">
               Request
             </span>
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setOpenModal("swap")}
-            className="h-10 w-[138px] px-[18px] py-2 bg-raiz-usd-primary rounded-3xl justify-center items-center gap-1.5 inline-flex"
+            className="h-10 w-[138px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
           >
             <svg width="21" height="20" viewBox="0 0 21 20" fill="none">
               <path
@@ -111,7 +112,7 @@ const DashboardSummary = () => {
             <span className="text-[#fcfcfc] text-base font-medium font-brSonoma leading-tight tracking-tight">
               Swap
             </span>
-          </button>
+          </Button>
         </div>
       </div>
 

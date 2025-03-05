@@ -5,7 +5,7 @@ import React from "react";
 const DocInfoModal = ({ close }: { close: () => void }) => {
   return (
     <Overlay width="375px" close={close}>
-      <div className="flex flex-col  h-full py-8 px-5 font-monzo">
+      <div className="flex flex-col  h-full py-8 px-5 ">
         <div className="flex justify-between items-center">
           <h5 className="text-raiz-gray-950 text-xl font-bold  leading-normal">
             Residential Address
