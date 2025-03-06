@@ -11,12 +11,21 @@ import CreateNgnAcct from "../../app/(dashboard)/_components/createNgnAcct/Creat
 import AddBvnModal from "../../app/(dashboard)/_components/createNgnAcct/AddBvnModal";
 import NgnSuccessModal from "../../app/(dashboard)/_components/createNgnAcct/NgnSuccessModal";
 import { usePathname } from "next/navigation";
-// import { useUser } from "@/lib/hooks/useUser";
+import { useUser } from "@/lib/hooks/useUser";
+// import { useQuery } from "@tanstack/react-query";
+// import { FetchUserRewardsApi } from "@/services/user";
 
 const Header = () => {
   const pathName = usePathname();
-  // const { user } = useUser();
-  // console.log("user", user);
+  const { user } = useUser();
+  console.log("user", user);
+
+  // const { data } = useQuery({
+  //   queryKey: ["user"],
+  //   queryFn: FetchUserRewardsApi,
+  // });
+
+  console.log("data", user);
 
   const [showModal, setShowModal] = useState<
     "notifications" | "rewards" | "selectAcct" | "createNGN" | null

@@ -6,8 +6,9 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import Image from "next/image";
 import OTPInput from "react-otp-input";
 import { useTimer } from "@/lib/hooks/useTimer";
-import { formatTime } from "@/utils";
+
 import Button from "@/components/ui/Button";
+import { formatTime } from "@/utils/helpers";
 
 interface Props {
   email: string;

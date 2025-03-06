@@ -3,7 +3,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import LevelsModal from "./LevelsModal";
 import InviteModal from "./InviteModal";
-import { copyToClipboard } from "@/utils";
+import { copyToClipboard } from "@/utils/helpers";
 import useShare from "@/lib/hooks/useShare";
 import RaizScoreProgress from "@/components/ui/RaizScoreProgress";
 

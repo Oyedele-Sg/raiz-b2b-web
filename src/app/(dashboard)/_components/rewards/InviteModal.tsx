@@ -1,8 +1,8 @@
 import Overlay from "@/components/ui/Overlay";
 import React from "react";
 import Image from "next/image";
-import { copyToClipboard } from "@/utils";
 import useShare from "@/lib/hooks/useShare";
+import { copyToClipboard } from "@/utils/helpers";
 
 const InviteModal = ({ close }: { close: () => void }) => {
   const referralCode = "KHADARO12";
