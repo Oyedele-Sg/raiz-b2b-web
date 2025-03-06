@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { truncateString } from "@/utils";
+import { truncateString } from "@/utils/helpers";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { NotificationItemProps } from "@/types/misc";

@@ -39,3 +39,8 @@ export const getInitials = (firstName: string, lastName: string): string => {
   const lastInitial = lastName.charAt(0).toUpperCase();
   return `${firstInitial}${lastInitial}`;
 };
+
+export function extractObjectUrlFromSignedUrl(signedUrl: string): string {
+  const url = new URL(signedUrl);
+  return url.origin + url.pathname;
+}

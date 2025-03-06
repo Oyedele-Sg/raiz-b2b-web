@@ -22,3 +22,8 @@ export const UploadProfilePicture = async ({
   );
   return response?.data;
 };
+
+export const FetchUserRewardsApi = async (): Promise<IUser> => {
+  const response = await AuthAxios.get("/business/entities/rewards/points/");
+  return response?.data;
+};

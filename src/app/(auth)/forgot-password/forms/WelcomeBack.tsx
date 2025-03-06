@@ -8,7 +8,7 @@ import InputField from "@/components/ui/InputField";
 import { useMutation } from "@tanstack/react-query";
 import { ILoginPayload, LoginApi } from "@/services/auth";
 import { WelcomUserProps } from "../page";
-import { getInitials } from "@/utils";
+import { getInitials } from "@/utils/helpers";
 
 interface Props {
   setPage: (arg: number) => void;
