@@ -3,7 +3,7 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Image from "next/image";
 import NoRecents from "../../NoRecents";
 import { debounce } from "lodash";
-import { truncateString } from "@/utils";
+import { truncateString } from "@/utils/helpers";
 
 interface Props {
   goBack: () => void;

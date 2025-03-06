@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import OTPInput from "react-otp-input";
-import { formatTime } from "@/utils";
 import { useTimer } from "@/lib/hooks/useTimer";
 import ErrorMessage from "@/components/ui/ErrorMessage";
+import { formatTime } from "@/utils/helpers";
 
 type OtpInputWithTimerProps = {
   value: string;

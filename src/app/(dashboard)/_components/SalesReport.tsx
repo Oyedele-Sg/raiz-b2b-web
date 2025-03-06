@@ -1,7 +1,7 @@
 "use client";
 import LineChart from "@/components/charts/LineChart";
 import { months } from "@/constants/misc";
-import { getLastThreeMonths } from "@/utils";
+import { getLastThreeMonths } from "@/utils/helpers";
 import React, { useState } from "react";
 
 export type PeriodTitle =
