@@ -12,20 +12,16 @@ import AddBvnModal from "../../app/(dashboard)/_components/createNgnAcct/AddBvnM
 import NgnSuccessModal from "../../app/(dashboard)/_components/createNgnAcct/NgnSuccessModal";
 import { usePathname } from "next/navigation";
 import { useUser } from "@/lib/hooks/useUser";
-// import { useQuery } from "@tanstack/react-query";
-// import { FetchUserRewardsApi } from "@/services/user";
+import { useQuery } from "@tanstack/react-query";
+import { FetchUserRewardsApi } from "@/services/user";
 
 const Header = () => {
   const pathName = usePathname();
   const { user } = useUser();
-  console.log("user", user);
-
-  // const { data } = useQuery({
-  //   queryKey: ["user"],
-  //   queryFn: FetchUserRewardsApi,
-  // });
-
-  console.log("data", user);
+  const { data: pointsData } = useQuery({
+    queryKey: ["reward-points"],
+    queryFn: FetchUserRewardsApi,
+  });
 
   const [showModal, setShowModal] = useState<
     "notifications" | "rewards" | "selectAcct" | "createNGN" | null
@@ -46,7 +42,7 @@ const Header = () => {
       case "notifications":
         return <Notifications close={handleCloseModal} />;
       case "rewards":
-        return <Rewards close={handleCloseModal} />;
+        return <Rewards close={handleCloseModal} data={pointsData} />;
       case "createNGN":
         return (
           <CreateNgnAcct
@@ -113,18 +109,18 @@ const Header = () => {
           className="flex gap-2 items-center "
         >
           <Image
-            className="w-10 h-10 rounded-full"
-            src={"/images/pfp.png"}
+            className="w-10 h-10 rounded-full object-cover"
+            src={user?.business_account?.business_image || "/images/pfp.png"}
             alt="profile"
             width={40}
             height={40}
           />
           <div className="flex items-start flex-col gap-1 text-sm font-semibold">
             <p className="text-gray-700 text-sm  font-semibold ">
-              Kaywear Store
+              {`${user?.first_name || ""} ${user?.last_name || ""}`}
             </p>
             <p className="text-gray-600 text-xs xl:text-sm  font-normal">
-              Kaywear@gmail.com
+              {user?.email}
             </p>
           </div>
           <Image src={"/icons/arrow-down.svg"} alt="" width={20} height={20} />
@@ -144,7 +140,7 @@ const Header = () => {
             />
           </svg>
           <span className="text-raiz-gray-950 text-[13px] font-normal  leading-[18.20px]">
-            55
+            {pointsData?.point || 0}
           </span>
         </button>
         <button onClick={() => setShowModal("notifications")}>

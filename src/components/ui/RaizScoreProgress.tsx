@@ -13,7 +13,7 @@ const RaizScoreProgress = () => {
             Senior
           </p>
         </div>
-        <div>
+        <div className="text-right">
           <span className="text-raiz-gray-700 text-xs leading-[18px]">100</span>
           <p className="text-gray-700 text-[13px] font-bold  leading-tight uppercase mt-1">
             Professional
