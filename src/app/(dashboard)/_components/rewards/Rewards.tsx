@@ -147,7 +147,7 @@ const Rewards = ({ close, data }: Props) => {
 
       {/* Level Progress */}
       <div className=" px-3 py-5 opacity-80 bg-[#f1f3fe] rounded-[20px] justify-center  inline-flex flex-col w-full mt-6">
-        <RaizScoreProgress />
+        <RaizScoreProgress value={data?.point || 0} />
         <div className="flex gap-2 items-center mt-6">
           <p className="text-sm font-semibold font-brSonoma leading-[21px]">
             Labels

@@ -260,6 +260,7 @@ const SideLayout = () => {
         <RaizScoreModal
           close={() => setShowRaizScore(false)}
           setShowLevels={setShowLevels}
+          score={pointsData?.point || 0}
         />
       )}
       {navModal === "freeze" && (

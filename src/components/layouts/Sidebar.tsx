@@ -12,8 +12,10 @@ import CreateNgnAcct from "@/app/(dashboard)/_components/createNgnAcct/CreateNgn
 import AddBvnModal from "@/app/(dashboard)/_components/createNgnAcct/AddBvnModal";
 import NgnSuccessModal from "@/app/(dashboard)/_components/createNgnAcct/NgnSuccessModal";
 import LogoutModal from "../modals/LogoutModal";
+import { useUser } from "@/lib/hooks/useUser";
 
 const Sidebar = () => {
+  const { user } = useUser();
   const pathName = usePathname();
   const [showModal, setShowModal] = useState<"acctSetup" | "getNgn" | null>(
     null
@@ -78,65 +80,76 @@ const Sidebar = () => {
         </nav>
         <div>
           {/* Acct setup */}
-          {/* <div className="px-3 xl:px-4 py-5 bg-[#eaecff]/40 rounded-lg flex-col justify-start items-start gap-3 inline-flex">
-            <div className="w-12 h-12 relative bg-[#fcfcfd] rounded-[66.67px] flex items-center justify-center ">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                <path
-                  d="M15.9997 2.66699C12.333 2.66699 9.33301 5.66699 9.33301 9.33366V12.0003H11.9997V9.33366C11.9997 7.13366 13.7997 5.33366 15.9997 5.33366C18.1997 5.33366 19.9997 7.13366 19.9997 9.33366V12.0003H22.6663V9.33366C22.6663 5.66699 19.6663 2.66699 15.9997 2.66699Z"
-                  fill="#424242"
-                />
-                <path
-                  d="M23.9997 29.3333H7.99967C6.53301 29.3333 5.33301 28.1333 5.33301 26.6667V14.6667C5.33301 13.2 6.53301 12 7.99967 12H23.9997C25.4663 12 26.6663 13.2 26.6663 14.6667V26.6667C26.6663 28.1333 25.4663 29.3333 23.9997 29.3333Z"
-                  fill="#FB8C00"
-                />
-                <path
-                  d="M16 18.6665C15.4696 18.6665 14.9609 18.8772 14.5858 19.2523C14.2107 19.6274 14 20.1361 14 20.6665C14 21.1969 14.2107 21.7056 14.5858 22.0807C14.9609 22.4558 15.4696 22.6665 16 22.6665C16.5304 22.6665 17.0391 22.4558 17.4142 22.0807C17.7893 21.7056 18 21.1969 18 20.6665C18 20.1361 17.7893 19.6274 17.4142 19.2523C17.0391 18.8772 16.5304 18.6665 16 18.6665Z"
-                  fill="#C76E00"
-                />
-              </svg>
+          {user?.business_account?.business_verifications[0]
+            .verification_status === "not_started" && (
+            <div className="px-3 xl:px-4 py-5 bg-[#eaecff]/40 rounded-lg flex-col justify-start items-start gap-3 inline-flex">
+              <div className="w-12 h-12 relative bg-[#fcfcfd] rounded-[66.67px] flex items-center justify-center ">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                  <path
+                    d="M15.9997 2.66699C12.333 2.66699 9.33301 5.66699 9.33301 9.33366V12.0003H11.9997V9.33366C11.9997 7.13366 13.7997 5.33366 15.9997 5.33366C18.1997 5.33366 19.9997 7.13366 19.9997 9.33366V12.0003H22.6663V9.33366C22.6663 5.66699 19.6663 2.66699 15.9997 2.66699Z"
+                    fill="#424242"
+                  />
+                  <path
+                    d="M23.9997 29.3333H7.99967C6.53301 29.3333 5.33301 28.1333 5.33301 26.6667V14.6667C5.33301 13.2 6.53301 12 7.99967 12H23.9997C25.4663 12 26.6663 13.2 26.6663 14.6667V26.6667C26.6663 28.1333 25.4663 29.3333 23.9997 29.3333Z"
+                    fill="#FB8C00"
+                  />
+                  <path
+                    d="M16 18.6665C15.4696 18.6665 14.9609 18.8772 14.5858 19.2523C14.2107 19.6274 14 20.1361 14 20.6665C14 21.1969 14.2107 21.7056 14.5858 22.0807C14.9609 22.4558 15.4696 22.6665 16 22.6665C16.5304 22.6665 17.0391 22.4558 17.4142 22.0807C17.7893 21.7056 18 21.1969 18 20.6665C18 20.1361 17.7893 19.6274 17.4142 19.2523C17.0391 18.8772 16.5304 18.6665 16 18.6665Z"
+                    fill="#C76E00"
+                  />
+                </svg>
+              </div>
+              <p className="text-raiz-gray-900 text-sm font-bold  leading-[16.80px]">
+                Complete account set up{" "}
+              </p>
+              <p className="text-gray-600 text-sm font-normal  leading-tight">
+                Complete Account Set Up and Get unlimited access{" "}
+              </p>
+              <div className="flex items-center gap-3">
+                <Link
+                  href={"#"}
+                  className="text-raiz-gray-500 text-xs xl:text-sm font-bold  leading-[16.80px]"
+                >
+                  Learn more
+                </Link>
+                <button
+                  onClick={() => setShowModal("acctSetup")}
+                  className="text-primary2 text-xs xl:text-sm font-bold  leading-[16.80px]"
+                >
+                  Upgrade
+                </button>
+              </div>
             </div>
-            <p className="text-raiz-gray-900 text-sm font-bold  leading-[16.80px]">
-              Complete account set up{" "}
-            </p>
-            <p className="text-gray-600 text-sm font-normal  leading-tight">
-              Complete Account Set Up and Get unlimited access{" "}
-            </p>
-            <div className="flex items-center gap-3">
-              <Link
-                href={"#"}
-                className="text-raiz-gray-500 text-xs xl:text-sm font-bold  leading-[16.80px]"
-              >
-                Learn more
-              </Link>
-              <button
-                onClick={() => setShowModal("acctSetup")}
-                className="text-primary2 text-xs xl:text-sm font-bold  leading-[16.80px]"
-              >
-                Upgrade
-              </button>
-            </div>
-          </div> */}
+          )}
 
           {/* Get NGN aza */}
-          <div className="px-3 xl:px-4 py-5 bg-[#eaecff]/40 rounded-lg flex-col justify-start items-start gap-3 inline-flex">
-            <div className="w-12 h-12 relative bg-[#fcfcfd] rounded-[66.67px] flex items-center justify-center ">
-              <Image src={"/icons/ngn.svg"} width={32} height={32} alt="NGN" />
-            </div>
-            <h5 className="text-raiz-gray-900 text-sm font-bold  leading-[16.80px]">
-              Get a Naira (NGN) Account
-            </h5>
-            <p className="text-gray-600 text-sm font-normal  leading-tight">
-              Manage funds and make transactions in Naira, simplifying local
-              payments and daily finances.
-            </p>
+          {user?.business_account?.business_verifications[0]
+            .verification_status !== "not_started" && (
+            <div className="px-3 xl:px-4 py-5 bg-[#eaecff]/40 rounded-lg flex-col justify-start items-start gap-3 inline-flex">
+              <div className="w-12 h-12 relative bg-[#fcfcfd] rounded-[66.67px] flex items-center justify-center ">
+                <Image
+                  src={"/icons/ngn.svg"}
+                  width={32}
+                  height={32}
+                  alt="NGN"
+                />
+              </div>
+              <h5 className="text-raiz-gray-900 text-sm font-bold  leading-[16.80px]">
+                Get a Naira (NGN) Account
+              </h5>
+              <p className="text-gray-600 text-sm font-normal  leading-tight">
+                Manage funds and make transactions in Naira, simplifying local
+                payments and daily finances.
+              </p>
 
-            <button
-              onClick={() => setShowModal("getNgn")}
-              className="text-primary2 text-sm font-bold  leading-[16.80px]"
-            >
-              Get Naira Wallet
-            </button>
-          </div>
+              <button
+                onClick={() => setShowModal("getNgn")}
+                className="text-primary2 text-sm font-bold  leading-[16.80px]"
+              >
+                Get Naira Wallet
+              </button>
+            </div>
+          )}
 
           {/* Logout */}
           {/* <div className="flex gap-[15px] justify-between mt-6 w-full pb-5"> */}

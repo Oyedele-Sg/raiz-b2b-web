@@ -42,3 +42,13 @@ export interface IFetchRewardsParams {
   limit: number;
   page: number;
 }
+
+export interface IResetPinPayload {
+  otp: string;
+  password: string;
+}
+
+export interface IChangePasswordPayload {
+  old_password: string;
+  new_password: string;
+}

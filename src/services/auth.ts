@@ -1,5 +1,6 @@
 import { AuthAxios } from "@/lib/authAxios";
 import { PublicAxios } from "@/lib/publicAxios";
+import { IChangePasswordPayload, IResetPinPayload } from "@/types/services";
 
 export interface ILoginPayload {
   email: string;
@@ -84,5 +85,28 @@ export const LogoutApi = async (token: string) => {
       token,
     },
   });
+  return response?.data;
+};
+
+export async function ForgotTransactionPinApi() {
+  const response = await AuthAxios.post(
+    "/business/auth/transaction-pin/forgot/"
+  );
+  return response.data;
+}
+
+export async function ResetTransactionPinApi(data: IResetPinPayload) {
+  const response = await AuthAxios.patch(
+    "/business/auth/transaction-pin/reset/",
+    data
+  );
+  return response.data;
+}
+
+export const ChangePasswordApi = async (data: IChangePasswordPayload) => {
+  const response = await AuthAxios.patch(
+    "/business/auth/password/change/",
+    data
+  );
   return response?.data;
 };
