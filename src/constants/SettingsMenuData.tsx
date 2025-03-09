@@ -25,7 +25,7 @@ export const SettingsMenus = [
   },
   {
     name: "Login and Security",
-    link: "/settings/login&security",
+    link: "/settings/login-security",
     icon: () => (
       <svg
         width="40"

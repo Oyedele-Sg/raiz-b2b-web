@@ -13,10 +13,12 @@ import AddBvnModal from "@/app/(dashboard)/_components/createNgnAcct/AddBvnModal
 import NgnSuccessModal from "@/app/(dashboard)/_components/createNgnAcct/NgnSuccessModal";
 import LogoutModal from "../modals/LogoutModal";
 import { useUser } from "@/lib/hooks/useUser";
-import PersonaReact from "persona-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PersonaVerificationApi } from "@/services/user";
 import { toast } from "sonner";
+import dynamic from "next/dynamic";
+// Dynamically import PersonaReact with SSR disabled
+const PersonaReact = dynamic(() => import("persona-react"), { ssr: false });
 
 const Sidebar = () => {
   const { user } = useUser();
