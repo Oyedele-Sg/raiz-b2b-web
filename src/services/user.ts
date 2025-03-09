@@ -56,3 +56,12 @@ export const updateUsernameApi = async (username: string) => {
   );
   return response?.data;
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const PersonaVerificationApi = async (data: any) => {
+  const response = await AuthAxios.post(
+    "/business/account_user/verifications/persona/",
+    data
+  );
+  return response?.data;
+};

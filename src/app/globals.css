@@ -17,3 +17,8 @@
 body {
   font-family: var(--font-monzo);
 }
+
+.persona-widget__iframe {
+  height: 100%;
+  width: 100%;
+}

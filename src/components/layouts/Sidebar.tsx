@@ -6,13 +6,17 @@ import Link from "next/link";
 import { ISidebarMenuItem } from "@/types/misc";
 import { SidebarMenus } from "@/constants/SidebarMenuData";
 import SideModalWrapper from "@/app/(dashboard)/_components/SideModalWrapper";
-import AccountSetup from "@/app/(dashboard)/_components/account-setup/AccountSetup";
+// import AccountSetup from "@/app/(dashboard)/_components/account-setup/AccountSetup";
 import { AnimatePresence } from "motion/react";
 import CreateNgnAcct from "@/app/(dashboard)/_components/createNgnAcct/CreateNgnAcct";
 import AddBvnModal from "@/app/(dashboard)/_components/createNgnAcct/AddBvnModal";
 import NgnSuccessModal from "@/app/(dashboard)/_components/createNgnAcct/NgnSuccessModal";
 import LogoutModal from "../modals/LogoutModal";
 import { useUser } from "@/lib/hooks/useUser";
+import PersonaReact from "persona-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { PersonaVerificationApi } from "@/services/user";
+import { toast } from "sonner";
 
 const Sidebar = () => {
   const { user } = useUser();
@@ -23,15 +27,74 @@ const Sidebar = () => {
   const [showBvnModal, setShowBvnModal] = useState(false);
   const [successful, setSuccessful] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isIframeLoading, setIsIframeLoading] = useState(true);
 
   const handleCloseModal = () => {
     setShowModal(null);
+    setIsIframeLoading(true);
+  };
+
+  const qc = useQueryClient();
+  const PersonaMutation = useMutation({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mutationFn: (data: any) => PersonaVerificationApi(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["user"] });
+      handleCloseModal();
+    },
+  });
+
+  const InlineInquiry = () => {
+    return (
+      <div className="h-full relative">
+        {isIframeLoading && (
+          <div className="absolute inset-0 flex items-center justify-center ">
+            <div
+              aria-label="Loading verification"
+              className="loader animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-primary2"
+            />
+          </div>
+        )}
+        <PersonaReact
+          templateId={process.env.NEXT_PUBLIC_PERSONA_TEMPLATE_ID}
+          environmentId={process.env.NEXT_PUBLIC_PERSONA_ENVIRONMENT_ID}
+          referenceId={user?.business_account?.entity_id}
+          onLoad={() => {
+            setIsIframeLoading(false);
+          }}
+          onComplete={({ inquiryId, fields }) => {
+            const payload = {
+              ...fields,
+              inquiry_id: {
+                type: "string",
+                value: inquiryId,
+              },
+            };
+            PersonaMutation.mutate(payload);
+            console.log(`Payload`, payload);
+          }}
+          onCancel={() => {
+            toast.warning("Your verification was cancelled");
+            handleCloseModal();
+          }}
+          onError={() => {
+            toast.error("Failed to load verification. Please try again.");
+            setIsIframeLoading(false);
+          }}
+        />
+      </div>
+    );
   };
 
   const displayModal = () => {
     switch (showModal) {
       case "acctSetup":
-        return <AccountSetup close={handleCloseModal} />;
+        // return <AccountSetup close={handleCloseModal} />;
+        return (
+          <div className="h-full">
+            <InlineInquiry />
+          </div>
+        );
       case "getNgn":
         return (
           <CreateNgnAcct
