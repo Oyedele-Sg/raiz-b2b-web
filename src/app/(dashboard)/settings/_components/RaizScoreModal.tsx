@@ -2,6 +2,7 @@ import Overlay from "@/components/ui/Overlay";
 import RaizScoreProgress from "@/components/ui/RaizScoreProgress";
 import React, { Dispatch, SetStateAction } from "react";
 import Image from "next/image";
+import { getTierInfo } from "@/utils/helpers";
 
 interface Props {
   setShowLevels: Dispatch<SetStateAction<boolean>>;
@@ -10,6 +11,7 @@ interface Props {
 }
 
 const RaizScoreModal = ({ close, setShowLevels, score }: Props) => {
+  const { currentTier } = getTierInfo(score);
   const handleOpenLevels = () => {
     setShowLevels(true);
     close();
@@ -31,7 +33,7 @@ const RaizScoreModal = ({ close, setShowLevels, score }: Props) => {
             />
           </svg>
           <p className="uppercase text-center text-[#dd9d43] text-xs font-semibold leading-none mt-[11px]">
-            Senior
+            {currentTier.level}
           </p>
           <p className="text-center text-raiz-gray-950 text-[23px] font-bold leading-7">
             {score}

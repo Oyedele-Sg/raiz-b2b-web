@@ -1,13 +1,16 @@
 "use client";
 import React from "react";
 import { ProgressBar } from "./Progressbar";
+import { getTierInfo } from "@/utils/helpers";
 
 interface Props {
   value: number;
 }
 
-const RaizScoreProgress = ({ value = 0 }: Props) => {
-  const progressValue = value / 100;
+const RaizScoreProgress = ({ value }: Props) => {
+  const { currentTier, nextTier } = getTierInfo(value);
+
+  const progressValue = (value / nextTier.min) * 100;
   return (
     <div className="w-full">
       <ProgressBar
@@ -22,13 +25,15 @@ const RaizScoreProgress = ({ value = 0 }: Props) => {
             {value}
           </span>
           <p className="text-[#dd9d43] text-[13px] font-bold  leading-tight uppercase mt-1">
-            Senior
+            {currentTier.level}
           </p>
         </div>
         <div className="text-right">
-          <span className="text-raiz-gray-700 text-xs leading-[18px]">100</span>
+          <span className="text-raiz-gray-700 text-xs leading-[18px]">
+            {nextTier.min}
+          </span>
           <p className="text-gray-700 text-[13px] font-bold  leading-tight uppercase mt-1">
-            Professional
+            {nextTier.level}
           </p>
         </div>
       </div>

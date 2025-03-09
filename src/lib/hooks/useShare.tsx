@@ -3,14 +3,14 @@ import { useCallback } from "react";
 const useShare = (referralCode: string) => {
   const shareOnWhatsApp = useCallback(() => {
     const message = encodeURIComponent(
-      `Hi there,  Use my referral code: ${referralCode} to get raized!`
+      `Check out Raiz App: I use it to get a USD bank account, virtual card and send money around the world. Get it at https://raizapp.onelink.me/RiOx/webdirect. Use my referral code ${referralCode} and get reward points you can redeem when you transfer`
     );
     window.open(`https://wa.me/?text=${message}`, "_blank");
   }, [referralCode]);
 
   const shareOnIMessage = useCallback(() => {
     const message = encodeURIComponent(
-      `Use my referral code: ${referralCode} to join!`
+      `Check out Raiz App: I use it to get a USD bank account, virtual card and send money around the world. Get it at https://raizapp.onelink.me/RiOx/webdirect. Use my referral code ${referralCode} and get reward points you can redeem when you transfer`
     );
     window.open(`sms:&body=${message}`, "_blank");
   }, [referralCode]);
@@ -20,7 +20,7 @@ const useShare = (referralCode: string) => {
       try {
         await navigator.share({
           title: "Share Referral Code",
-          text: `Use my referral code: ${referralCode} to join!`,
+          text: `Check out Raiz App: I use it to get a USD bank account, virtual card and send money around the world. Get it at https://raizapp.onelink.me/RiOx/webdirect. Use my referral code ${referralCode} and get reward points you can redeem when you transfer`,
           url: window.location.href,
         });
       } catch (err) {

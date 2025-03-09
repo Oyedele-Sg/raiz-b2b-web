@@ -104,3 +104,9 @@ export interface IPagination {
   previous_page: number;
   total_pages: number;
 }
+
+export interface ITiers {
+  level: string;
+  min: number;
+  max: number;
+}
