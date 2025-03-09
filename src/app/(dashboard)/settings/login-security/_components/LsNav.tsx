@@ -1,15 +1,19 @@
+"use client";
 import React from "react";
 import { PartChildProps } from "../../help&support/_components/HelpSupportNav";
 import { loginSecurityData } from "@/constants/SettingsMenuData";
 import Image from "next/image";
 
 const LsNav = ({ setPart }: PartChildProps) => {
+  const handleNavigate = (part: number) => {
+    setPart(part);
+  };
   return (
     <div className=" flex flex-col gap-5 w-full">
       {loginSecurityData.map((data, index) => {
         return (
           <button
-            onClick={() => setPart(data.part)}
+            onClick={() => handleNavigate(data.part)}
             key={index}
             className="flex justify-between items-center"
           >

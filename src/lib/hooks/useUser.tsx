@@ -17,7 +17,6 @@ export const useUser = () => {
   } = useQuery<IUser, AxiosError>({
     queryKey: ["user"],
     queryFn: FetchUserApi,
-    retry: 2,
   });
 
   useEffect(() => {

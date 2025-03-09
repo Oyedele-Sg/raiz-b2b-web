@@ -95,3 +95,18 @@ export interface IEntityAddress {
   updated_at: string;
   country: ICountry;
 }
+
+export interface IPagination {
+  total_results: number;
+  current_results_on_page: number;
+  current_page: number;
+  next_page: number;
+  previous_page: number;
+  total_pages: number;
+}
+
+export interface ITiers {
+  level: string;
+  min: number;
+  max: number;
+}

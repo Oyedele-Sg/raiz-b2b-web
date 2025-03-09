@@ -8,28 +8,71 @@ import Image from "next/image";
 import CountryCodeModal from "@/app/(auth)/register/_components/CountryCodeModal";
 import Button from "@/components/ui/Button";
 import { useSearchParams } from "next/navigation";
+import { useUser } from "@/lib/hooks/useUser";
+import { FetchCountriesWithIdApi } from "@/services/utils";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { updateUsernameApi } from "@/services/user";
+import { toast } from "sonner";
+import { z } from "zod";
+import { toFormikValidationSchema } from "zod-formik-adapter";
+
+const validationSchema = z.object({
+  raiz_tag: z
+    .string()
+    .min(4, { message: "Raiz Tag must be at least 4 characters" })
+    .regex(/^[a-zA-Z0-9_.]+$/, {
+      message:
+        "Raiz Tag can only contain letters, numbers, underscores, and dots",
+    }),
+});
 
 const Settingspage = () => {
+  const { user } = useUser();
   const [showCountry, setShowCountry] = useState(false);
   const searchParams = useSearchParams();
   const focus = searchParams.get("focus");
-  console.log("sssss", focus);
+
+  const qc = useQueryClient();
+  const {
+    data: countryData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["country", user?.business_account?.entity?.country_id],
+    queryFn: () =>
+      FetchCountriesWithIdApi(user?.business_account?.entity?.country_id || ""),
+    enabled: !!user?.business_account?.entity?.country_id,
+  });
+
+  const UpdateRaizTagMutation = useMutation({
+    mutationFn: (username: string) => updateUsernameApi(username),
+    onSuccess: (response) => {
+      toast.success(response?.message);
+      qc.invalidateQueries({ queryKey: ["user"] });
+    },
+  });
 
   const initialValues = {
-    business_name: "Khadijah Arowosegbe",
-    raiz_tag: "@dija001",
-    email: "Khadijaharowosegbe16@gmail.com",
-    phone_number: "+2348130000000",
-    address: "3,balogun street, Ikeja, Lagos State",
-    country_id: 1,
-    country_name: "Nigeria",
+    business_name: user?.business_account?.business_name || "",
+    raiz_tag: user?.business_account?.username || "",
+    email: user?.email || "",
+    phone_number: user?.business_account?.business_phone_number || "",
+    address: "",
+    country_id: user?.business_account?.entity?.country_id || "",
+    country_name: countryData?.country_name || "",
   };
   const formik = useFormik({
     initialValues,
-    onSubmit: (values) => {
-      console.log(values);
+    validationSchema: toFormikValidationSchema(validationSchema),
+    onSubmit: () => {
+      handleSubmit();
     },
+    enableReinitialize: true,
   });
+
+  const handleSubmit = () => {
+    UpdateRaizTagMutation.mutate(formik.values.raiz_tag);
+  };
   return (
     <section className="gap-10 flex w-full  ">
       <RouteSectionInfo
@@ -62,44 +105,46 @@ const Settingspage = () => {
       >
         <InputField
           label="Business Name"
-          name="business_name"
-          placeholder="Khadijah Arowosegbe"
+          className="!text-raiz-gray-400"
           icon="/icons/lock.svg"
           disabled
+          {...formik.getFieldProps("business_name")}
         />
         <InputField
           label="Raiz Tag"
-          name="raiz_tag"
-          placeholder="@dija001"
+          placeholder="@username"
           icon="/icons/pen.svg"
           autoFocus={focus === "raiz-tag" ? true : false}
+          {...formik.getFieldProps("raiz_tag")}
+          className="!text-raiz-gray-400"
+          errorMessage={formik.touched.raiz_tag && formik.errors.raiz_tag}
         />
         <InputField
           type="email"
           label="Work Email"
-          name="email"
-          placeholder="Khadijaharowosegbe16@gmail.com"
+          className="!text-raiz-gray-400"
           icon="/icons/lock.svg"
           disabled
+          {...formik.getFieldProps("email")}
         />
         <InputField
           label="Phone Number"
-          name="phone_number"
-          placeholder="+2348130000000"
           icon="/icons/lock.svg"
           disabled
+          {...formik.getFieldProps("phone_number")}
+          className="!text-raiz-gray-400"
         />
         <InputField
           label="Address"
-          name="address"
-          placeholder="3,balogun street, Ikeja, Lagos State"
           icon="/icons/lock.svg"
           disabled
+          {...formik.getFieldProps("address")}
         />
         <div className="">
           <InputLabel content="Country" />
           <button
             type="button"
+            disabled
             onClick={() => setShowCountry(true)}
             className="flex justify-between w-full h-[50px] p-[15px] bg-raiz-gray-100 rounded-lg  items-center"
           >
@@ -112,15 +157,18 @@ const Settingspage = () => {
                     }
                        text-sm font-normal  leading-tight`}
             >
-              {formik.values.country_id && formik.values.country_name
-                ? formik.values?.country_name
-                : "Nigeria"}
+              {isLoading
+                ? "Loading..."
+                : error
+                ? "Error fetching country"
+                : formik.values.country_name || ""}
             </span>
             <Image
-              src={"/icons/arrow-down.svg"}
+              src={"/icons/lock.svg"}
               alt="dropdown"
-              width={16}
-              height={16}
+              className="w-6 h-6"
+              width={20}
+              height={20}
             />
           </button>
         </div>
@@ -131,7 +179,16 @@ const Settingspage = () => {
             info, please reach out to customer support.
           </p>
         </div>
-        <Button className="mt-5">Save</Button>
+        <Button
+          loading={UpdateRaizTagMutation.isPending}
+          disabled={
+            UpdateRaizTagMutation.isPending || !formik.dirty || !formik.isValid
+          }
+          type="submit"
+          className="mt-5"
+        >
+          Save
+        </Button>
       </form>
       {showCountry && (
         <CountryCodeModal close={() => setShowCountry(false)} formik={formik} />
