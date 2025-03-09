@@ -7,6 +7,10 @@ import InputField from "@/components/ui/InputField";
 import Button from "@/components/ui/Button";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
+import { useMutation } from "@tanstack/react-query";
+import { IChangePasswordPayload } from "@/types/services";
+import { ChangePasswordApi } from "@/services/auth";
+import { toast } from "sonner";
 
 const validationSchema = z
   .object({
@@ -39,6 +43,15 @@ const ResetPassword = ({ setPart }: PartChildProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
+
+  const ChangePasswordMutation = useMutation({
+    mutationFn: (data: IChangePasswordPayload) => ChangePasswordApi(data),
+    onSuccess: (response) => {
+      toast.success(response?.message);
+      formik.resetForm();
+    },
+  });
+
   const formik = useFormik({
     initialValues: {
       oldPassword: "",
@@ -47,7 +60,11 @@ const ResetPassword = ({ setPart }: PartChildProps) => {
     },
     validationSchema: toFormikValidationSchema(validationSchema),
     onSubmit: (values) => {
-      console.log(values);
+      const payload: IChangePasswordPayload = {
+        old_password: values.oldPassword,
+        new_password: values.password,
+      };
+      ChangePasswordMutation.mutate(payload);
     },
   });
   return (
@@ -109,7 +126,13 @@ const ResetPassword = ({ setPart }: PartChildProps) => {
             placeholder="Confirm your new password"
           />
         </div>
-        <Button disabled={!formik.isValid || !formik.dirty}>
+        <Button
+          loading={ChangePasswordMutation.isPending}
+          type="submit"
+          disabled={
+            !formik.isValid || !formik.dirty || ChangePasswordMutation.isPending
+          }
+        >
           Submit Changes
         </Button>
       </form>

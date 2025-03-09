@@ -9,11 +9,11 @@ const HelpSupport = () => {
   const displayComponent = () => {
     switch (part) {
       case 0:
-        return <HelpSupportNav setPart={setPart} />;
+        return <HelpSupportNav setPart={setPart} part={part} />;
       case 1:
-        return <SocialMedia setPart={setPart} />;
+        return <SocialMedia setPart={setPart} part={part} />;
       default:
-        return <HelpSupportNav setPart={setPart} />;
+        return <HelpSupportNav setPart={setPart} part={part} />;
     }
   };
   return (

@@ -1,24 +1,62 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RouteSectionInfo from "../_components/RouteSectionInfo";
 import LsNav from "./_components/LsNav";
 import ResetPassword from "./_components/ResetPassword";
 import ChangeTransactionPin from "./_components/ChangeTransactionPin";
+import { useMutation } from "@tanstack/react-query";
+import { ForgotTransactionPinApi } from "@/services/auth";
 
 const LoginSecurityPage = () => {
   const [part, setPart] = useState(0);
+  const [proceed, setProceed] = useState(false);
+
+  const ForgotPinMutation = useMutation({
+    mutationFn: ForgotTransactionPinApi,
+    onSuccess: () => {
+      setProceed(true);
+    },
+  });
+
+  useEffect(() => {
+    if (part === 2) {
+      ForgotPinMutation.mutate();
+    }
+  }, [part]);
+
+  useEffect(() => {
+    if (ForgotPinMutation.isError) {
+      setPart(0);
+    }
+  }, [ForgotPinMutation.isError]);
+
   const displayComponent = () => {
     switch (part) {
       case 0:
-        return <LsNav setPart={setPart} />;
+        return <LsNav setPart={setPart} part={part} />;
       case 1:
-        return <ResetPassword setPart={setPart} />;
+        return <ResetPassword setPart={setPart} part={part} />;
       case 2:
-        return <ChangeTransactionPin setPart={setPart} />;
+        return proceed ? (
+          <ChangeTransactionPin setPart={setPart} part={part} />
+        ) : (
+          <div className="flex flex-col items-center h-full">
+            <p className="text-lg">Processing your request...</p>
+            {ForgotPinMutation.isPending && (
+              <span className="mt-2">Loading...</span>
+            )}
+            {ForgotPinMutation.isError && (
+              <span className="mt-2 text-red-500">
+                Error processing request. Please try again.
+              </span>
+            )}
+          </div>
+        );
       default:
-        return <LsNav setPart={setPart} />;
+        return <LsNav setPart={setPart} part={part} />;
     }
   };
+
   return (
     <section className="gap-10 flex h-full w-full">
       <RouteSectionInfo

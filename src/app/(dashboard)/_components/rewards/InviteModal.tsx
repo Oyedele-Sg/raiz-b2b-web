@@ -4,8 +4,13 @@ import Image from "next/image";
 import useShare from "@/lib/hooks/useShare";
 import { copyToClipboard } from "@/utils/helpers";
 
-const InviteModal = ({ close }: { close: () => void }) => {
-  const referralCode = "KHADARO12";
+const InviteModal = ({
+  close,
+  referralCode,
+}: {
+  close: () => void;
+  referralCode: string;
+}) => {
   const { shareOnWhatsApp, shareOnIMessage, shareOnAll } =
     useShare(referralCode);
   return (

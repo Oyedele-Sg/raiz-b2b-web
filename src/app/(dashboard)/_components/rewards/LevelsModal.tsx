@@ -1,36 +1,6 @@
 import React from "react";
 import Overlay from "@/components/ui/Overlay";
-
-const levelsArr = [
-  {
-    name: "Amateur",
-    point: 25,
-  },
-  {
-    name: "Senior",
-    point: 50,
-  },
-  {
-    name: "Professional",
-    point: 100,
-  },
-  {
-    name: "Leader",
-    point: 200,
-  },
-  {
-    name: "Expert",
-    point: 400,
-  },
-  {
-    name: "Master",
-    point: 750,
-  },
-  {
-    name: "Veteran",
-    point: 1000,
-  },
-];
+import { tiers } from "@/constants/misc";
 
 const LevelsModal = ({ close }: { close: () => void }) => {
   return (
@@ -61,18 +31,18 @@ const LevelsModal = ({ close }: { close: () => void }) => {
           </p>
         </div>
         <div className="flex flex-col gap-[15px] m-4">
-          {levelsArr.map((level, index) => (
+          {tiers.map((level, index) => (
             <div
-              className={`flex w-full justify-between items-center  ${
-                index + 1 !== levelsArr.length
+              className={`flex w-full justify-between items-center ${
+                index + 1 !== tiers.length
                   ? "pb-3 border-b border-gray-200 "
                   : ""
-              } `}
+              }`}
               key={index}
             >
-              <p className="text-[13px] leading-tight">{level.name}</p>
+              <p className="text-[13px] leading-tight">{level.level}</p>
               <p className="text-sm font-semibold font-brSonoma leading-[21px]">
-                {level.point} pts
+                {level.max} pts
               </p>
             </div>
           ))}

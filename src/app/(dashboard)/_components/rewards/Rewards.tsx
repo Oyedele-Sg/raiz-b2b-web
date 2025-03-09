@@ -6,11 +6,18 @@ import InviteModal from "./InviteModal";
 import { copyToClipboard } from "@/utils/helpers";
 import useShare from "@/lib/hooks/useShare";
 import RaizScoreProgress from "@/components/ui/RaizScoreProgress";
+import { IRewardPoint } from "@/types/services";
+import RewardsActivities from "./RewardsActivities";
 
-const Rewards = ({ close }: { close: () => void }) => {
+interface Props {
+  data?: IRewardPoint;
+  close: () => void;
+}
+
+const Rewards = ({ close, data }: Props) => {
   const [showLevelsModal, setShowLevelsModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
-  const referralCode = "KHADARO12";
+  const referralCode = data?.referral_code || "";
   const { shareOnWhatsApp, shareOnIMessage, shareOnAll } =
     useShare(referralCode);
   return (
@@ -89,7 +96,7 @@ const Rewards = ({ close }: { close: () => void }) => {
             height={48}
           />
           <p className="text-raiz-gray-100 text-xl font-bold leading-normal mt-2.5">
-            24,000pt
+            {data?.point || 0}pt
           </p>
           <p className="text-raiz-gray-100 text-[15px] font-normal leading-[21px] mt-1">
             Reward points
@@ -140,7 +147,7 @@ const Rewards = ({ close }: { close: () => void }) => {
 
       {/* Level Progress */}
       <div className=" px-3 py-5 opacity-80 bg-[#f1f3fe] rounded-[20px] justify-center  inline-flex flex-col w-full mt-6">
-        <RaizScoreProgress />
+        <RaizScoreProgress value={data?.point || 0} />
         <div className="flex gap-2 items-center mt-6">
           <p className="text-sm font-semibold font-brSonoma leading-[21px]">
             Labels
@@ -161,111 +168,15 @@ const Rewards = ({ close }: { close: () => void }) => {
 
       {/* Activity */}
 
-      <div className="mt-5">
-        <div className="flex justify-between  items-center mb-4">
-          <h5 className="text-raiz-gray-900 text-[15px] font-semibold  leading-[21px]">
-            Activity
-          </h5>
-          <button className="">
-            <Image
-              src={"/icons/arrow-right.svg"}
-              alt=""
-              width={18}
-              height={18}
-            />
-          </button>
-        </div>
-
-        <div className="flex flex-col gap-6">
-          {/* map */}
-          <div className="flex justify-between ">
-            <div className="flex gap-2.5 items-center">
-              <Image
-                className="h-12 w-12 rounded-[48px]"
-                src={"/images/pfp.png"}
-                alt="pfp"
-                width={48}
-                height={48}
-              />
-              <div className="">
-                <p className="text-raiz-gray-950 text-sm font-semibold">
-                  Desirae Bergson
-                </p>
-                <p className="text-raiz-gray-950 text-xs opacity-50 leading-[15px]">
-                  18 Jun 2023 @ 2:31 PM
-                </p>
-              </div>
-            </div>
-            <div>
-              <p className="text-[#e5890c] text-sm font-semibold  leading-tight">
-                23,000pt
-              </p>
-              <p className="text-[#19151e] text-xs font-normal  leading-[18px]">
-                1000pt
-              </p>
-            </div>
-          </div>
-          <div className="flex justify-between ">
-            <div className="flex gap-2.5 items-center">
-              <Image
-                className="h-12 w-12 rounded-[48px]"
-                src={"/images/pfp.png"}
-                alt="pfp"
-                width={48}
-                height={48}
-              />
-              <div className="">
-                <p className="text-raiz-gray-950 text-sm font-semibold">
-                  Desirae Bergson
-                </p>
-                <p className="text-raiz-gray-950 text-xs opacity-50 leading-[15px]">
-                  18 Jun 2023 @ 2:31 PM
-                </p>
-              </div>
-            </div>
-            <div>
-              <p className="text-[#e5890c] text-sm font-semibold  leading-tight">
-                23,000pt
-              </p>
-              <p className="text-[#19151e] text-xs font-normal  leading-[18px]">
-                1000pt
-              </p>
-            </div>
-          </div>
-          <div className="flex justify-between ">
-            <div className="flex gap-2.5 items-center">
-              <Image
-                className="h-12 w-12 rounded-[48px]"
-                src={"/images/pfp.png"}
-                alt="pfp"
-                width={48}
-                height={48}
-              />
-              <div className="">
-                <p className="text-raiz-gray-950 text-sm font-semibold">
-                  Desirae Bergson
-                </p>
-                <p className="text-raiz-gray-950 text-xs opacity-50 leading-[15px]">
-                  18 Jun 2023 @ 2:31 PM
-                </p>
-              </div>
-            </div>
-            <div>
-              <p className="text-[#e5890c] text-sm font-semibold  leading-tight">
-                23,000pt
-              </p>
-              <p className="text-[#19151e] text-xs font-normal  leading-[18px]">
-                1000pt
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <RewardsActivities />
       {showLevelsModal && (
         <LevelsModal close={() => setShowLevelsModal(false)} />
       )}
       {showInviteModal && (
-        <InviteModal close={() => setShowInviteModal(false)} />
+        <InviteModal
+          close={() => setShowInviteModal(false)}
+          referralCode={referralCode}
+        />
       )}
     </div>
   );

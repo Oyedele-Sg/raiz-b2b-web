@@ -1,3 +1,5 @@
+import { ITiers } from "@/types/misc";
+
 export const months = [
   "Jan",
   "Feb",
@@ -57,3 +59,13 @@ export const ACCOUNT_CURRENCIES = {
   USD: { name: "USD", sign: "$" } as const,
   NGN: { name: "NGN", sign: "₦" } as const,
 } as const;
+
+export const tiers: ITiers[] = [
+  { level: "Amateur ", min: 0, max: 24 },
+  { level: "Senior  ", min: 25, max: 49 },
+  { level: "Professional", min: 50, max: 99 },
+  { level: "Leader", min: 100, max: 199 },
+  { level: "Expert", min: 200, max: 399 },
+  { level: "Master", min: 400, max: 749 },
+  { level: "Veteran", min: 750, max: 999 },
+];
