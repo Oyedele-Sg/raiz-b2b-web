@@ -52,3 +52,7 @@ export interface IChangePasswordPayload {
   old_password: string;
   new_password: string;
 }
+
+export interface ITransactionPinPayload {
+  transaction_pin: string;
+}

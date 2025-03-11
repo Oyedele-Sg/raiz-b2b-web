@@ -28,7 +28,7 @@ export interface IBusinessVerification {
   is_phone_verified: boolean;
   is_address_verified: boolean;
   is_document_verified: boolean;
-  verification_status: string;
+  verification_status: "not_started" | "pending" | "completed" | "failed";
   business_account_id: string;
   business_verification_id: string;
 }
