@@ -17,15 +17,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PersonaVerificationApi } from "@/services/user";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
+import SetTransactionPin from "@/app/(dashboard)/_components/transaction-pin/SetTransactionPin";
 // Dynamically import PersonaReact with SSR disabled
 const PersonaReact = dynamic(() => import("persona-react"), { ssr: false });
 
 const Sidebar = () => {
   const { user } = useUser();
   const pathName = usePathname();
-  const [showModal, setShowModal] = useState<"acctSetup" | "getNgn" | null>(
-    null
-  );
+  const [showModal, setShowModal] = useState<
+    "acctSetup" | "getNgn" | "set-pin" | null
+  >(null);
   const [showBvnModal, setShowBvnModal] = useState(false);
   const [successful, setSuccessful] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -104,6 +105,8 @@ const Sidebar = () => {
             openBvnModal={() => setShowBvnModal(true)}
           />
         );
+      case "set-pin":
+        return <SetTransactionPin close={handleCloseModal} />;
       default:
         break;
     }
@@ -145,7 +148,7 @@ const Sidebar = () => {
         </nav>
         <div>
           {/* Acct setup */}
-          {user?.business_account?.business_verifications[0]
+          {/* {user?.business_account?.business_verifications[0]
             .verification_status === "not_started" && (
             <div className="px-3 xl:px-4 py-5 bg-[#eaecff]/40 rounded-lg flex-col justify-start items-start gap-3 inline-flex">
               <div className="w-12 h-12 relative bg-[#fcfcfd] rounded-[66.67px] flex items-center justify-center ">
@@ -185,7 +188,59 @@ const Sidebar = () => {
                 </button>
               </div>
             </div>
-          )}
+          )} */}
+
+          {/* {user?.business_account?.business_verifications[0]
+            .verification_status !== "not_started" &&
+            !user?.has_transaction_pin && ( */}
+          <div className="px-3 xl:px-4 py-5 bg-[#eaecff]/40 rounded-lg flex-col justify-start items-start gap-3 inline-flex">
+            <div className="w-12 h-12 relative bg-[#fcfcfd] rounded-[66.67px] flex items-center justify-center ">
+              <svg
+                width="30"
+                height="31"
+                viewBox="0 0 30 31"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  opacity="0.55"
+                  d="M22.5 26.7305H7.5C5.42875 26.7305 3.75 25.0517 3.75 22.9805V12.9805C3.75 10.9092 5.42875 9.23047 7.5 9.23047H22.5C24.5712 9.23047 26.25 10.9092 26.25 12.9805V22.9805C26.25 25.0517 24.5712 26.7305 22.5 26.7305Z"
+                  fill="#F7A900"
+                />
+                <path
+                  d="M10 9.23047C10 6.46922 12.2387 4.23047 15 4.23047C17.7613 4.23047 20 6.46922 20 9.23047H22.5C22.5 5.08797 19.1425 1.73047 15 1.73047C10.8575 1.73047 7.5 5.08797 7.5 9.23047H10Z"
+                  fill="#292D32"
+                />
+                <path
+                  d="M15 19.8555C16.0355 19.8555 16.875 19.016 16.875 17.9805C16.875 16.9449 16.0355 16.1055 15 16.1055C13.9645 16.1055 13.125 16.9449 13.125 17.9805C13.125 19.016 13.9645 19.8555 15 19.8555Z"
+                  fill="#6C265B"
+                />
+                <path
+                  d="M21.25 19.8555C22.2855 19.8555 23.125 19.016 23.125 17.9805C23.125 16.9449 22.2855 16.1055 21.25 16.1055C20.2145 16.1055 19.375 16.9449 19.375 17.9805C19.375 19.016 20.2145 19.8555 21.25 19.8555Z"
+                  fill="#6C265B"
+                />
+                <path
+                  d="M8.75 19.8555C9.78553 19.8555 10.625 19.016 10.625 17.9805C10.625 16.9449 9.78553 16.1055 8.75 16.1055C7.71447 16.1055 6.875 16.9449 6.875 17.9805C6.875 19.016 7.71447 19.8555 8.75 19.8555Z"
+                  fill="#6C265B"
+                />
+              </svg>
+            </div>
+            <p className="text-raiz-gray-900 text-sm font-bold  leading-[16.80px]">
+              Secure your Account
+            </p>
+            <p className="text-gray-600 text-sm font-normal  leading-tight">
+              Set a 4-digit PIN to your transaction
+            </p>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowModal("set-pin")}
+                className="text-primary2 text-xs xl:text-sm font-bold  leading-[16.80px]"
+              >
+                Set Up
+              </button>
+            </div>
+          </div>
+          {/* )} */}
 
           {/* Get NGN aza */}
           {user?.business_account?.business_verifications[0]

@@ -55,7 +55,7 @@ const SelectAccount = ({ close, openNgnModal }: Props) => {
             {selectedCurrency.name === "USD" && (
               <Image
                 src={"/icons/tick-circle.svg"}
-                alt="USD"
+                alt=""
                 width={24}
                 height={24}
               />

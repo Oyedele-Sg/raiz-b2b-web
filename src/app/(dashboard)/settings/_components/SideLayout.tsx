@@ -196,7 +196,9 @@ const SideLayout = () => {
               className="px-2 h-[22px] bg-opacity-30 bg-neutral-300 flex gap-0.5 justify-center items-center rounded-3xl"
             >
               <span className="text-raiz-gray-950 text-[13px] font-normal leading-[18.20px]">
-                @{user?.business_account?.username}
+                {user?.business_account?.username
+                  ? `@${user?.business_account?.username}`
+                  : "Set username"}
               </span>
             </button>
           </div>

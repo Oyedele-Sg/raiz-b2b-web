@@ -1,25 +1,19 @@
 "use client";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import Image from "next/image";
-import { useFormik } from "formik";
-import { toFormikValidationSchema } from "zod-formik-adapter";
-import { pinSchema } from "@/app/(auth)/register/_components/validation";
+import { FormikProps } from "formik";
 import OtpInput from "@/components/ui/OtpInput";
 import Button from "@/components/ui/Button";
 
 interface Props {
   setStep: Dispatch<SetStateAction<number>>;
+  formik: FormikProps<{ pin: string; confirmPin: string }>;
+  loading: boolean;
 }
 
-const EnterNewPinForm = ({ setStep }: Props) => {
+const EnterNewPinForm = ({ setStep, formik, loading }: Props) => {
   const [formState, setFormState] = useState<"pin" | "confirmPin">("pin");
-  const formik = useFormik({
-    initialValues: { pin: "", confirmPin: "" },
-    validationSchema: toFormikValidationSchema(pinSchema),
-    onSubmit: (values) => {
-      console.log("PIN successfully set:", values.pin);
-    },
-  });
+
   const handleSubmitButton = async () => {
     // Mark the field as touched before proceeding
     if (formState === "pin") {
@@ -81,11 +75,13 @@ const EnterNewPinForm = ({ setStep }: Props) => {
         )}
         <Button
           disabled={
-            formState === "pin"
+            (formState === "pin"
               ? !formik.values.pin || formik.values.pin.length < 4
-              : !formik.values.confirmPin || formik.values.confirmPin.length < 4
+              : !formik.values.confirmPin ||
+                formik.values.confirmPin.length < 4) || loading
           }
           onClick={handleSubmitButton}
+          loading={loading}
         >
           {formState === "pin" ? "Continue" : "Submit Changes"}
         </Button>

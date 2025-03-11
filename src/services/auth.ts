@@ -95,6 +95,14 @@ export async function ForgotTransactionPinApi() {
   return response.data;
 }
 
+export async function SetTransactionPinApi(data: { transaction_pin: string }) {
+  const response = await AuthAxios.patch(
+    "/business/auth/transaction-pin/",
+    data
+  );
+  return response.data;
+}
+
 export async function ResetTransactionPinApi(data: IResetPinPayload) {
   const response = await AuthAxios.patch(
     "/business/auth/transaction-pin/reset/",

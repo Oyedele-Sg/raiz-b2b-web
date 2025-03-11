@@ -1,9 +1,10 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
-import NGNAcctInfo from "./quick-links/NGNAcctInfo";
+import NGNAcctInfo from "./quick-links/acctInfo/NGNAcctInfo";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
-import USDAcctInfo from "./quick-links/USDAcctInfo";
+import USDAcctInfo from "./quick-links/acctInfo/USDAcctInfo";
+import SelectCardModal from "./quick-links/cards/SelectCardModal";
 
 type key = "acct-info" | "card" | "split-bills" | "analytics" | "top-up";
 
@@ -50,8 +51,8 @@ const QuickLinks = () => {
         ) : (
           <USDAcctInfo close={closeModal} />
         );
-      // case "request":
-      //   return <h1>Request</h1>;
+      case "card":
+        return <SelectCardModal close={closeModal} />;
       // case "swap":
       //   return <h1>Swap</h1>;
       default:

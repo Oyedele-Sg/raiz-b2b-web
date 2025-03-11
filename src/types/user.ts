@@ -60,6 +60,7 @@ export interface IUser {
   selfie_image: string;
   is_verified: boolean;
   has_password: boolean;
+  has_transaction_pin: boolean;
   email: string;
   business_account: IBusinessAccount;
 }

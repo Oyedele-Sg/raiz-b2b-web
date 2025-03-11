@@ -1,28 +1,16 @@
 "use client";
-import { generalOTPFormSchema } from "@/app/(auth)/register/_components/validation";
 import Button from "@/components/ui/Button";
 import OtpInputWithTimer from "@/components/ui/OtpInputWithTimer";
-import { useFormik } from "formik";
 import React, { Dispatch, SetStateAction } from "react";
 import Image from "next/image";
-import { toFormikValidationSchema } from "zod-formik-adapter";
+import { FormikProps } from "formik";
 
 interface Props {
   setPart: Dispatch<SetStateAction<number>>;
-  setStep: Dispatch<SetStateAction<number>>;
+  formik: FormikProps<{ otp: string }>;
 }
 
-const TrxnOtpForm = ({ setPart, setStep }: Props) => {
-  const formik = useFormik({
-    initialValues: {
-      otp: "",
-    },
-    validationSchema: toFormikValidationSchema(generalOTPFormSchema),
-    onSubmit: (values) => {
-      console.log(values);
-      setStep(2);
-    },
-  });
+const TrxnOtpForm = ({ setPart, formik }: Props) => {
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center justify-between">
