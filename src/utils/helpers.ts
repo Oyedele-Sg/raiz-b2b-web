@@ -60,3 +60,22 @@ export const getTierInfo = (value: number) => {
 
   return { currentTier, nextTier };
 };
+
+export const getAppRatingLink = () => {
+  if (typeof window !== "undefined") {
+    const userAgent = navigator.userAgent.toLowerCase();
+    const platform = navigator.userAgent.toLowerCase();
+
+    if (/android/i.test(userAgent)) {
+      return "https://play.google.com/store/apps/details?id=com.raiz.application&hl=en&pli=1";
+    } else if (/iphone|ipad|ipod/.test(userAgent)) {
+      return "https://apps.apple.com/us/app/raiz-app/id6502309659?mt=8";
+    } else if (platform.includes("win")) {
+      return "https://play.google.com/store/apps/details?id=com.raiz.application&hl=en&pli=1";
+    } else if (platform.includes("mac")) {
+      return "https://apps.apple.com/us/app/raiz-app/id6502309659?mt=8";
+    }
+  }
+
+  return "https://apps.apple.com/us/app/raiz-app/id6502309659?mt=8";
+};
