@@ -8,7 +8,6 @@ import { LoginOtpApi } from "@/services/auth";
 import OtpInput from "@/components/ui/OtpInput";
 import Button from "@/components/ui/Button";
 import AnimatedSection from "@/components/ui/AnimatedSection";
-import { SetItemToLocalStorage } from "@/utils/localStorageFunc";
 import { SetItemToCookie } from "@/utils/CookiesFunc";
 
 interface Props {
@@ -21,7 +20,6 @@ const LoginOtp = ({ setStep, from }: Props) => {
   const loginMutation = useMutation({
     mutationFn: (data: { otp: string }) => LoginOtpApi(data),
     onSuccess: (response) => {
-      SetItemToLocalStorage("access_token", response?.access_token);
       SetItemToCookie("access_token", response?.access_token);
       router.push("/");
     },

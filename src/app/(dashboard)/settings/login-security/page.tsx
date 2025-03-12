@@ -6,6 +6,7 @@ import ResetPassword from "./_components/ResetPassword";
 import ChangeTransactionPin from "./_components/ChangeTransactionPin";
 import { useMutation } from "@tanstack/react-query";
 import { ForgotTransactionPinApi } from "@/services/auth";
+import Spinner from "@/components/ui/Spinner";
 
 const LoginSecurityPage = () => {
   const [part, setPart] = useState(0);
@@ -22,6 +23,7 @@ const LoginSecurityPage = () => {
     if (part === 2) {
       ForgotPinMutation.mutate();
     }
+    setProceed(false);
   }, [part]);
 
   useEffect(() => {
@@ -41,15 +43,7 @@ const LoginSecurityPage = () => {
           <ChangeTransactionPin setPart={setPart} part={part} />
         ) : (
           <div className="flex flex-col items-center h-full">
-            <p className="text-lg">Processing your request...</p>
-            {ForgotPinMutation.isPending && (
-              <span className="mt-2">Loading...</span>
-            )}
-            {ForgotPinMutation.isError && (
-              <span className="mt-2 text-red-500">
-                Error processing request. Please try again.
-              </span>
-            )}
+            <Spinner />
           </div>
         );
       default:

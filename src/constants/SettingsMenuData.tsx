@@ -1,3 +1,5 @@
+import { getAppRatingLink } from "@/utils/helpers";
+
 export const SettingsMenus = [
   {
     name: "Your profile",
@@ -359,7 +361,7 @@ export const helpSupportData = [
         />
       </svg>
     ),
-    link: "https://apps.apple.com/us/app/raiz-app/id6502309659?mt=8",
+    link: getAppRatingLink(),
   },
   {
     name: "Contact us",

@@ -1,10 +1,10 @@
 import Overlay from "@/components/ui/Overlay";
 import React from "react";
 import Image from "next/image";
-import { NotificationItemProps } from "@/types/misc";
+import { INotification } from "@/types/user";
 
 interface Props {
-  notification: NotificationItemProps;
+  notification: INotification;
   close: () => void;
 }
 

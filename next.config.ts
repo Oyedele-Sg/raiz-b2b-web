@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "raiz-dev-assets.s3.us-east-1.amazonaws.com",
       },
+      {
+        protocol: "https",
+        hostname: "www.google.com",
+      },
     ],
   },
 };

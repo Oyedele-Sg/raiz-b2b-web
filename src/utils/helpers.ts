@@ -1,5 +1,8 @@
 import { months, tiers } from "@/constants/misc";
 import { toast } from "sonner";
+import * as CryptoJS from "crypto-js";
+import { ICurrencyName } from "@/types/misc";
+import { IUser } from "@/types/user";
 
 export const getLastThreeMonths = () => {
   const currentMonth = new Date().getMonth();
@@ -59,4 +62,51 @@ export const getTierInfo = (value: number) => {
       : tiers[tiers.length - 1];
 
   return { currentTier, nextTier };
+};
+
+export const getAppRatingLink = () => {
+  if (typeof window !== "undefined") {
+    const userAgent = navigator.userAgent.toLowerCase();
+    const platform = navigator.userAgent.toLowerCase();
+
+    if (/android/i.test(userAgent)) {
+      return "https://play.google.com/store/apps/details?id=com.raiz.application&hl=en&pli=1";
+    } else if (/iphone|ipad|ipod/.test(userAgent)) {
+      return "https://apps.apple.com/us/app/raiz-app/id6502309659?mt=8";
+    } else if (platform.includes("win")) {
+      return "https://play.google.com/store/apps/details?id=com.raiz.application&hl=en&pli=1";
+    } else if (platform.includes("mac")) {
+      return "https://apps.apple.com/us/app/raiz-app/id6502309659?mt=8";
+    }
+  }
+
+  return "https://apps.apple.com/us/app/raiz-app/id6502309659?mt=8";
+};
+
+export const iv = CryptoJS.enc.Hex.parse("000102030405060708090a0b0c0d0e0f");
+
+export const passwordHash = (password: string): string => {
+  const fixedSalt = "myFixedSalt";
+  const keySize = 256 / 32; // 256-bit key size
+  const iterations = 1000;
+  const key = CryptoJS.PBKDF2(password, fixedSalt, {
+    keySize,
+    iterations,
+  });
+  // Use the derived key for encryption
+  return CryptoJS.AES.encrypt(password, key, {
+    mode: CryptoJS.mode.CFB,
+    padding: CryptoJS.pad.Pkcs7,
+    iv,
+  }).toString();
+};
+
+export const findWalletByCurrency = (
+  user: IUser | undefined,
+  currency: ICurrencyName
+) => {
+  return user?.business_account?.wallets?.find(
+    (acct: { wallet_type: { currency: string } }) =>
+      acct.wallet_type.currency === currency
+  );
 };

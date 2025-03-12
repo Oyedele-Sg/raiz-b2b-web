@@ -11,6 +11,7 @@ import { loginSchema } from "../../register/_components/validation";
 import { useMutation } from "@tanstack/react-query";
 import { ILoginPayload, LoginApi } from "@/services/auth";
 import AnimatedSection from "@/components/ui/AnimatedSection";
+import { passwordHash } from "@/utils/helpers";
 
 const LoginForm = ({
   setStep,
@@ -35,7 +36,7 @@ const LoginForm = ({
     onSubmit: (values) => {
       loginMutation.mutate({
         email: values.email,
-        password: values.password,
+        password: passwordHash(values.password),
       });
     },
   });

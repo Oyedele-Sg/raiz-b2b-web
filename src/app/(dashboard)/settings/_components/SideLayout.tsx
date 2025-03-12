@@ -24,6 +24,7 @@ const SideLayout = () => {
   const pathName = usePathname();
   const inputRef = useRef<HTMLInputElement>(null);
   const { user } = useUser();
+  const [freezeType, setFreezeType] = useState<"enable" | "disable">("disable");
 
   const queryClient = useQueryClient();
 
@@ -118,6 +119,20 @@ const SideLayout = () => {
     queryFn: FetchUserRewardsApi,
   });
 
+  const handleFreezeClick = (action: string) => {
+    setNavModal(action);
+    if (user?.business_account?.entity?.is_entity_frozen) {
+      setFreezeType("enable");
+    } else {
+      setFreezeType("disable");
+    }
+  };
+
+  useEffect(() => {
+    const isFrozen = user?.business_account?.entity?.is_entity_frozen ?? false;
+    setFreezeType(isFrozen ? "enable" : "disable");
+  }, [user?.business_account?.entity]);
+
   return (
     <section className="w-[23%] border-r border-[#dddbe1] h-full py-5 pr-2 no-scrollbar">
       {/* Profile Info */}
@@ -196,7 +211,9 @@ const SideLayout = () => {
               className="px-2 h-[22px] bg-opacity-30 bg-neutral-300 flex gap-0.5 justify-center items-center rounded-3xl"
             >
               <span className="text-raiz-gray-950 text-[13px] font-normal leading-[18.20px]">
-                @{user?.business_account?.username}
+                {user?.business_account?.username
+                  ? `@${user?.business_account?.username}`
+                  : "Set username"}
               </span>
             </button>
           </div>
@@ -228,6 +245,23 @@ const SideLayout = () => {
               </Link>
             );
           } else {
+            if (menu.action === "freeze") {
+              return (
+                <button
+                  key={index}
+                  onClick={() => handleFreezeClick(menu.action)}
+                >
+                  <div className="flex gap-[15px] items-center group">
+                    {menu.icon()}
+                    <span className="text-raiz-gray-600 text-[15px] font-semibold text-left leading-snug group-hover:underline ">
+                      {freezeType === "disable"
+                        ? "Freeze Account"
+                        : "Unfreeze Account"}
+                    </span>
+                  </div>
+                </button>
+              );
+            }
             return (
               <button key={index} onClick={() => setNavModal(menu.action)}>
                 <div className="flex gap-[15px] items-center group">
@@ -264,7 +298,7 @@ const SideLayout = () => {
         />
       )}
       {navModal === "freeze" && (
-        <FreezeAcctModal close={() => setNavModal(null)} />
+        <FreezeAcctModal close={() => setNavModal(null)} type={freezeType} />
       )}
       {showRaizTag && <RaizTagModal close={() => setShowRaizTag(false)} />}
     </section>

@@ -8,7 +8,7 @@ import InputField from "@/components/ui/InputField";
 import { useMutation } from "@tanstack/react-query";
 import { ILoginPayload, LoginApi } from "@/services/auth";
 import { WelcomUserProps } from "../page";
-import { getInitials } from "@/utils/helpers";
+import { getInitials, passwordHash } from "@/utils/helpers";
 
 interface Props {
   setPage: (arg: number) => void;
@@ -29,7 +29,7 @@ const WelcomeBack = ({ setPage, email, user }: Props) => {
       password: "",
     },
     onSubmit: (val) => {
-      loginMutation.mutate({ email, password: val.password });
+      loginMutation.mutate({ email, password: passwordHash(val.password) });
     },
   });
   return (
