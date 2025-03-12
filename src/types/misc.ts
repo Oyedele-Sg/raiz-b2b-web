@@ -41,23 +41,6 @@ export interface AccountSetupProps {
   setSelectedStep: (step: AccountSetupStep | null) => void;
 }
 
-export interface NotificationItemProps {
-  notification_title: string;
-  notification_body: string;
-  read: boolean;
-  notification_category_id: number;
-  created_at: Date;
-  updated_at: Date;
-  notification_category: {
-    notification_category_name: string;
-    notification_category_description: string;
-    notification_category_code: number;
-    notification_category_id: number;
-    created_at: Date;
-    updated_at: Date;
-  };
-}
-
 export type IUsdSendOptions =
   | "to Raizer"
   | "bank transfer"

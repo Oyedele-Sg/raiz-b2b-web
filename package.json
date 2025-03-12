@@ -15,6 +15,7 @@
     "aes-everywhere": "^1.0.0",
     "axios": "^1.7.9",
     "chart.js": "^4.4.7",
+    "crypto-js": "^4.2.0",
     "dayjs": "^1.11.13",
     "formik": "^2.4.6",
     "js-cookie": "^3.0.5",
@@ -38,6 +39,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/crypto-js": "^4.2.2",
     "@types/js-cookie": "^3.0.6",
     "@types/lodash": "^4.17.15",
     "@types/node": "^20",

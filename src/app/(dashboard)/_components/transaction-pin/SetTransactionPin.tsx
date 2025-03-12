@@ -9,6 +9,7 @@ import OtpInput from "@/components/ui/OtpInput";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SetTransactionPinApi } from "@/services/auth";
 import { toast } from "sonner";
+import { passwordHash } from "@/utils/helpers";
 
 interface Props {
   close: () => void;
@@ -30,7 +31,7 @@ const SetTransactionPin = ({ close }: Props) => {
     initialValues: { pin: "", confirmPin: "" },
     validationSchema: toFormikValidationSchema(pinSchema),
     onSubmit: (values) => {
-      PinMutation.mutate({ transaction_pin: values.pin });
+      PinMutation.mutate({ transaction_pin: passwordHash(values.pin) });
     },
   });
   const handleBackButton = () => {

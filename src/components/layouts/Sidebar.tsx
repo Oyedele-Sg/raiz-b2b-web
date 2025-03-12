@@ -113,7 +113,8 @@ const Sidebar = () => {
   };
 
   const renderMenuItem = (item: ISidebarMenuItem, index: number) => {
-    const isActive = pathName === item.link;
+    const isActive =
+      item.link === "/" ? pathName === item.link : pathName.includes(item.link);
 
     return (
       <Link

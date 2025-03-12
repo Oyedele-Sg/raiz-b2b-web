@@ -23,6 +23,7 @@ import {
 } from "@/services/auth";
 import { AnimatePresence } from "motion/react";
 import Checkbox from "@/components/ui/Checkbox";
+import { passwordHash } from "@/utils/helpers";
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -142,7 +143,7 @@ const RegisterForm = () => {
       } else if (currentStep === 3) {
         const payload: IRegisterPayload = {
           email: formik.values.email,
-          password: formik.values.password,
+          password: passwordHash(formik.values.password),
           first_name: formik.values.firstName,
           last_name: formik.values.lastName,
           country_id: formik.values.country_id,

@@ -1,4 +1,5 @@
 import { IPagination } from "./misc";
+import { INotification } from "./user";
 
 export interface IRewardPoint {
   reward_point_id: string;
@@ -55,4 +56,16 @@ export interface IChangePasswordPayload {
 
 export interface ITransactionPinPayload {
   transaction_pin: string;
+}
+
+export interface INotificationParams {
+  page?: number;
+  limit?: number;
+  read?: boolean;
+  notification_category_id?: number;
+}
+
+export interface INotificationResponse {
+  pagination_details: IPagination;
+  notifications: INotification[];
 }

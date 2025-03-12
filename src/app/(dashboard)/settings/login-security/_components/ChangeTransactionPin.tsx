@@ -13,6 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import { IResetPinPayload } from "@/types/services";
 import { ResetTransactionPinApi } from "@/services/auth";
 import { toast } from "sonner";
+import { passwordHash } from "@/utils/helpers";
 
 const ChangeTransactionPin = ({ setPart }: PartChildProps) => {
   const [step, setStep] = useState(1);
@@ -35,7 +36,7 @@ const ChangeTransactionPin = ({ setPart }: PartChildProps) => {
     validationSchema: toFormikValidationSchema(pinSchema),
     onSubmit: (values) => {
       ChangePinMutation.mutate({
-        password: values.pin,
+        password: passwordHash(values.pin),
         otp: otpFormik.values.otp,
       });
     },

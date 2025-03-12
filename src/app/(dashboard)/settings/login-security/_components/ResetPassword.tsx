@@ -11,6 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { IChangePasswordPayload } from "@/types/services";
 import { ChangePasswordApi } from "@/services/auth";
 import { toast } from "sonner";
+import { passwordHash } from "@/utils/helpers";
 
 const validationSchema = z
   .object({
@@ -61,8 +62,8 @@ const ResetPassword = ({ setPart }: PartChildProps) => {
     validationSchema: toFormikValidationSchema(validationSchema),
     onSubmit: (values) => {
       const payload: IChangePasswordPayload = {
-        old_password: values.oldPassword,
-        new_password: values.password,
+        old_password: passwordHash(values.oldPassword),
+        new_password: passwordHash(values.password),
       };
       ChangePasswordMutation.mutate(payload);
     },
