@@ -41,7 +41,7 @@ const Sidebar = () => {
   const qc = useQueryClient();
   const PersonaMutation = useMutation({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mutationFn: (data: any) => PersonaVerificationApi(data),
+    mutationFn: (inquiry_id: string) => PersonaVerificationApi(inquiry_id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["user"] });
       handleCloseModal();
@@ -66,16 +66,16 @@ const Sidebar = () => {
           onLoad={() => {
             setIsIframeLoading(false);
           }}
-          onComplete={({ inquiryId, fields }) => {
-            const payload = {
-              ...fields,
-              inquiry_id: {
-                type: "string",
-                value: inquiryId,
-              },
-            };
-            PersonaMutation.mutate(payload);
-            console.log(`Payload`, payload);
+          onComplete={({ inquiryId }) => {
+            // const payload = {
+            //   ...fields,
+            //   inquiry_id: {
+            //     type: "string",
+            //     value: inquiryId,
+            //   },
+            // };
+            PersonaMutation.mutate(inquiryId);
+            // console.log(`Payload`, payload);
           }}
           onCancel={() => {
             toast.warning("Your verification was cancelled");
@@ -292,7 +292,8 @@ const Sidebar = () => {
           {/* Get NGN aza */}
           {user?.business_account?.business_verifications[0]
             .verification_status === "completed" &&
-            !NGNAcct && (
+            !NGNAcct &&
+            user?.has_transaction_pin && (
               <div className="px-3 xl:px-4 py-5 bg-[#eaecff]/40 rounded-lg flex-col justify-start items-start gap-3 inline-flex">
                 <div className="w-12 h-12 relative bg-[#fcfcfd] rounded-[66.67px] flex items-center justify-center ">
                   <Image
