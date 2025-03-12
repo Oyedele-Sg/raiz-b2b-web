@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { toast } from "sonner";
 import { encryptData, generateNonce } from "./headerEncryption";
-import { GetItemFromLocalStorage } from "../utils/localStorageFunc";
+import { GetItemFromCookie } from "@/utils/CookiesFunc";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -29,7 +29,7 @@ export const AuthAxios: AxiosInstance = axios.create({
 
 AuthAxios.interceptors.request.use(
   (config) => {
-    const token = GetItemFromLocalStorage("access_token");
+    const token = GetItemFromCookie("access_token");
     // Generate nonce and signature for every request
     const nonceStr = generateNonce();
     const signature = encryptData(nonceStr);

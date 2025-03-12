@@ -1,4 +1,4 @@
-import { IEntityAddress } from "./misc";
+import { ICurrencyName, IEntityAddress } from "./misc";
 
 export interface IEntityType {
   entity_type_name: string;
@@ -28,9 +28,41 @@ export interface IBusinessVerification {
   is_phone_verified: boolean;
   is_address_verified: boolean;
   is_document_verified: boolean;
-  verification_status: string;
+  verification_status: "not_started" | "pending" | "completed" | "failed";
   business_account_id: string;
   business_verification_id: string;
+}
+
+export interface IRoutingInfo {
+  account: string;
+  routing: string;
+  routing_id: string;
+  routing_type_name: "ACH" | "RTP" | "WIRE";
+  wallet_id: string;
+}
+
+export interface IWalletType {
+  created_at: Date;
+  currency: ICurrencyName;
+  document_type_id: number;
+  updated_at: Date;
+  wallet_type_code: number;
+  wallet_type_description: string;
+  wallet_type_id: number;
+  wallet_type_name: string;
+}
+
+export interface IWallet {
+  account_balance: number;
+  account_number: string;
+  bank_name: string;
+  entity_id: string;
+  routing: IRoutingInfo[];
+  wallet_account_type: string;
+  wallet_id: string;
+  wallet_name: string;
+  wallet_type: IWalletType;
+  wallet_type_id: number;
 }
 
 export interface IBusinessAccount {
@@ -46,7 +78,7 @@ export interface IBusinessAccount {
   business_account_id: string;
   entity: IEntity;
   business_verifications: IBusinessVerification[];
-  wallets: [];
+  wallets: IWallet[];
   virtual_cards: [];
 }
 
@@ -60,6 +92,30 @@ export interface IUser {
   selfie_image: string;
   is_verified: boolean;
   has_password: boolean;
+  has_transaction_pin: boolean;
   email: string;
   business_account: IBusinessAccount;
+}
+
+export interface INotificationCategory {
+  notification_category_name: string;
+  notification_category_description: string;
+  notification_category_code: number;
+  notification_category_id: number;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface INotification {
+  notification_title: string;
+  notification_body: string;
+  read: boolean;
+  notification_category_id: number;
+  entity_id: string;
+  object_id: string;
+  notification_url: string;
+  notification_id: string;
+  created_at: Date;
+  updated_at: Date;
+  notification_category: INotificationCategory;
 }

@@ -4,16 +4,13 @@ import Overlay from "../ui/Overlay";
 import Button from "../ui/Button";
 import { useMutation } from "@tanstack/react-query";
 import { LogoutApi } from "@/services/auth";
-import {
-  GetItemFromLocalStorage,
-  RemoveItemFromLocalStorage,
-} from "@/utils/localStorageFunc";
+import { RemoveItemFromLocalStorage } from "@/utils/localStorageFunc";
 import { useRouter } from "next/navigation";
-import { RemoveItemFromCookie } from "@/utils/CookiesFunc";
+import { GetItemFromCookie, RemoveItemFromCookie } from "@/utils/CookiesFunc";
 
 const LogoutModal = ({ close }: { close: () => void }) => {
   const router = useRouter();
-  const token = GetItemFromLocalStorage("access_token") ?? "";
+  const token = GetItemFromCookie("access_token") ?? "";
   const logoutMutation = useMutation({
     mutationFn: () => LogoutApi(token),
     onSuccess: () => {

@@ -9,13 +9,33 @@ import { useCurrencyStore } from "@/store/useCurrencyStore";
 import NgnSend from "./send/naira/NgnSend";
 import UsdSend from "./send/usd/UsdSend";
 import Button from "@/components/ui/Button";
+import { findWalletByCurrency } from "@/utils/helpers";
+import { useUser } from "@/lib/hooks/useUser";
 
 const DashboardSummary = () => {
-  const { selectedCurrency } = useCurrencyStore();
+  const { user } = useUser();
+  const { selectedCurrency, selectedWallet } = useCurrencyStore();
   const [showBalance, setShowBalance] = useState(false);
   const [openModal, setOpenModal] = useState<
     "send" | "request" | "swap" | null
   >(null);
+
+  const NGNAcct = findWalletByCurrency(user, "NGN");
+  const USDAcct = findWalletByCurrency(user, "USD");
+
+  const getCurrentWallet = () => {
+    if (selectedWallet) {
+      return selectedWallet;
+    } else {
+      if (selectedCurrency.name === "NGN") {
+        return NGNAcct;
+      } else if (selectedCurrency.name === "USD") {
+        return USDAcct;
+      }
+    }
+  };
+
+  const currentWallet = getCurrentWallet();
 
   const closeModal = () => {
     setOpenModal(null);
@@ -48,8 +68,10 @@ const DashboardSummary = () => {
           <div className="flex gap-2 items-center">
             <p className="text-raiz-gray-950 text-[2rem] font-semibold  leading-[38.40px]">
               {showBalance
-                ? `${selectedCurrency.sign}10,000,000.00`
-                : `${selectedCurrency.sign}XXX`}
+                ? `${currentWallet ? selectedCurrency.sign : ""} ${
+                    currentWallet?.account_balance.toLocaleString() || "0.00"
+                  }`
+                : `${currentWallet ? selectedCurrency.sign : ""}X.XX`}
             </p>
             <button onClick={() => setShowBalance(!showBalance)}>
               <Image
