@@ -1,13 +1,17 @@
+"use client";
 import Overlay from "@/components/ui/Overlay";
 import React from "react";
 import Image from "next/image";
-import { copyToClipboard } from "@/utils/helpers";
+import { copyToClipboard, findWalletByCurrency } from "@/utils/helpers";
+import { useUser } from "@/lib/hooks/useUser";
 
 interface Props {
   close: () => void;
 }
 
 const NGNAcctInfo = ({ close }: Props) => {
+  const { user } = useUser();
+  const NGNAcct = findWalletByCurrency(user, "NGN");
   return (
     <Overlay close={close} width="375px">
       <div className="flex flex-col  h-full py-8 px-5  text-raiz-gray-950">
@@ -29,7 +33,9 @@ const NGNAcctInfo = ({ close }: Props) => {
             <span className="text-[13px] font-normal leading-tight">
               Bank Name
             </span>
-            <span className="text-sm font-semibold leading-none">PalmPay</span>
+            <span className="text-sm font-semibold leading-none">
+              {NGNAcct?.bank_name}
+            </span>
           </div>
 
           {/* Account Number */}
@@ -40,9 +46,11 @@ const NGNAcctInfo = ({ close }: Props) => {
             <div className="flex gap-1 items-center">
               {" "}
               <span className="text-sm font-semibold leading-none">
-                8136129105
+                {NGNAcct?.account_number}
               </span>
-              <button onClick={() => copyToClipboard("8136129105")}>
+              <button
+                onClick={() => copyToClipboard(NGNAcct?.account_number || "")}
+              >
                 <Image
                   src={"/icons/copy.svg"}
                   alt={"copy"}
@@ -57,7 +65,9 @@ const NGNAcctInfo = ({ close }: Props) => {
             <span className="text-[13px] font-normal leading-tight">
               Currency
             </span>
-            <span className="text-sm font-semibold leading-none">NGN</span>
+            <span className="text-sm font-semibold leading-none">
+              {NGNAcct?.wallet_type.currency}
+            </span>
           </div>
         </div>
       </div>

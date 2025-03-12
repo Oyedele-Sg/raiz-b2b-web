@@ -1,13 +1,16 @@
 import Overlay from "@/components/ui/Overlay";
 import React from "react";
 import Image from "next/image";
-import { copyToClipboard } from "@/utils/helpers";
+import { copyToClipboard, findWalletByCurrency } from "@/utils/helpers";
+import { useUser } from "@/lib/hooks/useUser";
 
 interface Props {
   close: () => void;
 }
 
 const USDAcctInfo = ({ close }: Props) => {
+  const { user } = useUser();
+  const USDAcct = findWalletByCurrency(user, "USD");
   return (
     <Overlay close={close} width="375px">
       <div className="flex flex-col  h-full py-8 px-5  text-raiz-gray-950">
@@ -30,7 +33,7 @@ const USDAcctInfo = ({ close }: Props) => {
               Bank Name
             </span>
             <span className="text-sm font-semibold leading-none">
-              JP Morgan Chase
+              {USDAcct?.bank_name}
             </span>
           </div>
 
@@ -42,9 +45,11 @@ const USDAcctInfo = ({ close }: Props) => {
             <div className="flex gap-1 items-center">
               {" "}
               <span className="text-sm font-semibold leading-none">
-                0460000500
+                {USDAcct?.account_number}
               </span>
-              <button onClick={() => copyToClipboard("0460000500")}>
+              <button
+                onClick={() => copyToClipboard(USDAcct?.account_number || "")}
+              >
                 <Image
                   src={"/icons/copy.svg"}
                   alt={"copy"}
@@ -63,9 +68,21 @@ const USDAcctInfo = ({ close }: Props) => {
             <div className="flex gap-1 items-center">
               {" "}
               <span className="text-sm font-semibold leading-none">
-                000000000000
+                {
+                  USDAcct?.routing?.find(
+                    (route) => route.routing_type_name === "ACH"
+                  )?.routing
+                }
               </span>
-              <button onClick={() => copyToClipboard("000000000000")}>
+              <button
+                onClick={() =>
+                  copyToClipboard(
+                    USDAcct?.routing?.find(
+                      (route) => route.routing_type_name === "ACH"
+                    )?.routing || ""
+                  )
+                }
+              >
                 <Image
                   src={"/icons/copy.svg"}
                   alt={"copy"}
@@ -84,9 +101,21 @@ const USDAcctInfo = ({ close }: Props) => {
             <div className="flex gap-1 items-center">
               {" "}
               <span className="text-sm font-semibold leading-none">
-                000000100000
+                {
+                  USDAcct?.routing?.find(
+                    (route) => route.routing_type_name === "WIRE"
+                  )?.routing
+                }
               </span>
-              <button onClick={() => copyToClipboard("000000100000")}>
+              <button
+                onClick={() =>
+                  copyToClipboard(
+                    USDAcct?.routing?.find(
+                      (route) => route.routing_type_name === "WIRE"
+                    )?.routing || ""
+                  )
+                }
+              >
                 <Image
                   src={"/icons/copy.svg"}
                   alt={"copy"}
@@ -102,7 +131,9 @@ const USDAcctInfo = ({ close }: Props) => {
             <span className="text-[13px] font-normal leading-tight">
               Currency
             </span>
-            <span className="text-sm font-semibold leading-none">USD</span>
+            <span className="text-sm font-semibold leading-none">
+              {USDAcct?.wallet_type.currency}
+            </span>
           </div>
         </div>
       </div>

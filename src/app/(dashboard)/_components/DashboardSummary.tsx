@@ -68,10 +68,10 @@ const DashboardSummary = () => {
           <div className="flex gap-2 items-center">
             <p className="text-raiz-gray-950 text-[2rem] font-semibold  leading-[38.40px]">
               {showBalance
-                ? `${
-                    selectedCurrency.sign
-                  } ${currentWallet?.account_balance.toLocaleString()}`
-                : `${selectedCurrency.sign}XXX`}
+                ? `${currentWallet ? selectedCurrency.sign : ""} ${
+                    currentWallet?.account_balance.toLocaleString() || "0.00"
+                  }`
+                : `${currentWallet ? selectedCurrency.sign : ""}X.XX`}
             </p>
             <button onClick={() => setShowBalance(!showBalance)}>
               <Image

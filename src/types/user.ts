@@ -34,9 +34,11 @@ export interface IBusinessVerification {
 }
 
 export interface IRoutingInfo {
-  routing_type_name: string;
   account: string;
   routing: string;
+  routing_id: string;
+  routing_type_name: "ACH" | "RTP" | "WIRE";
+  wallet_id: string;
 }
 
 export interface IWalletType {
