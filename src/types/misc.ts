@@ -36,6 +36,8 @@ export interface AccountSetupStep {
 export type AccountCurrencyType =
   (typeof ACCOUNT_CURRENCIES)[keyof typeof ACCOUNT_CURRENCIES];
 
+export type ICurrencyName = keyof typeof ACCOUNT_CURRENCIES;
+
 export interface AccountSetupProps {
   selectedStep: AccountSetupStep;
   setSelectedStep: (step: AccountSetupStep | null) => void;

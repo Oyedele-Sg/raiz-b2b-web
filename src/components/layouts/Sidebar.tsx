@@ -18,6 +18,7 @@ import { PersonaVerificationApi } from "@/services/user";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
 import SetTransactionPin from "@/app/(dashboard)/_components/transaction-pin/SetTransactionPin";
+import { findWalletByCurrency } from "@/utils/helpers";
 // Dynamically import PersonaReact with SSR disabled
 const PersonaReact = dynamic(() => import("persona-react"), { ssr: false });
 
@@ -131,6 +132,8 @@ const Sidebar = () => {
       </Link>
     );
   };
+
+  const NGNAcct = findWalletByCurrency(user, "NGN");
 
   return (
     <aside className="w-[19.444%] pt-8 hidden lg:block  fixed top-0 bottom-0 left-0 z-20 bg-raiz-gray-50 border-r border-raiz-gray-200 h-[100vh] overflow-x-hidden overflow-y-scroll">
@@ -288,32 +291,33 @@ const Sidebar = () => {
 
           {/* Get NGN aza */}
           {user?.business_account?.business_verifications[0]
-            .verification_status === "completed" && (
-            <div className="px-3 xl:px-4 py-5 bg-[#eaecff]/40 rounded-lg flex-col justify-start items-start gap-3 inline-flex">
-              <div className="w-12 h-12 relative bg-[#fcfcfd] rounded-[66.67px] flex items-center justify-center ">
-                <Image
-                  src={"/icons/ngn.svg"}
-                  width={32}
-                  height={32}
-                  alt="NGN"
-                />
-              </div>
-              <h5 className="text-raiz-gray-900 text-sm font-bold  leading-[16.80px]">
-                Get a Naira (NGN) Account
-              </h5>
-              <p className="text-gray-600 text-sm font-normal  leading-tight">
-                Manage funds and make transactions in Naira, simplifying local
-                payments and daily finances.
-              </p>
+            .verification_status === "completed" &&
+            !NGNAcct && (
+              <div className="px-3 xl:px-4 py-5 bg-[#eaecff]/40 rounded-lg flex-col justify-start items-start gap-3 inline-flex">
+                <div className="w-12 h-12 relative bg-[#fcfcfd] rounded-[66.67px] flex items-center justify-center ">
+                  <Image
+                    src={"/icons/ngn.svg"}
+                    width={32}
+                    height={32}
+                    alt="NGN"
+                  />
+                </div>
+                <h5 className="text-raiz-gray-900 text-sm font-bold  leading-[16.80px]">
+                  Get a Naira (NGN) Account
+                </h5>
+                <p className="text-gray-600 text-sm font-normal  leading-tight">
+                  Manage funds and make transactions in Naira, simplifying local
+                  payments and daily finances.
+                </p>
 
-              <button
-                onClick={() => setShowModal("getNgn")}
-                className="text-primary2 text-sm font-bold  leading-[16.80px]"
-              >
-                Get Naira Wallet
-              </button>
-            </div>
-          )}
+                <button
+                  onClick={() => setShowModal("getNgn")}
+                  className="text-primary2 text-sm font-bold  leading-[16.80px]"
+                >
+                  Get Naira Wallet
+                </button>
+              </div>
+            )}
 
           {/* Logout */}
           {/* <div className="flex gap-[15px] justify-between mt-6 w-full pb-5"> */}

@@ -1,4 +1,4 @@
-import { IEntityAddress } from "./misc";
+import { ICurrencyName, IEntityAddress } from "./misc";
 
 export interface IEntityType {
   entity_type_name: string;
@@ -33,6 +33,36 @@ export interface IBusinessVerification {
   business_verification_id: string;
 }
 
+export interface IRoutingInfo {
+  routing_type_name: string;
+  account: string;
+  routing: string;
+}
+
+export interface IWalletType {
+  created_at: Date;
+  currency: ICurrencyName;
+  document_type_id: number;
+  updated_at: Date;
+  wallet_type_code: number;
+  wallet_type_description: string;
+  wallet_type_id: number;
+  wallet_type_name: string;
+}
+
+export interface IWallet {
+  account_balance: number;
+  account_number: string;
+  bank_name: string;
+  entity_id: string;
+  routing: IRoutingInfo[];
+  wallet_account_type: string;
+  wallet_id: string;
+  wallet_name: string;
+  wallet_type: IWalletType;
+  wallet_type_id: number;
+}
+
 export interface IBusinessAccount {
   business_name: string;
   business_email: string;
@@ -46,7 +76,7 @@ export interface IBusinessAccount {
   business_account_id: string;
   entity: IEntity;
   business_verifications: IBusinessVerification[];
-  wallets: [];
+  wallets: IWallet[];
   virtual_cards: [];
 }
 

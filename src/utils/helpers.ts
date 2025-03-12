@@ -1,6 +1,8 @@
 import { months, tiers } from "@/constants/misc";
 import { toast } from "sonner";
 import * as CryptoJS from "crypto-js";
+import { ICurrencyName } from "@/types/misc";
+import { IUser } from "@/types/user";
 
 export const getLastThreeMonths = () => {
   const currentMonth = new Date().getMonth();
@@ -97,4 +99,14 @@ export const passwordHash = (password: string): string => {
     padding: CryptoJS.pad.Pkcs7,
     iv,
   }).toString();
+};
+
+export const findWalletByCurrency = (
+  user: IUser | undefined,
+  currency: ICurrencyName
+) => {
+  return user?.business_account?.wallets?.find(
+    (acct: { wallet_type: { currency: string } }) =>
+      acct.wallet_type.currency === currency
+  );
 };
