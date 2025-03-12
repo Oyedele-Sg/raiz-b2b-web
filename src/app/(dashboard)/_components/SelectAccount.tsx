@@ -2,6 +2,9 @@ import Overlay from "@/components/ui/Overlay";
 import React from "react";
 import Image from "next/image";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CreateUSDWalletApi } from "@/services/business";
+import { toast } from "sonner";
 
 interface Props {
   close: () => void;
@@ -11,7 +14,17 @@ interface Props {
 const SelectAccount = ({ close, openNgnModal }: Props) => {
   const { selectedCurrency, setSelectedCurrency } = useCurrencyStore();
 
-  const hasNGNWallet = true;
+  const qc = useQueryClient();
+  const USDWalletMutation = useMutation({
+    mutationFn: CreateUSDWalletApi,
+    onSuccess: (response) => {
+      toast.success(response?.message);
+      qc.invalidateQueries({ queryKey: ["user"] });
+      close();
+    },
+  });
+  const hasNGNWallet = false;
+  const hasUSDWallet = false;
   const handleNgn = () => {
     if (hasNGNWallet) {
       setSelectedCurrency("NGN");
@@ -21,8 +34,12 @@ const SelectAccount = ({ close, openNgnModal }: Props) => {
     }
   };
   const handleUsd = () => {
-    setSelectedCurrency("USD");
-    close();
+    if (hasUSDWallet) {
+      setSelectedCurrency("USD");
+      close();
+    } else {
+      USDWalletMutation.mutate();
+    }
   };
   return (
     <Overlay close={close} width="375px">
@@ -33,7 +50,9 @@ const SelectAccount = ({ close, openNgnModal }: Props) => {
           <button
             onClick={handleUsd}
             className={`px-3 py-4  justify-between items-center gap-10 rounded-[20px] w-full  inline-flex ${
-              selectedCurrency.name === "USD" ? "bg-[#eaecff]/60" : "bg-white"
+              selectedCurrency.name === "USD" && hasUSDWallet
+                ? "bg-[#eaecff]/60"
+                : "bg-white"
             }`}
           >
             <div className="flex gap-3">
@@ -45,14 +64,18 @@ const SelectAccount = ({ close, openNgnModal }: Props) => {
               />
               <div className="flex flex-col items-start">
                 <p className="text-raiz-gray-900 text-base font-medium font-brSonoma leading-tight">
-                  5000200030
+                  {hasUSDWallet
+                    ? "5000200030"
+                    : USDWalletMutation.isPending
+                    ? "Creating your USD wallet..."
+                    : "Get USD Account"}
                 </p>
                 <p className="opacity-50 text-raiz-gray-950 text-[13px] font-normal  leading-tight">
                   USD Wallet
                 </p>
               </div>
             </div>
-            {selectedCurrency.name === "USD" && (
+            {hasUSDWallet && selectedCurrency.name === "USD" && (
               <Image
                 src={"/icons/tick-circle.svg"}
                 alt=""
@@ -66,7 +89,9 @@ const SelectAccount = ({ close, openNgnModal }: Props) => {
           <button
             onClick={handleNgn}
             className={`px-3 py-4  justify-between items-center gap-10 w-full rounded-[20px]  inline-flex ${
-              selectedCurrency.name === "NGN" ? "bg-[#eaecff]/60" : "bg-white"
+              selectedCurrency.name === "NGN" && hasNGNWallet
+                ? "bg-[#eaecff]/60"
+                : "bg-white"
             }`}
           >
             <div className="flex gap-3">
@@ -80,7 +105,7 @@ const SelectAccount = ({ close, openNgnModal }: Props) => {
                 </p>
               </div>
             </div>
-            {selectedCurrency.name === "NGN" && (
+            {selectedCurrency.name === "NGN" && hasNGNWallet && (
               <Image
                 src={"/icons/tick-circle.svg"}
                 alt="USD"

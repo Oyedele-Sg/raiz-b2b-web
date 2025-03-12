@@ -2,7 +2,7 @@
 import Button from "@/components/ui/Button";
 import NumberKeypad from "@/components/ui/NumberKeyPad";
 import Overlay from "@/components/ui/Overlay";
-import { FreezeDebitApi, UnFreezeDebitApi } from "@/types/business";
+import { FreezeDebitApi, UnFreezeDebitApi } from "@/services/business";
 import { ITransactionPinPayload } from "@/types/services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";

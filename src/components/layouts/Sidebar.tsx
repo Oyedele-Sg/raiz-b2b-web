@@ -146,6 +146,8 @@ const Sidebar = () => {
         <nav className="flex flex-col gap-1">
           {SidebarMenus.map((item, index) => renderMenuItem(item, index))}
         </nav>
+
+        {/* User status Info */}
         <div>
           {/* Acct setup */}
           {user?.business_account?.business_verifications[0]
@@ -187,6 +189,46 @@ const Sidebar = () => {
                   Upgrade
                 </button>
               </div>
+            </div>
+          )}
+
+          {/* Verification pending */}
+          {user?.business_account?.business_verifications[0]
+            .verification_status === "pending" && (
+            <div className="px-3 xl:px-4 py-5 bg-[#f2f4e9]/60 rounded-lg flex-col justify-start items-start gap-3 inline-flex">
+              <div className="w-12 h-12 relative bg-[#fcfcfd] rounded-[66.67px] flex items-center justify-center ">
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 32 32"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    opacity="0.5"
+                    d="M16 29.3335C22.6274 29.3335 28 23.9609 28 17.3335C28 10.7061 22.6274 5.3335 16 5.3335C9.37258 5.3335 4 10.7061 4 17.3335C4 23.9609 9.37258 29.3335 16 29.3335Z"
+                    fill="#CEBF36"
+                  />
+                  <path
+                    d="M14.1147 19.2186C13.5253 18.6292 11.1907 15.0879 9.27335 12.1226C8.63068 11.1292 9.79601 9.96389 10.7893 10.6052C13.7547 12.5226 17.296 14.8586 17.8853 15.4466C18.9267 16.4879 18.9267 18.1759 17.8853 19.2172C16.844 20.2599 15.156 20.2599 14.1147 19.2186Z"
+                    fill="#568C21"
+                  />
+                  <path
+                    d="M18 1.3335C17.4853 1.3335 14.5147 1.3335 14 1.3335C12.896 1.3335 12 2.2295 12 3.3335C12 4.4375 12.896 5.3335 14 5.3335C14.5147 5.3335 17.4853 5.3335 18 5.3335C19.104 5.3335 20 4.4375 20 3.3335C20 2.2295 19.104 1.3335 18 1.3335Z"
+                    fill="#568C21"
+                  />
+                  <path
+                    d="M27.4148 6.86119C27.0508 6.49719 26.8361 6.28252 26.4721 5.91852C25.6908 5.13719 24.4241 5.13719 23.6441 5.91852C22.8641 6.69985 22.8628 7.96652 23.6441 8.74652C24.0081 9.11052 24.2228 9.32519 24.5868 9.68919C25.3681 10.4705 26.6348 10.4705 27.4148 9.68919C28.1948 8.90919 28.1948 7.64252 27.4148 6.86119Z"
+                    fill="#568C21"
+                  />
+                </svg>
+              </div>
+              <p className="text-raiz-gray-900 text-sm font-bold  leading-[16.80px]">
+                Setup In Progress
+              </p>
+              <p className="text-gray-600 text-sm font-normal  leading-tight">
+                KYC pending, We&#39;re verifying your information.
+              </p>
             </div>
           )}
 
