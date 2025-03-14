@@ -69,3 +69,19 @@ export interface INotificationResponse {
   pagination_details: IPagination;
   notifications: INotification[];
 }
+
+export interface ITxnReportPayload {
+  wallet_id: string;
+  number_of_days: number;
+}
+
+export interface IAnalyticsData {
+  credit_amount: number;
+  date: string;
+  debit_amount: number;
+}
+export interface ITxnReportResponse {
+  total_expense: number;
+  total_income: number;
+  analytics: IAnalyticsData[];
+}

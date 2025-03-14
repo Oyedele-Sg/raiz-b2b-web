@@ -3,6 +3,8 @@ import {
   INotificationParams,
   INotificationResponse,
   ITransactionPinPayload,
+  ITxnReportPayload,
+  ITxnReportResponse,
 } from "../types/services";
 
 export const FreezeDebitApi = async (data: ITransactionPinPayload) => {
@@ -45,6 +47,18 @@ export const FetchNotificationsApi = async (
 export const MarkAsReadApi = async (notification_id: string) => {
   const response = await AuthAxios.patch(
     `/business/entities/notifications/${notification_id}/`
+  );
+  return response?.data;
+};
+
+export const FetchTransactionReportChartApi = async (
+  params: ITxnReportPayload
+): Promise<ITxnReportResponse> => {
+  const response = await AuthAxios.get(
+    `/business/transactions/analytics/transaction-report/chart/`,
+    {
+      params,
+    }
   );
   return response?.data;
 };

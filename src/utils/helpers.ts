@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import * as CryptoJS from "crypto-js";
 import { ICurrencyName } from "@/types/misc";
 import { IUser } from "@/types/user";
+import dayjs from "dayjs";
 
 export const getLastThreeMonths = () => {
   const currentMonth = new Date().getMonth();
@@ -110,3 +111,6 @@ export const findWalletByCurrency = (
       acct.wallet_type.currency === currency
   );
 };
+
+export const getDaysBetween = (startDate: dayjs.Dayjs, endDate: dayjs.Dayjs) =>
+  endDate.diff(startDate, "day") + 1;
