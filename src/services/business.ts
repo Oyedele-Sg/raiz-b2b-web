@@ -41,3 +41,10 @@ export const FetchNotificationsApi = async (
   });
   return response?.data;
 };
+
+export const MarkAsReadApi = async (notification_id: string) => {
+  const response = await AuthAxios.patch(
+    `/business/entities/notifications/${notification_id}/`
+  );
+  return response?.data;
+};

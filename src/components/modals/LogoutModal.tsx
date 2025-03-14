@@ -17,8 +17,7 @@ const LogoutModal = ({ close }: { close: () => void }) => {
     mutationFn: () => LogoutApi(token),
     onSuccess: () => {
       RemoveItemFromCookie("accessToken");
-      // qc.invalidateQueries({ queryKey: ["user"] });
-      qc.removeQueries({ queryKey: ["user"] });
+      qc.clear();
       clearUser();
       router.push("/login");
       close();
