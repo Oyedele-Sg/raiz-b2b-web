@@ -58,6 +58,7 @@ const SalesReport = () => {
       const [, params] = queryKey as [string, ITxnReportPayload];
       return FetchTransactionReportChartApi(params);
     },
+    enabled: !!currentWallet?.wallet_id,
   });
 
   const formatDateLabel = (date: string, period: PeriodTitle) => {

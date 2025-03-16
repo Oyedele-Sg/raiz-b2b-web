@@ -263,7 +263,20 @@ const SideLayout = () => {
               );
             }
             return (
-              <button key={index} onClick={() => setNavModal(menu.action)}>
+              <button
+                key={index}
+                onClick={() => {
+                  if (menu.action === "delete" && menu.email) {
+                    const { to, subject, body } = menu.email;
+                    const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(
+                      subject
+                    )}&body=${encodeURIComponent(body)}`;
+                    window.location.href = mailtoLink;
+                  } else {
+                    setNavModal(menu.action);
+                  }
+                }}
+              >
                 <div className="flex gap-[15px] items-center group">
                   {menu.icon()}
                   <span className="text-raiz-gray-600 text-[15px] font-semibold text-left leading-snug group-hover:underline ">
