@@ -14,6 +14,7 @@ import {
   ScriptableContext,
 } from "chart.js";
 import { PeriodTitle } from "@/app/(dashboard)/_components/SalesReport";
+import { useCurrencyStore } from "@/store/useCurrencyStore";
 
 ChartJS.register(
   CategoryScale,
@@ -82,7 +83,7 @@ const LineChart = ({
       },
     ],
   };
-
+  const { selectedCurrency } = useCurrencyStore();
   const maxValue = Math.max(...graphData.actualData) || 100;
   const yAxisMax = maxValue * 1.1;
 
@@ -106,7 +107,7 @@ const LineChart = ({
         },
         title: {
           display: true,
-          text: "All customers",
+          text: `Income (${selectedCurrency.name})`,
         },
         min: 0,
         max: Number(yAxisMax.toFixed(2)),
