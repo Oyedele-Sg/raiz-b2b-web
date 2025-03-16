@@ -2,21 +2,23 @@
 import React from "react";
 import Overlay from "../ui/Overlay";
 import Button from "../ui/Button";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LogoutApi } from "@/services/auth";
-import { RemoveItemFromLocalStorage } from "@/utils/localStorageFunc";
 import { useRouter } from "next/navigation";
 import { GetItemFromCookie, RemoveItemFromCookie } from "@/utils/CookiesFunc";
+import { useUser } from "@/lib/hooks/useUser";
 
 const LogoutModal = ({ close }: { close: () => void }) => {
   const router = useRouter();
+  const { clearUser } = useUser();
+  const qc = useQueryClient();
   const token = GetItemFromCookie("access_token") ?? "";
   const logoutMutation = useMutation({
     mutationFn: () => LogoutApi(token),
     onSuccess: () => {
-      RemoveItemFromLocalStorage("access_token");
       RemoveItemFromCookie("accessToken");
-      RemoveItemFromLocalStorage("user-storage");
+      qc.clear();
+      clearUser();
       router.push("/login");
       close();
     },

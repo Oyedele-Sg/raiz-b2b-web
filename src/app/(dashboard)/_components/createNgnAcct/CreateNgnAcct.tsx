@@ -102,7 +102,7 @@ const CreateNgnAcct = ({
           </div>
           <Button
             onClick={handleCreate}
-            className="bg-raiz-gray-50 text-primary2 hover:bg-raiz-gray-50  "
+            className="!bg-raiz-gray-50 text-primary2 hover:bg-raiz-gray-50  "
           >
             Create NGN Wallet
           </Button>

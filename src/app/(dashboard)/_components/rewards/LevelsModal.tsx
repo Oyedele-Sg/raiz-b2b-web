@@ -42,7 +42,7 @@ const LevelsModal = ({ close }: { close: () => void }) => {
             >
               <p className="text-[13px] leading-tight">{level.level}</p>
               <p className="text-sm font-semibold font-brSonoma leading-[21px]">
-                {level.max} pts
+                {level.max + 1} pts
               </p>
             </div>
           ))}

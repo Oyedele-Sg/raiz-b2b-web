@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import React, { Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import { useFormik } from "formik";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoginOtpApi } from "@/services/auth";
 import OtpInput from "@/components/ui/OtpInput";
 import Button from "@/components/ui/Button";
@@ -17,10 +17,12 @@ interface Props {
 
 const LoginOtp = ({ setStep, from }: Props) => {
   const router = useRouter();
+  const qc = useQueryClient();
   const loginMutation = useMutation({
     mutationFn: (data: { otp: string }) => LoginOtpApi(data),
     onSuccess: (response) => {
       SetItemToCookie("access_token", response?.access_token);
+      qc.invalidateQueries({ queryKey: ["user"] });
       router.push("/");
     },
   });
