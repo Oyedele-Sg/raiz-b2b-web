@@ -5,6 +5,7 @@ import { FetchUserRewardsActivitiesApi } from "@/services/user";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { IRewardActivityResponse } from "@/types/services";
 import InfiniteScroll from "react-infinite-scroll-component";
+import dayjs from "dayjs";
 
 const RewardsActivities = () => {
   const limit = 10;
@@ -65,26 +66,26 @@ const RewardsActivities = () => {
                   <div className="flex gap-2.5 items-center">
                     <Image
                       className="h-12 w-12 rounded-[48px]"
-                      src={each?.promo_img_url || "/images/pfp.png"}
+                      src={each?.promo_img_url || "/images/default-pfp.svg"}
                       alt="pfp"
                       width={48}
                       height={48}
                     />
                     <div className="">
-                      <p className="text-raiz-gray-950 text-sm font-semibold">
-                        Desirae Bergson
+                      <p className="text-raiz-gray-950 text-sm capitalize font-semibold">
+                        {each?.reward_activity_type?.reward_activity_type}
                       </p>
                       <p className="text-raiz-gray-950 text-xs opacity-50 leading-[15px]">
-                        18 Jun 2023 @ 2:31 PM
+                        {dayjs(each.created_at).format("D MMM YYYY [@] h:mm A")}
                       </p>
                     </div>
                   </div>
                   <div>
                     <p className="text-[#e5890c] text-sm font-semibold leading-tight">
-                      23,000pt
+                      {each.reward_activity_type.points_awarded}pt
                     </p>
                     <p className="text-[#19151e] text-xs font-normal leading-[18px]">
-                      1000pt
+                      {each.total_points}pt
                     </p>
                   </div>
                 </div>

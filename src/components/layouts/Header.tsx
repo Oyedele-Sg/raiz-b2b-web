@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideModalWrapper from "../../app/(dashboard)/_components/SideModalWrapper";
 import Notifications from "../../app/(dashboard)/_components/notification/Notifications";
 import { AnimatePresence } from "motion/react";
@@ -22,6 +22,15 @@ const Header = () => {
     queryKey: ["reward-points"],
     queryFn: FetchUserRewardsApi,
   });
+  const [userPfp, setUserPfp] = useState(
+    user?.business_account?.business_image || "/images/default-pfp.svg"
+  );
+
+  useEffect(() => {
+    if (user?.business_account?.business_image) {
+      setUserPfp(user.business_account.business_image);
+    }
+  }, [user]);
 
   const [showModal, setShowModal] = useState<
     "notifications" | "rewards" | "selectAcct" | "createNGN" | null
@@ -110,10 +119,11 @@ const Header = () => {
         >
           <Image
             className="w-10 h-10 rounded-full object-cover"
-            src={user?.business_account?.business_image || "/images/pfp.png"}
+            src={userPfp}
             alt="profile"
             width={40}
             height={40}
+            onError={() => setUserPfp("/images/default-pfp.svg")}
           />
           <div className="flex items-start flex-col gap-1 text-sm font-semibold">
             <p className="text-gray-700 text-sm  font-semibold ">
