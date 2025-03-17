@@ -85,3 +85,11 @@ export interface ITxnReportResponse {
   total_income: number;
   analytics: IAnalyticsData[];
 }
+
+export interface ITxnReportCategoryResponse {
+  category_emoji: string;
+  percentage: number;
+  total_amount: number;
+  transaction_category: string;
+  transaction_category_id: number;
+}

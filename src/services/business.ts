@@ -3,6 +3,7 @@ import {
   INotificationParams,
   INotificationResponse,
   ITransactionPinPayload,
+  ITxnReportCategoryResponse,
   ITxnReportPayload,
   ITxnReportResponse,
 } from "../types/services";
@@ -56,6 +57,18 @@ export const FetchTransactionReportChartApi = async (
 ): Promise<ITxnReportResponse> => {
   const response = await AuthAxios.get(
     `/business/transactions/analytics/transaction-report/chart/`,
+    {
+      params,
+    }
+  );
+  return response?.data;
+};
+
+export const FetchTransactionReportCategoryApi = async (
+  params: ITxnReportPayload
+): Promise<ITxnReportCategoryResponse[]> => {
+  const response = await AuthAxios.get(
+    `/business/transactions/analytics/transaction-report/categories/`,
     {
       params,
     }

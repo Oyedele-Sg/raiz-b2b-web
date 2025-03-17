@@ -6,6 +6,7 @@ import { useCurrencyStore } from "@/store/useCurrencyStore";
 import USDAcctInfo from "./quick-links/acctInfo/USDAcctInfo";
 import SelectCardModal from "./quick-links/cards/SelectCardModal";
 import TopUp from "./quick-links/topUp/TopUp";
+import Analytics from "./quick-links/analytics/page";
 
 type key = "acct-info" | "card" | "split-bills" | "analytics" | "top-up";
 
@@ -44,6 +45,7 @@ const QuickLinks = () => {
   const closeModal = () => {
     setOpenModal(null);
   };
+
   const displayModal = () => {
     switch (openModal) {
       case "acct-info":
@@ -58,6 +60,8 @@ const QuickLinks = () => {
       //   return <h1>Swap</h1>;
       case "top-up":
         return <TopUp close={closeModal} />;
+      case "analytics":
+        return <Analytics close={closeModal} />;
       default:
         break;
     }
