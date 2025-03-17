@@ -6,8 +6,12 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import NotificationDetailModal from "./NotificationDetailModal";
 import { INotification } from "@/types/user";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { FetchNotificationsApi } from "@/services/business";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { FetchNotificationsApi, MarkAsReadApi } from "@/services/business";
 import { INotificationResponse } from "@/types/services";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Spinner from "@/components/ui/Spinner";
@@ -15,266 +19,38 @@ import "@/styles/misc.css";
 
 dayjs.extend(relativeTime);
 
-// const notificationsArr: INotification[] = [
-//   {
-//     notification_title: "Payment Received",
-//     notification_body: "Your payment of $250 has been processed successfully.",
-//     read: true,
-//     notification_category_id: 1,
-//     created_at: dayjs().toDate(), // Today
-//     updated_at: dayjs().toDate(),
-//     notification_id: "",
-//     notification_url: "",
-//     entity_id: "",
-//     object_id: "",
-//     notification_category: {
-//       notification_category_name: "Payments",
-//       notification_category_description: "Notifications related to payments",
-//       notification_category_code: 101,
-//       notification_category_id: 1,
-//       created_at: dayjs().toDate(),
-//       updated_at: dayjs().toDate(),
-//     },
-//   },
-//   {
-//     notification_title: "Documents approval in progresss",
-//     notification_body:
-//       "Your utility billl approval is still pending and under review. We'll get back to yo in 3 business days",
-//     read: true,
-//     notification_category_id: 1,
-//     created_at: dayjs().toDate(), // Today
-//     updated_at: dayjs().toDate(),
-//     notification_id: "",
-//     notification_url: "",
-//     entity_id: "",
-//     object_id: "",
-//     notification_category: {
-//       notification_category_name: "Payments",
-//       notification_category_description: "Notifications related to payments",
-//       notification_category_code: 101,
-//       notification_category_id: 1,
-//       created_at: dayjs().toDate(),
-//       updated_at: dayjs().toDate(),
-//     },
-//   },
-//   {
-//     notification_title: "Payment Reversed",
-//     notification_body: "Your payment of $250 has been reversed successfully.",
-//     read: false,
-//     notification_category_id: 1,
-//     created_at: dayjs().toDate(), // Today
-//     updated_at: dayjs().toDate(),
-//     notification_id: "",
-//     notification_url: "",
-//     entity_id: "",
-//     object_id: "",
-//     notification_category: {
-//       notification_category_name: "Payments",
-//       notification_category_description: "Notifications related to payments",
-//       notification_category_code: 101,
-//       notification_category_id: 1,
-//       created_at: dayjs().toDate(),
-//       updated_at: dayjs().toDate(),
-//     },
-//   },
-//   {
-//     notification_title: "Payment Received",
-//     notification_body: "Your payment of $250 has been processed successfully.",
-//     read: false,
-//     notification_category_id: 1,
-//     created_at: dayjs().toDate(), // Today
-//     updated_at: dayjs().toDate(),
-//     notification_id: "",
-//     notification_url: "",
-//     entity_id: "",
-//     object_id: "",
-//     notification_category: {
-//       notification_category_name: "Payments",
-//       notification_category_description: "Notifications related to payments",
-//       notification_category_code: 101,
-//       notification_category_id: 1,
-//       created_at: dayjs().toDate(),
-//       updated_at: dayjs().toDate(),
-//     },
-//   },
-//   {
-//     notification_title: "Order Shipped",
-//     notification_body: "Your order #12345 has been shipped and is on the way.",
-//     read: true,
-//     notification_category_id: 2,
-//     created_at: dayjs().subtract(1, "day").toDate(), // Yesterday
-//     updated_at: dayjs().subtract(1, "day").toDate(),
-//     notification_id: "",
-//     notification_url: "",
-//     entity_id: "",
-//     object_id: "",
-//     notification_category: {
-//       notification_category_name: "Orders",
-//       notification_category_description: "Order updates and tracking",
-//       notification_category_code: 102,
-//       notification_category_id: 2,
-//       created_at: dayjs().subtract(1, "day").toDate(),
-//       updated_at: dayjs().subtract(1, "day").toDate(),
-//     },
-//   },
-//   {
-//     notification_title: "New Message",
-//     notification_body: "You have a new message from support.",
-//     read: false,
-//     notification_category_id: 3,
-//     created_at: dayjs().subtract(2, "day").toDate(), // 2 days ago
-//     updated_at: dayjs().subtract(2, "day").toDate(),
-//     notification_id: "",
-//     notification_url: "",
-//     entity_id: "",
-//     object_id: "",
-//     notification_category: {
-//       notification_category_name: "Messages",
-//       notification_category_description:
-//         "Direct messages and support responses",
-//       notification_category_code: 103,
-//       notification_category_id: 3,
-//       created_at: dayjs().subtract(2, "day").toDate(),
-//       updated_at: dayjs().subtract(2, "day").toDate(),
-//     },
-//   },
-//   {
-//     notification_title: "Security Alert",
-//     notification_body: "A new login was detected from an unknown device.",
-//     read: true,
-//     notification_category_id: 4,
-//     created_at: dayjs().subtract(3, "day").toDate(), // 3 days ago
-//     updated_at: dayjs().subtract(3, "day").toDate(),
-//     notification_id: "",
-//     notification_url: "",
-//     entity_id: "",
-//     object_id: "",
-//     notification_category: {
-//       notification_category_name: "Security",
-//       notification_category_description: "Security-related alerts and updates",
-//       notification_category_code: 104,
-//       notification_category_id: 4,
-//       created_at: dayjs().subtract(3, "day").toDate(),
-//       updated_at: dayjs().subtract(3, "day").toDate(),
-//     },
-//   },
-//   {
-//     notification_title: "Subscription Renewal",
-//     notification_body: "Your subscription has been renewed successfully.",
-//     read: false,
-//     notification_category_id: 5,
-//     created_at: dayjs().subtract(5, "day").toDate(), // 5 days ago
-//     updated_at: dayjs().subtract(5, "day").toDate(),
-//     notification_id: "",
-//     notification_url: "",
-//     entity_id: "",
-//     object_id: "",
-//     notification_category: {
-//       notification_category_name: "Subscription",
-//       notification_category_description: "Billing and subscription updates",
-//       notification_category_code: 105,
-//       notification_category_id: 5,
-//       created_at: dayjs().subtract(5, "day").toDate(),
-//       updated_at: dayjs().subtract(5, "day").toDate(),
-//     },
-//   },
-//   {
-//     notification_title: "Discount Offer",
-//     notification_body: "Get 20% off on your next purchase!",
-//     read: false,
-//     notification_category_id: 6,
-//     created_at: dayjs().subtract(10, "day").toDate(), // 10 days ago
-//     updated_at: dayjs().subtract(10, "day").toDate(),
-//     notification_id: "",
-//     notification_url: "",
-//     entity_id: "",
-//     object_id: "",
-//     notification_category: {
-//       notification_category_name: "Promotions",
-//       notification_category_description: "Exclusive discounts and promotions",
-//       notification_category_code: 106,
-//       notification_category_id: 6,
-//       created_at: dayjs().subtract(10, "day").toDate(),
-//       updated_at: dayjs().subtract(10, "day").toDate(),
-//     },
-//   },
-//   {
-//     notification_title: "System Update",
-//     notification_body: "A new system update has been installed successfully.",
-//     read: true,
-//     notification_category_id: 7,
-//     created_at: dayjs("2024-01-15").toDate(), // Specific past date
-//     updated_at: dayjs("2024-01-15").toDate(),
-//     notification_id: "",
-//     notification_url: "",
-//     entity_id: "",
-//     object_id: "",
-//     notification_category: {
-//       notification_category_name: "System",
-//       notification_category_description: "System updates and patches",
-//       notification_category_code: 107,
-//       notification_category_id: 7,
-//       created_at: dayjs("2024-01-15").toDate(),
-//       updated_at: dayjs("2024-01-15").toDate(),
-//     },
-//   },
-//   {
-//     notification_title: "Reminder: Event Tomorrow",
-//     notification_body: "Don't forget your event scheduled for tomorrow.",
-//     read: false,
-//     notification_category_id: 8,
-//     created_at: dayjs().subtract(6, "day").toDate(), // 6 days ago
-//     updated_at: dayjs().subtract(6, "day").toDate(),
-//     notification_id: "",
-//     notification_url: "",
-//     entity_id: "",
-//     object_id: "",
-//     notification_category: {
-//       notification_category_name: "Reminders",
-//       notification_category_description: "Important reminders and alerts",
-//       notification_category_code: 108,
-//       notification_category_id: 8,
-//       created_at: dayjs().subtract(6, "day").toDate(),
-//       updated_at: dayjs().subtract(6, "day").toDate(),
-//     },
-//   },
-//   {
-//     notification_title: "Product Review Request",
-//     notification_body: "Share your thoughts on your recent purchase.",
-//     read: false,
-//     notification_category_id: 9,
-//     created_at: dayjs("2024-01-10").toDate(), // Specific past date
-//     updated_at: dayjs("2024-01-10").toDate(),
-//     notification_id: "",
-//     notification_url: "",
-//     entity_id: "",
-//     object_id: "",
-//     notification_category: {
-//       notification_category_name: "Reviews",
-//       notification_category_description: "Requests for product/service reviews",
-//       notification_category_code: 109,
-//       notification_category_id: 9,
-//       created_at: dayjs("2024-01-10").toDate(),
-//       updated_at: dayjs("2024-01-10").toDate(),
-//     },
-//   },
-// ];
+export const categoryIcons = [
+  { code: 1, icon: "/icons/notif-debit.svg" },
+  { code: 2, icon: "/icons/notif-credit.svg" },
+  // { code: 3, icon: <SavingsIcon width={20} height={20} /> },
+  // { code: 4, icon: <LeadershipIcon width={20} height={20} /> },
+  { code: 5, icon: "/icons/notif-split.svg" },
+  // { code: 6, icon: <BillRequestIcon /> },
+  // { code: 7, icon: <LoanNotificationIcon /> }
+];
 
 const NotificationItem = ({
   notification_body,
   notification_title,
   read,
   notification_category,
-}: INotification) => {
+  onMarkAsRead,
+}: INotification & { onMarkAsRead: () => void }) => {
+  const categoryIcon =
+    categoryIcons.find(
+      (icon) => icon.code === notification_category.notification_category_id
+    )?.icon || "/icons/notif-general.svg";
+
   return (
     <div
       className={`pl-4 py-5 ${
         read ? "bg-transparent" : "bg-[#eaecff]/50"
       } rounded-[20px] justify-start items-start gap-3 inline-flex w-full`}
+      onClick={onMarkAsRead}
     >
       <div className="w-10 h-10 relative">
         <Image
-          src={"/icons/notif-credit.svg"}
+          src={categoryIcon}
           alt={notification_category.notification_category_name}
           width={40}
           height={40}
@@ -322,7 +98,7 @@ const groupNotificationsByDate = (notifications: INotification[]) => {
 const Notifications = ({ close }: { close: () => void }) => {
   const [selectedNotification, setSelectedNotification] =
     useState<INotification | null>(null);
-
+  const qc = useQueryClient();
   const limit = 10;
 
   const {
@@ -341,8 +117,52 @@ const Notifications = ({ close }: { close: () => void }) => {
     initialPageParam: 1,
   });
 
+  const markAsReadMutation = useMutation({
+    mutationFn: (notificationId: string) => MarkAsReadApi(notificationId),
+    onMutate: async (notificationId) => {
+      // Optimistically update the cache before the API call
+      await qc.cancelQueries({ queryKey: ["notifications"] });
+
+      const previousData = qc.getQueryData<INotificationResponse[]>([
+        "notifications",
+      ]);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      qc.setQueryData(["notifications"], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          pages: old.pages.map((page: INotificationResponse) => ({
+            ...page,
+            notifications: page.notifications.map((notif: INotification) =>
+              notif.notification_id === notificationId
+                ? { ...notif, read: true }
+                : notif
+            ),
+          })),
+        };
+      });
+
+      return { previousData }; // Return context for rollback on error
+    },
+    onError: (err, notificationId, context) => {
+      // Rollback to previous data on error
+      qc.setQueryData(["notifications"], context?.previousData);
+    },
+    onSettled: () => {
+      // Optionally refetch to ensure consistency with the server
+      qc.invalidateQueries({ queryKey: ["notifications"] });
+    },
+  });
+
   const notifications = data?.pages.flatMap((page) => page.notifications) || [];
   const groupedNotifications = groupNotificationsByDate(notifications);
+  const handleNotificationClick = (notification: INotification) => {
+    if (!notification.read) {
+      markAsReadMutation.mutate(notification.notification_id);
+    }
+    setSelectedNotification(notification);
+  };
 
   return (
     <>
@@ -399,13 +219,21 @@ const Notifications = ({ close }: { close: () => void }) => {
                           <button
                             key={index}
                             onClick={() =>
-                              setSelectedNotification(notification)
+                              handleNotificationClick(notification)
                             }
                             className="text-left w-full"
                             aria-label={`View notification: ${notification.notification_title}`}
                             role="button"
                           >
-                            <NotificationItem {...notification} />
+                            <NotificationItem
+                              {...notification}
+                              onMarkAsRead={() =>
+                                !notification.read &&
+                                markAsReadMutation.mutate(
+                                  notification.notification_id
+                                )
+                              }
+                            />
                           </button>
                         )
                       )}

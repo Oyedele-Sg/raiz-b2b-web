@@ -68,6 +68,7 @@ const WelcomeBack = ({ setPage, email, user }: Props) => {
           type="submit"
           disabled={!formik.values.password}
           className="my-6"
+          loading={loginMutation.isPending}
         >
           Login
         </Button>

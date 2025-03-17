@@ -229,7 +229,7 @@ export const SettingsMenus = [
   },
   {
     name: "Delete Account",
-    link: "/settings/delete-account",
+    link: "/",
     icon: () => (
       <svg
         width="40"
@@ -263,6 +263,18 @@ export const SettingsMenus = [
     ),
     type: "button",
     action: "delete",
+    email: {
+      to: "support@raiz.app",
+      subject: "Request to Delete My Account",
+      body: `Dear Support Team,
+
+      I would like to request the deletion of my account. I understand that by submitting this request, I will no longer have access to my account or any remaining funds associated with it.
+      
+      Please let me know if any further steps are required.
+      
+      Best regards,
+      [Your Name]`,
+    },
   },
 ];
 

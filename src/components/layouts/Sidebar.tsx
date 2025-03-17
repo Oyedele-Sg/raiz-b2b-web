@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -32,6 +32,23 @@ const Sidebar = () => {
   const [successful, setSuccessful] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isIframeLoading, setIsIframeLoading] = useState(true);
+  const [canRenderPersona, setCanRenderPersona] = useState(false);
+
+  // Extract environment variables and user data with fallbacks
+  const templateId = process.env.NEXT_PUBLIC_PERSONA_TEMPLATE_ID || "";
+  const environmentId = process.env.NEXT_PUBLIC_PERSONA_ENVIRONMENT_ID || "";
+  const referenceId = user?.business_account?.entity_id || "";
+
+  // Check if all required props are available
+  useEffect(() => {
+    if (!templateId || !environmentId) {
+      toast.error("Verification setup is incomplete. Please contact support.");
+      setIsIframeLoading(false);
+      setCanRenderPersona(false);
+    } else {
+      setCanRenderPersona(true);
+    }
+  }, [templateId, environmentId]);
 
   const handleCloseModal = () => {
     setShowModal(null);
@@ -60,9 +77,9 @@ const Sidebar = () => {
           </div>
         )}
         <PersonaReact
-          templateId={process.env.NEXT_PUBLIC_PERSONA_TEMPLATE_ID}
-          environmentId={process.env.NEXT_PUBLIC_PERSONA_ENVIRONMENT_ID}
-          referenceId={user?.business_account?.entity_id}
+          templateId={templateId}
+          environmentId={environmentId}
+          referenceId={referenceId}
           onLoad={() => {
             setIsIframeLoading(false);
           }}
@@ -93,12 +110,20 @@ const Sidebar = () => {
   const displayModal = () => {
     switch (showModal) {
       case "acctSetup":
-        // return <AccountSetup close={handleCloseModal} />;
-        return (
-          <div className="h-full">
-            <InlineInquiry />
-          </div>
-        );
+        if (!canRenderPersona) {
+          return (
+            <div className="h-full flex justify-center items-center">
+              Verification is unavailable at this time.
+            </div>
+          );
+        } else {
+          return (
+            <div className="h-full">
+              <InlineInquiry />
+            </div>
+          );
+        }
+
       case "getNgn":
         return (
           <CreateNgnAcct
