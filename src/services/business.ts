@@ -3,9 +3,9 @@ import {
   INotificationParams,
   INotificationResponse,
   ITransactionPinPayload,
+  ITxnIncomeExpenseResponse,
   ITxnReportCategoryResponse,
   ITxnReportPayload,
-  ITxnReportResponse,
 } from "../types/services";
 
 export const FreezeDebitApi = async (data: ITransactionPinPayload) => {
@@ -54,7 +54,7 @@ export const MarkAsReadApi = async (notification_id: string) => {
 
 export const FetchTransactionReportChartApi = async (
   params: ITxnReportPayload
-): Promise<ITxnReportResponse> => {
+): Promise<ITxnIncomeExpenseResponse> => {
   const response = await AuthAxios.get(
     `/business/transactions/analytics/transaction-report/chart/`,
     {

@@ -1,4 +1,5 @@
 import { IPagination } from "./misc";
+import { ITransaction } from "./transactions";
 import { INotification } from "./user";
 
 export interface IRewardPoint {
@@ -80,7 +81,7 @@ export interface IAnalyticsData {
   date: string;
   debit_amount: number;
 }
-export interface ITxnReportResponse {
+export interface ITxnIncomeExpenseResponse {
   total_expense: number;
   total_income: number;
   analytics: IAnalyticsData[];
@@ -92,4 +93,26 @@ export interface ITxnReportCategoryResponse {
   total_amount: number;
   transaction_category: string;
   transaction_category_id: number;
+}
+
+export interface ITransactionParams {
+  wallet_id: string;
+  transaction_status_id?: number | null;
+  transaction_type_id?: number | null;
+  transaction_class_id?: string | null;
+  payment_method_id?: string | null;
+  transaction_report_id?: string | null;
+  transaction_category_id?: string | null;
+  start_date?: string | null;
+  end_date?: string | null;
+  transaction_reference?: string | null;
+  session_id?: string | null;
+  order_number?: string | null;
+  page?: number;
+  limit?: number;
+}
+
+export interface ITxnReportResponse {
+  pagination_details: IPagination;
+  transaction_reports: ITransaction[];
 }

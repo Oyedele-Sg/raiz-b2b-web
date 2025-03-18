@@ -1,76 +1,73 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Image from "next/image";
 import EmptyList from "@/components/ui/EmptyList";
+import { useQuery } from "@tanstack/react-query";
+import { FetchTransactionReportApi } from "@/services/transactions";
+import { ITransactionParams } from "@/types/services";
+import { useUser } from "@/lib/hooks/useUser";
+import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
+import dayjs from "dayjs";
+import { useCurrencyStore } from "@/store/useCurrencyStore";
+import { ITransaction } from "@/types/transactions";
+import { AccountCurrencyType } from "@/types/misc";
+import Skeleton from "react-loading-skeleton";
 
-type Transaction = {
-  id: number;
-  requester: string;
-  time: string;
-  amount: number;
-  imageUrl: string;
-  type: string;
+const TransactionRow = ({
+  transaction,
+  selectedCurrency,
+}: {
+  transaction: ITransaction;
+  selectedCurrency: AccountCurrencyType;
+}) => {
+  const [imgSrc, setImgSrc] = useState(
+    transaction?.third_party_profile_image_url || "/images/default-pfp.svg"
+  );
+
+  return (
+    <div className="flex items-center justify-between w-full">
+      <div className="flex gap-[14px]">
+        <Image
+          className="w-12 h-12"
+          src={imgSrc}
+          width={48}
+          height={48}
+          alt={transaction?.third_party_name}
+          onError={() => setImgSrc("/images/default-pfp.svg")}
+        />
+        <div className="flex flex-col gap-1">
+          <p className="text-raiz-gray-950 text-sm font-semibold">
+            {transaction?.third_party_name}
+          </p>
+          <p className="opacity-50 text-raiz-gray-950 text-xs font-normal leading-[15px]">
+            {dayjs(transaction?.transaction_date_time).format(
+              "DD MMM YYYY @ h:mm A"
+            )}
+          </p>
+        </div>
+      </div>
+      <span className="text-raiz-gray-900 text-sm font-semibold leading-tight">
+        {selectedCurrency?.sign}
+        {transaction?.transaction_amount?.toLocaleString()}
+      </span>
+    </div>
+  );
 };
 
-const sampleTrx: Transaction[] = [
-  // {
-  //   id: 1,
-  //   requester: "Desirae Bergson",
-  //   time: "18 Mar 2023 @ 4:42 PM",
-  //   amount: 4000000,
-  //   imageUrl: "/images/pfp.png",
-  //   type: "credit",
-  // },
-  // {
-  //   id: 2,
-  //   requester: "Sarah K",
-  //   time: "8 Apr 2023 @ 2:20 PM",
-  //   amount: 2500000,
-  //   imageUrl: "/images/pfp.png",
-  //   type: "credit",
-  // },
-  // {
-  //   id: 3,
-  //   requester: "Michael D",
-  //   time: "8 Apr 2023 @ 2:20 PM",
-  //   amount: 1500000,
-  //   imageUrl: "/images/pfp.png",
-  //   type: "debit",
-  // },
-  // {
-  //   id: 4,
-  //   requester: "Linda W",
-  //   time: "8 Apr 2023 @ 2:20 PM",
-  //   amount: 3200000,
-  //   imageUrl: "/images/pfp.png",
-  //   type: "credit",
-  // },
-  // {
-  //   id: 5,
-  //   requester: "David T",
-  //   time: "18 Mar 2023 @ 4:42 PM",
-  //   amount: 500000,
-  //   imageUrl: "/images/pfp.png",
-  //   type: "debit",
-  // },
-  // {
-  //   id: 6,
-  //   requester: "Jessica L",
-  //   time: "18 Mar 2023 @ 4:42 PM",
-  //   amount: 4500000,
-  //   imageUrl: "/images/pfp.png",
-  //   type: "credit",
-  // },
-  // {
-  //   id: 7,
-  //   requester: "Kevin M",
-  //   time: "18 Mar 2023 @ 4:42 PM",
-  //   amount: 1200000,
-  //   imageUrl: "/images/pfp.png",
-  //   type: "credit",
-  // },
-];
-
 const Transactions = () => {
+  const { user } = useUser();
+  const currentWallet = useCurrentWallet(user);
+  const { selectedCurrency } = useCurrencyStore();
+  const { data, isLoading } = useQuery({
+    queryKey: ["transactions-report", { wallet_id: currentWallet?.wallet_id }],
+    queryFn: ({ queryKey }) => {
+      const [, params] = queryKey as [string, ITransactionParams];
+      return FetchTransactionReportApi(params);
+    },
+    enabled: !!currentWallet?.wallet_id,
+  });
+
+  const transactions = data?.transaction_reports || [];
   return (
     <div className=" p-6 rounded-[20px] border border-raiz-gray-200 flex-col justify-start items-start gap-5 inline-flex">
       <div className="w-full mb-5 flex justify-between items-center">
@@ -89,33 +86,16 @@ const Transactions = () => {
           </svg>
         </button>
       </div>
-      <div className="flex flex-col gap-3 w-full max-h-72 overflow-y-scroll">
-        {sampleTrx?.length > 0 ? (
-          sampleTrx?.map((each, index) => (
-            <div
+      <div className="flex flex-col gap-3 w-full max-h-72 overflow-y-scroll no-scrollbar">
+        {isLoading ? (
+          <Skeleton count={4} className="mb-3" height={48} />
+        ) : transactions?.length > 0 ? (
+          transactions?.map((each, index) => (
+            <TransactionRow
               key={index}
-              className=" flex items-center justify-between w-full"
-            >
-              <div className="flex gap-[14px]">
-                <Image
-                  src={each.imageUrl}
-                  width={48}
-                  height={48}
-                  alt="requester"
-                />
-                <div className="flex flex-col gap-1">
-                  <p className=" text-raiz-gray-950 text-sm font-semibold ">
-                    {each.requester}
-                  </p>
-                  <p className="opacity-50 text-raiz-gray-950 text-xs font-normal  leading-[15px]">
-                    {each.time}
-                  </p>
-                </div>
-              </div>
-              <span className="text-raiz-gray-900 text-sm font-semibold  leading-tight ">
-                ₦{each.amount.toLocaleString()}
-              </span>
-            </div>
+              transaction={each}
+              selectedCurrency={selectedCurrency}
+            />
           ))
         ) : (
           <EmptyList text="No transactions yet" />
