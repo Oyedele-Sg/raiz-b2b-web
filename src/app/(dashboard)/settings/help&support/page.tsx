@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import RouteSectionInfo from "../_components/RouteSectionInfo";
 import HelpSupportNav from "./_components/HelpSupportNav";
 import SocialMedia from "./_components/SocialMedia";
+import HelpCenter from "./_components/HelpCenter";
+import TransactionsHelp from "./_components/TransactionsHelp";
+import SecurityHelp from "./_components/SecurityHelp";
 
 const HelpSupport = () => {
   const [part, setPart] = useState(0);
@@ -12,6 +15,12 @@ const HelpSupport = () => {
         return <HelpSupportNav setPart={setPart} part={part} />;
       case 1:
         return <SocialMedia setPart={setPart} part={part} />;
+      case 5:
+        return <HelpCenter setPart={setPart} part={part} />;
+      case 6:
+        return <TransactionsHelp setPart={setPart} part={part} />;
+      case 7:
+        return <SecurityHelp setPart={setPart} part={part} />;
       default:
         return <HelpSupportNav setPart={setPart} part={part} />;
     }
