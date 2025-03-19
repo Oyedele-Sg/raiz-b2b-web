@@ -488,7 +488,7 @@ export const helpSupportData = [
 export const loginSecurityData = [
   {
     name: "Reset Password",
-    text: "Last updated 3 months ago",
+    text: "",
     part: 1,
     icon: (
       <svg

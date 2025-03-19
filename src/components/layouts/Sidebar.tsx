@@ -38,15 +38,6 @@ const Sidebar = () => {
   const templateId = process.env.NEXT_PUBLIC_PERSONA_TEMPLATE_ID || "";
   const environmentId = process.env.NEXT_PUBLIC_PERSONA_ENVIRONMENT_ID || "";
   const referenceId = user?.business_account?.entity_id || "";
-  console.log(
-    "temp_id",
-    templateId,
-    "env id",
-    environmentId,
-    "ref id",
-    referenceId
-  );
-
   // Check if all required props are available
   useEffect(() => {
     if (!templateId || !environmentId) {
