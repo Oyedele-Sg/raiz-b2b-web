@@ -9,7 +9,7 @@ const LsNav = ({ setPart }: PartChildProps) => {
     setPart(part);
   };
   return (
-    <div className=" flex flex-col gap-5 w-full">
+    <div className=" flex flex-col gap-5 mt-10 w-full">
       {loginSecurityData.map((data, index) => {
         return (
           <button

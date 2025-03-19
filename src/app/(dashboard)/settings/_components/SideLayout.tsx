@@ -29,7 +29,9 @@ const SideLayout = () => {
   const queryClient = useQueryClient();
 
   const displayImage =
-    previewUrl || user?.business_account?.business_image || "/images/pfp.png";
+    previewUrl ||
+    user?.business_account?.business_image ||
+    "/images/default-pfp.svg";
 
   const closeLevelsModal = () => {
     setShowLevels(false);
@@ -120,6 +122,10 @@ const SideLayout = () => {
   });
 
   const handleFreezeClick = (action: string) => {
+    if (!user?.has_transaction_pin) {
+      toast.warning("You have to setup transaction pin first");
+      return;
+    }
     setNavModal(action);
     if (user?.business_account?.entity?.is_entity_frozen) {
       setFreezeType("enable");
@@ -145,6 +151,7 @@ const SideLayout = () => {
             height={64}
             alt="Profile Picture"
             className="h-16 w-16 rounded-full object-cover"
+            onError={() => setPreviewUrl("/images/default-pfp.svg")}
           />
           <button
             onClick={() => inputRef.current?.click()}
