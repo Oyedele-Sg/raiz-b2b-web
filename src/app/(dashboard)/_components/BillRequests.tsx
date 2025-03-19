@@ -1,68 +1,90 @@
+"use client";
 import EmptyList from "@/components/ui/EmptyList";
+import { FetchBillRequestApi } from "@/services/transactions";
+import { useCurrencyStore } from "@/store/useCurrencyStore";
+import { AccountCurrencyType } from "@/types/misc";
+import { IBillRequestParams } from "@/types/services";
+import { IBillRequest } from "@/types/transactions";
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import Image from "next/image";
 import React from "react";
+import Skeleton from "react-loading-skeleton";
 
-interface BillRequest {
-  id: number;
-  requester: string;
-  time: string;
-  amount: number;
-  imageUrl: string;
-}
+const BillRow = ({
+  request,
+  selectedCurrency,
+}: {
+  request: IBillRequest;
+  selectedCurrency: AccountCurrencyType;
+}) => {
+  const date = dayjs(request?.created_at);
+  const isToday = date.isSame(dayjs(), "day");
+  return (
+    <div className="w-full px-[15px] py-[18px] bg-[#f3eee9] rounded-[20px] flex-col justify-center items-start gap-4 inline-flex">
+      <div className=" flex items-center justify-between w-full">
+        <div className="flex gap-2 ">
+          <Image
+            src={
+              request?.third_party_account?.selfie_image ||
+              "/images/default-pfp.svg"
+            }
+            width={38}
+            height={38}
+            alt="requester"
+          />
+          <div className="flex flex-col gap-0.5">
+            <p className="text-raiz-gray-900 text-[13px] xl:text-sm font-semibold leading-tight">
+              {request?.third_party_account?.account_name}
+            </p>
+            <p className="text-raiz-gray-800 text-[11px] xl:text-[13px] font-normal  leading-none">
+              {isToday
+                ? `Today, ${date.format("HH:mm")}`
+                : date.format("DD MMM YYYY, HH:mm")}
+            </p>
+          </div>
+        </div>
+        <span className="text-raiz-gray-900 text-sm xl:text-base font-semibold ">
+          {selectedCurrency?.sign}
+          {request?.transaction_amount?.toLocaleString()}
+        </span>
+      </div>
+      <div className="flex w-full justify-between items-center gap-2">
+        <button className="w-1/2 h-10 px-5 py-2 bg-[#f1e0cb] rounded-3xl justify-center items-center gap-1.5 inline-flex">
+          <span className="text-raiz-gray-800 text-sm font-medium font-brSonoma leading-[16.80px]">
+            Reject
+          </span>
+        </button>
+        <button className="w-1/2 h-10 px-5 py-2 bg-[#3c2875] rounded-3xl justify-center items-center gap-1.5 inline-flex">
+          <svg width="17" height="16" viewBox="0 0 17 16" fill="none">
+            <path
+              d="M11.2601 1.97336L5.24008 3.97336C1.19341 5.3267 1.19341 7.53336 5.24008 8.88003L7.02674 9.47336L7.62008 11.26C8.96674 15.3067 11.1801 15.3067 12.5267 11.26L14.5334 5.2467C15.4267 2.5467 13.9601 1.07336 11.2601 1.97336ZM11.4734 5.56003L8.94008 8.1067C8.84008 8.2067 8.71341 8.25336 8.58674 8.25336C8.46008 8.25336 8.33341 8.2067 8.23341 8.1067C8.04008 7.91336 8.04008 7.59336 8.23341 7.40003L10.7667 4.85336C10.9601 4.66003 11.2801 4.66003 11.4734 4.85336C11.6667 5.0467 11.6667 5.3667 11.4734 5.56003Z"
+              fill="#F4F4F4"
+            />
+          </svg>
 
-const billRequests: BillRequest[] = [
-  // {
-  //   id: 1,
-  //   requester: "James B",
-  //   time: "Today, 15:05",
-  //   amount: 4000000,
-  //   imageUrl: "/images/pfp.png",
-  // },
-  // {
-  //   id: 2,
-  //   requester: "Sarah K",
-  //   time: "Yesterday, 14:20",
-  //   amount: 2500000,
-  //   imageUrl: "/images/pfp.png",
-  // },
-  // {
-  //   id: 3,
-  //   requester: "Michael D",
-  //   time: "2 hours ago",
-  //   amount: 1500000,
-  //   imageUrl: "/images/pfp.png",
-  // },
-  // {
-  //   id: 4,
-  //   requester: "Linda W",
-  //   time: "Today, 12:40",
-  //   amount: 3200000,
-  //   imageUrl: "/images/pfp.png",
-  // },
-  // {
-  //   id: 5,
-  //   requester: "David T",
-  //   time: "3 hours ago",
-  //   amount: 500000,
-  //   imageUrl: "/images/pfp.png",
-  // },
-  // {
-  //   id: 6,
-  //   requester: "Jessica L",
-  //   time: "Yesterday, 10:15",
-  //   amount: 4500000,
-  //   imageUrl: "/images/pfp.png",
-  // },
-  // {
-  //   id: 7,
-  //   requester: "Kevin M",
-  //   time: "Today, 16:00",
-  //   amount: 1200000,
-  //   imageUrl: "/images/pfp.png",
-  // },
-];
+          <span className="text-secondary-white text-sm font-medium font-brSonoma leading-[16.80px]">
+            Accept
+          </span>
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const BillRequests = () => {
+  const { selectedCurrency } = useCurrencyStore();
+  const { data, isLoading } = useQuery({
+    queryKey: ["bill-requests", selectedCurrency.name],
+    queryFn: ({ queryKey }) => {
+      const [, params] = queryKey as [string, IBillRequestParams];
+      return FetchBillRequestApi(params);
+    },
+  });
+
+  const billRequests = data?.data || [];
+
+  console.log("data", data);
   return (
     <div className="w-full">
       <div className="flex items-center justify-between w-full mb-5">
@@ -79,53 +101,31 @@ const BillRequests = () => {
         </button>
       </div>
       <section className="flex flex-col gap-4 w-full max-h-[568px] overflow-y-scroll">
-        {billRequests?.length > 0 ? (
-          billRequests.map((request) => (
-            <div
-              key={request.id}
-              className="w-full px-[15px] py-[18px] bg-[#f3eee9] rounded-[20px] flex-col justify-center items-start gap-4 inline-flex"
-            >
-              <div className=" flex items-center justify-between w-full">
-                <div className="flex gap-2 ">
-                  <Image
-                    src={request.imageUrl}
-                    width={38}
-                    height={38}
-                    alt="requester"
-                  />
-                  <div className="flex flex-col gap-0.5">
-                    <p className="text-raiz-gray-900 text-[13px] xl:text-sm font-semibold leading-tight">
-                      {request.requester}
-                    </p>
-                    <p className="text-raiz-gray-800 text-[11px] xl:text-[13px] font-normal  leading-none">
-                      {request.time}
-                    </p>
-                  </div>
+        {isLoading ? (
+          <div className="w-full px-[15px] py-[18px] rounded-[20px] flex-col justify-center items-start gap-4 inline-flex">
+            <div className="flex items-center justify-between w-full">
+              <div className="flex gap-2">
+                <Skeleton circle width={38} height={38} />
+                <div className="flex flex-col gap-0.5">
+                  <Skeleton width={120} height={14} />
+                  <Skeleton width={100} height={12} />
                 </div>
-                <span className="text-raiz-gray-900 text-sm xl:text-base font-semibold ">
-                  ₦{request.amount.toLocaleString()}
-                </span>
               </div>
-              <div className="flex w-full justify-between items-center gap-2">
-                <button className="w-1/2 h-10 px-5 py-2 bg-[#f1e0cb] rounded-3xl justify-center items-center gap-1.5 inline-flex">
-                  <span className="text-raiz-gray-800 text-sm font-medium font-brSonoma leading-[16.80px]">
-                    Reject
-                  </span>
-                </button>
-                <button className="w-1/2 h-10 px-5 py-2 bg-[#3c2875] rounded-3xl justify-center items-center gap-1.5 inline-flex">
-                  <svg width="17" height="16" viewBox="0 0 17 16" fill="none">
-                    <path
-                      d="M11.2601 1.97336L5.24008 3.97336C1.19341 5.3267 1.19341 7.53336 5.24008 8.88003L7.02674 9.47336L7.62008 11.26C8.96674 15.3067 11.1801 15.3067 12.5267 11.26L14.5334 5.2467C15.4267 2.5467 13.9601 1.07336 11.2601 1.97336ZM11.4734 5.56003L8.94008 8.1067C8.84008 8.2067 8.71341 8.25336 8.58674 8.25336C8.46008 8.25336 8.33341 8.2067 8.23341 8.1067C8.04008 7.91336 8.04008 7.59336 8.23341 7.40003L10.7667 4.85336C10.9601 4.66003 11.2801 4.66003 11.4734 4.85336C11.6667 5.0467 11.6667 5.3667 11.4734 5.56003Z"
-                      fill="#F4F4F4"
-                    />
-                  </svg>
-
-                  <span className="text-secondary-white text-sm font-medium font-brSonoma leading-[16.80px]">
-                    Accept
-                  </span>
-                </button>
-              </div>
+              <Skeleton width={80} height={18} />
             </div>
+
+            <div className="flex w-full justify-between items-center gap-2">
+              <Skeleton width="50%" height={40} borderRadius={9999} />
+              <Skeleton width="50%" height={40} borderRadius={9999} />
+            </div>
+          </div>
+        ) : billRequests?.length > 0 ? (
+          billRequests.map((request, index) => (
+            <BillRow
+              key={index}
+              request={request}
+              selectedCurrency={selectedCurrency}
+            />
           ))
         ) : (
           <EmptyList text="No bill request yet" />

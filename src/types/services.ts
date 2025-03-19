@@ -1,5 +1,5 @@
 import { IPagination } from "./misc";
-import { ITransaction } from "./transactions";
+import { IBillRequest, ITransaction } from "./transactions";
 import { INotification } from "./user";
 
 export interface IRewardPoint {
@@ -115,4 +115,16 @@ export interface ITransactionParams {
 export interface ITxnReportResponse {
   pagination_details: IPagination;
   transaction_reports: ITransaction[];
+}
+
+export interface IBillRequestParams {
+  status_id?: string | null;
+  page?: number;
+  limit?: number;
+  currency?: string | null;
+}
+
+export interface IBillRequestResponse {
+  pagination_details: IPagination;
+  data: IBillRequest[];
 }

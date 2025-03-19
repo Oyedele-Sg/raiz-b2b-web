@@ -261,6 +261,7 @@ export const SettingsMenus = [
         />
       </svg>
     ),
+    newTab: true,
     type: "button",
     action: "delete",
     email: {

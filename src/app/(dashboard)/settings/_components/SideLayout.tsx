@@ -122,6 +122,10 @@ const SideLayout = () => {
   });
 
   const handleFreezeClick = (action: string) => {
+    if (!user?.has_transaction_pin) {
+      toast.warning("You have to setup transaction pin first");
+      return;
+    }
     setNavModal(action);
     if (user?.business_account?.entity?.is_entity_frozen) {
       setFreezeType("enable");

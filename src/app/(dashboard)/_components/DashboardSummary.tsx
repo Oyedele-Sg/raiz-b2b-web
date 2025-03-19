@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import CustomersInfo from "./CustomersInfo";
 import SalesReport from "./SalesReport";
 import SideModalWrapper from "./SideModalWrapper";
 import Image from "next/image";
@@ -138,7 +137,7 @@ const DashboardSummary = () => {
         </div>
       </div>
 
-      <CustomersInfo />
+      {/* <CustomersInfo /> */}
       <SalesReport />
       <AnimatePresence>
         {openModal ? (

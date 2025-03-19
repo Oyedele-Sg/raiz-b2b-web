@@ -78,3 +78,30 @@ export interface ITransaction {
   payment_method: IPaymentMethod;
   transaction_category: ITransactionCategory;
 }
+
+export interface IBillRequest {
+  requestee_entity_id: string;
+  transaction_amount: number;
+  narration: string;
+  transaction_category_id: number;
+  requester_entity_id: string;
+  currency: string;
+  status_id: number;
+  request_transfer_id: string;
+  created_at: Date;
+  updated_at: Date;
+  status: {
+    status: string;
+    description: string;
+    status_code: number;
+    request_fund_status_id: number;
+    created_at: Date;
+    updated_at: Date;
+  };
+  third_party_account: {
+    entity_id: string;
+    account_name: string;
+    username: string;
+    selfie_image: string;
+  };
+}
