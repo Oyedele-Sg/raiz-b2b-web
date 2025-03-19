@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import Loading from "./loading";
 import MainLayout from "@/components/layouts/MainLayout";
 import { Toaster } from "sonner";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const inter = Inter({
   subsets: ["latin"],

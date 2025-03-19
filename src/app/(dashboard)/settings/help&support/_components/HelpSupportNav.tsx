@@ -18,6 +18,7 @@ const HelpSupportNav = ({ setPart }: PartChildProps) => {
               <a
                 key={index}
                 href={data.link}
+                target="_blank"
                 className="flex justify-between items-center"
               >
                 <div className="flex gap-[15px] items-center">

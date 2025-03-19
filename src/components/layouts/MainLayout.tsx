@@ -3,9 +3,11 @@ import { usePathname } from "next/navigation";
 import React, { ReactNode } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
+import { useAutoLogout } from "@/lib/hooks/useAutoLogout";
 
 const MainLayout = ({ children }: { children: ReactNode }) => {
   const pathName = usePathname();
+  useAutoLogout();
 
   const shouldShowSideNav =
     !pathName.includes("/register") &&
