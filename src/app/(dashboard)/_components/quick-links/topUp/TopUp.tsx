@@ -73,7 +73,11 @@ const TopUp = ({ close }: Props) => {
                   <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
                     {currentWallet?.account_number || ""}
                   </p>
-                  <button onClick={() => copyToClipboard("7821044659" || "")}>
+                  <button
+                    onClick={() =>
+                      copyToClipboard(currentWallet?.account_number || "")
+                    }
+                  >
                     <Image
                       src={"/icons/copy.svg"}
                       alt={"copy"}
@@ -142,7 +146,9 @@ const TopUp = ({ close }: Props) => {
               Your Raiz wallet balance will be funded immediately
             </p>
           </div>
-          <Button onClick={() => copyToClipboard("7821044659" || "")}>
+          <Button
+            onClick={() => copyToClipboard(currentWallet?.account_number || "")}
+          >
             Copy Account Details
           </Button>
         </div>
