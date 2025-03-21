@@ -1,6 +1,6 @@
 import { IPagination } from "./misc";
 import { IBillRequest, ITransaction } from "./transactions";
-import { INotification } from "./user";
+import { INotification, ISearchedUser } from "./user";
 
 export interface IRewardPoint {
   reward_point_id: string;
@@ -127,4 +127,34 @@ export interface IBillRequestParams {
 export interface IBillRequestResponse {
   pagination_details: IPagination;
   data: IBillRequest[];
+}
+
+export interface IUserSearchParams {
+  page?: number;
+  limit?: number;
+  search: string;
+  wallet_id: string;
+}
+
+export interface IUserSearchResponse {
+  pagination_details: IPagination;
+  results: ISearchedUser[];
+}
+
+export interface ITransactionCategory {
+  transaction_category: string;
+  transaction_category_code: number;
+  transaction_category_description: string;
+  category_emoji: string;
+  transaction_category_id: number;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface IAcceptRequestPayload {
+  transaction_pin: string;
+  params: {
+    wallet_id: string;
+    request_id: string;
+  };
 }

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { truncateString } from "@/utils/helpers";
+import { groupByDate, truncateString } from "@/utils/helpers";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import NotificationDetailModal from "./NotificationDetailModal";
@@ -71,30 +71,6 @@ const NotificationItem = ({
   );
 };
 
-const groupNotificationsByDate = (notifications: INotification[]) => {
-  const grouped: Record<string, INotification[]> = {};
-
-  notifications.forEach((notification) => {
-    const createdAt = dayjs(notification.created_at);
-    let groupKey = createdAt.format("D MMMM"); // Default to "2nd February"
-
-    if (createdAt.isSame(dayjs(), "day")) {
-      groupKey = "Today";
-    } else if (createdAt.isSame(dayjs().subtract(1, "day"), "day")) {
-      groupKey = "Yesterday";
-    } else if (createdAt.isSame(dayjs().subtract(2, "day"), "day")) {
-      groupKey = "2 days ago";
-    }
-
-    if (!grouped[groupKey]) {
-      grouped[groupKey] = [];
-    }
-    grouped[groupKey].push(notification);
-  });
-
-  return grouped;
-};
-
 const Notifications = ({ close }: { close: () => void }) => {
   const [selectedNotification, setSelectedNotification] =
     useState<INotification | null>(null);
@@ -156,7 +132,10 @@ const Notifications = ({ close }: { close: () => void }) => {
   });
 
   const notifications = data?.pages.flatMap((page) => page.notifications) || [];
-  const groupedNotifications = groupNotificationsByDate(notifications);
+  const groupedNotifications = groupByDate<INotification>(
+    notifications,
+    "created_at"
+  );
   const handleNotificationClick = (notification: INotification) => {
     if (!notification.read) {
       markAsReadMutation.mutate(notification.notification_id);

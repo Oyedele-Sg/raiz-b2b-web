@@ -1,4 +1,5 @@
 "use client";
+import SideWrapperHeader from "@/components/SideWrapperHeader";
 import Button from "@/components/ui/Button";
 import Image from "next/image";
 import React from "react";
@@ -35,20 +36,7 @@ const CreateNgnAcct = ({
   return (
     <>
       <div className=" h-full pb-[30px]">
-        <div className=" flex justify-between items-center">
-          <button onClick={close}>
-            <svg width="19" height="19" viewBox="0 0 19 19" fill="none">
-              <path
-                d="M18.48 8.33334V10.6667H4.48L10.8967 17.0833L9.24 18.74L0 9.50001L9.24 0.26001L10.8967 1.91668L4.48 8.33334H18.48Z"
-                fill="#FCFCFD"
-              />
-            </svg>
-          </button>
-          <h5 className="text-center text-raiz-gray-50  font-bold  leading-tight">
-            NGN Account
-          </h5>
-          <span />
-        </div>
+        <SideWrapperHeader title="NGN Account" close={close} />
         <div className="flex flex-col justify-between h-full">
           <div className="">
             <div className="flex flex-col justify-center items-center mt-[104px] gap-3">

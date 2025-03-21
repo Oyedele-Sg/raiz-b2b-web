@@ -10,6 +10,7 @@ import UsdSend from "./send/usd/UsdSend";
 import Button from "@/components/ui/Button";
 import { findWalletByCurrency } from "@/utils/helpers";
 import { useUser } from "@/lib/hooks/useUser";
+import Request from "./request/Request";
 
 const DashboardSummary = () => {
   const { user } = useUser();
@@ -49,7 +50,7 @@ const DashboardSummary = () => {
           <UsdSend close={closeModal} />
         );
       case "request":
-        return <h1>Request</h1>;
+        return <Request close={closeModal} />;
       case "swap":
         return <h1>Swap</h1>;
       default:
@@ -141,7 +142,10 @@ const DashboardSummary = () => {
       <SalesReport />
       <AnimatePresence>
         {openModal ? (
-          <SideModalWrapper close={closeModal}>
+          <SideModalWrapper
+            close={closeModal}
+            wrapperStyle={openModal === "request" ? "!p-0" : ""}
+          >
             {displayScreen()}
           </SideModalWrapper>
         ) : null}

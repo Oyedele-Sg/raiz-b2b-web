@@ -3,6 +3,8 @@ import {
   IFetchRewardsParams,
   IRewardActivityResponse,
   IRewardPoint,
+  IUserSearchParams,
+  IUserSearchResponse,
 } from "@/types/services";
 import { IUser } from "@/types/user";
 
@@ -63,5 +65,20 @@ export const PersonaVerificationApi = async (inquiry_id: string) => {
     `/business/account_user/verifications/persona/?inquiry_id=${inquiry_id}`,
     null
   );
+  return response?.data;
+};
+
+export const SearchAllUsersApi = async (
+  params: IUserSearchParams
+): Promise<IUserSearchResponse> => {
+  const queryParams = Object.fromEntries(
+    Object.entries(params).filter(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      ([_, value]) => value !== undefined && value !== null
+    )
+  );
+  const response = await AuthAxios.get(`/business/account_user/search/all/`, {
+    params: queryParams,
+  });
   return response?.data;
 };

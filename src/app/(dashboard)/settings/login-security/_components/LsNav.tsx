@@ -17,7 +17,7 @@ const LsNav = ({ setPart }: PartChildProps) => {
             key={index}
             className="flex justify-between items-center"
           >
-            <div className="flex gap-[15px]">
+            <div className="flex gap-[15px] items-center">
               {data.icon}
               <div className="flex flex-col ">
                 <span className="text-raiz-gray-950 text-[15px] w-full text-left font-semibold leading-snug">

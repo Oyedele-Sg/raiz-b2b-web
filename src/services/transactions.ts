@@ -1,7 +1,9 @@
 import { AuthAxios } from "@/lib/authAxios";
 import {
+  IAcceptRequestPayload,
   IBillRequestParams,
   IBillRequestResponse,
+  ITransactionCategory,
   ITransactionParams,
   ITxnReportResponse,
 } from "@/types/services";
@@ -34,6 +36,27 @@ export const FetchBillRequestApi = async (
   const response = await AuthAxios.get(
     `/business/transactions/requests/funds/received/`,
     { params: queryParams }
+  );
+  return response?.data;
+};
+
+export const FetchTransactionCategoriesApi = async (): Promise<
+  ITransactionCategory[]
+> => {
+  const response = await AuthAxios.get("/transactions/transaction-categories/");
+  return response?.data;
+};
+
+export const AcceptRequestApi = async ({
+  params,
+  transaction_pin,
+}: IAcceptRequestPayload) => {
+  const response = await AuthAxios.patch(
+    `/business/transactions/requests/funds/${params?.request_id}/accept/`,
+    { transaction_pin },
+    {
+      params,
+    }
   );
   return response?.data;
 };

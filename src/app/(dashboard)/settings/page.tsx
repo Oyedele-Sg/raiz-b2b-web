@@ -57,7 +57,7 @@ const Settingspage = () => {
     raiz_tag: user?.business_account?.username || "",
     email: user?.email || "",
     phone_number: user?.business_account?.business_phone_number || "",
-    address: "",
+    address: `${user?.business_account?.entity?.entity_address[0]?.street}, ${user?.business_account?.entity?.entity_address[0]?.city}, ${user?.business_account?.entity?.entity_address[0]?.state}, ${user?.business_account?.entity?.entity_address[0]?.country?.country_name}`,
     country_id: user?.business_account?.entity?.country_id || "",
     country_name: countryData?.country_name || "",
   };
@@ -173,19 +173,10 @@ const Settingspage = () => {
           </button>
         </div>
         <div className="px-[18px] py-5 bg-[#fff1ce]/60 rounded-[20px] justify-start items-start gap-2 inline-flex">
-          {user?.business_account?.business_verifications[0]
-            ?.verification_status === "completed" ? (
-            <p className="text-raiz-gray-950 text-[13px] font-normal  leading-tight">
-              You are unable to edit some of your profile info because your
-              account has already been verified. If you you need to edit your
-              info, please reach out to customer support.
-            </p>
-          ) : (
-            <p className="text-raiz-gray-950 text-[13px] font-normal  leading-tight">
-              You are unable to edit some of your profile information. If you
-              need to make changes, please contact customer support.
-            </p>
-          )}
+          <p className="text-raiz-gray-950 text-[13px] font-normal  leading-tight">
+            You are unable to edit some of your profile information. If you need
+            to make changes, please contact customer support.
+          </p>
         </div>
         <Button
           loading={UpdateRaizTagMutation.isPending}
