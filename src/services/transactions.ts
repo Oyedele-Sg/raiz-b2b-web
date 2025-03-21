@@ -60,3 +60,16 @@ export const AcceptRequestApi = async ({
   );
   return response?.data;
 };
+
+export const RejectRequestApi = async (request_id: string) => {
+  const response = await AuthAxios.patch(
+    `/business/transactions/requests/funds/${request_id}/decline/`,
+    null,
+    {
+      params: {
+        request_id,
+      },
+    }
+  );
+  return response?.data;
+};

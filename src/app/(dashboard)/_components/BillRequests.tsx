@@ -2,7 +2,6 @@
 import EmptyList from "@/components/ui/EmptyList";
 import { FetchBillRequestApi } from "@/services/transactions";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
-import { AccountCurrencyType } from "@/types/misc";
 import { IBillRequestParams } from "@/types/services";
 import { IBillRequest, PaymentStatusType } from "@/types/transactions";
 import { useQuery } from "@tanstack/react-query";
@@ -14,6 +13,7 @@ import PayBill from "./bill-requests/PayBill";
 import Avatar from "@/components/ui/Avatar";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
 import { getCurrencySymbol } from "@/utils/helpers";
+import RejectBill from "./bill-requests/RejectBill";
 
 type OpenModalType =
   | "accept"
@@ -23,16 +23,15 @@ type OpenModalType =
   | "delete"
   | "delete-success"
   | "accept-sucsess"
+  | "reject-success"
   | null;
 
 const BillRow = ({
   request,
-  selectedCurrency,
   setSelectedRequest,
   setOpenModal,
 }: {
   request: IBillRequest;
-  selectedCurrency: AccountCurrencyType;
   setSelectedRequest: (arg: IBillRequest) => void;
   setOpenModal: (arg: OpenModalType) => void;
 }) => {
@@ -147,7 +146,6 @@ const BillRequests = () => {
           )
         );
       }
-
       case "status": {
         return (
           selectedRequest && (
@@ -162,6 +160,14 @@ const BillRequests = () => {
           )
         );
       }
+      case "reject": {
+        return (
+          selectedRequest && (
+            <RejectBill request={selectedRequest} close={closePopModal} />
+          )
+        );
+      }
+
       default:
         break;
     }
@@ -206,7 +212,6 @@ const BillRequests = () => {
             <BillRow
               key={index}
               request={request}
-              selectedCurrency={selectedCurrency}
               setSelectedRequest={setSelectedRequest}
               setOpenModal={setOpenModal}
             />
