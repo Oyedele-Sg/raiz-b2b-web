@@ -3,6 +3,7 @@ import {
   IAcceptRequestPayload,
   IBillRequestParams,
   IBillRequestResponse,
+  IRequestFundsPayload,
   ITransactionCategory,
   ITransactionParams,
   ITxnReportResponse,
@@ -70,6 +71,38 @@ export const RejectRequestApi = async (request_id: string) => {
         request_id,
       },
     }
+  );
+  return response?.data;
+};
+
+export const RequestFundsApi = async (
+  wallet_id: string,
+  data: IRequestFundsPayload
+) => {
+  const response = await AuthAxios.post(
+    `/business/transactions/requests/funds/`,
+    data,
+    {
+      params: {
+        wallet_id,
+      },
+    }
+  );
+  return response?.data;
+};
+
+export const FetchSentRequestApi = async (
+  params: IBillRequestParams
+): Promise<IBillRequestResponse> => {
+  const queryParams = Object.fromEntries(
+    Object.entries(params).filter(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      ([_, value]) => value !== undefined && value !== null
+    )
+  );
+  const response = await AuthAxios.get(
+    `/business/transactions/requests/funds/sent/`,
+    { params: queryParams }
   );
   return response?.data;
 };

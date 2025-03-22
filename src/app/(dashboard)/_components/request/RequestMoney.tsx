@@ -5,52 +5,32 @@ import { ISearchedUser } from "@/types/user";
 import Selectuser from "./single-request/Selectuser";
 import RequestDetails from "./single-request/RequestDetails";
 import ChooseCategory from "./single-request/ChooseCategory";
+import { ITransactionCategory } from "@/types/transactions";
+import RequestSucess from "./single-request/RequestSucess";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { RequestFundsApi } from "@/services/transactions";
+import { useUser } from "@/lib/hooks/useUser";
+import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
+import { IRequestFundsPayload } from "@/types/services";
+import { toast } from "sonner";
+import RequestFailed from "./single-request/RequestFailed";
 
 export type RequestMoneyStepType =
   | "select-user"
   | "details"
   | "category"
-  | "success";
+  | "success"
+  | "failed";
 
-// const recentUsers: ISearchedUser[] = [
-//   {
-//     entity_id: "1a2b3c4d",
-//     account_name: "John Doe",
-//     username: "johndoe",
-//     selfie_image: null,
-//   },
-//   {
-//     entity_id: "5e6f7g8h",
-//     account_name: "Jane Smith",
-//     username: "janesmith",
-//     selfie_image: null,
-//   },
-//   {
-//     entity_id: "9i0j1k2l",
-//     account_name: "Alice Johnson",
-//     username: "alicej",
-//     selfie_image: null,
-//   },
-//   {
-//     entity_id: "3m4n5o6p",
-//     account_name: "Bob Williams",
-//     username: "bobw",
-//     selfie_image: null,
-//   },
-//   {
-//     entity_id: "7q8r9s0t",
-//     account_name: "Charlie Brown",
-//     username: "charlieb",
-//     selfie_image: null,
-//   },
-// ];
-
-export const RequestMoney = ({ setStep }: RequestStepsProps) => {
+export const RequestMoney = ({ setStep, close }: RequestStepsProps) => {
   const [requestMoneyStep, setRequestMoneyStep] =
-    useState<RequestMoneyStepType>("select-user");
+    useState<RequestMoneyStepType | null>("select-user");
   const [selectedUser, setSelectedUser] = useState<ISearchedUser | undefined>();
   const [amount, setAmount] = useState("");
   const [narration, setNarration] = useState("");
+  const [category, setCategory] = useState<ITransactionCategory | null>(null);
+  const { user } = useUser();
+  const currentWallet = useCurrentWallet(user);
 
   useEffect(() => {
     if (requestMoneyStep === "select-user" && selectedUser) {
@@ -58,9 +38,45 @@ export const RequestMoney = ({ setStep }: RequestStepsProps) => {
     }
   }, [requestMoneyStep, selectedUser]);
 
+  // useEffect(() => {
+  //   if (requestMoneyStep === "success") {
+  //     close();
+  //     setRequestMoneyStep("success");
+  //   }
+  // }, [requestMoneyStep]);
+
   const goBackToStep1 = () => {
     setSelectedUser(undefined);
     setRequestMoneyStep("select-user");
+  };
+
+  const endStep = () => {
+    setRequestMoneyStep(null);
+    close();
+  };
+
+  const qc = useQueryClient();
+  const RequestFundsMutation = useMutation({
+    mutationFn: (data: IRequestFundsPayload) =>
+      RequestFundsApi(currentWallet?.wallet_id || "", data),
+    onSuccess: (response) => {
+      qc.invalidateQueries({ queryKey: ["sent-requests"] });
+      toast.success(response?.message);
+      setRequestMoneyStep("success");
+    },
+    onError: () => {
+      setRequestMoneyStep("failed");
+    },
+  });
+
+  const handleRequest = () => {
+    const payload: IRequestFundsPayload = {
+      requestee_entity_id: selectedUser?.entity_id || "",
+      transaction_amount: Number(amount),
+      narration,
+      transaction_category_id: category?.transaction_category_id || 0,
+    };
+    RequestFundsMutation.mutate(payload);
   };
 
   const displayStep = () => {
@@ -88,9 +104,16 @@ export const RequestMoney = ({ setStep }: RequestStepsProps) => {
         return (
           <ChooseCategory
             goBack={() => setRequestMoneyStep("details")}
-            goNext={() => setRequestMoneyStep("success")}
+            goNext={handleRequest}
+            category={category}
+            setCategory={setCategory}
+            loading={RequestFundsMutation.isPending}
           />
         );
+      case "success":
+        return <RequestSucess close={endStep} />;
+      case "failed":
+        return <RequestFailed close={endStep} />;
       default:
         break;
     }

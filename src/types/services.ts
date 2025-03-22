@@ -158,3 +158,10 @@ export interface IAcceptRequestPayload {
     request_id: string;
   };
 }
+
+export interface IRequestFundsPayload {
+  requestee_entity_id: string;
+  transaction_amount: number;
+  narration: string;
+  transaction_category_id: number;
+}

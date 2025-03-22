@@ -1,25 +1,20 @@
 import React from "react";
 
-interface TabsProps<T extends string> {
+interface TabsProps<T> {
   options: { label: string; value: T }[];
   selected: T;
   onChange: (value: T) => void;
   className?: string;
 }
 
-const Tabs = <T extends string>({
-  options,
-  selected,
-  onChange,
-  className,
-}: TabsProps<T>) => {
+const Tabs = <T,>({ options, selected, onChange, className }: TabsProps<T>) => {
   return (
     <div
       className={`flex h-11 p-1 bg-raiz-gray-100 rounded-2xl justify-center items-center gap-1 mt-5 transition-all duration-200 ease-in-out mb-5 ${className}`}
     >
-      {options.map((option) => (
+      {options.map((option, index) => (
         <button
-          key={option.value}
+          key={index}
           onClick={() => onChange(option.value)}
           className={`p-2 rounded-xl w-1/2 transition-all duration-300 ease-in-out text-sm ${
             selected === option.value
