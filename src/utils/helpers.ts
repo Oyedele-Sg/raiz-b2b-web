@@ -162,3 +162,11 @@ const currencySymbols: Record<string, string> = {
 export const getCurrencySymbol = (currencyCode: string): string => {
   return currencySymbols[currencyCode] || currencyCode;
 };
+
+export const formatRelativeTime = (date: Date | string) => {
+  const time = dayjs(date).fromNow(true);
+  return time
+    .replace("minutes", "min")
+    .replace("hours", "hr")
+    .replace("seconds", "sec");
+};

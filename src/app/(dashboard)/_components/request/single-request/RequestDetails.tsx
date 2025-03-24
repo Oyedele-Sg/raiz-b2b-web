@@ -57,17 +57,6 @@ const RequestDetails = ({
     }
   };
 
-  // Format the amount to 2 decimal places on blur
-  const handleBlur = () => {
-    setIsFocused(false);
-    if (amount) {
-      const num = parseFloat(amount);
-      if (!isNaN(num)) {
-        setAmount(String(num));
-      }
-    }
-  };
-
   // Display value: show raw input while typing, formatted value when not focused
   const displayValue = () => {
     if (isFocused || !amount)
@@ -130,7 +119,7 @@ const RequestDetails = ({
             value={displayValue()}
             onChange={handleAmountChange}
             onFocus={() => setIsFocused(true)}
-            onBlur={handleBlur}
+            // onBlur={handleBlur}
           />
           {error && <ErrorMessage message={error} />}
           <input

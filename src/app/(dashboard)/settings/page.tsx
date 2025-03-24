@@ -57,7 +57,12 @@ const Settingspage = () => {
     raiz_tag: user?.business_account?.username || "",
     email: user?.email || "",
     phone_number: user?.business_account?.business_phone_number || "",
-    address: `${user?.business_account?.entity?.entity_address[0]?.street}, ${user?.business_account?.entity?.entity_address[0]?.city}, ${user?.business_account?.entity?.entity_address[0]?.state}, ${user?.business_account?.entity?.entity_address[0]?.country?.country_name}`,
+    address: `${
+      user?.business_account.entity.entity_address &&
+      user?.business_account.entity.entity_address.length > 0
+        ? `${user?.business_account?.entity?.entity_address[0]?.street}, ${user?.business_account?.entity?.entity_address[0]?.city}, ${user?.business_account?.entity?.entity_address[0]?.state}, ${user?.business_account?.entity?.entity_address[0]?.country?.country_name}`
+        : ""
+    }`,
     country_id: user?.business_account?.entity?.country_id || "",
     country_name: countryData?.country_name || "",
   };

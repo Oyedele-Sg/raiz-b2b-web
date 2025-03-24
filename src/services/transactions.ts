@@ -1,4 +1,4 @@
-import { AuthAxios } from "@/lib/authAxios";
+import { AuthAxios, CustomAxiosRequestConfig } from "@/lib/authAxios";
 import {
   IAcceptRequestPayload,
   IBillRequestParams,
@@ -20,7 +20,7 @@ export const FetchTransactionReportApi = async (
   );
   const response = await AuthAxios.get(
     `/business/transactions/transaction-reports/`,
-    { params: queryParams }
+    { params: queryParams, silent: true } as CustomAxiosRequestConfig
   );
   return response?.data;
 };

@@ -5,9 +5,9 @@ import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
 import { useUser } from "@/lib/hooks/useUser";
 import { AcceptRequestApi } from "@/services/transactions";
 import { IBillRequest, PaymentStatusType } from "@/types/transactions";
-import { useMutation } from "@tanstack/react-query";
+import { passwordHash } from "@/utils/helpers";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { toast } from "sonner";
 
 interface Props {
   close: () => void;
@@ -29,10 +29,12 @@ const PayBill = ({
   const currentWallet = useCurrentWallet(user);
   const [pin, setPin] = useState<string>("");
 
+  const qc = useQueryClient();
+
   const AcceptBillMutation = useMutation({
     mutationFn: () =>
       AcceptRequestApi({
-        transaction_pin: pin,
+        transaction_pin: passwordHash(pin),
         params: {
           wallet_id: currentWallet?.wallet_id || "",
           request_id: request?.request_transfer_id,
@@ -42,8 +44,10 @@ const PayBill = ({
       setStatus("loading");
       goNext();
     },
-    onSuccess: (response) => {
-      toast.success(response?.message);
+    onSuccess: () => {
+      qc.refetchQueries({ queryKey: ["user"] });
+      qc.invalidateQueries({ queryKey: ["bill-requests"] });
+      qc.invalidateQueries({ queryKey: ["transactions-report"] });
       setStatus("success");
       goNext();
     },

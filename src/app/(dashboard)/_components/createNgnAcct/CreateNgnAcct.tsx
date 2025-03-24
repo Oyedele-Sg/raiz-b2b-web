@@ -1,8 +1,11 @@
 "use client";
 import SideWrapperHeader from "@/components/SideWrapperHeader";
 import Button from "@/components/ui/Button";
+import { CreateNGNVirtualWalletApi } from "@/services/business";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import React from "react";
+import { toast } from "sonner";
 
 const list = [
   {
@@ -22,22 +25,24 @@ const list = [
   },
 ];
 
-const CreateNgnAcct = ({
-  close,
-  openBvnModal,
-}: {
-  close: () => void;
-  openBvnModal: () => void;
-}) => {
+const CreateNgnAcct = ({ close }: { close: () => void }) => {
+  const qc = useQueryClient();
+  const NGNWalletMutation = useMutation({
+    mutationFn: CreateNGNVirtualWalletApi,
+    onSuccess: (response) => {
+      toast.success(response?.message);
+      qc.invalidateQueries({ queryKey: ["user"] });
+      close();
+    },
+  });
   const handleCreate = () => {
-    openBvnModal(); // Open BVN modal
-    close(); // Close current modal
+    NGNWalletMutation.mutate();
   };
   return (
     <>
       <div className=" h-full pb-[30px]">
         <SideWrapperHeader title="NGN Account" close={close} />
-        <div className="flex flex-col justify-between h-full">
+        <div className="flex flex-col justify-between h-full pb-[30px]">
           <div className="">
             <div className="flex flex-col justify-center items-center mt-[104px] gap-3">
               <svg
@@ -90,7 +95,8 @@ const CreateNgnAcct = ({
           </div>
           <Button
             onClick={handleCreate}
-            className="!bg-raiz-gray-50 text-primary2 hover:bg-raiz-gray-50  "
+            loading={NGNWalletMutation.isPending}
+            className="!bg-raiz-gray-50 text-primary2 hover:bg-raiz-gray-50 disabled:!bg-slate-500  "
           >
             Create NGN Wallet
           </Button>

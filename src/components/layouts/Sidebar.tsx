@@ -127,7 +127,7 @@ const Sidebar = () => {
         return (
           <CreateNgnAcct
             close={handleCloseModal}
-            openBvnModal={() => setShowBvnModal(true)}
+            // openBvnModal={() => setShowBvnModal(true)}
           />
         );
       case "set-pin":

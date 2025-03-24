@@ -5,9 +5,10 @@ import Button from "@/components/ui/Button";
 interface Props {
   close: () => void;
   error: string;
+  tryAgain: () => void;
 }
 
-const FailedStatus = ({ close, error }: Props) => {
+const FailedStatus = ({ close, error, tryAgain }: Props) => {
   return (
     <div className="w-full h-full bg-gradient-to-l from-indigo-900 to-violet-600 rounded-[36px]  shadow-[0px_1px_2px_0px_rgba(0,0,0,0.30)] inline-flex flex-col justify-center items-center">
       <div className="flex flex-col justify-between gap-6 h-full pt-[88px] p-[30px] items-center w-full">
@@ -26,7 +27,7 @@ const FailedStatus = ({ close, error }: Props) => {
           </p>
         </div>
         <div className="flex justify-between w-full gap-[15px]">
-          <Button onClick={close} className="bg-zinc-200 text-zinc-900">
+          <Button onClick={tryAgain} className="bg-zinc-200 text-zinc-900">
             Try again
           </Button>
           <Button onClick={close} className="bg-indigo-900">

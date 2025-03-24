@@ -5,9 +5,10 @@ import Button from "@/components/ui/Button";
 
 interface Props {
   close: () => void;
+  tryAgain: () => void;
 }
 
-const RequestFailed = ({ close }: Props) => {
+const RequestFailed = ({ close, tryAgain }: Props) => {
   return (
     <Overlay close={close} width="400px">
       <div className="flex flex-col h-[400px] justify-between  w-full  p-[30px]">
@@ -26,7 +27,7 @@ const RequestFailed = ({ close }: Props) => {
           </p>
         </div>
         <div className="flex justify-between w-full gap-3">
-          <Button onClick={close} className="bg-zinc-200 text-zinc-950">
+          <Button onClick={tryAgain} className="bg-zinc-200 text-zinc-950">
             Try again
           </Button>
           <Button onClick={close} className="!bg-pink-600">

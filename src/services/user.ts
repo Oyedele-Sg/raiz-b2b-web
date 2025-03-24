@@ -1,4 +1,4 @@
-import { AuthAxios } from "@/lib/authAxios";
+import { AuthAxios, CustomAxiosRequestConfig } from "@/lib/authAxios";
 import {
   IFetchRewardsParams,
   IRewardActivityResponse,
@@ -9,8 +9,10 @@ import {
 import { IUser } from "@/types/user";
 
 export const FetchUserApi = async (): Promise<IUser> => {
-  const response = await AuthAxios.get("/business/account_user/me");
-  return response?.data;
+  const response = await AuthAxios.get("/business/account_user/me", {
+    silent: true,
+  } as CustomAxiosRequestConfig);
+  return response.data;
 };
 
 export const UploadProfilePicture = async (image_url: string) => {
@@ -27,7 +29,9 @@ export const UploadProfilePicture = async (image_url: string) => {
 };
 
 export const FetchUserRewardsApi = async (): Promise<IRewardPoint> => {
-  const response = await AuthAxios.get("/business/entities/rewards/points/");
+  const response = await AuthAxios.get("/business/entities/rewards/points/", {
+    silent: true,
+  } as CustomAxiosRequestConfig);
   return response?.data;
 };
 

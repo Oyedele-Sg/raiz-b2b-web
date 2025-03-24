@@ -56,7 +56,7 @@ const Header = () => {
         return (
           <CreateNgnAcct
             close={handleCloseModal}
-            openBvnModal={() => setShowBvnModal(true)}
+            // openBvnModal={() => setShowBvnModal(true)}
           />
         );
       default:

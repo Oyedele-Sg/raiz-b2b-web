@@ -14,7 +14,7 @@ import Request from "./request/Request";
 
 const DashboardSummary = () => {
   const { user } = useUser();
-  const { selectedCurrency, selectedWallet } = useCurrencyStore();
+  const { selectedCurrency } = useCurrencyStore();
   const [showBalance, setShowBalance] = useState(false);
   const [openModal, setOpenModal] = useState<
     "send" | "request" | "swap" | null
@@ -24,14 +24,10 @@ const DashboardSummary = () => {
   const USDAcct = findWalletByCurrency(user, "USD");
 
   const getCurrentWallet = () => {
-    if (selectedWallet) {
-      return selectedWallet;
-    } else {
-      if (selectedCurrency.name === "NGN") {
-        return NGNAcct;
-      } else if (selectedCurrency.name === "USD") {
-        return USDAcct;
-      }
+    if (selectedCurrency.name === "NGN") {
+      return NGNAcct;
+    } else if (selectedCurrency.name === "USD") {
+      return USDAcct;
     }
   };
 

@@ -15,6 +15,7 @@ interface Props {
   user: ISearchedUser;
   close: () => void;
   error: string;
+  tryAgain: () => void;
 }
 
 const PaymentStatusModal = ({
@@ -24,6 +25,7 @@ const PaymentStatusModal = ({
   close,
   error,
   status,
+  tryAgain,
 }: Props) => {
   const displayStatus = () => {
     switch (status) {
@@ -47,7 +49,7 @@ const PaymentStatusModal = ({
           />
         );
       case "failed":
-        return <FailedStatus close={close} error={error} />;
+        return <FailedStatus close={close} error={error} tryAgain={tryAgain} />;
       case "pending":
         return <PendingStatus close={close} />;
       default:

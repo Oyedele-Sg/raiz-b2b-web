@@ -109,7 +109,10 @@ const BillRequests = () => {
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatusType>(null);
   const [paymentError, setPaymentError] = useState("");
   const { data, isLoading } = useQuery({
-    queryKey: ["bill-requests", selectedCurrency.name],
+    queryKey: [
+      "bill-requests",
+      { currency: selectedCurrency.name, status_id: 2 },
+    ],
     queryFn: ({ queryKey }) => {
       const [, params] = queryKey as [string, IBillRequestParams];
       return FetchBillRequestApi(params);
@@ -156,6 +159,7 @@ const BillRequests = () => {
               user={selectedRequest?.third_party_account}
               close={closePopModal}
               error={paymentError}
+              tryAgain={() => setOpenModal("accept")}
             />
           )
         );

@@ -22,7 +22,7 @@ export type RequestMoneyStepType =
   | "success"
   | "failed";
 
-export const RequestMoney = ({ setStep, close }: RequestStepsProps) => {
+export const RequestMoney = ({ setStep }: RequestStepsProps) => {
   const [requestMoneyStep, setRequestMoneyStep] =
     useState<RequestMoneyStepType | null>("select-user");
   const [selectedUser, setSelectedUser] = useState<ISearchedUser | undefined>();
@@ -52,7 +52,7 @@ export const RequestMoney = ({ setStep, close }: RequestStepsProps) => {
 
   const endStep = () => {
     setRequestMoneyStep(null);
-    close();
+    setStep("all");
   };
 
   const qc = useQueryClient();
@@ -60,12 +60,15 @@ export const RequestMoney = ({ setStep, close }: RequestStepsProps) => {
     mutationFn: (data: IRequestFundsPayload) =>
       RequestFundsApi(currentWallet?.wallet_id || "", data),
     onSuccess: (response) => {
-      qc.invalidateQueries({ queryKey: ["sent-requests"] });
+      qc.refetchQueries({ queryKey: ["sent-requests"] });
       toast.success(response?.message);
       setRequestMoneyStep("success");
     },
-    onError: () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (response: any) => {
       setRequestMoneyStep("failed");
+      console.log("response", response);
+      toast.error(response?.data?.errors[0]);
     },
   });
 
@@ -113,7 +116,12 @@ export const RequestMoney = ({ setStep, close }: RequestStepsProps) => {
       case "success":
         return <RequestSucess close={endStep} />;
       case "failed":
-        return <RequestFailed close={endStep} />;
+        return (
+          <RequestFailed
+            close={endStep}
+            tryAgain={() => setRequestMoneyStep("details")}
+          />
+        );
       default:
         break;
     }
