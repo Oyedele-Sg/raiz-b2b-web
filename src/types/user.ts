@@ -119,3 +119,10 @@ export interface INotification {
   updated_at: Date;
   notification_category: INotificationCategory;
 }
+
+export interface ISearchedUser {
+  entity_id: string;
+  account_name: string;
+  username: string;
+  selfie_image: string | null;
+}

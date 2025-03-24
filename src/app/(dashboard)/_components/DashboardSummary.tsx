@@ -10,10 +10,11 @@ import UsdSend from "./send/usd/UsdSend";
 import Button from "@/components/ui/Button";
 import { findWalletByCurrency } from "@/utils/helpers";
 import { useUser } from "@/lib/hooks/useUser";
+import Request from "./request/Request";
 
 const DashboardSummary = () => {
   const { user } = useUser();
-  const { selectedCurrency, selectedWallet } = useCurrencyStore();
+  const { selectedCurrency } = useCurrencyStore();
   const [showBalance, setShowBalance] = useState(false);
   const [openModal, setOpenModal] = useState<
     "send" | "request" | "swap" | null
@@ -23,14 +24,10 @@ const DashboardSummary = () => {
   const USDAcct = findWalletByCurrency(user, "USD");
 
   const getCurrentWallet = () => {
-    if (selectedWallet) {
-      return selectedWallet;
-    } else {
-      if (selectedCurrency.name === "NGN") {
-        return NGNAcct;
-      } else if (selectedCurrency.name === "USD") {
-        return USDAcct;
-      }
+    if (selectedCurrency.name === "NGN") {
+      return NGNAcct;
+    } else if (selectedCurrency.name === "USD") {
+      return USDAcct;
     }
   };
 
@@ -49,7 +46,7 @@ const DashboardSummary = () => {
           <UsdSend close={closeModal} />
         );
       case "request":
-        return <h1>Request</h1>;
+        return <Request close={closeModal} />;
       case "swap":
         return <h1>Swap</h1>;
       default:
@@ -141,7 +138,10 @@ const DashboardSummary = () => {
       <SalesReport />
       <AnimatePresence>
         {openModal ? (
-          <SideModalWrapper close={closeModal}>
+          <SideModalWrapper
+            close={closeModal}
+            wrapperStyle={openModal === "request" ? "!p-0" : ""}
+          >
             {displayScreen()}
           </SideModalWrapper>
         ) : null}

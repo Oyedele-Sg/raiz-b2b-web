@@ -1,4 +1,9 @@
-import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from "axios";
 import { toast } from "sonner";
 import { encryptData, generateNonce } from "./headerEncryption";
 import { GetItemFromCookie } from "@/utils/CookiesFunc";
@@ -14,12 +19,21 @@ interface CustomAxiosError extends AxiosError {
   response?: AxiosResponse<ErrorResponseData>;
 }
 
+// Extend the AxiosRequestConfig to include a custom `silent` property
+export interface CustomAxiosRequestConfig extends AxiosRequestConfig {
+  silent?: boolean; // Add this to optionally suppress toast
+}
+
 const handleResponse = (response: AxiosResponse) => response;
 
 const handleError = async (error: CustomAxiosError) => {
   console.log(JSON.stringify(error, null, 2));
-  const errorMessage = error.response?.data?.message || "An Error Occurred";
-  toast.error(errorMessage);
+  const isSilent = (error.config as CustomAxiosRequestConfig)?.silent;
+  if (!isSilent) {
+    const errorMessage = error.response?.data?.message || "An Error Occurred";
+    toast.error(errorMessage);
+  }
+
   return Promise.reject(error.response);
 };
 

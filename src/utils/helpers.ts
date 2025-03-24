@@ -114,3 +114,59 @@ export const findWalletByCurrency = (
 
 export const getDaysBetween = (startDate: dayjs.Dayjs, endDate: dayjs.Dayjs) =>
   endDate.diff(startDate, "day") + 1;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const groupByDate = <T extends Record<string, any>>(
+  items: T[],
+  dateField: keyof T
+): Record<string, T[]> => {
+  const grouped: Record<string, T[]> = {};
+
+  items.forEach((item) => {
+    const dateValue = item[dateField];
+    if (typeof dateValue !== "string") return; // Ensure it's a string before passing to dayjs
+
+    const createdAt = dayjs(dateValue);
+    let groupKey = createdAt.format("D MMMM"); // Default format: "2nd February"
+
+    if (createdAt.isSame(dayjs(), "day")) {
+      groupKey = "Today";
+    } else if (createdAt.isSame(dayjs().subtract(1, "day"), "day")) {
+      groupKey = "Yesterday";
+    } else if (createdAt.isSame(dayjs().subtract(2, "day"), "day")) {
+      groupKey = "2 days ago";
+    }
+
+    if (!grouped[groupKey]) {
+      grouped[groupKey] = [];
+    }
+    grouped[groupKey].push(item);
+  });
+
+  return grouped;
+};
+
+const currencySymbols: Record<string, string> = {
+  USD: "$",
+  NGN: "₦",
+  EUR: "€",
+  GBP: "£",
+  JPY: "¥",
+  CAD: "C$",
+  AUD: "A$",
+  INR: "₹",
+  CNY: "¥",
+  ZAR: "R",
+};
+
+export const getCurrencySymbol = (currencyCode: string): string => {
+  return currencySymbols[currencyCode] || currencyCode;
+};
+
+export const formatRelativeTime = (date: Date | string) => {
+  const time = dayjs(date).fromNow(true);
+  return time
+    .replace("minutes", "min")
+    .replace("hours", "hr")
+    .replace("seconds", "sec");
+};

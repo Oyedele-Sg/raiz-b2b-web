@@ -1,14 +1,18 @@
-import { AuthAxios } from "@/lib/authAxios";
+import { AuthAxios, CustomAxiosRequestConfig } from "@/lib/authAxios";
 import {
   IFetchRewardsParams,
   IRewardActivityResponse,
   IRewardPoint,
+  IUserSearchParams,
+  IUserSearchResponse,
 } from "@/types/services";
 import { IUser } from "@/types/user";
 
 export const FetchUserApi = async (): Promise<IUser> => {
-  const response = await AuthAxios.get("/business/account_user/me");
-  return response?.data;
+  const response = await AuthAxios.get("/business/account_user/me", {
+    silent: true,
+  } as CustomAxiosRequestConfig);
+  return response.data;
 };
 
 export const UploadProfilePicture = async (image_url: string) => {
@@ -25,7 +29,9 @@ export const UploadProfilePicture = async (image_url: string) => {
 };
 
 export const FetchUserRewardsApi = async (): Promise<IRewardPoint> => {
-  const response = await AuthAxios.get("/business/entities/rewards/points/");
+  const response = await AuthAxios.get("/business/entities/rewards/points/", {
+    silent: true,
+  } as CustomAxiosRequestConfig);
   return response?.data;
 };
 
@@ -63,5 +69,20 @@ export const PersonaVerificationApi = async (inquiry_id: string) => {
     `/business/account_user/verifications/persona/?inquiry_id=${inquiry_id}`,
     null
   );
+  return response?.data;
+};
+
+export const SearchAllUsersApi = async (
+  params: IUserSearchParams
+): Promise<IUserSearchResponse> => {
+  const queryParams = Object.fromEntries(
+    Object.entries(params).filter(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      ([_, value]) => value !== undefined && value !== null
+    )
+  );
+  const response = await AuthAxios.get(`/business/account_user/search/all/`, {
+    params: queryParams,
+  });
   return response?.data;
 };
