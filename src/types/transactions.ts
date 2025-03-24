@@ -1,3 +1,5 @@
+import { ISearchedUser } from "./user";
+
 export interface ITransactionType {
   transaction_type: string;
   transaction_type_description: string;
@@ -88,20 +90,22 @@ export interface IBillRequest {
   currency: string;
   status_id: number;
   request_transfer_id: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: Date | string;
+  updated_at: Date | string;
   status: {
     status: string;
     description: string;
     status_code: number;
     request_fund_status_id: number;
-    created_at: Date;
-    updated_at: Date;
+    created_at: Date | string;
+    updated_at: Date | string;
   };
-  third_party_account: {
-    entity_id: string;
-    account_name: string;
-    username: string;
-    selfie_image: string;
-  };
+  third_party_account: ISearchedUser;
 }
+
+export type PaymentStatusType =
+  | "pending"
+  | "success"
+  | "loading"
+  | "failed"
+  | null;

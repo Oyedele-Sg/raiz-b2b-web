@@ -1,4 +1,4 @@
-import { AuthAxios } from "@/lib/authAxios";
+import { AuthAxios, CustomAxiosRequestConfig } from "@/lib/authAxios";
 import {
   INotificationParams,
   INotificationResponse,
@@ -59,7 +59,8 @@ export const FetchTransactionReportChartApi = async (
     `/business/transactions/analytics/transaction-report/chart/`,
     {
       params,
-    }
+      silent: true,
+    } as CustomAxiosRequestConfig
   );
   return response?.data;
 };

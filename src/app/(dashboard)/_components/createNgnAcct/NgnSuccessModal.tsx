@@ -12,8 +12,7 @@ const NgnSuccessModal = ({ close }: { close: () => void }) => {
           NGN Wallet Created
         </h4>
         <p className="text-raiz-gray-700 text-[13px] font-normal leading-tight mb-5">
-          Lorem ipsum dolor sit amet consectetur. Sit placerat cursus odio sit
-          orci orci. Vitae lectus ullamcorper.
+          NGN account is now available for all your transactions
         </p>
         <Button onClick={close}>Done</Button>
       </div>
