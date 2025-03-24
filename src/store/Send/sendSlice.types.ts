@@ -1,20 +1,20 @@
-export interface User {
-  name: string;
-  id: string;
+import { ITransactionCategory } from "@/types/transactions";
+import { ISearchedUser } from "@/types/user";
+
+export enum SendTypes {
+  Raizer = "Raizers",
+  BankTransfer = "BankTransfer",
 }
 
-export interface Category {
-  id: string;
-  name: string;
-}
+type SendTypeKey = keyof typeof SendTypes;
 
 export interface SendState {
-  sendType: "raizers" | "bankTransfer" | null;
-  user: User | null;
-  currency: "usd" | "ngn" | null;
+  sendType: SendTypeKey | null;
+  user: ISearchedUser | null;
+  currency: string | null;
   amount: number;
   purpose: string;
-  category: Category | null;
+  category: ITransactionCategory | null;
   transactionPin: string;
 }
 
@@ -24,10 +24,11 @@ export interface AmountAndRemarksPayload {
 }
 
 export interface SendActions {
-  selectSendOption: (option: string) => void;
-  selectUser: (user: User) => void;
+  selectCurrency: (currency: string) => void;
+  selectSendOption: (option: SendTypeKey) => void;
+  selectUser: (user: ISearchedUser) => void;
   setAmountAndRemark: (payload: AmountAndRemarksPayload) => void;
-  selectCategory: (category: Category) => void;
+  selectCategory: (category: ITransactionCategory) => void;
   setTransactionPin: (pin: string) => void;
   reset: () => void;
 }
@@ -35,11 +36,13 @@ export interface SendActions {
 export const initialSendState: SendState = {
   sendType: null,
   user: null,
-  currency: null,
+  currency: "usd",
   amount: 0,
   purpose: "",
   category: null,
   transactionPin: "",
 };
 
-export interface SendSlice extends SendState, SendActions {}
+export interface SendSlice extends SendState {
+  actions: SendActions;
+}

@@ -1,14 +1,38 @@
-// import { StateCreator } from "zustand";
-// import { initialSendState, SendSlice } from "./sendSlice.types";
+import { create } from "zustand";
+import { initialSendState, SendSlice } from "./sendSlice.types";
+import { passwordHash } from "@/utils/helpers";
 
-// export const createSendSlice: StateCreator<[], [], SendSlice> = (set) => ({
-//   ...initialSendState,
-//   selectSendOption: () => {
-//     set((state) => ({}));
-//   },
-//   selectUser: () => {},
-//   setAmountAndRemark: () => {},
-//   selectCategory: () => {},
-//   setTransactionPin: () => {},
-//   reset: () => {},
-// });
+export const useSendStore = create<SendSlice>((set) => ({
+  ...initialSendState,
+  actions: {
+    selectCurrency: (currency) =>
+      set(() => ({
+        currency,
+      })),
+    selectSendOption: (option) =>
+      set(() => ({
+        sendType: option,
+      })),
+    selectUser: (user) =>
+      set(() => ({
+        user,
+      })),
+    setAmountAndRemark: (payload) =>
+      set(() => ({
+        amount: payload.amount,
+        purpose: payload.purpose,
+      })),
+    selectCategory: (category) =>
+      set(() => ({
+        category,
+      })),
+    setTransactionPin: (pin) =>
+      set(() => ({
+        transactionPin: passwordHash(pin),
+      })),
+    reset: () =>
+      set(() => ({
+        ...initialSendState,
+      })),
+  },
+}));
