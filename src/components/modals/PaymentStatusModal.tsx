@@ -16,6 +16,7 @@ interface Props {
   close: () => void;
   error: string;
   tryAgain: () => void;
+  viewReceipt: () => void;
 }
 
 const PaymentStatusModal = ({
@@ -26,6 +27,7 @@ const PaymentStatusModal = ({
   error,
   status,
   tryAgain,
+  viewReceipt,
 }: Props) => {
   const displayStatus = () => {
     switch (status) {
@@ -41,11 +43,12 @@ const PaymentStatusModal = ({
       case "success":
         return (
           <SuccessStatus
-            text="The bill has been paid successfully!"
+            text="Your payment was successful!"
             title={`${getCurrencySymbol(
               currency
             )}${amount?.toLocaleString()} sent to ${user?.account_name} `}
             close={close}
+            viewReceipt={viewReceipt}
           />
         );
       case "failed":

@@ -1,0 +1,28 @@
+"use client";
+import React from "react";
+import Overlay from "../ui/Overlay";
+import NumberKeypad from "../ui/NumberKeyPad";
+
+interface Props {
+  pin: string;
+  setPin: (value: string) => void;
+  close: () => void;
+}
+
+const EnterPin = ({ pin, setPin }: Props) => {
+  return (
+    <Overlay width="385px" close={close}>
+      <div
+        className={`flex flex-col lg:h-[90%] xl:h-full
+        }  py-8 px-5  text-raiz-gray-950 overflow-y-scroll`}
+      >
+        <h2 className=" text-xl font-bold  leading-normal">Enter Pin</h2>
+        <div className="my-[30px]">
+          <NumberKeypad otpValue={pin} setOtpValue={setPin} />
+        </div>
+      </div>
+    </Overlay>
+  );
+};
+
+export default EnterPin;

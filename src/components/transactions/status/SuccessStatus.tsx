@@ -6,9 +6,10 @@ interface Props {
   text: string;
   title: string;
   close: () => void;
+  viewReceipt: () => void;
 }
 
-const SuccessStatus = ({ text, title, close }: Props) => {
+const SuccessStatus = ({ text, title, close, viewReceipt }: Props) => {
   return (
     <div className="w-full h-full bg-gradient-to-l from-indigo-900 to-violet-600 rounded-[36px]  shadow-[0px_1px_2px_0px_rgba(0,0,0,0.30)] inline-flex flex-col justify-center items-center">
       <div className="flex flex-col justify-between gap-6 h-full pt-[88px] p-[30px] items-center w-full">
@@ -27,7 +28,7 @@ const SuccessStatus = ({ text, title, close }: Props) => {
           </p>
         </div>
         <div className="flex justify-between w-full gap-[15px]">
-          <Button onClick={close} className="bg-zinc-200 text-zinc-900">
+          <Button onClick={viewReceipt} className="bg-zinc-200 text-zinc-900">
             View reciept
           </Button>
           <Button onClick={close} className="bg-indigo-900">

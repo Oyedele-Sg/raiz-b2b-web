@@ -1,5 +1,12 @@
 import { IPagination } from "./misc";
-import { IBillRequest, ITransaction } from "./transactions";
+import {
+  IBillRequest,
+  IPaymentMethod,
+  ITransaction,
+  ITransactionClass,
+  ITransactionStatus,
+  ITransactionType,
+} from "./transactions";
 import { INotification, ISearchedUser } from "./user";
 
 export interface IRewardPoint {
@@ -164,4 +171,51 @@ export interface IRequestFundsPayload {
   transaction_amount: number;
   narration: string;
   transaction_category_id: number;
+}
+
+export interface IP2PTransferPayload {
+  wallet_id: string;
+  payload: {
+    receiver_entity_id: string;
+    transaction_amount: number;
+    transaction_remarks: string;
+    transaction_pin: string;
+    transaction_category_id: number;
+  };
+}
+
+export interface IP2pTransferResponse {
+  wallet_id: string;
+  transaction_type_id: number;
+  transaction_class_id: number;
+  payment_method_id: number;
+  transaction_status_id: number;
+  transaction_category_id: number;
+  transaction_amount: number;
+  currency: string;
+  transaction_remarks: string;
+  transaction_reference: string;
+  transaction_date_time: Date;
+  fee_amount: number;
+  vat_amount: number;
+  account_balance: number;
+  transaction_description: string;
+  third_party_name: string;
+  third_party_profile_image_url: string;
+  session_id: string;
+  order_number: string;
+  source_account_number: string;
+  source_bank_name: string;
+  beneficiary_account_number: string;
+  beneficiary_bank: string;
+  beneficiary_bank_name: string;
+  ip_address: string;
+  transaction_report_id: string;
+  created_at: string;
+  updated_at: string;
+  transaction_type: ITransactionType;
+  transaction_status: ITransactionStatus;
+  transaction_class: ITransactionClass;
+  payment_method: IPaymentMethod;
+  transaction_category: ITransactionCategory;
 }

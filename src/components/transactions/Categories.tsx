@@ -1,47 +1,31 @@
 "use client";
-import SideWrapperHeader from "@/components/SideWrapperHeader";
-import Button from "@/components/ui/Button";
+import React from "react";
+import Image from "next/image";
+import SideWrapperHeader from "../SideWrapperHeader";
+import { useSendStore } from "@/store/Send";
+import { useQuery } from "@tanstack/react-query";
 import { FetchTransactionCategoriesApi } from "@/services/transactions";
 import { ITransactionCategory } from "@/types/transactions";
-import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
-import React, { Dispatch, SetStateAction } from "react";
+import Button from "../ui/Button";
 
 interface Props {
   goBack: () => void;
   goNext: () => void;
-  category: ITransactionCategory | null;
-  setCategory: Dispatch<SetStateAction<ITransactionCategory | null>>;
   loading: boolean;
 }
 
-const ChooseCategory = ({
-  goBack,
-  goNext,
-  category,
-  setCategory,
-  loading,
-}: Props) => {
+const Categories = ({ goBack, goNext, loading }: Props) => {
+  const { actions, category } = useSendStore();
+
   const { data } = useQuery({
     queryKey: ["transactions-category"],
     queryFn: () => FetchTransactionCategoriesApi(),
   });
-
-  const handleSelect = (newCategory: ITransactionCategory) => {
-    if (
-      category?.transaction_category_id === newCategory?.transaction_category_id
-    ) {
-      setCategory(null);
-    } else {
-      setCategory(newCategory);
-    }
-  };
-
   const SkipButton = () => {
     return (
       <button
         onClick={() => {
-          setCategory(null);
+          actions.selectCategory(null);
         }}
         className="text-right justify-center text-zinc-700 text-sm leading-tight"
       >
@@ -50,6 +34,15 @@ const ChooseCategory = ({
     );
   };
 
+  const handleSelect = (newCategory: ITransactionCategory) => {
+    if (
+      category?.transaction_category_id === newCategory?.transaction_category_id
+    ) {
+      actions.selectCategory(null);
+    } else {
+      actions.selectCategory(newCategory);
+    }
+  };
   return (
     <div>
       <SideWrapperHeader
@@ -80,6 +73,7 @@ const ChooseCategory = ({
                   <Image
                     className="w-12 h-12"
                     src={each?.category_emoji}
+                    // src={"/icons/notif-general.svg"}
                     alt={each?.transaction_category}
                     width={64}
                     height={64}
@@ -92,7 +86,7 @@ const ChooseCategory = ({
             );
           })}
         </div>
-        <Button loading={loading} disabled={!category} onClick={goNext}>
+        <Button loading={loading} onClick={goNext}>
           Continue
         </Button>
       </div>
@@ -100,4 +94,4 @@ const ChooseCategory = ({
   );
 };
 
-export default ChooseCategory;
+export default Categories;

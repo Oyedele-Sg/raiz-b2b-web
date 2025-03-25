@@ -14,7 +14,7 @@ const SideWrapperHeader = ({
   titleColor,
 }: Props) => {
   return (
-    <div className=" flex justify-between items-center mb-[30px]">
+    <div className=" flex justify-between items-center mb-[30px] w-full">
       <button onClick={close}>
         {titleColor ? (
           <svg
