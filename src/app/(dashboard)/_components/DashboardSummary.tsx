@@ -12,12 +12,13 @@ import { findWalletByCurrency } from "@/utils/helpers";
 import { useUser } from "@/lib/hooks/useUser";
 import Request from "./request/Request";
 import { useSendStore } from "@/store/Send";
+import { useUserStore } from "@/store/useUserStore";
 
 const DashboardSummary = () => {
   const { user } = useUser();
   const { currency } = useSendStore();
+  const { setShowBalance, showBalance } = useUserStore();
   const { selectedCurrency } = useCurrencyStore();
-  const [showBalance, setShowBalance] = useState(false);
   const [openModal, setOpenModal] = useState<
     "send" | "request" | "swap" | null
   >(null);
