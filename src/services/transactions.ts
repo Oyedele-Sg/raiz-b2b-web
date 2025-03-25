@@ -3,6 +3,8 @@ import {
   IAcceptRequestPayload,
   IBillRequestParams,
   IBillRequestResponse,
+  IP2PTransferPayload,
+  IP2pTransferResponse,
   IRequestFundsPayload,
   ITransactionCategory,
   ITransactionParams,
@@ -103,6 +105,27 @@ export const FetchSentRequestApi = async (
   const response = await AuthAxios.get(
     `/business/transactions/requests/funds/sent/`,
     { params: queryParams }
+  );
+  return response?.data;
+};
+
+export async function P2PDebitApi({
+  wallet_id,
+  payload,
+}: IP2PTransferPayload): Promise<IP2pTransferResponse> {
+  const response = await AuthAxios.post(
+    `/business/transactions/debits/p2p/?wallet_id=${wallet_id}`,
+    payload
+  );
+  return response.data;
+}
+
+export const GetTransactionFeeApi = async (
+  amount: number,
+  transfer_type: "NGN" | "USD" | "WIRE"
+): Promise<number> => {
+  const response = await AuthAxios.get(
+    `/business/transactions/charges/get/?amount=${amount}&transfer_type=${transfer_type}`
   );
   return response?.data;
 };

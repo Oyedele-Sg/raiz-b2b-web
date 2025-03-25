@@ -11,9 +11,11 @@ import Button from "@/components/ui/Button";
 import { findWalletByCurrency } from "@/utils/helpers";
 import { useUser } from "@/lib/hooks/useUser";
 import Request from "./request/Request";
+import { useSendStore } from "@/store/Send";
 
 const DashboardSummary = () => {
   const { user } = useUser();
+  const { currency } = useSendStore();
   const { selectedCurrency } = useCurrencyStore();
   const [showBalance, setShowBalance] = useState(false);
   const [openModal, setOpenModal] = useState<
@@ -40,7 +42,7 @@ const DashboardSummary = () => {
   const displayScreen = () => {
     switch (openModal) {
       case "send":
-        return selectedCurrency.name === "NGN" ? (
+        return currency === "NGN" ? (
           <NgnSend />
         ) : (
           <UsdSend close={closeModal} />

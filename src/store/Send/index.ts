@@ -30,6 +30,15 @@ export const useSendStore = create<SendSlice>((set) => ({
       set(() => ({
         transactionPin: passwordHash(pin),
       })),
+    setStatus: (status) =>
+      set(() => ({
+        status,
+      })),
+    setTransactionDetail: (detail) =>
+      set((state) => ({
+        ...state,
+        transactionDetail: detail,
+      })),
     reset: () =>
       set(() => ({
         ...initialSendState,

@@ -1,14 +1,14 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 import Image from "next/image";
 import { usdSendOptions } from "@/constants/send";
-import { IUsdSendOptions } from "@/types/misc";
+import { useSendStore } from "@/store/Send";
 
 interface Props {
   close: () => void;
-  setSelectedOption: Dispatch<SetStateAction<IUsdSendOptions | "all">>;
 }
 
-const SendOptions = ({ close, setSelectedOption }: Props) => {
+const SendOptions = ({ close }: Props) => {
+  const { actions } = useSendStore();
   return (
     <div>
       <button onClick={close}>
@@ -43,7 +43,7 @@ const SendOptions = ({ close, setSelectedOption }: Props) => {
             <button
               className="px-4 py-5 hover:bg-[#e5ebff]/60 rounded-[20px] justify-between items-center inline-flex"
               key={index}
-              onClick={() => setSelectedOption(each.key)}
+              onClick={() => actions.selectSendOption(each.key)}
             >
               <div className="flex items-center gap-2">
                 <div className="">{each.icon}</div>

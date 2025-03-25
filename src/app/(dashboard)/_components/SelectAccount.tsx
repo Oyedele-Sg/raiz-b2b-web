@@ -7,6 +7,7 @@ import { CreateUSDWalletApi } from "@/services/business";
 import { toast } from "sonner";
 import { findWalletByCurrency } from "@/utils/helpers";
 import { useUser } from "@/lib/hooks/useUser";
+import { useSendStore } from "@/store/Send";
 
 interface Props {
   close: () => void;
@@ -15,6 +16,7 @@ interface Props {
 
 const SelectAccount = ({ close, openNgnModal }: Props) => {
   const { user } = useUser();
+  const { actions } = useSendStore();
   const { selectedCurrency, setSelectedCurrency } = useCurrencyStore();
   const NGNAcct = findWalletByCurrency(user, "NGN");
   const USDAcct = findWalletByCurrency(user, "USD");
@@ -31,6 +33,7 @@ const SelectAccount = ({ close, openNgnModal }: Props) => {
   const handleNgn = () => {
     if (NGNAcct) {
       setSelectedCurrency("NGN", user);
+      actions.selectCurrency("NGN");
       close();
     } else {
       openNgnModal();
@@ -39,6 +42,7 @@ const SelectAccount = ({ close, openNgnModal }: Props) => {
   const handleUsd = () => {
     if (USDAcct) {
       setSelectedCurrency("USD", user);
+      actions.selectCurrency("USD");
       close();
     } else {
       USDWalletMutation.mutate();

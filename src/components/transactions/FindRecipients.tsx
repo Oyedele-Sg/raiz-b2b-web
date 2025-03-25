@@ -2,13 +2,7 @@
 import { ISearchedUser } from "@/types/user";
 import { debounce } from "lodash";
 import Image from "next/image";
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import RecentUsers from "./RecentUsers";
 import Beneficiaries from "./Beneficiaries";
 import { useQuery } from "@tanstack/react-query";
@@ -20,8 +14,9 @@ import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
 interface Props {
   recentUsers: ISearchedUser[];
   beneficiaries: ISearchedUser[];
-  //   selectedUser: ISearchedUser | undefined;
-  setSelectedUser: Dispatch<SetStateAction<ISearchedUser | undefined>>;
+  setSelectedUser: (user: ISearchedUser) => void;
+  header?: boolean;
+  goBack?: () => void;
 }
 
 const RecipientRow = ({
@@ -56,6 +51,8 @@ const FindRecipients = ({
   recentUsers,
   setSelectedUser,
   beneficiaries,
+  header = false,
+  goBack,
 }: Props) => {
   const { user } = useUser();
   const currentWallet = useCurrentWallet(user);
@@ -102,6 +99,31 @@ const FindRecipients = ({
 
   return (
     <div className="">
+      {header && (
+        <div>
+          <button onClick={goBack}>
+            <Image
+              src={"/icons/arrow-left.svg"}
+              alt="back"
+              width={18.48}
+              height={18.48}
+            />
+          </button>
+          <header className="flex justify-between items-center mt-5 mb-9">
+            <h2 className=" text-zinc-900 text-base font-bold  leading-tight">
+              Find Recipient
+            </h2>
+            <button>
+              <Image
+                src={"/icons/qr.svg"}
+                width={18}
+                height={19.2}
+                alt="scan"
+              />
+            </button>
+          </header>
+        </div>
+      )}
       {/* search & suggestions */}
       <div className="">
         <div className="relative h-12 w-full">
@@ -151,6 +173,30 @@ const FindRecipients = ({
             </div>
           ))}
       </div>
+
+      {/* No history */}
+      {!searchTerm &&
+        recentUsers.length === 0 &&
+        beneficiaries.length === 0 && (
+          <div className="flex flex-col justify-center items-center text-center mt-28 text-zinc-900">
+            <Image
+              src={"/icons/send-3.svg"}
+              alt="send"
+              width={48}
+              height={48}
+            />
+            <h4 className=" text-base font-bold leading-tight mt-6 mb-[14px]">
+              You haven&#39;t Sent Money to any Raizers
+            </h4>
+            <p className="  text-sm font-normal leading-tight">
+              Tap the <span className="font-bold leading-none">search</span>{" "}
+              icon or Tap the{" "}
+              <span className="font-bold leading-none">QR Code</span> icon to
+              send today!
+            </p>
+          </div>
+        )}
+
       {/* Recent Users and Beneficiaries */}
       {!searchTerm && recentUsers.length > 0 && (
         <RecentUsers users={recentUsers} setSelectedUser={setSelectedUser} />

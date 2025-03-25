@@ -7,7 +7,7 @@ import { useAutoLogout } from "@/lib/hooks/useAutoLogout";
 
 const MainLayout = ({ children }: { children: ReactNode }) => {
   const pathName = usePathname();
-  useAutoLogout();
+  // useAutoLogout();
 
   const shouldShowSideNav =
     !pathName.includes("/register") &&

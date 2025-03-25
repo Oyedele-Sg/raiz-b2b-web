@@ -1,25 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import SendOptions from "./SendOptions";
-import { IUsdSendOptions } from "@/types/misc";
 import ToRaizers from "./toRaizers/ToRaizers";
+import { useSendStore } from "@/store/Send";
 
 interface Props {
   close: () => void;
 }
 
 const UsdSend = ({ close }: Props) => {
-  const [selectedOption, setSelectedOption] = useState<IUsdSendOptions | "all">(
-    "all"
-  );
+  const { sendType } = useSendStore();
 
   const displayStep = () => {
-    switch (selectedOption) {
-      case "all":
-        return (
-          <SendOptions close={close} setSelectedOption={setSelectedOption} />
-        );
+    switch (sendType) {
+      case null:
+        return <SendOptions close={close} />;
       case "to Raizer":
-        return <ToRaizers goBack={() => setSelectedOption("all")} />;
+        return <ToRaizers close={close} />;
       default:
         break;
     }
