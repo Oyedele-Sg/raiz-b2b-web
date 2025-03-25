@@ -1,13 +1,13 @@
 // components/NumberKeypad.tsx
 import Image from "next/image";
-import React, { Dispatch, SetStateAction, useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import OTPInput from "react-otp-input";
 
 interface NumberKeypadProps {
   onInputChange?: (value: string) => void;
   maxLength?: number;
   otpValue: string;
-  setOtpValue: Dispatch<SetStateAction<string>>;
+  setOtpValue: (val: string) => void;
 }
 
 const NumberKeypad: React.FC<NumberKeypadProps> = ({

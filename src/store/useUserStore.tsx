@@ -9,6 +9,8 @@ interface UserStore {
   updateUser: (updates: Partial<IUser>) => void;
   isLoading: boolean;
   error: string | null;
+  showBalance: boolean;
+  setShowBalance: (show: boolean) => void;
 }
 
 // Custom sessionStorage storage for Zustand
@@ -31,9 +33,9 @@ export const useUserStore = create<UserStore>()(
       user: null,
       isLoading: false,
       error: null,
-
+      showBalance: false,
       setUser: (user) => set({ user, isLoading: false, error: null }),
-
+      setShowBalance: (show) => set({ showBalance: show }),
       clearUser: () => set({ user: null, isLoading: false, error: null }),
 
       updateUser: (updates) =>

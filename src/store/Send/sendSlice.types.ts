@@ -1,45 +1,52 @@
-export interface User {
-  name: string;
-  id: string;
-}
+import { ACCOUNT_CURRENCIES } from "@/constants/misc";
+import { IUsdSendOptions } from "@/types/misc";
+import { IP2pTransferResponse } from "@/types/services";
+import { ITransactionCategory, PaymentStatusType } from "@/types/transactions";
+import { ISearchedUser } from "@/types/user";
 
-export interface Category {
-  id: string;
-  name: string;
-}
+type CurrencyTypeKey = keyof typeof ACCOUNT_CURRENCIES;
 
 export interface SendState {
-  sendType: "raizers" | "bankTransfer" | null;
-  user: User | null;
-  currency: "usd" | "ngn" | null;
-  amount: number;
+  sendType: IUsdSendOptions | null;
+  user: ISearchedUser | null;
+  currency: CurrencyTypeKey | null;
+  amount: string;
   purpose: string;
-  category: Category | null;
+  category: ITransactionCategory | null;
   transactionPin: string;
+  status: PaymentStatusType | null;
+  transactionDetail: IP2pTransferResponse | null;
 }
 
 export interface AmountAndRemarksPayload {
-  amount: number;
+  amount: string;
   purpose: string;
 }
 
 export interface SendActions {
-  selectSendOption: (option: string) => void;
-  selectUser: (user: User) => void;
+  selectCurrency: (currency: CurrencyTypeKey) => void;
+  selectSendOption: (option: IUsdSendOptions | null) => void;
+  selectUser: (user: ISearchedUser | null) => void;
   setAmountAndRemark: (payload: AmountAndRemarksPayload) => void;
-  selectCategory: (category: Category) => void;
+  selectCategory: (category: ITransactionCategory | null) => void;
   setTransactionPin: (pin: string) => void;
+  setStatus: (status: PaymentStatusType | null) => void;
+  setTransactionDetail: (detail: IP2pTransferResponse) => void;
   reset: () => void;
 }
 
 export const initialSendState: SendState = {
   sendType: null,
   user: null,
-  currency: null,
-  amount: 0,
+  currency: "USD",
+  amount: "",
   purpose: "",
   category: null,
   transactionPin: "",
+  status: null,
+  transactionDetail: null,
 };
 
-export interface SendSlice extends SendState, SendActions {}
+export interface SendSlice extends SendState {
+  actions: SendActions;
+}

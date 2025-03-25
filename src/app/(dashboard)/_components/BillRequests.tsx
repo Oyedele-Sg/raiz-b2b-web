@@ -160,6 +160,7 @@ const BillRequests = () => {
               close={closePopModal}
               error={paymentError}
               tryAgain={() => setOpenModal("accept")}
+              viewReceipt={closePopModal}
             />
           )
         );
