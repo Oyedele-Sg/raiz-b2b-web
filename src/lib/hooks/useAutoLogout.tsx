@@ -20,22 +20,17 @@ export const useAutoLogout = () => {
       timerRef.current = setTimeout(logout, AUTO_LOGOUT_TIME);
     };
 
-    resetTimer();
+    const accessToken = Cookies.get("access_token");
+    if (accessToken) {
+      resetTimer(); // Start timer only if user is logged in
+    }
 
     // Events to reset the timer on user activity
     const events = ["mousemove", "keydown", "scroll", "click", "touchstart"];
     events.forEach((event) => window.addEventListener(event, resetTimer));
-
-    // Handle tab/browser close
-    const handleTabClose = () => {
-      Cookies.remove("access_token");
-    };
-    window.addEventListener("beforeunload", handleTabClose);
-
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
       events.forEach((event) => window.removeEventListener(event, resetTimer));
-      window.removeEventListener("beforeunload", handleTabClose);
     };
-  }, []);
+  }, [router]);
 };
