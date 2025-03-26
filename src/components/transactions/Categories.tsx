@@ -26,6 +26,7 @@ const Categories = ({ goBack, goNext, loading }: Props) => {
       <button
         onClick={() => {
           actions.selectCategory(null);
+          goNext();
         }}
         className="text-right justify-center text-zinc-700 text-sm leading-tight"
       >

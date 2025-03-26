@@ -2,7 +2,7 @@
 import EmptyList from "@/components/ui/EmptyList";
 import { FetchBillRequestApi } from "@/services/transactions";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
-import { IBillRequestParams } from "@/types/services";
+import { IBillRequestParams, IP2pTransferResponse } from "@/types/services";
 import { IBillRequest, PaymentStatusType } from "@/types/transactions";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -12,8 +12,11 @@ import AcceptBill from "./bill-requests/AcceptBill";
 import PayBill from "./bill-requests/PayBill";
 import Avatar from "@/components/ui/Avatar";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
-import { getCurrencySymbol } from "@/utils/helpers";
+import { convertTime, getCurrencySymbol } from "@/utils/helpers";
 import RejectBill from "./bill-requests/RejectBill";
+import RaizReceipt from "@/components/transactions/RaizReceipt";
+import { useUser } from "@/lib/hooks/useUser";
+import SideModalWrapper from "./SideModalWrapper";
 
 type OpenModalType =
   | "accept"
@@ -24,6 +27,7 @@ type OpenModalType =
   | "delete-success"
   | "accept-sucsess"
   | "reject-success"
+  | "receipt"
   | null;
 
 const BillRow = ({
@@ -35,7 +39,7 @@ const BillRow = ({
   setSelectedRequest: (arg: IBillRequest) => void;
   setOpenModal: (arg: OpenModalType) => void;
 }) => {
-  const date = dayjs(request?.created_at);
+  const date = dayjs(convertTime(request?.created_at));
   const isToday = date.isSame(dayjs(), "day");
 
   const handleAccept = () => {
@@ -106,8 +110,11 @@ const BillRequests = () => {
   const [selectedRequest, setSelectedRequest] = useState<IBillRequest | null>(
     null
   );
+  const { user } = useUser();
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatusType>(null);
   const [paymentError, setPaymentError] = useState("");
+  const [transactionDetail, setTransactionDetail] =
+    useState<IP2pTransferResponse | null>(null);
   const { data, isLoading } = useQuery({
     queryKey: [
       "bill-requests",
@@ -118,10 +125,29 @@ const BillRequests = () => {
       return FetchBillRequestApi(params);
     },
   });
-
-  const billRequests = data?.data || [];
   const closePopModal = () => setOpenModal(null);
   const openPayModal = () => setOpenModal("pay");
+
+  const receiptDetails = transactionDetail &&
+    user && {
+      senderName: user?.business_account?.business_name,
+      beneficiaryName: transactionDetail?.third_party_name,
+      beneficiaryAccount: transactionDetail?.beneficiary_account_number,
+      beneficiaryBank: transactionDetail?.beneficiary_bank_name,
+      senderAccount: transactionDetail?.source_account_number,
+      transactionAmount: transactionDetail?.transaction_amount,
+      purpose: transactionDetail?.transaction_remarks,
+      date: transactionDetail?.transaction_date_time,
+      transactionType: transactionDetail?.transaction_type?.transaction_type,
+      sessionId: transactionDetail?.session_id,
+      referenceNumber: transactionDetail?.transaction_reference,
+      status: transactionDetail?.transaction_status?.transaction_status,
+      currency: transactionDetail?.currency,
+      close: closePopModal,
+    };
+
+  const billRequests = data?.data || [];
+
   const displayPopModal = () => {
     switch (openModal) {
       case "accept": {
@@ -145,6 +171,7 @@ const BillRequests = () => {
               setStatus={setPaymentStatus}
               request={selectedRequest}
               setPaymentError={setPaymentError}
+              setTransactionDetail={setTransactionDetail}
             />
           )
         );
@@ -160,7 +187,7 @@ const BillRequests = () => {
               close={closePopModal}
               error={paymentError}
               tryAgain={() => setOpenModal("accept")}
-              viewReceipt={closePopModal}
+              viewReceipt={() => setOpenModal("receipt")}
             />
           )
         );
@@ -172,6 +199,14 @@ const BillRequests = () => {
           )
         );
       }
+      case "receipt":
+        return (
+          receiptDetails && (
+            <SideModalWrapper close={() => {}}>
+              <RaizReceipt {...receiptDetails} />
+            </SideModalWrapper>
+          )
+        );
 
       default:
         break;

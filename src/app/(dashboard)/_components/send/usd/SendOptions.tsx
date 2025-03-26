@@ -43,7 +43,7 @@ const SendOptions = ({ close }: Props) => {
             <button
               className="px-4 py-5 hover:bg-[#e5ebff]/60 rounded-[20px] justify-between items-center inline-flex"
               key={index}
-              onClick={() => actions.selectSendOption(each.key)}
+              onClick={() => actions.selectUSDSendOption(each.key)}
             >
               <div className="flex items-center gap-2">
                 <div className="">{each.icon}</div>

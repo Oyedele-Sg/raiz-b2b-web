@@ -12,6 +12,7 @@ import { ITransaction } from "@/types/transactions";
 import { AccountCurrencyType } from "@/types/misc";
 import Skeleton from "react-loading-skeleton";
 import Avatar from "@/components/ui/Avatar";
+import { convertTime } from "@/utils/helpers";
 
 const TransactionRow = ({
   transaction,
@@ -20,6 +21,8 @@ const TransactionRow = ({
   transaction: ITransaction;
   selectedCurrency: AccountCurrencyType;
 }) => {
+  const date = dayjs(convertTime(transaction?.transaction_date_time));
+  const isToday = date.isSame(dayjs(), "day");
   return (
     <div className="flex items-center justify-between w-full">
       <div className="flex gap-[14px]">
@@ -33,9 +36,9 @@ const TransactionRow = ({
             {transaction?.third_party_name}
           </p>
           <p className="opacity-50 text-raiz-gray-950 text-xs font-normal leading-[15px]">
-            {dayjs(transaction?.transaction_date_time).format(
-              "DD MMM YYYY @ h:mm A"
-            )}
+            {isToday
+              ? `Today, ${date.format("HH:mm")}`
+              : date.format("DD MMM YYYY @ h:mm A")}
           </p>
         </div>
       </div>

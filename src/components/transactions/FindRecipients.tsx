@@ -18,6 +18,7 @@ interface Props {
   setSelectedUser: (user: ISearchedUser) => void;
   header?: boolean;
   goBack?: () => void;
+  emptyStateTitle?: string;
 }
 
 const RecipientRow = ({
@@ -33,8 +34,12 @@ const RecipientRow = ({
       onClick={() => setSelectedUser(user)}
     >
       <Avatar src={user?.selfie_image} name={user?.account_name} />
-
-      <span className="text-sm">{user.account_name || "Unknown User"}</span>
+      <div>
+        <p className="text-sm font-semibold">
+          {user.account_name || "Unknown User"}
+        </p>
+        <p className="text-xs text-gray-500">@{user.username}</p>
+      </div>
     </li>
   );
 };
@@ -45,6 +50,7 @@ const FindRecipients = ({
   beneficiaries,
   header = false,
   goBack,
+  emptyStateTitle = "You haven't Sent Money to any Raizers",
 }: Props) => {
   const { user } = useUser();
   const currentWallet = useCurrentWallet(user);
@@ -178,7 +184,7 @@ const FindRecipients = ({
               height={48}
             />
             <h4 className=" text-base font-bold leading-tight mt-6 mb-[14px]">
-              You haven&#39;t Sent Money to any Raizers
+              {emptyStateTitle}
             </h4>
             <p className="  text-sm font-normal leading-tight">
               Tap the <span className="font-bold leading-none">search</span>{" "}
@@ -193,7 +199,9 @@ const FindRecipients = ({
       {!searchTerm && recentUsers.length > 0 && (
         <RecentUsers users={recentUsers} setSelectedUser={setSelectedUser} />
       )}
-      {!searchTerm && beneficiaries.length > 0 && <Beneficiaries users={[]} />}
+      {!searchTerm && beneficiaries.length > 0 && (
+        <Beneficiaries users={beneficiaries} />
+      )}
     </div>
   );
 };

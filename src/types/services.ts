@@ -219,3 +219,16 @@ export interface IP2pTransferResponse {
   payment_method: IPaymentMethod;
   transaction_category: ITransactionCategory;
 }
+
+export interface IP2pBeneficiariesParams {
+  wallet_id: string;
+  search?: string;
+  page?: number;
+  limit?: number;
+  favourite?: boolean;
+}
+
+export interface IBeneficiariestResponse {
+  pagination_details: IPagination;
+  results: ISearchedUser[];
+}

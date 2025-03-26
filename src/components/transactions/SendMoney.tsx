@@ -10,6 +10,7 @@ import ErrorMessage from "../ui/ErrorMessage";
 import InputField from "../ui/InputField";
 import Image from "next/image";
 import Button from "../ui/Button";
+import Avatar from "../ui/Avatar";
 
 interface Props {
   goBack: () => void;
@@ -82,19 +83,17 @@ const SendMoney = ({ goBack, goNext }: Props) => {
         <div className="w-full">
           <div className="flex flex-col justify-center items-center">
             <div className="relative w-10 h-10">
-              <Image
-                src={selectedUser?.selfie_image || "/images/default-pfp.svg"}
-                alt={selectedUser?.account_name || ""}
-                width={40}
-                height={40}
-                className="w-10 h-10 rounded-full"
+              <Avatar
+                src={selectedUser?.selfie_image || ""}
+                name={selectedUser?.account_name || ""}
               />
+
               <svg
                 width="22"
                 height="22"
                 viewBox="0 0 22 22"
                 fill="none"
-                className="absolute bottom-[-5px] right-[-6px]"
+                className="absolute bottom-[-11px] right-[-15px]"
               >
                 <rect
                   x="1"

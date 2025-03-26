@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
 import Button from "../ui/Button";
+import ListDetailItem from "../ui/ListDetailItem";
 
 interface Props {
   goBack: () => void;
@@ -40,41 +41,21 @@ const SendSummary = ({ goBack, goNext, fee }: Props) => {
       <div className="flex flex-col lg:h-[75vh] justify-between items-center w-full">
         <div className="w-full flex flex-col gap-[15px]">
           {/* Amount */}
-          <div className="flex text-zinc-900 justify-between items-center pb-3 border-b-[0.5px] border-zinc-200">
-            <span className="text-xs font-normal leading-tight">Amount</span>
-            <span className=" text-sm font-semibold font-brSonoma leading-tight">
-              {" "}
-              {selectedCurrency?.sign}
-              {amount.toLocaleString()}{" "}
-            </span>
-          </div>
-          {/* Transaction fee */}
-          <div className="flex text-zinc-900 justify-between items-center pb-3 border-b-[0.5px] border-zinc-200">
-            <span className="text-xs font-normal leading-tight">
-              Transaction fee
-            </span>
-            <span className=" text-sm font-semibold font-brSonoma leading-tight">
-              {" "}
-              {selectedCurrency?.sign}
-              {fee?.toLocaleString()}{" "}
-            </span>
-          </div>
-
-          {/* Purpose */}
-          <div className="flex text-zinc-900 justify-between gap-5 items-center pb-3 border-b-[0.5px] border-zinc-200">
-            <span className="text-xs font-normal leading-tight">Purpose</span>
-            <span className=" text-sm font-semibold font-brSonoma leading-tight">
-              {purpose}
-            </span>
-          </div>
-
-          {/* Category */}
-          <div className="flex text-zinc-900 justify-between items-center pb-3">
-            <span className="text-xs font-normal leading-tight">Category</span>
-            <span className=" text-sm font-semibold font-brSonoma leading-tight">
-              {category?.transaction_category}
-            </span>
-          </div>
+          <ListDetailItem
+            title="Amount"
+            value={`${selectedCurrency?.sign}
+              ${amount.toLocaleString()}`}
+          />
+          <ListDetailItem
+            title="Transaction fee"
+            value={`${selectedCurrency?.sign}
+              ${fee.toLocaleString()}`}
+          />
+          <ListDetailItem title="Purpose" value={purpose} />
+          <ListDetailItem
+            title="Category"
+            value={category?.transaction_category || ""}
+          />
         </div>
         <div className="w-full flex flex-col gap-3">
           <Button

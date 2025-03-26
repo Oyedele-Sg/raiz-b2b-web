@@ -1,8 +1,10 @@
 import { AuthAxios, CustomAxiosRequestConfig } from "@/lib/authAxios";
 import {
   IAcceptRequestPayload,
+  IBeneficiariestResponse,
   IBillRequestParams,
   IBillRequestResponse,
+  IP2pBeneficiariesParams,
   IP2PTransferPayload,
   IP2pTransferResponse,
   IRequestFundsPayload,
@@ -53,7 +55,7 @@ export const FetchTransactionCategoriesApi = async (): Promise<
 export const AcceptRequestApi = async ({
   params,
   transaction_pin,
-}: IAcceptRequestPayload) => {
+}: IAcceptRequestPayload): Promise<IP2pTransferResponse> => {
   const response = await AuthAxios.patch(
     `/business/transactions/requests/funds/${params?.request_id}/accept/`,
     { transaction_pin },
@@ -126,6 +128,32 @@ export const GetTransactionFeeApi = async (
 ): Promise<number> => {
   const response = await AuthAxios.get(
     `/business/transactions/charges/get/?amount=${amount}&transfer_type=${transfer_type}`
+  );
+  return response?.data;
+};
+
+export const FetchP2PBeneficiariesApi = async (
+  params: IP2pBeneficiariesParams
+): Promise<IBeneficiariestResponse> => {
+  const queryParams = Object.fromEntries(
+    Object.entries(params).filter(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      ([_, value]) => value !== undefined && value !== null
+    )
+  );
+  const response = await AuthAxios.get(
+    `/business/transactions/p2p/beneficiaries/get/`,
+    { params: queryParams }
+  );
+  return response?.data;
+};
+
+export const AddP2PBeneficiaryApi = async (
+  wallet_id: string,
+  beneficiary_entity_id: string
+) => {
+  const response = await AuthAxios.post(
+    `/business/transactions/p2p/beneficiaries/add/?wallet_id=${wallet_id}&beneficiary_entity_id=${beneficiary_entity_id}`
   );
   return response?.data;
 };

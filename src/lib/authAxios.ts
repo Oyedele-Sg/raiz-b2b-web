@@ -29,6 +29,15 @@ const handleResponse = (response: AxiosResponse) => response;
 const handleError = async (error: CustomAxiosError) => {
   console.log(JSON.stringify(error, null, 2));
   const isSilent = (error.config as CustomAxiosRequestConfig)?.silent;
+
+  // Check for 401 status and redirect to login
+  if (error.response?.status === 401) {
+    // If we're in the browser environment
+    if (typeof window !== "undefined") {
+      window.location.href = "/login";
+    }
+    return Promise.reject(error.response);
+  }
   if (!isSilent) {
     const errorMessage = error.response?.data?.message || "An Error Occurred";
     toast.error(errorMessage);

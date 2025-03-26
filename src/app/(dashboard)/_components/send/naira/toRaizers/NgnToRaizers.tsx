@@ -5,13 +5,13 @@ import { SendToRaizStepType } from "../../usd/toRaizers/ToRaizers";
 import { useSendStore } from "@/store/Send";
 import FindRecipients from "@/components/transactions/FindRecipients";
 import SendMoney from "@/components/transactions/SendMoney";
-// import { useQuery } from "@tanstack/react-query";
-// import { GetTransactionFeeApi } from "@/services/transactions";
 import Categories from "@/components/transactions/Categories";
 import SendSummary from "@/components/transactions/SendSummary";
 import Payout from "../../usd/toRaizers/Payout";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
+import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
+import { useP2PBeneficiaries } from "@/lib/hooks/useP2pBeneficiaries";
 
 const NgnToRaizers = () => {
   const {
@@ -25,13 +25,12 @@ const NgnToRaizers = () => {
   const { user } = useUser();
   const [step, setStep] = useState<SendToRaizStepType>("select-user");
   const [paymentError, setPaymentError] = useState("");
+  const currentWallet = useCurrentWallet(user);
 
-  //   const { data: fee } = useQuery({
-  //     queryKey: ["transactions-fee", amount, currency],
-  //     queryFn: () =>
-  //       GetTransactionFeeApi(Number(amount), currency as "USD" | "NGN" | "WIRE"),
-  //     enabled: !!amount,
-  //   });
+  const { favourites, recents } = useP2PBeneficiaries({
+    walletId: currentWallet?.wallet_id,
+    limit: 50,
+  });
 
   useEffect(() => {
     if (step === "select-user" && selectedUser) {
@@ -73,8 +72,8 @@ const NgnToRaizers = () => {
       case "select-user":
         return (
           <FindRecipients
-            recentUsers={[]}
-            beneficiaries={[]}
+            recentUsers={recents || []}
+            beneficiaries={favourites || []}
             setSelectedUser={actions.selectUser}
           />
         );

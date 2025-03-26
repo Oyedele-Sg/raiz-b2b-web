@@ -4,6 +4,9 @@ import * as CryptoJS from "crypto-js";
 import { ICurrencyName } from "@/types/misc";
 import { IUser } from "@/types/user";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 export const getLastThreeMonths = () => {
   const currentMonth = new Date().getMonth();
@@ -164,9 +167,16 @@ export const getCurrencySymbol = (currencyCode: string): string => {
 };
 
 export const formatRelativeTime = (date: Date | string) => {
-  const time = dayjs(date).fromNow(true);
+  const localDate =
+    typeof date === "string" ? dayjs.utc(date).local() : dayjs(date);
+
+  const time = localDate.fromNow(true);
   return time
     .replace("minutes", "min")
     .replace("hours", "hr")
     .replace("seconds", "sec");
+};
+
+export const convertTime = (utcTime: Date | string): string => {
+  return dayjs.utc(utcTime).local().format("YYYY-MM-DD HH:mm:ss");
 };

@@ -49,6 +49,7 @@ const PaymentStatusModal = ({
             )}${amount?.toLocaleString()} sent to ${user?.account_name} `}
             close={close}
             viewReceipt={viewReceipt}
+            beneficiary={user}
           />
         );
       case "failed":
