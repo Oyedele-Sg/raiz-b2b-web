@@ -1,6 +1,5 @@
 "use client";
-import React, { useState } from "react";
-import Image from "next/image";
+import React from "react";
 import EmptyList from "@/components/ui/EmptyList";
 import { useQuery } from "@tanstack/react-query";
 import { FetchTransactionReportApi } from "@/services/transactions";
@@ -12,6 +11,8 @@ import { useCurrencyStore } from "@/store/useCurrencyStore";
 import { ITransaction } from "@/types/transactions";
 import { AccountCurrencyType } from "@/types/misc";
 import Skeleton from "react-loading-skeleton";
+import Avatar from "@/components/ui/Avatar";
+import { convertTime } from "@/utils/helpers";
 
 const TransactionRow = ({
   transaction,
@@ -20,29 +21,24 @@ const TransactionRow = ({
   transaction: ITransaction;
   selectedCurrency: AccountCurrencyType;
 }) => {
-  const [imgSrc, setImgSrc] = useState(
-    transaction?.third_party_profile_image_url || "/images/default-pfp.svg"
-  );
-
+  const date = dayjs(convertTime(transaction?.transaction_date_time));
+  const isToday = date.isSame(dayjs(), "day");
   return (
     <div className="flex items-center justify-between w-full">
       <div className="flex gap-[14px]">
-        <Image
-          className="w-12 h-12"
-          src={imgSrc}
-          width={48}
-          height={48}
-          alt={transaction?.third_party_name}
-          onError={() => setImgSrc("/images/default-pfp.svg")}
+        <Avatar
+          src={transaction?.third_party_profile_image_url}
+          name={transaction?.third_party_name}
         />
+
         <div className="flex flex-col gap-1">
           <p className="text-raiz-gray-950 text-sm font-semibold">
             {transaction?.third_party_name}
           </p>
           <p className="opacity-50 text-raiz-gray-950 text-xs font-normal leading-[15px]">
-            {dayjs(transaction?.transaction_date_time).format(
-              "DD MMM YYYY @ h:mm A"
-            )}
+            {isToday
+              ? `Today, ${date.format("HH:mm")}`
+              : date.format("DD MMM YYYY @ h:mm A")}
           </p>
         </div>
       </div>

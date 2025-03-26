@@ -13,6 +13,7 @@ import { useUser } from "@/lib/hooks/useUser";
 import Request from "./request/Request";
 import { useSendStore } from "@/store/Send";
 import { useUserStore } from "@/store/useUserStore";
+import { toast } from "sonner";
 
 const DashboardSummary = () => {
   const { user } = useUser();
@@ -38,6 +39,16 @@ const DashboardSummary = () => {
 
   const closeModal = () => {
     setOpenModal(null);
+  };
+
+  const handleActionButton = (action: "send" | "request" | "swap") => {
+    if (!currentWallet) {
+      toast.warning(
+        "You do not have a wallet for this currency. Create one first!"
+      );
+    } else {
+      setOpenModal(action);
+    }
   };
 
   const displayScreen = () => {
@@ -88,7 +99,7 @@ const DashboardSummary = () => {
         </div>
         <div className="flex gap-4 items-center">
           <Button
-            onClick={() => setOpenModal("send")}
+            onClick={() => handleActionButton("send")}
             className="h-10 w-[138px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
           >
             <svg width="21" height="20" viewBox="0 0 21 20" fill="none">
@@ -102,7 +113,7 @@ const DashboardSummary = () => {
             </span>
           </Button>
           <Button
-            onClick={() => setOpenModal("request")}
+            onClick={() => handleActionButton("request")}
             className="h-10 w-[138px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
           >
             <svg width="21" height="20" viewBox="0 0 21 20" fill="none">
@@ -120,7 +131,7 @@ const DashboardSummary = () => {
             </span>
           </Button>
           <Button
-            onClick={() => setOpenModal("swap")}
+            onClick={() => handleActionButton("swap")}
             className="h-10 w-[138px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
           >
             <svg width="21" height="20" viewBox="0 0 21 20" fill="none">

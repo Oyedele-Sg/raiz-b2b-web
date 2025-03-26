@@ -1,7 +1,7 @@
 import React from "react";
-import Image from "next/image";
 import { truncateString } from "@/utils/helpers";
 import { ISearchedUser } from "@/types/user";
+import Avatar from "../ui/Avatar";
 
 interface Props {
   users: ISearchedUser[];
@@ -21,18 +21,12 @@ const RecentUsers = ({ users, setSelectedUser }: Props) => {
             className="flex flex-col justify-center items-center gap-0.5 px-2  flex-shrink-0"
             onClick={() => setSelectedUser(user)}
           >
-            <Image
-              className="w-12 h-12 rounded-[64px] mb-1.5"
-              src={user?.selfie_image || "/images/default-pfp.svg"}
-              alt={user?.account_name}
-              width={48}
-              height={48}
-            />
+            <Avatar src={user?.selfie_image} name={user?.account_name} />
             <p className="text-center text-raiz-gray-950 text-[13px] font-semibold  leading-none">
-              {user?.account_name}
+              {truncateString(user?.account_name, 25)}
             </p>
             <p className="text-center text-raiz-gray-700 text-xs leading-[18px]">
-              @{truncateString(user?.username, 10)}
+              @{user?.username}
             </p>
           </button>
         ))}

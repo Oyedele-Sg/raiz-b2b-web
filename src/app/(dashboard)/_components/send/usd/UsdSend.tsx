@@ -8,10 +8,10 @@ interface Props {
 }
 
 const UsdSend = ({ close }: Props) => {
-  const { sendType } = useSendStore();
+  const { usdSendType } = useSendStore();
 
   const displayStep = () => {
-    switch (sendType) {
+    switch (usdSendType) {
       case null:
         return <SendOptions close={close} />;
       case "to Raizer":

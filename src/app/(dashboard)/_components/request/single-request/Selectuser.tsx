@@ -4,6 +4,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import { ISearchedUser } from "@/types/user";
 import FindRecipients from "@/components/transactions/FindRecipients";
+import { useP2PBeneficiaries } from "@/lib/hooks/useP2pBeneficiaries";
 
 interface Props {
   goBack: () => void;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 const Selectuser = ({ goBack, setSelectedUser }: Props) => {
+  const { recents, favourites } = useP2PBeneficiaries();
   const Scan = () => {
     return (
       <button>
@@ -27,9 +29,10 @@ const Selectuser = ({ goBack, setSelectedUser }: Props) => {
         titleColor="text-zinc-900"
       />
       <FindRecipients
-        recentUsers={[]}
+        recentUsers={recents}
         setSelectedUser={setSelectedUser}
-        beneficiaries={[]}
+        beneficiaries={favourites}
+        emptyStateTitle="You haven't made any request"
       />
     </div>
   );

@@ -4,6 +4,7 @@ import Overlay from "@/components/ui/Overlay";
 import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
 import { useUser } from "@/lib/hooks/useUser";
 import { AcceptRequestApi } from "@/services/transactions";
+import { IP2pTransferResponse } from "@/types/services";
 import { IBillRequest, PaymentStatusType } from "@/types/transactions";
 import { passwordHash } from "@/utils/helpers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,6 +17,7 @@ interface Props {
   status: PaymentStatusType;
   request: IBillRequest;
   setPaymentError: Dispatch<SetStateAction<string>>;
+  setTransactionDetail: Dispatch<SetStateAction<IP2pTransferResponse | null>>;
 }
 
 const PayBill = ({
@@ -24,6 +26,7 @@ const PayBill = ({
   setStatus,
   request,
   setPaymentError,
+  setTransactionDetail,
 }: Props) => {
   const { user } = useUser();
   const currentWallet = useCurrentWallet(user);
@@ -44,10 +47,12 @@ const PayBill = ({
       setStatus("loading");
       goNext();
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
+      setTransactionDetail(response);
       qc.refetchQueries({ queryKey: ["user"] });
       qc.invalidateQueries({ queryKey: ["bill-requests"] });
       qc.invalidateQueries({ queryKey: ["transactions-report"] });
+      qc.invalidateQueries({ queryKey: ["p2p-beneficiaries-recents"] });
       setStatus("success");
       goNext();
     },

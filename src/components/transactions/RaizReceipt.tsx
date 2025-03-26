@@ -57,13 +57,22 @@ const RaizReceipt = ({
           {currency}
           {transactionAmount?.toLocaleString()}
         </p>
-        <div className="flex flex-col gap-2  w-full  mt-5 px-5 pt-5 border-t border-dashed border-zinc-200">
+        <div className="flex flex-col gap-2  w-full  mt-5 px-5 lg:px-2 xl:px-5 pt-5 border-t border-dashed border-zinc-200">
           {/* Beneficiary */}
           <ListDetailItem title="Beneficiary" value={beneficiaryName} />
           <ListDetailItem title="Sender" value={senderName} />
-          <ListDetailItem title="Account Debited" value={senderAccount} />
-          <ListDetailItem title="Receiver Account" value={beneficiaryAccount} />
-          <ListDetailItem title="Receiver Bank" value={beneficiaryBank} />
+          {senderAccount && (
+            <ListDetailItem title="Account Debited" value={senderAccount} />
+          )}
+          {beneficiaryAccount && (
+            <ListDetailItem
+              title="Receiver Account"
+              value={beneficiaryAccount}
+            />
+          )}
+          {beneficiaryBank && (
+            <ListDetailItem title="Receiver Bank" value={beneficiaryBank} />
+          )}
           <ListDetailItem title="Purpose" value={purpose} />
           <ListDetailItem
             title="Date"

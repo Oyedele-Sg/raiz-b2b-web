@@ -51,7 +51,7 @@ const CountryCodeModal = ({ close, formik }: Props) => {
         <h5 className="text-raiz-gray-950 text-xl font-bold  leading-normal">
           Select your Country
         </h5>
-        <div className="relative h-12 w-[300px] xl:w-[335px] mt-[15px] mb-[30px]">
+        <div className="relative h-12 min-w-[300px]  mt-[15px] mb-[30px]">
           <Image
             className="absolute top-3.5 left-3"
             src={"/icons/search.svg"}
