@@ -1,11 +1,11 @@
-import { IUsdSendOptions } from "@/types/misc";
+import { IUSDSendOptions } from "@/types/misc";
 import { ReactNode } from "react";
 
 interface Options {
   title: string;
   subtitle: string;
   icon: ReactNode;
-  key: IUsdSendOptions;
+  key: IUSDSendOptions;
 }
 
 export const usdSendOptions: Options[] = [

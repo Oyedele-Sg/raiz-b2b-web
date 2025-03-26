@@ -1,25 +1,19 @@
 "use client";
+import { useUser } from "@/lib/hooks/useUser";
 import React, { useEffect, useState } from "react";
+import { SendToRaizStepType } from "../../usd/toRaizers/ToRaizers";
 import { useSendStore } from "@/store/Send";
 import FindRecipients from "@/components/transactions/FindRecipients";
-import SendDetail from "./SendDetail";
+import SendMoney from "@/components/transactions/SendMoney";
+// import { useQuery } from "@tanstack/react-query";
+// import { GetTransactionFeeApi } from "@/services/transactions";
 import Categories from "@/components/transactions/Categories";
 import SendSummary from "@/components/transactions/SendSummary";
-import Payout from "./Payout";
+import Payout from "../../usd/toRaizers/Payout";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
-import { useUser } from "@/lib/hooks/useUser";
 
-export type SendToRaizStepType =
-  | "select-user"
-  | "details"
-  | "category"
-  | "summary"
-  | "pay"
-  | "status"
-  | "receipt";
-
-const ToRaizers = ({ close }: { close: () => void }) => {
+const NgnToRaizers = () => {
   const {
     actions,
     user: selectedUser,
@@ -32,12 +26,12 @@ const ToRaizers = ({ close }: { close: () => void }) => {
   const [step, setStep] = useState<SendToRaizStepType>("select-user");
   const [paymentError, setPaymentError] = useState("");
 
-  // const { data: fee } = useQuery({
-  //   queryKey: ["transactions-fee", amount, currency],
-  //   queryFn: () =>
-  //     GetTransactionFeeApi(Number(amount), currency as "USD" | "NGN" | "WIRE"),
-  //   enabled: !!amount,
-  // });
+  //   const { data: fee } = useQuery({
+  //     queryKey: ["transactions-fee", amount, currency],
+  //     queryFn: () =>
+  //       GetTransactionFeeApi(Number(amount), currency as "USD" | "NGN" | "WIRE"),
+  //     enabled: !!amount,
+  //   });
 
   useEffect(() => {
     if (step === "select-user" && selectedUser) {
@@ -46,12 +40,13 @@ const ToRaizers = ({ close }: { close: () => void }) => {
   }, [step, selectedUser]);
 
   const goBackToStep1 = () => {
-    actions.selectUser(null);
+    actions.reset("NGN");
     setStep("select-user");
   };
 
   const handleDone = () => {
-    actions.reset("USD");
+    actions.reset("NGN");
+    actions.selectNGNSendOption("to Raizer");
     close();
   };
 
@@ -81,13 +76,11 @@ const ToRaizers = ({ close }: { close: () => void }) => {
             recentUsers={[]}
             beneficiaries={[]}
             setSelectedUser={actions.selectUser}
-            header
-            goBack={() => actions.selectUSDSendOption(null)}
           />
         );
       case "details":
         return (
-          <SendDetail
+          <SendMoney
             goBack={goBackToStep1}
             goNext={() => setStep("category")}
             fee={0}
@@ -118,7 +111,6 @@ const ToRaizers = ({ close }: { close: () => void }) => {
             fee={0}
           />
         );
-
       case "status":
         return (
           currency &&
@@ -141,7 +133,8 @@ const ToRaizers = ({ close }: { close: () => void }) => {
         break;
     }
   };
+
   return <div>{displayStep()}</div>;
 };
 
-export default ToRaizers;
+export default NgnToRaizers;

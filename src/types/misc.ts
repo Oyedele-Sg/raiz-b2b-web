@@ -43,12 +43,14 @@ export interface AccountSetupProps {
   setSelectedStep: (step: AccountSetupStep | null) => void;
 }
 
-export type IUsdSendOptions =
+export type IUSDSendOptions =
   | "to Raizer"
   | "bank transfer"
   | "to debit card"
   | "to zelle"
   | "to cashapp";
+
+export type INGNSendOptions = "to Raizer" | "to other bank";
 
 export interface ICountry {
   country_name: string;

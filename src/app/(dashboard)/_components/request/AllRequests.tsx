@@ -10,6 +10,7 @@ import {
   formatRelativeTime,
   getCurrencySymbol,
   groupByDate,
+  truncateString,
 } from "@/utils/helpers";
 import { RequestStepsProps } from "./RequestHome";
 import { useQuery } from "@tanstack/react-query";
@@ -182,10 +183,13 @@ const AllRequests = ({ setStep, setSelectedRequest }: Props) => {
                           />
                         </div>
 
-                        <div className="flex justify-between w-full">
+                        <div className="flex justify-between w-full text-left">
                           <div className="flex flex-col gap-1.5">
                             <p className=" text-zinc-900 text-sm font-semibold leading-none">
-                              {each?.third_party_account?.account_name}
+                              {truncateString(
+                                each?.third_party_account?.account_name,
+                                20
+                              )}
                             </p>
                             <div className="flex items-center gap-1">
                               <p className="text-center flex text-zinc-700 text-xs font-medium font-brSonoma leading-tight">

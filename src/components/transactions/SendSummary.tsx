@@ -15,7 +15,7 @@ const SendSummary = ({ goBack, goNext, fee }: Props) => {
   const { category, amount, purpose } = useSendStore();
   const { selectedCurrency } = useCurrencyStore();
 
-  const totalPayable = fee ? parseFloat(amount) + fee : 0;
+  // const totalPayable = fee ? parseFloat(amount) + fee : 0;
 
   return (
     <div>
@@ -31,7 +31,7 @@ const SendSummary = ({ goBack, goNext, fee }: Props) => {
         </div>
         <p className="text-center text-xl font-bold leading-normal">
           {selectedCurrency?.sign}
-          {totalPayable.toLocaleString()}
+          {amount.toLocaleString()}
         </p>
         <p className="text-center   text-xs font-normal  leading-tight">
           Send Summary
@@ -61,7 +61,7 @@ const SendSummary = ({ goBack, goNext, fee }: Props) => {
           </div>
 
           {/* Purpose */}
-          <div className="flex text-zinc-900 justify-between items-center pb-3 border-b-[0.5px] border-zinc-200">
+          <div className="flex text-zinc-900 justify-between gap-5 items-center pb-3 border-b-[0.5px] border-zinc-200">
             <span className="text-xs font-normal leading-tight">Purpose</span>
             <span className=" text-sm font-semibold font-brSonoma leading-tight">
               {purpose}
@@ -77,7 +77,10 @@ const SendSummary = ({ goBack, goNext, fee }: Props) => {
           </div>
         </div>
         <div className="w-full flex flex-col gap-3">
-          <Button disabled={!fee} onClick={goNext}>
+          <Button
+            // disabled={!fee}
+            onClick={goNext}
+          >
             Send
           </Button>
           <Button onClick={goBack} variant="secondary">

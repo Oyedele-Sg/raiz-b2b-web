@@ -10,6 +10,7 @@ import { SearchAllUsersApi } from "@/services/user";
 import { IUserSearchParams } from "@/types/services";
 import { useUser } from "@/lib/hooks/useUser";
 import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
+import Avatar from "../ui/Avatar";
 
 interface Props {
   recentUsers: ISearchedUser[];
@@ -26,22 +27,13 @@ const RecipientRow = ({
   user: ISearchedUser;
   setSelectedUser: (arg: ISearchedUser) => void;
 }) => {
-  const [imgSrc, setImgSrc] = useState(
-    user?.selfie_image || "/images/default-pfp.svg"
-  );
   return (
     <li
       className="p-2 hover:bg-gray-100 cursor-pointer rounded-2xl flex gap-2 items-center"
       onClick={() => setSelectedUser(user)}
     >
-      <Image
-        className="w-12 h-12 rounded-full"
-        src={imgSrc}
-        alt={user.account_name || "User"}
-        width={48}
-        height={48}
-        onError={() => setImgSrc("/images/default-pfp.svg")}
-      />
+      <Avatar src={user?.selfie_image} name={user?.account_name} />
+
       <span className="text-sm">{user.account_name || "Unknown User"}</span>
     </li>
   );
