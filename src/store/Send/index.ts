@@ -9,9 +9,13 @@ export const useSendStore = create<SendSlice>((set) => ({
       set(() => ({
         currency,
       })),
-    selectSendOption: (option) =>
+    selectUSDSendOption: (option) =>
       set(() => ({
-        sendType: option,
+        usdSendType: option,
+      })),
+    selectNGNSendOption: (option) =>
+      set(() => ({
+        ngnSendType: option,
       })),
     selectUser: (user) =>
       set(() => ({
@@ -39,9 +43,10 @@ export const useSendStore = create<SendSlice>((set) => ({
         ...state,
         transactionDetail: detail,
       })),
-    reset: () =>
+    reset: (currency) =>
       set(() => ({
         ...initialSendState,
+        currency,
       })),
   },
 }));

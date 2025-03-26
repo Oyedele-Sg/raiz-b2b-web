@@ -10,6 +10,7 @@ import { SearchAllUsersApi } from "@/services/user";
 import { IUserSearchParams } from "@/types/services";
 import { useUser } from "@/lib/hooks/useUser";
 import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
+import Avatar from "../ui/Avatar";
 
 interface Props {
   recentUsers: ISearchedUser[];
@@ -17,6 +18,7 @@ interface Props {
   setSelectedUser: (user: ISearchedUser) => void;
   header?: boolean;
   goBack?: () => void;
+  emptyStateTitle?: string;
 }
 
 const RecipientRow = ({
@@ -26,23 +28,18 @@ const RecipientRow = ({
   user: ISearchedUser;
   setSelectedUser: (arg: ISearchedUser) => void;
 }) => {
-  const [imgSrc, setImgSrc] = useState(
-    user?.selfie_image || "/images/default-pfp.svg"
-  );
   return (
     <li
       className="p-2 hover:bg-gray-100 cursor-pointer rounded-2xl flex gap-2 items-center"
       onClick={() => setSelectedUser(user)}
     >
-      <Image
-        className="w-12 h-12 rounded-full"
-        src={imgSrc}
-        alt={user.account_name || "User"}
-        width={48}
-        height={48}
-        onError={() => setImgSrc("/images/default-pfp.svg")}
-      />
-      <span className="text-sm">{user.account_name || "Unknown User"}</span>
+      <Avatar src={user?.selfie_image} name={user?.account_name} />
+      <div>
+        <p className="text-sm font-semibold">
+          {user.account_name || "Unknown User"}
+        </p>
+        <p className="text-xs text-gray-500">@{user.username}</p>
+      </div>
     </li>
   );
 };
@@ -53,6 +50,7 @@ const FindRecipients = ({
   beneficiaries,
   header = false,
   goBack,
+  emptyStateTitle = "You haven't Sent Money to any Raizers",
 }: Props) => {
   const { user } = useUser();
   const currentWallet = useCurrentWallet(user);
@@ -186,7 +184,7 @@ const FindRecipients = ({
               height={48}
             />
             <h4 className=" text-base font-bold leading-tight mt-6 mb-[14px]">
-              You haven&#39;t Sent Money to any Raizers
+              {emptyStateTitle}
             </h4>
             <p className="  text-sm font-normal leading-tight">
               Tap the <span className="font-bold leading-none">search</span>{" "}
@@ -201,7 +199,9 @@ const FindRecipients = ({
       {!searchTerm && recentUsers.length > 0 && (
         <RecentUsers users={recentUsers} setSelectedUser={setSelectedUser} />
       )}
-      {!searchTerm && beneficiaries.length > 0 && <Beneficiaries users={[]} />}
+      {!searchTerm && beneficiaries.length > 0 && (
+        <Beneficiaries users={beneficiaries} />
+      )}
     </div>
   );
 };

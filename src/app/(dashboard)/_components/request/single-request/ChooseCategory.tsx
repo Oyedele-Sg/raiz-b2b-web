@@ -37,18 +37,19 @@ const ChooseCategory = ({
     }
   };
 
-  const SkipButton = () => {
-    return (
-      <button
-        onClick={() => {
-          setCategory(null);
-        }}
-        className="text-right justify-center text-zinc-700 text-sm leading-tight"
-      >
-        Skip
-      </button>
-    );
-  };
+  // const SkipButton = () => {
+  //   return (
+  //     <button
+  //       onClick={() => {
+  //         setCategory(null);
+  //         goNext();
+  //       }}
+  //       className="text-right justify-center text-zinc-700 text-sm leading-tight"
+  //     >
+  //       Skip
+  //     </button>
+  //   );
+  // };
 
   return (
     <div>
@@ -56,7 +57,7 @@ const ChooseCategory = ({
         close={goBack}
         title="Select category"
         titleColor="text-zinc-900"
-        rightComponent={<SkipButton />}
+        // rightComponent={<SkipButton />}
       />
       <div className="flex flex-col h-[80vh] justify-between items-center">
         <div className="grid grid-cols-4 gap-y-5 gap-x-3">

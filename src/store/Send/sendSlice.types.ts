@@ -1,5 +1,5 @@
 import { ACCOUNT_CURRENCIES } from "@/constants/misc";
-import { IUsdSendOptions } from "@/types/misc";
+import { INGNSendOptions, IUSDSendOptions } from "@/types/misc";
 import { IP2pTransferResponse } from "@/types/services";
 import { ITransactionCategory, PaymentStatusType } from "@/types/transactions";
 import { ISearchedUser } from "@/types/user";
@@ -7,7 +7,8 @@ import { ISearchedUser } from "@/types/user";
 type CurrencyTypeKey = keyof typeof ACCOUNT_CURRENCIES;
 
 export interface SendState {
-  sendType: IUsdSendOptions | null;
+  usdSendType: IUSDSendOptions | null;
+  ngnSendType: INGNSendOptions;
   user: ISearchedUser | null;
   currency: CurrencyTypeKey | null;
   amount: string;
@@ -25,18 +26,20 @@ export interface AmountAndRemarksPayload {
 
 export interface SendActions {
   selectCurrency: (currency: CurrencyTypeKey) => void;
-  selectSendOption: (option: IUsdSendOptions | null) => void;
+  selectNGNSendOption: (option: INGNSendOptions) => void;
+  selectUSDSendOption: (option: IUSDSendOptions | null) => void;
   selectUser: (user: ISearchedUser | null) => void;
   setAmountAndRemark: (payload: AmountAndRemarksPayload) => void;
   selectCategory: (category: ITransactionCategory | null) => void;
   setTransactionPin: (pin: string) => void;
   setStatus: (status: PaymentStatusType | null) => void;
   setTransactionDetail: (detail: IP2pTransferResponse) => void;
-  reset: () => void;
+  reset: (currency: CurrencyTypeKey) => void;
 }
 
 export const initialSendState: SendState = {
-  sendType: null,
+  usdSendType: null,
+  ngnSendType: "to Raizer",
   user: null,
   currency: "USD",
   amount: "",
