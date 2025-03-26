@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useSendStore } from "@/store/Send";
 import NgnToRaizers from "./toRaizers/NgnToRaizers";
 import { INGNSendOptions } from "@/types/misc";
+import NgnBankTransfer from "./toBanks/NgnBankTransfer";
 
 const NgnSend = () => {
   const { actions, user, ngnSendType } = useSendStore();
@@ -48,7 +49,7 @@ const NgnSend = () => {
           onChange={handleTypeChange}
         />
       )}
-      {ngnSendType === "to Raizer" ? <NgnToRaizers /> : "Other banks"}
+      {ngnSendType === "to Raizer" ? <NgnToRaizers /> : <NgnBankTransfer />}
     </div>
   );
 };
