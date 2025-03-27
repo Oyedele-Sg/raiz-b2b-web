@@ -32,13 +32,6 @@ const ToRaizers = ({ close }: { close: () => void }) => {
   const [step, setStep] = useState<SendToRaizStepType>("select-user");
   const [paymentError, setPaymentError] = useState("");
 
-  // const { data: fee } = useQuery({
-  //   queryKey: ["transactions-fee", amount, currency],
-  //   queryFn: () =>
-  //     GetTransactionFeeApi(Number(amount), currency as "USD" | "NGN" | "WIRE"),
-  //   enabled: !!amount,
-  // });
-
   useEffect(() => {
     if (step === "select-user" && selectedUser) {
       setStep("details");

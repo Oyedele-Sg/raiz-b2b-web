@@ -18,8 +18,14 @@ interface Props {
   fee: number;
 }
 
-const SendMoney = ({ goBack, goNext }: Props) => {
-  const { user: selectedUser, amount, purpose, actions } = useSendStore();
+const SendMoney = ({ goBack, goNext, fee }: Props) => {
+  const {
+    user: selectedUser,
+    externalUser,
+    amount,
+    purpose,
+    actions,
+  } = useSendStore();
   const { user } = useUser();
   const { selectedCurrency } = useCurrencyStore();
   const [error, setError] = useState<string | null>(null);
@@ -85,7 +91,11 @@ const SendMoney = ({ goBack, goNext }: Props) => {
             <div className="relative w-10 h-10">
               <Avatar
                 src={selectedUser?.selfie_image || ""}
-                name={selectedUser?.account_name || ""}
+                name={
+                  selectedUser?.account_name ||
+                  externalUser?.bank_account_name ||
+                  ""
+                }
               />
 
               <svg
@@ -188,18 +198,20 @@ const SendMoney = ({ goBack, goNext }: Props) => {
                 {parseFloat(amount || "0").toFixed(2)}
               </span>
             </div>
-            {/* <div className="w-full flex justify-between items-center">
-              <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
-                Fee:
-              </span>
-              <div className="h-0.5 w-[75%] px-4 bg-white"></div>
-              <span className="text-zinc-900  text-xs font-semibold leading-none">
-                {selectedCurrency?.sign}
-                {fee?.toFixed(2) || "0.00"}
-              </span>
-            </div> */}
+            {fee ? (
+              <div className="w-full flex justify-between items-center">
+                <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
+                  Fee:
+                </span>
+                <div className="h-0.5 w-[75%] px-4 bg-white"></div>
+                <span className="text-zinc-900  text-xs font-semibold leading-none">
+                  {selectedCurrency?.sign}
+                  {fee?.toFixed(2) || "0.00"}
+                </span>
+              </div>
+            ) : null}
           </div>
-          <Button disabled={!!error} onClick={goNext}>
+          <Button disabled={!!error || !purpose} onClick={goNext}>
             Continue
           </Button>
         </div>

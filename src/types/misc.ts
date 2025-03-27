@@ -97,3 +97,11 @@ export interface ITiers {
   min: number;
   max: number;
 }
+
+export interface IBank {
+  bankName: string;
+  bankCode: string;
+  bankUrl: string;
+  bg2Url: string;
+  bgUrl: string;
+}
