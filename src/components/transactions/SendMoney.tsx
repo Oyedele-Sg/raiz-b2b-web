@@ -11,6 +11,7 @@ import InputField from "../ui/InputField";
 import Image from "next/image";
 import Button from "../ui/Button";
 import Avatar from "../ui/Avatar";
+import { toast } from "sonner";
 
 interface Props {
   goBack: () => void;
@@ -18,8 +19,14 @@ interface Props {
   fee: number;
 }
 
-const SendMoney = ({ goBack, goNext }: Props) => {
-  const { user: selectedUser, amount, purpose, actions } = useSendStore();
+const SendMoney = ({ goBack, goNext, fee }: Props) => {
+  const {
+    user: selectedUser,
+    externalUser,
+    amount,
+    purpose,
+    actions,
+  } = useSendStore();
   const { user } = useUser();
   const { selectedCurrency } = useCurrencyStore();
   const [error, setError] = useState<string | null>(null);
@@ -32,9 +39,15 @@ const SendMoney = ({ goBack, goNext }: Props) => {
     .refine((val) => parseFloat(val) >= 1, {
       message: "Amount must be at least 1",
     })
-    .refine((val) => parseFloat(val) <= (currentWallet?.account_balance || 0), {
-      message: `Amount cannot be greater than your wallet balance`,
-    });
+    .refine(
+      (val) => {
+        const totalAvailable = currentWallet?.account_balance || 0;
+        return parseFloat(val) <= totalAvailable;
+      },
+      {
+        message: `Amount cannot exceed available balance`,
+      }
+    );
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
 
@@ -72,6 +85,17 @@ const SendMoney = ({ goBack, goNext }: Props) => {
     const num = parseFloat(amount);
     return isNaN(num) ? "" : `${selectedCurrency.sign}${num.toFixed(2)}`;
   };
+
+  const handleNext = () => {
+    if (
+      parseFloat(amount || "0") + fee >
+      (currentWallet?.account_balance || 0)
+    ) {
+      toast.warning("Account balance too low to carry out this transaction");
+    } else {
+      goNext();
+    }
+  };
   return (
     <div className="w-full">
       <SideWrapperHeader
@@ -85,7 +109,11 @@ const SendMoney = ({ goBack, goNext }: Props) => {
             <div className="relative w-10 h-10">
               <Avatar
                 src={selectedUser?.selfie_image || ""}
-                name={selectedUser?.account_name || ""}
+                name={
+                  selectedUser?.account_name ||
+                  externalUser?.bank_account_name ||
+                  ""
+                }
               />
 
               <svg
@@ -188,18 +216,20 @@ const SendMoney = ({ goBack, goNext }: Props) => {
                 {parseFloat(amount || "0").toFixed(2)}
               </span>
             </div>
-            {/* <div className="w-full flex justify-between items-center">
-              <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
-                Fee:
-              </span>
-              <div className="h-0.5 w-[75%] px-4 bg-white"></div>
-              <span className="text-zinc-900  text-xs font-semibold leading-none">
-                {selectedCurrency?.sign}
-                {fee?.toFixed(2) || "0.00"}
-              </span>
-            </div> */}
+            {fee ? (
+              <div className="w-full flex justify-between items-center">
+                <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
+                  Fee:
+                </span>
+                <div className="h-0.5 w-[75%] px-4 bg-white"></div>
+                <span className="text-zinc-900  text-xs font-semibold leading-none">
+                  {selectedCurrency?.sign}
+                  {fee?.toFixed(2) || "0.00"}
+                </span>
+              </div>
+            ) : null}
           </div>
-          <Button disabled={!!error} onClick={goNext}>
+          <Button disabled={!!error || !purpose} onClick={handleNext}>
             Continue
           </Button>
         </div>

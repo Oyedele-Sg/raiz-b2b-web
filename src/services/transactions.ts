@@ -4,6 +4,9 @@ import {
   IBeneficiariestResponse,
   IBillRequestParams,
   IBillRequestResponse,
+  IExternalBeneficiariesResponse,
+  IExternalBeneficiaryPayload,
+  IExternalTransferPayload,
   IP2pBeneficiariesParams,
   IP2PTransferPayload,
   IP2pTransferResponse,
@@ -157,3 +160,54 @@ export const AddP2PBeneficiaryApi = async (
   );
   return response?.data;
 };
+
+export const AddExternalBeneficiaryApi = async (
+  data: IExternalBeneficiaryPayload
+) => {
+  const response = await AuthAxios.post(
+    `/business/transactions/external-beneficiaries/add/`,
+    data
+  );
+  return response?.data;
+};
+
+export const FetchNgnAcctDetailsApi = async ({
+  account_number,
+  bank_code,
+}: {
+  account_number: string;
+  bank_code: string;
+}) => {
+  const response = await AuthAxios.get(
+    `/business/transactions/bank-account-details/nigeria/?account_number=${account_number}&bank_code=${bank_code}`
+  );
+  return response?.data;
+};
+
+export const FetchExternalBeneficiariesApi = async (
+  params: IP2pBeneficiariesParams
+): Promise<IExternalBeneficiariesResponse> => {
+  const queryParams = Object.fromEntries(
+    Object.entries(params).filter(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      ([_, value]) => value !== undefined && value !== null
+    )
+  );
+  const response = await AuthAxios.get(
+    `/business/transactions/external-beneficiaries/get/`,
+    { params: queryParams }
+  );
+  return response?.data;
+};
+
+export async function ExternalNGNDebitApi({
+  data,
+  pin,
+  wallet_id,
+}: IExternalTransferPayload): Promise<IP2pTransferResponse> {
+  const response = await AuthAxios.post(
+    `/business/transactions/naira/send/?wallet_id=${wallet_id}`,
+    { data, pin }
+  );
+  return response.data;
+}

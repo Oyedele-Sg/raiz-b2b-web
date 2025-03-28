@@ -129,7 +129,10 @@ const RequestDetails = ({
             onChange={(e) => setNarration(e.target.value)}
           />
         </div>
-        <Button onClick={goNext} disabled={!amount || error !== null}>
+        <Button
+          onClick={goNext}
+          disabled={!amount || error !== null || !narration}
+        >
           Continue
         </Button>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 import SideWrapperHeader from "@/components/SideWrapperHeader";
 import Button from "@/components/ui/Button";
+import Spinner from "@/components/ui/Spinner";
 import { FetchTransactionCategoriesApi } from "@/services/transactions";
 import { ITransactionCategory } from "@/types/transactions";
 import { useQuery } from "@tanstack/react-query";
@@ -22,7 +23,7 @@ const ChooseCategory = ({
   setCategory,
   loading,
 }: Props) => {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["transactions-category"],
     queryFn: () => FetchTransactionCategoriesApi(),
   });
@@ -61,37 +62,41 @@ const ChooseCategory = ({
       />
       <div className="flex flex-col h-[80vh] justify-between items-center">
         <div className="grid grid-cols-4 gap-y-5 gap-x-3">
-          {data?.map((each, index) => {
-            return (
-              <div key={index} className="relative">
-                {each.transaction_category_id ===
-                  category?.transaction_category_id && (
-                  <Image
-                    className="w-5 h-5 absolute right-0 top-0"
-                    src={"/icons/category-check.svg"}
-                    alt={each?.transaction_category}
-                    width={20}
-                    height={20}
-                  />
-                )}
-                <button
-                  onClick={() => handleSelect(each)}
-                  className="flex flex-wrap gap-2 items-center justify-center"
-                >
-                  <Image
-                    className="w-12 h-12"
-                    src={each?.category_emoji}
-                    alt={each?.transaction_category}
-                    width={64}
-                    height={64}
-                  />
-                  <p className="text-center text-zinc-900 text-xs font-normal leading-none">
-                    {each?.transaction_category}
-                  </p>
-                </button>
-              </div>
-            );
-          })}
+          {isLoading ? (
+            <Spinner />
+          ) : (
+            data?.map((each, index) => {
+              return (
+                <div key={index} className="relative">
+                  {each.transaction_category_id ===
+                    category?.transaction_category_id && (
+                    <Image
+                      className="w-5 h-5 absolute right-0 top-0"
+                      src={"/icons/category-check.svg"}
+                      alt={each?.transaction_category}
+                      width={20}
+                      height={20}
+                    />
+                  )}
+                  <button
+                    onClick={() => handleSelect(each)}
+                    className="flex flex-wrap gap-2 items-center justify-center"
+                  >
+                    <Image
+                      className="w-12 h-12"
+                      src={each?.category_emoji}
+                      alt={each?.transaction_category}
+                      width={64}
+                      height={64}
+                    />
+                    <p className="text-center text-zinc-900 text-xs font-normal leading-none">
+                      {each?.transaction_category}
+                    </p>
+                  </button>
+                </div>
+              );
+            })
+          )}
         </div>
         <Button loading={loading} disabled={!category} onClick={goNext}>
           Continue

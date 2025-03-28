@@ -232,3 +232,50 @@ export interface IBeneficiariestResponse {
   pagination_details: IPagination;
   results: ISearchedUser[];
 }
+
+export interface IExternalAccount {
+  bank_short_code: string;
+  bank_account_number: string;
+  bank_account_name: string;
+  bank_name: string;
+  external_account_id?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface IExternalBeneficiaryEntity {
+  entity_id: string;
+  external_account_id: string;
+  favourite: boolean;
+  ranking: number;
+  favourite_external_account_id: string;
+  created_at: string;
+  updated_at: string;
+  external_account: IExternalAccount;
+}
+
+export interface IExternalBeneficiariesResponse {
+  pagination_details: IPagination;
+  data: IExternalBeneficiaryEntity[];
+}
+
+export interface IExternalTransferPayload {
+  wallet_id?: string;
+  pin: ITransactionPinPayload;
+  data: {
+    beneficiary_account_name: string;
+    beneficiary_account_number: string;
+    transaction_amount: number;
+    narration: string;
+    beneficiary_bank_code: string;
+    beneficiary_bank_name: string;
+    transaction_category_id: number;
+  };
+}
+
+export interface IExternalBeneficiaryPayload {
+  bank_short_code: string;
+  bank_account_number: string;
+  bank_account_name: string;
+  bank_name: string;
+}

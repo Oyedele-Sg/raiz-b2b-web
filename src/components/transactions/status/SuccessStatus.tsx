@@ -4,18 +4,25 @@ import Image from "next/image";
 import Button from "@/components/ui/Button";
 import { ImSpinner2 } from "react-icons/im";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AddP2PBeneficiaryApi } from "@/services/transactions";
+import {
+  AddExternalBeneficiaryApi,
+  AddP2PBeneficiaryApi,
+} from "@/services/transactions";
 import { useUser } from "@/lib/hooks/useUser";
 import { ISearchedUser } from "@/types/user";
 import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
 import { toast } from "sonner";
+import {
+  IExternalAccount,
+  IExternalBeneficiaryPayload,
+} from "@/types/services";
 
 interface Props {
   text: string;
   title: string;
   close: () => void;
   viewReceipt: () => void;
-  beneficiary: ISearchedUser;
+  beneficiary: ISearchedUser | IExternalAccount;
 }
 
 const SuccessStatus = ({
@@ -30,7 +37,7 @@ const SuccessStatus = ({
   const [isBeneficiarySaved, setIsBeneficiarySaved] = useState(false);
   const qc = useQueryClient();
 
-  const AddBeneficiaryMutation = useMutation({
+  const AddP2PBeneficiaryMutation = useMutation({
     mutationFn: ({
       wallet_id,
       beneficiary_entity_id,
@@ -49,14 +56,54 @@ const SuccessStatus = ({
       });
     },
   });
-  const handleSwitch = () => {
-    if (!currentWallet || AddBeneficiaryMutation.isPending) return;
 
-    AddBeneficiaryMutation.mutate({
-      wallet_id: currentWallet.wallet_id,
-      beneficiary_entity_id: beneficiary.entity_id,
-    });
+  const AddExternalBeneficiaryMutation = useMutation({
+    mutationFn: (data: IExternalBeneficiaryPayload) =>
+      AddExternalBeneficiaryApi(data),
+    onSuccess: (response) => {
+      toast.success(response?.message);
+      setIsBeneficiarySaved(true);
+      qc.refetchQueries({
+        queryKey: ["external-beneficiaries-favorites"],
+      });
+    },
+  });
+  const handleSwitch = () => {
+    if (
+      !currentWallet ||
+      AddP2PBeneficiaryMutation.isPending ||
+      AddExternalBeneficiaryMutation.isPending
+    )
+      return;
+
+    // Determine if the beneficiary is ISearchedUser or IExternalAccount
+    if ("entity_id" in beneficiary) {
+      // Handle ISearchedUser (P2P beneficiary)
+      const beneficiaryId = beneficiary.entity_id;
+      if (!beneficiaryId) {
+        toast.error("Beneficiary ID is missing.");
+        return;
+      }
+
+      AddP2PBeneficiaryMutation.mutate({
+        wallet_id: currentWallet.wallet_id,
+        beneficiary_entity_id: beneficiaryId,
+      });
+    } else {
+      const payload: IExternalBeneficiaryPayload = {
+        bank_short_code: beneficiary.bank_short_code,
+        bank_account_number: beneficiary.bank_account_number,
+        bank_account_name: beneficiary.bank_account_name,
+        bank_name: beneficiary.bank_name,
+      };
+
+      AddExternalBeneficiaryMutation.mutate(payload);
+    }
   };
+
+  const isPending =
+    AddP2PBeneficiaryMutation.isPending ||
+    AddExternalBeneficiaryMutation.isPending;
   return (
     <div className="w-full h-full bg-gradient-to-l from-indigo-900 to-violet-600 rounded-[36px]  shadow-[0px_1px_2px_0px_rgba(0,0,0,0.30)] inline-flex flex-col justify-center items-center">
       <div className="flex flex-col justify-between gap-6 h-full pt-[88px] p-[30px] items-center w-full">
@@ -80,13 +127,13 @@ const SuccessStatus = ({
               Save beneficiary for future actions?
             </p>
             <button
-              disabled={AddBeneficiaryMutation.isPending}
+              disabled={isPending}
               onClick={handleSwitch}
               className={`relative w-9 h-6 rounded-full   border-2  p-2 flex justify-center items-center
         ${isBeneficiarySaved ? "bg-[#0c5735]" : "bg-gray-400"}
-                ${AddBeneficiaryMutation.isPending ? "opacity-50" : ""}`}
+                ${isPending ? "opacity-50" : ""}`}
             >
-              {AddBeneficiaryMutation.isPending ? (
+              {isPending ? (
                 <ImSpinner2 className="animate-spin w-4 h-4 text-white mx-auto" />
               ) : (
                 <span

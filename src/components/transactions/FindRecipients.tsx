@@ -197,7 +197,11 @@ const FindRecipients = ({
 
       {/* Recent Users and Beneficiaries */}
       {!searchTerm && recentUsers.length > 0 && (
-        <RecentUsers users={recentUsers} setSelectedUser={setSelectedUser} />
+        <RecentUsers
+          users={recentUsers}
+          setSelectedUser={setSelectedUser}
+          type="p2p"
+        />
       )}
       {!searchTerm && beneficiaries.length > 0 && (
         <Beneficiaries users={beneficiaries} />

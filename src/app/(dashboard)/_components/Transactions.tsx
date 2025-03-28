@@ -42,7 +42,13 @@ const TransactionRow = ({
           </p>
         </div>
       </div>
-      <span className="text-raiz-gray-900 text-sm font-semibold leading-tight">
+      <span
+        className={`${
+          transaction?.transaction_type.transaction_type === "debit"
+            ? "text-red-600"
+            : "text-raiz-gray-900"
+        }  text-sm font-semibold leading-tight`}
+      >
         {selectedCurrency?.sign}
         {transaction?.transaction_amount?.toLocaleString()}
       </span>
