@@ -21,8 +21,8 @@ interface Props {
   text: string;
   title: string;
   close: () => void;
-  viewReceipt: () => void;
-  beneficiary: ISearchedUser | IExternalAccount;
+  viewReceipt?: () => void;
+  beneficiary?: ISearchedUser | IExternalAccount;
 }
 
 const SuccessStatus = ({
@@ -77,7 +77,7 @@ const SuccessStatus = ({
       return;
 
     // Determine if the beneficiary is ISearchedUser or IExternalAccount
-    if ("entity_id" in beneficiary) {
+    if (beneficiary && "entity_id" in beneficiary) {
       // Handle ISearchedUser (P2P beneficiary)
       const beneficiaryId = beneficiary.entity_id;
       if (!beneficiaryId) {
@@ -91,10 +91,10 @@ const SuccessStatus = ({
       });
     } else {
       const payload: IExternalBeneficiaryPayload = {
-        bank_short_code: beneficiary.bank_short_code,
-        bank_account_number: beneficiary.bank_account_number,
-        bank_account_name: beneficiary.bank_account_name,
-        bank_name: beneficiary.bank_name,
+        bank_short_code: beneficiary?.bank_short_code || "",
+        bank_account_number: beneficiary?.bank_account_number || "",
+        bank_account_name: beneficiary?.bank_account_name || "",
+        bank_name: beneficiary?.bank_name || "",
       };
 
       AddExternalBeneficiaryMutation.mutate(payload);
@@ -122,31 +122,38 @@ const SuccessStatus = ({
           </p>
         </div>
         <div className="w-full">
-          <div className="flex gap-3 mb-4 items-center justify-center">
-            <p className="text-gray-100 text-xs font-normal leading-tight">
-              Save beneficiary for future actions?
-            </p>
-            <button
-              disabled={isPending}
-              onClick={handleSwitch}
-              className={`relative w-9 h-6 rounded-full   border-2  p-2 flex justify-center items-center
+          {beneficiary && (
+            <div className="flex gap-3 mb-4 items-center justify-center">
+              <p className="text-gray-100 text-xs font-normal leading-tight">
+                Save beneficiary for future actions?
+              </p>
+              <button
+                disabled={isPending}
+                onClick={handleSwitch}
+                className={`relative w-9 h-6 rounded-full   border-2  p-2 flex justify-center items-center
         ${isBeneficiarySaved ? "bg-[#0c5735]" : "bg-gray-400"}
                 ${isPending ? "opacity-50" : ""}`}
-            >
-              {isPending ? (
-                <ImSpinner2 className="animate-spin w-4 h-4 text-white mx-auto" />
-              ) : (
-                <span
-                  className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white transition-transform
+              >
+                {isPending ? (
+                  <ImSpinner2 className="animate-spin w-4 h-4 text-white mx-auto" />
+                ) : (
+                  <span
+                    className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white transition-transform
         ${isBeneficiarySaved ? "translate-x-3" : "translate-x-0"}`}
-                />
-              )}
-            </button>
-          </div>
+                  />
+                )}
+              </button>
+            </div>
+          )}
           <div className="flex justify-between w-full gap-[15px]">
-            <Button onClick={viewReceipt} className="bg-zinc-200 text-zinc-900">
-              View receipt
-            </Button>
+            {viewReceipt && (
+              <Button
+                onClick={viewReceipt}
+                className="bg-zinc-200 text-zinc-900"
+              >
+                View receipt
+              </Button>
+            )}
             <Button onClick={close} className="bg-indigo-900">
               Done
             </Button>

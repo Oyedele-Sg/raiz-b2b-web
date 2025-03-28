@@ -279,3 +279,9 @@ export interface IExternalBeneficiaryPayload {
   bank_account_name: string;
   bank_name: string;
 }
+
+export interface ISwapPayload {
+  amount: number;
+  transaction_pin: string;
+  currency: "NGN";
+}

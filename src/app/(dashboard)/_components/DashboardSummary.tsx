@@ -14,10 +14,15 @@ import Request from "./request/Request";
 import { useSendStore } from "@/store/Send";
 import { useUserStore } from "@/store/useUserStore";
 import { toast } from "sonner";
+import Swap from "./swap/Swap";
+import { useSwapStore } from "@/store/Swap";
+import { ACCOUNT_CURRENCIES } from "@/constants/misc";
 
 const DashboardSummary = () => {
   const { user } = useUser();
+  const walletData = user?.business_account?.wallets;
   const { currency } = useSendStore();
+  const { actions } = useSwapStore();
   const { setShowBalance, showBalance } = useUserStore();
   const { selectedCurrency } = useCurrencyStore();
   const [openModal, setOpenModal] = useState<
@@ -62,7 +67,7 @@ const DashboardSummary = () => {
       case "request":
         return <Request close={closeModal} />;
       case "swap":
-        return <h1>Swap</h1>;
+        return <Swap close={closeModal} />;
       default:
         break;
     }
@@ -131,7 +136,26 @@ const DashboardSummary = () => {
             </span>
           </Button>
           <Button
-            onClick={() => handleActionButton("swap")}
+            onClick={() => {
+              handleActionButton("swap");
+              if (!NGNAcct && !USDAcct) {
+                toast.info("You must have a second wallet to use this feature");
+              } else {
+                if (selectedCurrency.name === ACCOUNT_CURRENCIES.NGN.name) {
+                  actions.switchSwapWallet(
+                    ACCOUNT_CURRENCIES.NGN.name,
+                    ACCOUNT_CURRENCIES.USD.name,
+                    walletData
+                  );
+                } else {
+                  actions.switchSwapWallet(
+                    ACCOUNT_CURRENCIES.USD.name,
+                    ACCOUNT_CURRENCIES.NGN.name,
+                    walletData
+                  );
+                }
+              }
+            }}
             className="h-10 w-[138px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
           >
             <svg width="21" height="20" viewBox="0 0 21 20" fill="none">
