@@ -6,11 +6,13 @@ const Overlay = ({
   width,
   height,
   close,
+  className,
 }: {
   children: ReactNode;
   width?: string;
   height?: string;
   close: () => void;
+  className?: string;
 }) => {
   return (
     <motion.section
@@ -23,7 +25,7 @@ const Overlay = ({
       }}
       key="overlay"
       onClick={close}
-      className="fixed inset-0 flex items-center justify-center bg-[rgba(0,0,0,0.4)]  z-50"
+      className={`fixed inset-0 flex items-center justify-center bg-[rgba(0,0,0,0.4)]  z-50 ${className}`}
     >
       <section
         onClick={(e) => {

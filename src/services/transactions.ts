@@ -11,6 +11,7 @@ import {
   IP2PTransferPayload,
   IP2pTransferResponse,
   IRequestFundsPayload,
+  ISwapPayload,
   ITransactionCategory,
   ITransactionParams,
   ITxnReportResponse,
@@ -208,6 +209,33 @@ export async function ExternalNGNDebitApi({
   const response = await AuthAxios.post(
     `/business/transactions/naira/send/?wallet_id=${wallet_id}`,
     { data, pin }
+  );
+  return response.data;
+}
+
+export async function GetExchangeRate(currencyCode: string): Promise<{
+  buy_rate: number;
+  currency: string;
+  sell_rate: number;
+}> {
+  const response = await AuthAxios.get(
+    `/business/transactions/swap/exchange-rates/?currency=${currencyCode}`
+  );
+  return response.data;
+}
+
+export async function SellDollarApi(payload: ISwapPayload) {
+  const response = await AuthAxios.post(
+    "/business/transactions/swap/sell-dollar/",
+    payload
+  );
+  return response.data;
+}
+
+export async function BuyDollarApi(payload: ISwapPayload) {
+  const response = await AuthAxios.post(
+    "/business/transactions/swap/buy-dollar/",
+    payload
   );
   return response.data;
 }
