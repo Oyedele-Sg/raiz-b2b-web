@@ -194,7 +194,6 @@ const SendMoney = ({ goBack, goNext, fee }: Props) => {
                 </div>
               </div>
               <InputField
-                //  ref={inputRef}
                 name="purpose"
                 placeholder="What is the purpose?"
                 value={purpose || ""}
