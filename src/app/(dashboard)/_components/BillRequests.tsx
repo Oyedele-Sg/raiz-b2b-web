@@ -188,6 +188,7 @@ const BillRequests = () => {
               error={paymentError}
               tryAgain={() => setOpenModal("accept")}
               viewReceipt={() => setOpenModal("receipt")}
+              type="p2p"
             />
           )
         );

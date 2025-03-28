@@ -16,7 +16,7 @@ const SendSummary = ({ goBack, goNext, fee }: Props) => {
   const { category, amount, purpose } = useSendStore();
   const { selectedCurrency } = useCurrencyStore();
 
-  // const totalPayable = fee ? parseFloat(amount) + fee : 0;
+  const totalPayable = fee ? parseFloat(amount) + fee : amount;
 
   return (
     <div>
@@ -32,7 +32,7 @@ const SendSummary = ({ goBack, goNext, fee }: Props) => {
         </div>
         <p className="text-center text-xl font-bold leading-normal">
           {selectedCurrency?.sign}
-          {amount.toLocaleString()}
+          {totalPayable.toLocaleString()}
         </p>
         <p className="text-center   text-xs font-normal  leading-tight">
           Send Summary

@@ -1,43 +1,46 @@
 "use client";
-import { useUser } from "@/lib/hooks/useUser";
-import React, { useEffect, useState } from "react";
-import { SendToRaizStepType } from "../../usd/toRaizers/ToRaizers";
+// import { useUser } from "@/lib/hooks/useUser";
 import { useSendStore } from "@/store/Send";
-import FindRecipients from "@/components/transactions/FindRecipients";
+import React, { useEffect, useState } from "react";
+import SelectUser from "./SelectUser";
 import SendMoney from "@/components/transactions/SendMoney";
 import Categories from "@/components/transactions/Categories";
+import { useQuery } from "@tanstack/react-query";
+import { GetTransactionFeeApi } from "@/services/transactions";
 import SendSummary from "@/components/transactions/SendSummary";
-import Payout from "../../usd/toRaizers/Payout";
+import ExternalPayout from "./ExternalPayout";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
-import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
-import { useP2PBeneficiaries } from "@/lib/hooks/useP2pBeneficiaries";
+import { useUser } from "@/lib/hooks/useUser";
 
-const NgnToRaizers = () => {
-  const {
-    actions,
-    user: selectedUser,
-    status,
-    amount,
-    currency,
-    transactionDetail,
-  } = useSendStore();
+type NGNSendToBankStepType =
+  | "select-user"
+  | "details"
+  | "summary"
+  | "category"
+  | "pay"
+  | "status"
+  | "receipt";
+
+const NgnBankTransfer = () => {
   const { user } = useUser();
-  const [step, setStep] = useState<SendToRaizStepType>("select-user");
+  const { externalUser, actions, amount, currency, status, transactionDetail } =
+    useSendStore();
+  const [step, setStep] = useState<NGNSendToBankStepType>("select-user");
   const [paymentError, setPaymentError] = useState("");
-  const currentWallet = useCurrentWallet(user);
 
-  const { favourites, recents } = useP2PBeneficiaries({
-    walletId: currentWallet?.wallet_id,
-    limit: 50,
+  const { data: fee } = useQuery({
+    queryKey: ["transactions-fee", amount, currency],
+    queryFn: () =>
+      GetTransactionFeeApi(Number(amount), currency as "USD" | "NGN" | "WIRE"),
+    enabled: !!amount,
   });
 
   useEffect(() => {
-    if (step === "select-user" && selectedUser) {
+    if (step === "select-user" && externalUser) {
       setStep("details");
     }
-  }, [step, selectedUser]);
-
+  }, [externalUser, step]);
   const goBackToStep1 = () => {
     actions.reset("NGN");
     setStep("select-user");
@@ -48,6 +51,8 @@ const NgnToRaizers = () => {
     actions.selectNGNSendOption("to Raizer");
     close();
   };
+
+  //   const totalPayable = fee ? parseFloat(amount) + fee : 0;
 
   const receiptDetails = transactionDetail &&
     user && {
@@ -70,19 +75,13 @@ const NgnToRaizers = () => {
   const displayStep = () => {
     switch (step) {
       case "select-user":
-        return (
-          <FindRecipients
-            recentUsers={recents || []}
-            beneficiaries={favourites || []}
-            setSelectedUser={actions.selectUser}
-          />
-        );
+        return <SelectUser />;
       case "details":
         return (
           <SendMoney
             goBack={goBackToStep1}
             goNext={() => setStep("category")}
-            fee={0}
+            fee={fee || 0}
           />
         );
       case "category":
@@ -98,32 +97,32 @@ const NgnToRaizers = () => {
           <SendSummary
             goBack={() => setStep("category")}
             goNext={() => setStep("pay")}
-            fee={0}
+            fee={fee || 0}
           />
         );
       case "pay":
         return (
-          <Payout
+          <ExternalPayout
             goNext={() => setStep("status")}
             close={() => setStep("summary")}
             setPaymentError={setPaymentError}
-            fee={0}
+            fee={fee || 0}
           />
         );
       case "status":
         return (
           currency &&
-          selectedUser && (
+          externalUser && (
             <PaymentStatusModal
               status={status}
               amount={parseFloat(amount)}
               currency={currency}
-              user={selectedUser}
+              user={externalUser}
               close={handleDone}
               error={paymentError}
               tryAgain={() => setStep("summary")}
               viewReceipt={() => setStep("receipt")}
-              type="p2p"
+              type="external"
             />
           )
         );
@@ -133,8 +132,7 @@ const NgnToRaizers = () => {
         break;
     }
   };
-
   return <div>{displayStep()}</div>;
 };
 
-export default NgnToRaizers;
+export default NgnBankTransfer;

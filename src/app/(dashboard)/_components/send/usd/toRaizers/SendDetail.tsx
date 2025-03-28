@@ -17,7 +17,7 @@ interface Props {
   fee: number;
 }
 
-const SendDetail = ({ goBack, goNext, fee }: Props) => {
+const SendDetail = ({ goBack, goNext }: Props) => {
   const { user: selectedUser, amount, purpose, actions } = useSendStore();
   const { user } = useUser();
   const { selectedCurrency } = useCurrencyStore();
@@ -203,10 +203,10 @@ const SendDetail = ({ goBack, goNext, fee }: Props) => {
               <div className="h-0.5 w-[55%] px-4 bg-white"></div>
               <span className="text-zinc-900  text-xs font-semibold leading-none">
                 {selectedCurrency?.sign}
-                {parseFloat(amount).toFixed(2)}
+                {parseFloat(amount || "0").toFixed(2)}
               </span>
             </div>
-            <div className="w-full flex justify-between items-center">
+            {/* <div className="w-full flex justify-between items-center">
               <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
                 Fee:
               </span>
@@ -215,9 +215,9 @@ const SendDetail = ({ goBack, goNext, fee }: Props) => {
                 {selectedCurrency?.sign}
                 {fee?.toFixed(2) || "0.00"}
               </span>
-            </div>
+            </div> */}
           </div>
-          <Button disabled={!!error || !fee} onClick={goNext}>
+          <Button disabled={!!error} onClick={goNext}>
             Continue
           </Button>
         </div>

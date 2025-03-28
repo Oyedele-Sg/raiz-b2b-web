@@ -6,9 +6,10 @@ import Image from "next/image";
 import { useSendStore } from "@/store/Send";
 import NgnToRaizers from "./toRaizers/NgnToRaizers";
 import { INGNSendOptions } from "@/types/misc";
+import NgnBankTransfer from "./toBanks/NgnBankTransfer";
 
 const NgnSend = () => {
-  const { actions, user, ngnSendType } = useSendStore();
+  const { actions, user, ngnSendType, externalUser } = useSendStore();
 
   const handleTypeChange = (value: INGNSendOptions) => {
     actions.selectNGNSendOption(value);
@@ -29,16 +30,16 @@ const NgnSend = () => {
 
   return (
     <div>
-      {!user && (
+      {!user && !externalUser && (
         <SideWrapperHeader
           title="Find Recipient"
           close={() => actions.selectUser(null)}
           titleColor="text-zinc-900 "
-          backArrow={user ? false : true}
+          backArrow={!user || !externalUser ? false : true}
           rightComponent={<ScanButton />}
         />
       )}
-      {!user && (
+      {!user && !externalUser && (
         <Tabs
           options={[
             { label: "Send to Riazer", value: "to Raizer" },
@@ -48,7 +49,7 @@ const NgnSend = () => {
           onChange={handleTypeChange}
         />
       )}
-      {ngnSendType === "to Raizer" ? <NgnToRaizers /> : "Other banks"}
+      {ngnSendType === "to Raizer" ? <NgnToRaizers /> : <NgnBankTransfer />}
     </div>
   );
 };
