@@ -95,7 +95,7 @@ const SelectUser = () => {
           setSelectedUser={actions.selectExternalUser}
         />
       )}
-      <div className="flex flex-col justify-between lg:h-[70vh] xl:h-[75vh] mt-[35px]">
+      <div className="flex flex-col justify-between h-[60vh] xl:h-[65vh] mt-[35px] pb-6">
         <div className="w-full">
           <div className="flex justify-between items-center mb-[15px]">
             <h5 className="text-zinc-900 text-sm font-bold leading-none">

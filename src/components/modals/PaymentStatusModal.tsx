@@ -18,6 +18,7 @@ interface Props {
   error: string;
   tryAgain: () => void;
   viewReceipt: () => void;
+  type: "p2p" | "external";
 }
 
 const PaymentStatusModal = ({
@@ -29,6 +30,7 @@ const PaymentStatusModal = ({
   status,
   tryAgain,
   viewReceipt,
+  type,
 }: Props) => {
   const getAccountName = (user: ISearchedUser | IExternalAccount): string => {
     return "account_name" in user ? user.account_name : user.bank_account_name;
@@ -36,13 +38,21 @@ const PaymentStatusModal = ({
   const displayStatus = () => {
     switch (status) {
       case "loading":
-        return (
+        return type === "p2p" ? (
+          <LoadingStatus
+            user={user as ISearchedUser}
+            loadingText={`Sending  ${getCurrencySymbol(
+              currency
+            )}${amount?.toLocaleString()} to`}
+            type={type}
+          />
+        ) : (
           <LoadingStatus
             user={user as IExternalAccount}
             loadingText={`Sending  ${getCurrencySymbol(
               currency
             )}${amount?.toLocaleString()} to`}
-            type="external"
+            type={type}
           />
         );
       case "success":

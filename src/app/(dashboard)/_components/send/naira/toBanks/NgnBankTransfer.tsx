@@ -122,6 +122,7 @@ const NgnBankTransfer = () => {
               error={paymentError}
               tryAgain={() => setStep("summary")}
               viewReceipt={() => setStep("receipt")}
+              type="external"
             />
           )
         );

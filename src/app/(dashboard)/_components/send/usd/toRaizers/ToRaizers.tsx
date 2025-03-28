@@ -125,6 +125,7 @@ const ToRaizers = ({ close }: { close: () => void }) => {
               error={paymentError}
               tryAgain={() => setStep("summary")}
               viewReceipt={() => setStep("receipt")}
+              type="p2p"
             />
           )
         );

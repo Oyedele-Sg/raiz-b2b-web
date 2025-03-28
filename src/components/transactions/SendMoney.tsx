@@ -11,6 +11,7 @@ import InputField from "../ui/InputField";
 import Image from "next/image";
 import Button from "../ui/Button";
 import Avatar from "../ui/Avatar";
+import { toast } from "sonner";
 
 interface Props {
   goBack: () => void;
@@ -38,9 +39,15 @@ const SendMoney = ({ goBack, goNext, fee }: Props) => {
     .refine((val) => parseFloat(val) >= 1, {
       message: "Amount must be at least 1",
     })
-    .refine((val) => parseFloat(val) <= (currentWallet?.account_balance || 0), {
-      message: `Amount cannot be greater than your wallet balance`,
-    });
+    .refine(
+      (val) => {
+        const totalAvailable = currentWallet?.account_balance || 0;
+        return parseFloat(val) <= totalAvailable;
+      },
+      {
+        message: `Amount cannot exceed available balance`,
+      }
+    );
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
 
@@ -77,6 +84,17 @@ const SendMoney = ({ goBack, goNext, fee }: Props) => {
       return amount ? `${selectedCurrency.sign}${amount}` : "";
     const num = parseFloat(amount);
     return isNaN(num) ? "" : `${selectedCurrency.sign}${num.toFixed(2)}`;
+  };
+
+  const handleNext = () => {
+    if (
+      parseFloat(amount || "0") + fee >
+      (currentWallet?.account_balance || 0)
+    ) {
+      toast.warning("Account balance too low to carry out this transaction");
+    } else {
+      goNext();
+    }
   };
   return (
     <div className="w-full">
@@ -211,7 +229,7 @@ const SendMoney = ({ goBack, goNext, fee }: Props) => {
               </div>
             ) : null}
           </div>
-          <Button disabled={!!error || !purpose} onClick={goNext}>
+          <Button disabled={!!error || !purpose} onClick={handleNext}>
             Continue
           </Button>
         </div>

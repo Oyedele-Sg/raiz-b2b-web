@@ -3,6 +3,7 @@ import Image from "next/image";
 import React from "react";
 import ListDetailItem from "../ui/ListDetailItem";
 import dayjs from "dayjs";
+import { convertTime } from "@/utils/helpers";
 
 export interface IRaizReceipt {
   senderName: string;
@@ -76,9 +77,12 @@ const RaizReceipt = ({
           <ListDetailItem title="Purpose" value={purpose} />
           <ListDetailItem
             title="Date"
-            value={dayjs(date).format("MMM DD, YYYY")}
+            value={dayjs(convertTime(date)).format("MMM DD, YYYY")}
           />
-          <ListDetailItem title="Time" value={dayjs(date).format("hh:mm a")} />
+          <ListDetailItem
+            title="Time"
+            value={dayjs(convertTime(date)).format("hh:mm a")}
+          />
           <ListDetailItem title="Transaction Type" value={transactionType} />
           <ListDetailItem title="SessionID" value={sessionId} />
           <ListDetailItem title="Reference Number" value={referenceNumber} />
