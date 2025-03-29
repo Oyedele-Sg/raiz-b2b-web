@@ -1,27 +1,18 @@
+"use client";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-// import BankTypeModal from "./BankTypeModal";
-// import SendOptions from "../SendOptions";
-import AddBeneficiary from "./AddBeneficiary";
+import { ToUsdBanksStepsType } from "../toBanks/ToUsdBanks";
+import { bankTypeProp } from "../toBanks/BankTransfer";
 import { useSendStore } from "@/store/Send";
+import { useQuery } from "@tanstack/react-query";
+import { GetTransactionFeeApi } from "@/services/transactions";
+import AddBeneficiary from "../toBanks/AddBeneficiary";
 import SendMoney from "@/components/transactions/SendMoney";
 import Categories from "@/components/transactions/Categories";
 import SendSummary from "@/components/transactions/SendSummary";
-import UsdBankPay from "./UsdBankPay";
+import UsdBankPay from "../toBanks/UsdBankPay";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
-import { useUser } from "@/lib/hooks/useUser";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
-import { useQuery } from "@tanstack/react-query";
-import { GetTransactionFeeApi } from "@/services/transactions";
-import { bankTypeProp } from "./BankTransfer";
-
-export type ToUsdBanksStepsType =
-  | "add-beneficiary"
-  | "details"
-  | "category"
-  | "summary"
-  | "pay"
-  | "status"
-  | "receipt";
+import { useUser } from "@/lib/hooks/useUser";
 
 interface Props {
   close: () => void;
@@ -29,7 +20,8 @@ interface Props {
   setBankType: Dispatch<SetStateAction<bankTypeProp | undefined>>;
 }
 
-const ToUsdBanks = ({ close, bankType }: Props) => {
+const ToInternational = ({ close, bankType }: Props) => {
+  const { user } = useUser();
   const [step, setStep] = useState<ToUsdBanksStepsType>("add-beneficiary");
   const [paymentError, setPaymentError] = useState("");
   const {
@@ -40,19 +32,17 @@ const ToUsdBanks = ({ close, bankType }: Props) => {
     status,
     transactionDetail,
   } = useSendStore();
-  const { user } = useUser();
-  useEffect(() => {
-    if (bankType) {
-      setTimeout(() => setStep("add-beneficiary"), 200);
-    }
-  }, [bankType]);
-
   const { data: fee } = useQuery({
     queryKey: ["transactions-fee", amount, currency],
     queryFn: () =>
       GetTransactionFeeApi(Number(amount), currency as "USD" | "NGN" | "WIRE"),
     enabled: !!amount,
   });
+  useEffect(() => {
+    if (bankType) {
+      setTimeout(() => setStep("add-beneficiary"), 200);
+    }
+  }, [bankType]);
 
   useEffect(() => {
     if (usdBeneficiary) {
@@ -153,4 +143,4 @@ const ToUsdBanks = ({ close, bankType }: Props) => {
   return <div>{displayStep()}</div>;
 };
 
-export default ToUsdBanks;
+export default ToInternational;

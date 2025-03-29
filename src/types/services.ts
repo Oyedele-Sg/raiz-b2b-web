@@ -346,3 +346,58 @@ export interface ISendMoneyUsBankPayload {
   transaction_reason: string;
   transaction_category_id: number;
 }
+
+export interface IIntBeneficiariesParams {
+  option_type: string;
+  label?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface ForeignPayoutBeneficiary {
+  beneficiary_name: string;
+  beneficiary_id: string;
+  beneficiary_currency: string;
+  beneficiary_country: string;
+  beneficiary_creation_status: string;
+  beneficiary_account_number: string;
+  beneficiary_email: string;
+  reference: string;
+  beneficiary_bank_name: string;
+  foreign_payout_beneficiary_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EntityForeignPayoutBeneficiary {
+  entity_id: string;
+  foreign_payout_beneficiary_id: string;
+  ranking: number;
+  entity_foreign_payout_beneficiary_id: string;
+  created_at: string;
+  updated_at: string;
+  foreign_payout_beneficiary: ForeignPayoutBeneficiary;
+}
+
+export interface IIntBeneficiariesResponse {
+  pagination_details: IPagination;
+  beneficiaries: EntityForeignPayoutBeneficiary[];
+}
+
+export type IntCountryType =
+  | "GH"
+  | "AU"
+  | "KE"
+  | "UG"
+  | "NG"
+  | "TZ"
+  | "ZM"
+  | "MW"
+  | "GB";
+
+export interface IIntBeneficiaryPayload {
+  customer_email: string;
+  country: IntCountryType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any;
+}
