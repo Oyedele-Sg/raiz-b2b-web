@@ -11,10 +11,14 @@ import {
   IP2PTransferPayload,
   IP2pTransferResponse,
   IRequestFundsPayload,
+  ISendMoneyUsBankPayload,
   ISwapPayload,
   ITransactionCategory,
   ITransactionParams,
   ITxnReportResponse,
+  IUsBeneficiariesParams,
+  IUsBeneficiariesResponse,
+  IUsBeneficiaryPayload,
 } from "@/types/services";
 
 export const FetchTransactionReportApi = async (
@@ -239,3 +243,56 @@ export async function BuyDollarApi(payload: ISwapPayload) {
   );
   return response.data;
 }
+
+export const GethInternationalBeneficiaryFormFields = async () => {
+  const response = await AuthAxios.get(
+    `/business/transactions/remittance/form-fields/`
+  );
+  return response?.data;
+};
+
+export const GetUSBeneficiaryFormFields = async () => {
+  const response = await AuthAxios.get(
+    `/business/transactions/withdrawal/usd/beneficiaries/form-fields/`
+  );
+  return response?.data;
+};
+
+export const CreateUsBeneficiary = async (payload: IUsBeneficiaryPayload) => {
+  const response = await AuthAxios.post(
+    `/business/transactions/withdrawal/usd/beneficiaries/?label=${payload.label}&option_type=${payload.optionType}`,
+    {
+      name: payload.name,
+      account: payload.account,
+      routing: payload.routing,
+      type: payload.type,
+    }
+  );
+  return response?.data;
+};
+
+export const FetchUsBeneficiariesApi = async (
+  params: IUsBeneficiariesParams
+): Promise<IUsBeneficiariesResponse> => {
+  const queryParams = Object.fromEntries(
+    Object.entries(params).filter(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      ([_, value]) => value !== undefined && value !== null
+    )
+  );
+  const response = await AuthAxios.get(
+    `/business/transactions/withdrawal/usd/beneficiaries/`,
+    { params: queryParams }
+  );
+  return response?.data;
+};
+
+export const SendMoneyUSBankApi = async (
+  data: ISendMoneyUsBankPayload
+): Promise<IP2pTransferResponse> => {
+  const response = await AuthAxios.post(
+    "/business/transactions/withdrawal/usd/initiate/",
+    data
+  );
+  return response?.data;
+};

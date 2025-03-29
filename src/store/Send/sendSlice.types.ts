@@ -1,6 +1,10 @@
 import { ACCOUNT_CURRENCIES } from "@/constants/misc";
 import { INGNSendOptions, IUSDSendOptions } from "@/types/misc";
-import { IExternalAccount, IP2pTransferResponse } from "@/types/services";
+import {
+  EntityBeneficiary,
+  IExternalAccount,
+  IP2pTransferResponse,
+} from "@/types/services";
 import { ITransactionCategory, PaymentStatusType } from "@/types/transactions";
 import { ISearchedUser } from "@/types/user";
 
@@ -11,6 +15,7 @@ export interface SendState {
   ngnSendType: INGNSendOptions;
   user: ISearchedUser | null;
   externalUser: IExternalAccount | null;
+  usdBeneficiary: EntityBeneficiary | null;
   currency: CurrencyTypeKey | null;
   amount: string;
   purpose: string;
@@ -31,6 +36,7 @@ export interface SendActions {
   selectUSDSendOption: (option: IUSDSendOptions | null) => void;
   selectUser: (user: ISearchedUser | null) => void;
   selectExternalUser: (user: IExternalAccount | null) => void;
+  selectUsdBeneficiary: (user: EntityBeneficiary | null) => void;
   setAmountAndRemark: (payload: AmountAndRemarksPayload) => void;
   selectCategory: (category: ITransactionCategory | null) => void;
   setTransactionPin: (pin: string) => void;
@@ -44,6 +50,7 @@ export const initialSendState: SendState = {
   ngnSendType: "to Raizer",
   user: null,
   externalUser: null,
+  usdBeneficiary: null,
   currency: "USD",
   amount: "",
   purpose: "",

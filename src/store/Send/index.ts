@@ -25,6 +25,10 @@ export const useSendStore = create<SendSlice>((set) => ({
       set(() => ({
         externalUser: user,
       })),
+    selectUsdBeneficiary: (user) =>
+      set(() => ({
+        usdBeneficiary: user,
+      })),
     setAmountAndRemark: (payload) =>
       set(() => ({
         amount: payload.amount,

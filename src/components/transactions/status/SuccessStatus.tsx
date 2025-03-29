@@ -9,20 +9,17 @@ import {
   AddP2PBeneficiaryApi,
 } from "@/services/transactions";
 import { useUser } from "@/lib/hooks/useUser";
-import { ISearchedUser } from "@/types/user";
 import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
 import { toast } from "sonner";
-import {
-  IExternalAccount,
-  IExternalBeneficiaryPayload,
-} from "@/types/services";
+import { IExternalBeneficiaryPayload } from "@/types/services";
+import { BeneficiaryType } from "@/components/modals/PaymentStatusModal";
 
 interface Props {
   text: string;
   title: string;
   close: () => void;
   viewReceipt?: () => void;
-  beneficiary?: ISearchedUser | IExternalAccount;
+  beneficiary?: BeneficiaryType;
 }
 
 const SuccessStatus = ({
