@@ -10,6 +10,8 @@ import UsdBankPay from "./UsdBankPay";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
 import { useUser } from "@/lib/hooks/useUser";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
+import { useQuery } from "@tanstack/react-query";
+import { GetTransactionFeeApi } from "@/services/transactions";
 
 type ToUsdBanksStepsType =
   | "type"
@@ -44,6 +46,13 @@ const ToUsdBanks = ({ close }: Props) => {
       setTimeout(() => setStep("add-beneficiary"), 200);
     }
   }, [bankType]);
+
+  const { data: fee } = useQuery({
+    queryKey: ["transactions-fee", amount, currency],
+    queryFn: () =>
+      GetTransactionFeeApi(Number(amount), currency as "USD" | "NGN" | "WIRE"),
+    enabled: !!amount,
+  });
 
   useEffect(() => {
     if (usdBeneficiary) {
@@ -100,7 +109,7 @@ const ToUsdBanks = ({ close }: Props) => {
           <SendMoney
             goBack={goBackToStep2}
             goNext={() => setStep("category")}
-            fee={0}
+            fee={fee || 0}
           />
         );
       case "category":
@@ -116,7 +125,7 @@ const ToUsdBanks = ({ close }: Props) => {
           <SendSummary
             goBack={() => setStep("category")}
             goNext={() => setStep("pay")}
-            fee={0}
+            fee={fee || 0}
           />
         );
       case "pay":
@@ -125,7 +134,7 @@ const ToUsdBanks = ({ close }: Props) => {
             goNext={() => setStep("status")}
             close={() => setStep("summary")}
             setPaymentError={setPaymentError}
-            fee={0}
+            fee={fee || 0}
           />
         );
       case "status":
