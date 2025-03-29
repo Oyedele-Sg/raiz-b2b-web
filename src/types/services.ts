@@ -285,3 +285,64 @@ export interface ISwapPayload {
   transaction_pin: string;
   currency: "NGN";
 }
+
+export interface FormField {
+  name: string;
+  type: string;
+  required: boolean;
+  enum?: string[];
+}
+
+export interface IUsBeneficiaryPayload {
+  name: string;
+  account: string;
+  routing: string;
+  type: string;
+  label: string;
+  optionType: IUsBeneficiaryOptionType;
+}
+
+export interface IUsBeneficiariesParams {
+  option_type: string;
+  label?: string;
+  page?: number;
+  limit?: number;
+}
+
+export type IUsBeneficiaryOptionType =
+  | "bank"
+  | "zelle"
+  | "card"
+  | "international_bank";
+export interface UsdBeneficiary {
+  beneficiary_id: string;
+  option_type: IUsBeneficiaryOptionType;
+  account_name: string;
+  label: string;
+  usd_beneficiary_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EntityBeneficiary {
+  entity_id: string;
+  usd_beneficiary_id: string;
+  ranking: number;
+  entity_usd_beneficiary_id: string;
+  created_at: string;
+  updated_at: string;
+  usd_beneficiary: UsdBeneficiary;
+}
+
+export interface IUsBeneficiariesResponse {
+  pagination_details: IPagination;
+  beneficiaries: EntityBeneficiary[];
+}
+
+export interface ISendMoneyUsBankPayload {
+  amount: number;
+  transaction_pin: string;
+  usd_beneficiary_id: string;
+  transaction_reason: string;
+  transaction_category_id: number;
+}

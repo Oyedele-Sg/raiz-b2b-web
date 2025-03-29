@@ -5,8 +5,8 @@ import Radio from "@/components/ui/Radio";
 
 interface Props {
   close: () => void;
-  bankType: "us" | "int" | undefined;
-  setBankType: (bankType: "us" | "int") => void;
+  bankType: "us" | "int" | "global" | undefined;
+  setBankType: (bankType: "us" | "int" | "global") => void;
 }
 
 const BankTypeModal = ({ close, bankType, setBankType }: Props) => {
@@ -32,6 +32,7 @@ const BankTypeModal = ({ close, bankType, setBankType }: Props) => {
           </button>
         </div>
         <div className="flex  flex-col gap-5">
+          {/* us */}
           <button
             onClick={() => setBankType("us")}
             className={`border  ${
@@ -58,6 +59,34 @@ const BankTypeModal = ({ close, bankType, setBankType }: Props) => {
               Send to a US bank for free
             </p>
           </button>
+          {/* global */}
+          <button
+            onClick={() => setBankType("global")}
+            className={`border ${
+              bankType === "global" ? "border-indigo-900" : "border-zinc-200"
+            } rounded-[20px] flex flex-col justify-center items-center w-full pt-[19px] pb-[21px]`}
+          >
+            <div className="flex justify-between w-full px-[30px] mb-5">
+              <span />
+              <Image
+                width={30}
+                height={30}
+                src={"/icons/glo-bank.svg"}
+                alt="Global remittance"
+              />
+              <Radio
+                checked={bankType === "global"}
+                onChange={() => setBankType("global")}
+              />
+            </div>
+            <p className="text-zinc-900 text-sm font-bold leading-none">
+              Global Remittance
+            </p>
+            <p className="text-center  text-zinc-900 text-xs font-normal  leading-tight">
+              Send to recipients in their local currency
+            </p>
+          </button>
+          {/* int */}
           <button
             onClick={() => setBankType("int")}
             className={`border ${

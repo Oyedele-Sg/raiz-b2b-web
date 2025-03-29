@@ -178,8 +178,5 @@ export const formatRelativeTime = (date: Date | string) => {
 };
 
 export const convertTime = (utcTime: Date | string): string => {
-  const parsedTime = dayjs.isDayjs(utcTime)
-    ? utcTime
-    : dayjs(utcTime, "YYYY-MM-DD HH:mm:ss");
-  return parsedTime.local().format("YYYY-MM-DD HH:mm:ss");
+  return dayjs.utc(utcTime).local().format("YYYY-MM-DD HH:mm:ss");
 };
