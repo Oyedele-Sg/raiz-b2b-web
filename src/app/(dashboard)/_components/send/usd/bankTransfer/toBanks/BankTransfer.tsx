@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import ToUsdBanks from "./ToUsdBanks";
 import ToInternational from "../toInternaional/ToInternational";
-import SendOptions from "../SendOptions";
 import BankTypeModal from "./BankTypeModal";
+import SendOptions from "../../SendOptions";
 
 export type bankTypeProp = "us" | "int" | "global";
 

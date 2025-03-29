@@ -2,8 +2,8 @@ import React from "react";
 import SendOptions from "./SendOptions";
 import ToRaizers from "./toRaizers/ToRaizers";
 import { useSendStore } from "@/store/Send";
-// import ToUsdBanks from "./toBanks/ToUsdBanks";
-import BankTransfer from "./toBanks/BankTransfer";
+import BankTransfer from "./bankTransfer/toBanks/BankTransfer";
+import ToDebitCard from "./debitCard/ToDebitCard";
 
 interface Props {
   close: () => void;
@@ -20,6 +20,8 @@ const UsdSend = ({ close }: Props) => {
         return <ToRaizers close={close} />;
       case "bank transfer":
         return <BankTransfer close={() => actions.selectUSDSendOption(null)} />;
+      case "to debit card":
+        return <ToDebitCard close={() => actions.selectUSDSendOption(null)} />;
       default:
         break;
     }

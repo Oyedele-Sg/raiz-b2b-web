@@ -291,6 +291,8 @@ export interface FormField {
   type: string;
   required: boolean;
   enum?: string[];
+  max_length?: number;
+  min_length?: number;
 }
 
 export interface IUsBeneficiaryPayload {

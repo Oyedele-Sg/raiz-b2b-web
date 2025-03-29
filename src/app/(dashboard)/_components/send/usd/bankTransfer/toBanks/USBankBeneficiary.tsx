@@ -23,8 +23,8 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
-import USBeneficiaryModal from "../USBeneficiaryModal";
 import { useSendStore } from "@/store/Send";
+import USBeneficiaryModal from "./USBeneficiaryModal";
 
 interface FormValues {
   label: string;
