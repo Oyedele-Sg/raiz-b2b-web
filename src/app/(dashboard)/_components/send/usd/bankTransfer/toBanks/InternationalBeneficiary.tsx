@@ -9,7 +9,7 @@ import Radio from "@/components/ui/Radio";
 import Spinner from "@/components/ui/Spinner";
 import { useUser } from "@/lib/hooks/useUser";
 import {
-  CreateIntBeneficiary,
+  // CreateIntBeneficiary,
   FetchIntBeneficiariesApi,
   GetIntBeneficiaryFormFields,
 } from "@/services/transactions";
@@ -17,14 +17,14 @@ import { useSendStore } from "@/store/Send";
 import {
   FormField,
   IIntBeneficiariesParams,
-  IIntBeneficiaryPayload,
+  // IIntBeneficiaryPayload,
   //   IntCountryType,
 } from "@/types/services";
 import { truncateString } from "@/utils/helpers";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { FormikConfig, useFormik } from "formik";
 import React, { useEffect, useState } from "react";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import IntCountriesModal from "../toInternaional/IntCountriesModal";
@@ -68,14 +68,14 @@ const InternationalBeneficiary = ({ close }: Props) => {
     },
   });
   const beneficiaries = data?.beneficiaries || [];
-  const qc = useQueryClient();
-  const AddBeneficiaryMutation = useMutation({
-    mutationFn: (data: IIntBeneficiaryPayload) => CreateIntBeneficiary(data),
-    onSuccess: () => {
-      toast.success("Beneficiary added!");
-      qc.invalidateQueries({ queryKey: ["us-bank-beneficiaries"] });
-    },
-  });
+  // const qc = useQueryClient();
+  // const AddBeneficiaryMutation = useMutation({
+  //   mutationFn: (data: IIntBeneficiaryPayload) => CreateIntBeneficiary(data),
+  //   onSuccess: () => {
+  //     toast.success("Beneficiary added!");
+  //     qc.invalidateQueries({ queryKey: ["us-bank-beneficiaries"] });
+  //   },
+  // });
 
   const initialValues: FormValues = {
     country: null,
@@ -109,7 +109,7 @@ const InternationalBeneficiary = ({ close }: Props) => {
     onSubmit: async (values, { resetForm, setSubmitting }) => {
       try {
         const { country, ...restValues } = values;
-        const payload: IIntBeneficiaryPayload = {
+        const payload = {
           country: country?.value || "",
           customer_email: user?.business_account?.business_email || "",
           data: { ...restValues },

@@ -1,6 +1,6 @@
 import SideWrapperHeader from "@/components/SideWrapperHeader";
 import Button from "@/components/ui/Button";
-import EmptyList from "@/components/ui/EmptyList";
+// import EmptyList from "@/components/ui/EmptyList";
 import InputField from "@/components/ui/InputField";
 // import Spinner from "@/components/ui/Spinner";
 import {
@@ -8,7 +8,7 @@ import {
   FetchUsBeneficiariesApi,
   GetUSBeneficiaryFormFields,
 } from "@/services/transactions";
-import { useSendStore } from "@/store/Send";
+// import { useSendStore } from "@/store/Send";
 import {
   FormField,
   IUsBeneficiariesParams,
@@ -42,12 +42,12 @@ const formatCardNumber = (value: string): string => {
 };
 
 const AddCardBeneficiary = ({ close }: Props) => {
-  const { actions } = useSendStore();
+  // const { actions } = useSendStore();
   const { data: fieldsData } = useQuery({
     queryKey: ["us-bank-benefiary-fields"],
     queryFn: GetUSBeneficiaryFormFields,
   });
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: [
       "us-bank-beneficiaries",
       {

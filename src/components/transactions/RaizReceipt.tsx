@@ -50,11 +50,11 @@ const RaizReceipt = ({
         backgroundColor: null,
       });
       const dataUrl = canvas.toDataURL("image/png");
-      const response = await fetch(dataUrl);
-      const blob = await response.blob();
-      const file = new File([blob], `receipt-${referenceNumber}.png`, {
-        type: "image/png",
-      });
+      // const response = await fetch(dataUrl);
+      // const blob = await response.blob();
+      // const file = new File([blob], `receipt-${referenceNumber}.png`, {
+      //   type: "image/png",
+      // });
       const link = document.createElement("a");
       link.download = `receipt-${referenceNumber}.png`;
       link.href = dataUrl;
