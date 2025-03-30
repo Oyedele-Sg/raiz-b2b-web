@@ -7,6 +7,9 @@ import {
   IExternalBeneficiariesResponse,
   IExternalBeneficiaryPayload,
   IExternalTransferPayload,
+  IIntBeneficiariesParams,
+  IIntBeneficiariesResponse,
+  IIntBeneficiaryPayload,
   IP2pBeneficiariesParams,
   IP2PTransferPayload,
   IP2pTransferResponse,
@@ -291,8 +294,39 @@ export const SendMoneyUSBankApi = async (
   data: ISendMoneyUsBankPayload
 ): Promise<IP2pTransferResponse> => {
   const response = await AuthAxios.post(
-    "/business/transactions/withdrawal/usd/initiate/",
+    "/business/transactions/withdrawal/usd/insitiate/",
     data
+  );
+  return response?.data;
+};
+
+export const GetIntBeneficiaryFormFields = async () => {
+  const response = await AuthAxios.get(
+    `/business/transactions/remittance/form-fields/`
+  );
+  return response?.data;
+};
+
+export const FetchIntBeneficiariesApi = async (
+  params: IIntBeneficiariesParams
+): Promise<IIntBeneficiariesResponse> => {
+  const queryParams = Object.fromEntries(
+    Object.entries(params).filter(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      ([_, value]) => value !== undefined && value !== null
+    )
+  );
+  const response = await AuthAxios.get(
+    `/business/transactions/remittance/beneficiaries/`,
+    { params: queryParams }
+  );
+  return response?.data;
+};
+
+export const CreateIntBeneficiary = async (payload: IIntBeneficiaryPayload) => {
+  const response = await AuthAxios.post(
+    `/business/transactions/remittance/beneficiary/?country=${payload.country}&customer_email==${payload.customer_email}`,
+    payload.data
   );
   return response?.data;
 };

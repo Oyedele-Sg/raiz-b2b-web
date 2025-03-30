@@ -2,6 +2,7 @@ import { ACCOUNT_CURRENCIES } from "@/constants/misc";
 import { INGNSendOptions, IUSDSendOptions } from "@/types/misc";
 import {
   EntityBeneficiary,
+  EntityForeignPayoutBeneficiary,
   IExternalAccount,
   IP2pTransferResponse,
 } from "@/types/services";
@@ -16,6 +17,7 @@ export interface SendState {
   user: ISearchedUser | null;
   externalUser: IExternalAccount | null;
   usdBeneficiary: EntityBeneficiary | null;
+  intBeneficiary: EntityForeignPayoutBeneficiary | null;
   currency: CurrencyTypeKey | null;
   amount: string;
   purpose: string;
@@ -37,6 +39,7 @@ export interface SendActions {
   selectUser: (user: ISearchedUser | null) => void;
   selectExternalUser: (user: IExternalAccount | null) => void;
   selectUsdBeneficiary: (user: EntityBeneficiary | null) => void;
+  selectIntBeneficiary: (user: EntityForeignPayoutBeneficiary | null) => void;
   setAmountAndRemark: (payload: AmountAndRemarksPayload) => void;
   selectCategory: (category: ITransactionCategory | null) => void;
   setTransactionPin: (pin: string) => void;
@@ -51,6 +54,7 @@ export const initialSendState: SendState = {
   user: null,
   externalUser: null,
   usdBeneficiary: null,
+  intBeneficiary: null,
   currency: "USD",
   amount: "",
   purpose: "",
