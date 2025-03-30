@@ -1,9 +1,10 @@
 "use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import ListDetailItem from "../ui/ListDetailItem";
 import dayjs from "dayjs";
 import { convertTime } from "@/utils/helpers";
+import html2canvas from "html2canvas";
 
 export interface IRaizReceipt {
   senderName: string;
@@ -38,12 +39,54 @@ const RaizReceipt = ({
   status,
   close,
 }: IRaizReceipt) => {
+  const receiptRef = useRef<HTMLDivElement>(null);
+  const handleShareReceipt = async () => {
+    if (!receiptRef.current) return;
+    try {
+      // Convert the receipt component to canvas
+      const canvas = await html2canvas(receiptRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null,
+      });
+      const dataUrl = canvas.toDataURL("image/png");
+      const response = await fetch(dataUrl);
+      const blob = await response.blob();
+      const file = new File([blob], `receipt-${referenceNumber}.png`, {
+        type: "image/png",
+      });
+      const link = document.createElement("a");
+      link.download = `receipt-${referenceNumber}.png`;
+      link.href = dataUrl;
+      link.click();
+
+      link.remove();
+    } catch (error) {
+      console.error("Error generating receipt:", error);
+      alert("Failed to generate receipt. Please try again.");
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleShareReceipt();
+      // Optionally close the modal after download
+      // close();
+    }, 500);
+
+    // Cleanup timeout on unmount
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div>
       <button onClick={close}>
         <Image src={"/icons/close.svg"} alt="close" width={16} height={16} />
       </button>
-      <div className="flex mt-10 relative flex-col items-center justify-center mb-4 text-zinc-900 border py-10 rounded-xl border-stone-700/30">
+      <div
+        ref={receiptRef}
+        className="flex mt-10 relative flex-col items-center justify-center mb-4 text-zinc-900 border-t border-r border-l  rounded-t-xl border-stone-700/30"
+      >
         <Image
           className="absolute -top-6  -translate-x-1/2 left-1/2"
           src={"/icons/logoWText.svg"}
@@ -51,7 +94,7 @@ const RaizReceipt = ({
           width={55}
           height={55}
         />
-        <h6 className="text-zinc-700 text-xs font-normal leading-tight">
+        <h6 className="text-zinc-700 text-xs mt-10 font-normal leading-tight">
           Receipt
         </h6>
         <p className=" text-zinc-900 text-xl font-bold mt-[5px]  leading-normal">
@@ -100,6 +143,21 @@ const RaizReceipt = ({
               {status}
             </span>
           </div>
+        </div>
+        <div className="rounded-b-xl mt-7 bg-primary flex gap-3 px-5 py-4 items-center">
+          <div className="bg-white flex justify-center items-center w-11 h-11 px-0.5 rounded">
+            <Image
+              className="w-10 h-10"
+              src={"/icons/qr.svg"}
+              width={40}
+              height={40}
+              alt="qr"
+            />
+          </div>
+          <p className="text-white text-sm font-bold leading-none">
+            Download the <span className=" text-amber-300">Raiz App</span> using
+            the QR Code
+          </p>
         </div>
       </div>
     </div>

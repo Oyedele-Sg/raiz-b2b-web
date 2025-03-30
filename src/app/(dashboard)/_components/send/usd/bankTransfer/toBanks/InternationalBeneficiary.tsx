@@ -172,7 +172,7 @@ const InternationalBeneficiary = ({ close }: Props) => {
       <SideWrapperHeader
         title="International Bank"
         close={close}
-        titleColor="text-zincc-900"
+        titleColor="text-zinc-900"
       />
       <div className="mb-11">
         <h5 className="text-raiz-gray-950 text-sm font-bold  leading-[16.80px] mb-[15px]">

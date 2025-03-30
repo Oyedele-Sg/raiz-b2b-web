@@ -298,8 +298,8 @@ export interface FormField {
 export interface IUsBeneficiaryPayload {
   name: string;
   account: string;
-  routing: string;
-  type: string;
+  routing?: string;
+  type?: string;
   label: string;
   optionType: IUsBeneficiaryOptionType;
 }
