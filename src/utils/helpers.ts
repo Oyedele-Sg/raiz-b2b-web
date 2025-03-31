@@ -180,3 +180,33 @@ export const formatRelativeTime = (date: Date | string) => {
 export const convertTime = (utcTime: Date | string): string => {
   return dayjs.utc(utcTime).local().format("YYYY-MM-DD HH:mm:ss");
 };
+
+export function convertToTitle(input: string): string {
+  const words = input?.split("_").map((word) => {
+    return word?.charAt(0).toUpperCase() + word?.slice(1).toLowerCase();
+  });
+  return words?.join(" ");
+}
+export function convertField(input: string): string {
+  if (input === "account_number" || input === "account number") {
+    return "Account Number";
+  }
+  return convertToTitle(input);
+}
+
+export const getReadablePatternMessage = (
+  pattern: string,
+  fieldName: string
+) => {
+  const fieldLabel = fieldName.replace(/_/g, " ").toLowerCase();
+
+  const patternMessages: Record<string, string> = {
+    "^\\d{9}$": `${fieldLabel} must be exactly 9 digits`,
+    "^\\d{10}$": `${fieldLabel} must be exactly 10 digits`,
+    "^[a-zA-Z]+$": `${fieldLabel} must contain only letters`,
+    "^[0-9]+$": `${fieldLabel} must contain only numbers`,
+    "^[a-zA-Z0-9]+$": `${fieldLabel} must contain only letters and numbers`,
+  };
+
+  return patternMessages[pattern] || `${fieldLabel} format is invalid`;
+};

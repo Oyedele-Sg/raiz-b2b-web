@@ -18,7 +18,7 @@ import React, { useEffect, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
 import { z } from "zod";
 
-const NGNAcctNoSchema = z
+export const NGNAcctNoSchema = z
   .string()
   .nonempty("Account number is required")
   .regex(/^\d+$/, "Account number must contain only digits")

@@ -293,14 +293,20 @@ export interface FormField {
   enum?: string[];
   max_length?: number;
   min_length?: number;
+  pattern?: string;
+  const?: string;
+  fields?: FormField[];
 }
 
 export interface IUsBeneficiaryPayload {
   name: string;
-  account: string;
+  account?: string;
   routing?: string;
   type?: string;
   label: string;
+  card_number?: string;
+  expiry_month?: string;
+  expiry_year?: string;
   optionType: IUsBeneficiaryOptionType;
 }
 
@@ -402,4 +408,32 @@ export interface IIntBeneficiaryPayload {
   country: IntCountryType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
+}
+
+export interface IInitialPayoutResponse {
+  entity_id: string;
+  foreign_payout_beneficiary_id: string;
+  payout_id: string;
+  description: string;
+  reference: string;
+  amount: number;
+  fees: number;
+  status: string;
+  payout_currency: string;
+  exchange_rate: number;
+  payout_amount: number;
+  final_status: string;
+  raiz_charge: number;
+  payout_initiation_id: string;
+  created_at: string;
+  updated_at: string;
+  foreign_payout_beneficiary: ForeignPayoutBeneficiary;
+}
+
+export interface IIntSendPayload {
+  payout_initiation_id: string;
+  wallet_id: string;
+  transaction_category_id: number;
+  transaction_description: string;
+  data: ITransactionPinPayload;
 }
