@@ -1,78 +1,56 @@
 "use client";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { ToUsdBanksStepsType } from "../toBanks/ToUsdBanks";
+import React, { useEffect, useState } from "react";
 import { bankTypeProp } from "../BankTransfer";
 import { useSendStore } from "@/store/Send";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  GetTransactionFeeApi,
-  SendInternationalInitialPayout,
-} from "@/services/transactions";
+import { ToUsdBanksStepsType } from "../toBanks/ToUsdBanks";
+import { useUser } from "@/lib/hooks/useUser";
+import { useQuery } from "@tanstack/react-query";
+import { GetTransactionFeeApi } from "@/services/transactions";
 import AddBeneficiary from "../toBanks/AddBeneficiary";
+import SendMoney from "@/components/transactions/SendMoney";
 import Categories from "@/components/transactions/Categories";
+import SendSummary from "@/components/transactions/SendSummary";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
-import { useUser } from "@/lib/hooks/useUser";
-import InternationPayout from "./InternationalPayout";
-import InternationalSendSummary from "@/components/transactions/InternationalSendSummary";
-import InternationalSendMoney from "@/components/transactions/InternationalSendMoney";
+import UsdBankPay from "../toBanks/UsdBankPay";
 
 interface Props {
   close: () => void;
   bankType: bankTypeProp;
-  setBankType: Dispatch<SetStateAction<bankTypeProp | undefined>>;
 }
 
-const ToInternational = ({ close, bankType }: Props) => {
-  const { user } = useUser();
+const ToGlobal = ({ close, bankType }: Props) => {
   const [step, setStep] = useState<ToUsdBanksStepsType>("add-beneficiary");
   const [paymentError, setPaymentError] = useState("");
-  const [paymentInitiationId, setPaymentInitiationId] = useState("");
   const {
-    intBeneficiary,
+    usdBeneficiary,
     actions,
     amount,
     currency,
     status,
     transactionDetail,
   } = useSendStore();
-  const { data: fee } = useQuery({
-    queryKey: ["transactions-fee", amount, currency],
-    queryFn: () =>
-      GetTransactionFeeApi(Number(amount), currency as "USD" | "NGN" | "WIRE"),
-    enabled: !!amount,
-  });
+  const { user } = useUser();
   useEffect(() => {
     if (bankType) {
       setTimeout(() => setStep("add-beneficiary"), 200);
     }
   }, [bankType]);
+  const { data: fee } = useQuery({
+    queryKey: ["transactions-fee", amount, currency],
+    queryFn: () => GetTransactionFeeApi(Number(amount), "WIRE"),
+    enabled: !!amount,
+  });
 
   useEffect(() => {
-    if (intBeneficiary) {
+    if (usdBeneficiary) {
       setStep("details");
     }
-  }, [intBeneficiary]);
+  }, [usdBeneficiary]);
 
   const goBackToStep2 = () => {
-    actions.selectIntBeneficiary(null);
+    actions.selectUsdBeneficiary(null);
     setStep("add-beneficiary");
-  };
-
-  const InitiatePayMutation = useMutation({
-    mutationFn: () =>
-      SendInternationalInitialPayout({
-        foreign_payout_beneficiary_id:
-          intBeneficiary?.foreign_payout_beneficiary_id || "",
-        amount: parseFloat(amount),
-      }),
-    onSuccess: (response) => {
-      setPaymentInitiationId(response?.payout_initiation_id);
-      setStep("category");
-    },
-  });
-  const initiatePayout = () => {
-    InitiatePayMutation.mutate();
   };
 
   const handleDone = () => {
@@ -105,11 +83,10 @@ const ToInternational = ({ close, bankType }: Props) => {
         return bankType && <AddBeneficiary type={bankType} close={close} />;
       case "details":
         return (
-          <InternationalSendMoney
+          <SendMoney
             goBack={goBackToStep2}
-            goNext={initiatePayout}
+            goNext={() => setStep("category")}
             fee={fee || 0}
-            loading={InitiatePayMutation.isPending}
           />
         );
       case "category":
@@ -122,7 +99,7 @@ const ToInternational = ({ close, bankType }: Props) => {
         );
       case "summary":
         return (
-          <InternationalSendSummary
+          <SendSummary
             goBack={() => setStep("category")}
             goNext={() => setStep("pay")}
             fee={fee || 0}
@@ -130,8 +107,7 @@ const ToInternational = ({ close, bankType }: Props) => {
         );
       case "pay":
         return (
-          <InternationPayout
-            paymentInitiationId={paymentInitiationId}
+          <UsdBankPay
             goNext={() => setStep("status")}
             close={() => setStep("summary")}
             setPaymentError={setPaymentError}
@@ -141,14 +117,12 @@ const ToInternational = ({ close, bankType }: Props) => {
       case "status":
         return (
           currency &&
-          intBeneficiary && (
+          usdBeneficiary && (
             <PaymentStatusModal
               status={status}
               amount={parseFloat(amount)}
-              currency={
-                intBeneficiary?.foreign_payout_beneficiary?.beneficiary_currency
-              }
-              user={intBeneficiary}
+              currency={currency}
+              user={usdBeneficiary}
               close={handleDone}
               error={paymentError}
               tryAgain={() => setStep("summary")}
@@ -167,4 +141,4 @@ const ToInternational = ({ close, bankType }: Props) => {
   return <div>{displayStep()}</div>;
 };
 
-export default ToInternational;
+export default ToGlobal;

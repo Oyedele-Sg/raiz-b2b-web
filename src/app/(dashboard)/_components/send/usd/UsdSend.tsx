@@ -2,7 +2,7 @@ import React from "react";
 import SendOptions from "./SendOptions";
 import ToRaizers from "./toRaizers/ToRaizers";
 import { useSendStore } from "@/store/Send";
-import BankTransfer from "./bankTransfer/toBanks/BankTransfer";
+import BankTransfer from "./bankTransfer/BankTransfer";
 import ToDebitCard from "./debitCard/ToDebitCard";
 
 interface Props {

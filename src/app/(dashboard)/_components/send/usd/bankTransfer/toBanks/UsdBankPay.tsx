@@ -26,7 +26,6 @@ const UsdBankPay = ({ close, goNext, setPaymentError }: Props) => {
       qc.refetchQueries({ queryKey: ["user"] });
       qc.invalidateQueries({ queryKey: ["user"] });
       qc.invalidateQueries({ queryKey: ["transactions-report"] });
-      qc.invalidateQueries({ queryKey: ["p2p-beneficiaries-recents"] });
       if (response?.transaction_status?.transaction_status === "completed") {
         actions.setStatus("success");
       } else if (
