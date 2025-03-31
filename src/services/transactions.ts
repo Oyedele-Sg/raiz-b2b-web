@@ -7,6 +7,11 @@ import {
   IExternalBeneficiariesResponse,
   IExternalBeneficiaryPayload,
   IExternalTransferPayload,
+  IInitialPayoutResponse,
+  IIntBeneficiariesParams,
+  IIntBeneficiariesResponse,
+  IIntBeneficiaryPayload,
+  IIntSendPayload,
   IP2pBeneficiariesParams,
   IP2PTransferPayload,
   IP2pTransferResponse,
@@ -266,6 +271,9 @@ export const CreateUsBeneficiary = async (payload: IUsBeneficiaryPayload) => {
       account: payload.account,
       routing: payload.routing,
       type: payload.type,
+      ...(payload.card_number && { card_number: payload.card_number }),
+      ...(payload.expiry_month && { expiry_month: payload.expiry_month }),
+      ...(payload.expiry_year && { expiry_year: payload.expiry_year }),
     }
   );
   return response?.data;
@@ -293,6 +301,66 @@ export const SendMoneyUSBankApi = async (
   const response = await AuthAxios.post(
     "/business/transactions/withdrawal/usd/initiate/",
     data
+  );
+  return response?.data;
+};
+
+export const GetIntBeneficiaryFormFields = async () => {
+  const response = await AuthAxios.get(
+    `/business/transactions/remittance/form-fields/`
+  );
+  return response?.data;
+};
+
+export const FetchIntBeneficiariesApi = async (
+  params: IIntBeneficiariesParams
+): Promise<IIntBeneficiariesResponse> => {
+  const queryParams = Object.fromEntries(
+    Object.entries(params).filter(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      ([_, value]) => value !== undefined && value !== null
+    )
+  );
+  const response = await AuthAxios.get(
+    `/business/transactions/remittance/beneficiaries/`,
+    { params: queryParams }
+  );
+  return response?.data;
+};
+
+export const CreateIntBeneficiary = async (payload: IIntBeneficiaryPayload) => {
+  const response = await AuthAxios.post(
+    `/business/transactions/remittance/beneficiary/?country=${payload.country}&customer_email=${payload.customer_email}`,
+    payload.data
+  );
+  return response?.data;
+};
+
+export async function SendInternationalInitialPayout(data: {
+  foreign_payout_beneficiary_id: string;
+  amount: number;
+}): Promise<IInitialPayoutResponse> {
+  const response = await AuthAxios.post(
+    "/business/transactions/remittance/payout/initiate/",
+    data
+  );
+  return response?.data;
+}
+
+export const SendIntBeneficiariesApi = async ({
+  data,
+  ...params
+}: IIntSendPayload): Promise<IP2pTransferResponse> => {
+  const queryParams = Object.fromEntries(
+    Object.entries(params).filter(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      ([_, value]) => value !== undefined && value !== null
+    )
+  );
+  const response = await AuthAxios.post(
+    `/business/transactions/remittance/payout/finalize/`,
+    data,
+    { params: queryParams }
   );
   return response?.data;
 };

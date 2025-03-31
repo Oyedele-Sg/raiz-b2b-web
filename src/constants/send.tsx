@@ -1,4 +1,5 @@
 import { IUSDSendOptions } from "@/types/misc";
+import { IntCountryType } from "@/types/services";
 import { ReactNode } from "react";
 
 interface Options {
@@ -6,6 +7,12 @@ interface Options {
   subtitle: string;
   icon: ReactNode;
   key: IUSDSendOptions;
+}
+
+export interface IIntCountry {
+  name: string;
+  value: IntCountryType;
+  logo: string;
 }
 
 export const usdSendOptions: Options[] = [
@@ -173,4 +180,16 @@ export const usdSendOptions: Options[] = [
     ),
     key: "to cashapp",
   },
+];
+
+export const IntCountries: IIntCountry[] = [
+  { name: "Ghana", value: "GH", logo: "/icons/flag-gh.png" },
+  { name: "Australia", value: "AU", logo: "/icons/flag-au.png" },
+  { name: "Kenya", value: "KE", logo: "/icons/flag-ke.png" },
+  { name: "Uganda", value: "UG", logo: "/icons/flag-ug.png" },
+  { name: "Nigeria", value: "NG", logo: "/icons/flag-ng.png" },
+  { name: "Tanzania", value: "TZ", logo: "/icons/flag-tz.png" },
+  { name: "Zambia", value: "ZM", logo: "/icons/flag-zm.png" },
+  { name: "Malawi", value: "MW", logo: "/icons/flag-mw.png" },
+  { name: "United Kingdom", value: "GB", logo: "/icons/flag-uk.png" },
 ];

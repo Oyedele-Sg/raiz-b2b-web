@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import BankTypeModal from "./BankTypeModal";
-import SendOptions from "../SendOptions";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+// import BankTypeModal from "./BankTypeModal";
+// import SendOptions from "../SendOptions";
 import AddBeneficiary from "./AddBeneficiary";
 import { useSendStore } from "@/store/Send";
 import SendMoney from "@/components/transactions/SendMoney";
@@ -12,9 +12,9 @@ import { useUser } from "@/lib/hooks/useUser";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
 import { useQuery } from "@tanstack/react-query";
 import { GetTransactionFeeApi } from "@/services/transactions";
+import { bankTypeProp } from "./BankTransfer";
 
-type ToUsdBanksStepsType =
-  | "type"
+export type ToUsdBanksStepsType =
   | "add-beneficiary"
   | "details"
   | "category"
@@ -22,15 +22,15 @@ type ToUsdBanksStepsType =
   | "pay"
   | "status"
   | "receipt";
-export type bankTypeProp = "us" | "int" | "global";
 
 interface Props {
   close: () => void;
+  bankType: bankTypeProp;
+  setBankType: Dispatch<SetStateAction<bankTypeProp | undefined>>;
 }
 
-const ToUsdBanks = ({ close }: Props) => {
-  const [step, setStep] = useState<ToUsdBanksStepsType>("type");
-  const [bankType, setBankType] = useState<bankTypeProp>();
+const ToUsdBanks = ({ close, bankType }: Props) => {
+  const [step, setStep] = useState<ToUsdBanksStepsType>("add-beneficiary");
   const [paymentError, setPaymentError] = useState("");
   const {
     usdBeneficiary,
@@ -91,17 +91,6 @@ const ToUsdBanks = ({ close }: Props) => {
 
   const displayStep = () => {
     switch (step) {
-      case "type":
-        return (
-          <>
-            <SendOptions close={close} />
-            <BankTypeModal
-              close={close}
-              bankType={bankType}
-              setBankType={setBankType}
-            />
-          </>
-        );
       case "add-beneficiary":
         return bankType && <AddBeneficiary type={bankType} close={close} />;
       case "details":

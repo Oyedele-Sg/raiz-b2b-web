@@ -1,6 +1,7 @@
 import React from "react";
-import { bankTypeProp } from "./ToUsdBanks";
 import USBankBeneficiary from "./USBankBeneficiary";
+import { bankTypeProp } from "./BankTransfer";
+import InternationalBeneficiary from "../toInternaional/InternationalBeneficiary";
 
 interface Props {
   type: bankTypeProp;
@@ -12,8 +13,8 @@ const AddBeneficiary = ({ type, close }: Props) => {
     switch (type) {
       case "us":
         return <USBankBeneficiary close={close} />;
-        break;
-
+      case "int":
+        return <InternationalBeneficiary close={close} />;
       default:
         break;
     }
