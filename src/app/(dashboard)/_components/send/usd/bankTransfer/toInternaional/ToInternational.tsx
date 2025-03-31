@@ -3,16 +3,19 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ToUsdBanksStepsType } from "../toBanks/ToUsdBanks";
 import { bankTypeProp } from "../toBanks/BankTransfer";
 import { useSendStore } from "@/store/Send";
-import { useQuery } from "@tanstack/react-query";
-import { GetTransactionFeeApi } from "@/services/transactions";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  GetTransactionFeeApi,
+  SendInternationalInitialPayout,
+} from "@/services/transactions";
 import AddBeneficiary from "../toBanks/AddBeneficiary";
-import SendMoney from "@/components/transactions/SendMoney";
 import Categories from "@/components/transactions/Categories";
-import SendSummary from "@/components/transactions/SendSummary";
-import UsdBankPay from "../toBanks/UsdBankPay";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
 import { useUser } from "@/lib/hooks/useUser";
+import InternationPayout from "./InternationalPayout";
+import InternationalSendSummary from "@/components/transactions/InternationalSendSummary";
+import InternationalSendMoney from "@/components/transactions/InternationalSendMoney";
 
 interface Props {
   close: () => void;
@@ -24,8 +27,9 @@ const ToInternational = ({ close, bankType }: Props) => {
   const { user } = useUser();
   const [step, setStep] = useState<ToUsdBanksStepsType>("add-beneficiary");
   const [paymentError, setPaymentError] = useState("");
+  const [paymentInitiationId, setPaymentInitiationId] = useState("");
   const {
-    usdBeneficiary,
+    intBeneficiary,
     actions,
     amount,
     currency,
@@ -45,14 +49,30 @@ const ToInternational = ({ close, bankType }: Props) => {
   }, [bankType]);
 
   useEffect(() => {
-    if (usdBeneficiary) {
+    if (intBeneficiary) {
       setStep("details");
     }
-  }, [usdBeneficiary]);
+  }, [intBeneficiary]);
 
   const goBackToStep2 = () => {
-    actions.selectUsdBeneficiary(null);
+    actions.selectIntBeneficiary(null);
     setStep("add-beneficiary");
+  };
+
+  const InitiatePayMutation = useMutation({
+    mutationFn: () =>
+      SendInternationalInitialPayout({
+        foreign_payout_beneficiary_id:
+          intBeneficiary?.foreign_payout_beneficiary_id || "",
+        amount: parseFloat(amount),
+      }),
+    onSuccess: (response) => {
+      setPaymentInitiationId(response?.payout_initiation_id);
+      setStep("category");
+    },
+  });
+  const initiatePayout = () => {
+    InitiatePayMutation.mutate();
   };
 
   const handleDone = () => {
@@ -85,10 +105,11 @@ const ToInternational = ({ close, bankType }: Props) => {
         return bankType && <AddBeneficiary type={bankType} close={close} />;
       case "details":
         return (
-          <SendMoney
+          <InternationalSendMoney
             goBack={goBackToStep2}
-            goNext={() => setStep("category")}
+            goNext={initiatePayout}
             fee={fee || 0}
+            loading={InitiatePayMutation.isPending}
           />
         );
       case "category":
@@ -101,7 +122,7 @@ const ToInternational = ({ close, bankType }: Props) => {
         );
       case "summary":
         return (
-          <SendSummary
+          <InternationalSendSummary
             goBack={() => setStep("category")}
             goNext={() => setStep("pay")}
             fee={fee || 0}
@@ -109,7 +130,8 @@ const ToInternational = ({ close, bankType }: Props) => {
         );
       case "pay":
         return (
-          <UsdBankPay
+          <InternationPayout
+            paymentInitiationId={paymentInitiationId}
             goNext={() => setStep("status")}
             close={() => setStep("summary")}
             setPaymentError={setPaymentError}
@@ -119,12 +141,14 @@ const ToInternational = ({ close, bankType }: Props) => {
       case "status":
         return (
           currency &&
-          usdBeneficiary && (
+          intBeneficiary && (
             <PaymentStatusModal
               status={status}
               amount={parseFloat(amount)}
-              currency={currency}
-              user={usdBeneficiary}
+              currency={
+                intBeneficiary?.foreign_payout_beneficiary?.beneficiary_currency
+              }
+              user={intBeneficiary}
               close={handleDone}
               error={paymentError}
               tryAgain={() => setStep("summary")}

@@ -2,16 +2,15 @@
 import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
 import { useUser } from "@/lib/hooks/useUser";
 import { useSendStore } from "@/store/Send";
-import { useCurrencyStore } from "@/store/useCurrencyStore";
 import React, { useRef, useState } from "react";
 import { z } from "zod";
 import SideWrapperHeader from "../SideWrapperHeader";
+import Avatar from "../ui/Avatar";
+import { getCurrencySymbol } from "@/utils/helpers";
+import Image from "next/image";
 import ErrorMessage from "../ui/ErrorMessage";
 import InputField from "../ui/InputField";
-import Image from "next/image";
 import Button from "../ui/Button";
-import Avatar from "../ui/Avatar";
-import { toast } from "sonner";
 
 interface Props {
   goBack: () => void;
@@ -20,82 +19,68 @@ interface Props {
   loading?: boolean;
 }
 
-const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
+const InternationalSendMoney = ({
+  goBack,
+  goNext,
+  fee,
+  loading = false,
+}: Props) => {
   const {
-    user: selectedUser,
-    externalUser,
+    intBeneficiary,
     amount,
     purpose,
     actions,
+    currency: senderCurrency,
   } = useSendStore();
   const { user } = useUser();
-  const { selectedCurrency } = useCurrencyStore();
   const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const currentWallet = useCurrentWallet(user);
+  const currency =
+    intBeneficiary?.foreign_payout_beneficiary?.beneficiary_currency || "";
+  const selectedUser = intBeneficiary?.foreign_payout_beneficiary;
   const amountSchema = z
     .string()
     .regex(/^\d*\.?\d{0,2}$/, "Enter a valid amount (max 2 decimal places)")
     .refine((val) => parseFloat(val) >= 1, {
       message: "Amount must be at least 1",
-    })
-    .refine(
-      (val) => {
-        const totalAvailable = currentWallet?.account_balance || 0;
-        return parseFloat(val) <= totalAvailable;
-      },
-      {
-        message: `Amount cannot exceed available balance`,
-      }
-    );
+    });
+
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
-
-    // Allow only numbers and one decimal point
     value = value.replace(/[^0-9.]/g, "");
-
-    // Prevent multiple decimal points
     const parts = value.split(".");
     if (parts.length > 2) {
       value = parts[0] + "." + parts.slice(1).join("");
     }
-
-    // Limit to 2 decimal places
     if (parts[1] && parts[1].length > 2) {
       value = `${parts[0]}.${parts[1].slice(0, 2)}`;
     }
-
-    // Handle special cases
     if (value.startsWith(".")) value = "0" + value;
-    if (value === "") value = ""; // Let it be empty while typing
-
+    if (value === "") value = "";
     actions.setAmountAndRemark({ amount: value, purpose });
-
-    // Validate amount
-    const result = amountSchema.safeParse(value || "0"); // Use "0" for empty string validation
+    const result = amountSchema.safeParse(value || "0");
     setError(result.success ? null : result.error.errors[0].message);
   };
   const handlePurposeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     actions.setAmountAndRemark({ amount, purpose: e.target.value });
   };
-  // Display value: show raw input while typing, formatted value when not focused
   const displayValue = () => {
     if (isFocused || !amount)
-      return amount ? `${selectedCurrency.sign}${amount}` : "";
+      return amount ? `${getCurrencySymbol(currency)}${amount}` : "";
     const num = parseFloat(amount);
-    return isNaN(num) ? "" : `${selectedCurrency.sign}${num.toFixed(2)}`;
+    return isNaN(num) ? "" : `${getCurrencySymbol(currency)}${num.toFixed(2)}`;
   };
-
   const handleNext = () => {
-    if (
-      parseFloat(amount || "0") + fee >
-      (currentWallet?.account_balance || 0)
-    ) {
-      toast.warning("Account balance too low to carry out this transaction");
-    } else {
-      goNext();
-    }
+    // if (
+    //   parseFloat(amount || "0") + fee >
+    //   (currentWallet?.account_balance || 0)
+    // ) {
+    //   toast.warning("Account balance too low to carry out this transaction");
+    // } else {
+    goNext();
+    // }
   };
   return (
     <div className="w-full">
@@ -108,15 +93,7 @@ const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
         <div className="w-full">
           <div className="flex flex-col justify-center items-center">
             <div className="relative w-10 h-10">
-              <Avatar
-                src={selectedUser?.selfie_image || ""}
-                name={
-                  selectedUser?.account_name ||
-                  externalUser?.bank_account_name ||
-                  ""
-                }
-              />
-
+              <Avatar src={""} name={selectedUser?.beneficiary_name || ""} />
               <svg
                 width="22"
                 height="22"
@@ -148,7 +125,7 @@ const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
               </svg>
             </div>
             <p className="text-center mt-4 justify-start text-zinc-900 text-sm font-bold  leading-none">
-              {selectedUser?.account_name}
+              {selectedUser?.beneficiary_name}
             </p>
             <p className="text-center mt-10 justify-start text-zinc-900 text-base mb-3">
               How much do you want to send?
@@ -169,10 +146,12 @@ const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
               <p className="text-zinc-900 text-xs font-normal leading-tight">
                 Balance:
                 <span className="text-zinc-900 text-xs font-bold leading-tight">
-                  {selectedCurrency?.sign}
+                  {getCurrencySymbol(
+                    currentWallet?.wallet_type?.currency || ""
+                  )}
                   {currentWallet?.account_balance}{" "}
                 </span>
-                <span>({selectedCurrency.name})</span>
+                <span>({currency})</span>
               </p>
             </div>
             <div className="w-full mt-10">
@@ -181,7 +160,7 @@ const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
                 <div className="flex gap-1 items-center">
                   <Image
                     src={
-                      selectedCurrency?.name === "USD"
+                      currency === "USD"
                         ? "/icons/dollar.svg"
                         : "/icons/ngn.svg"
                     }
@@ -190,7 +169,7 @@ const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
                     height={16}
                   />
                   <span className="text-zinc-700 text-xs leading-tight">
-                    {selectedCurrency?.name}
+                    {currency}
                   </span>
                 </div>
               </div>
@@ -212,7 +191,7 @@ const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
               </span>
               <div className="h-0.5 w-[50%] px-4 bg-white"></div>
               <span className="text-zinc-900  text-xs font-semibold leading-none">
-                {selectedCurrency?.sign}
+                {getCurrencySymbol(currency)}
                 {parseFloat(amount || "0").toFixed(2)}
               </span>
             </div>
@@ -223,12 +202,13 @@ const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
                 </span>
                 <div className="h-0.5 w-[75%] px-4 bg-white"></div>
                 <span className="text-zinc-900  text-xs font-semibold leading-none">
-                  {selectedCurrency?.sign}
+                  {getCurrencySymbol(senderCurrency || "")}
                   {fee?.toFixed(2) || "0.00"}
                 </span>
               </div>
             ) : null}
           </div>
+
           <Button
             disabled={!!error || !purpose}
             loading={loading}
@@ -242,4 +222,4 @@ const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
   );
 };
 
-export default SendMoney;
+export default InternationalSendMoney;

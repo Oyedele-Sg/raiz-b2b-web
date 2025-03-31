@@ -1,14 +1,14 @@
 import SideWrapperHeader from "@/components/SideWrapperHeader";
 import Button from "@/components/ui/Button";
-// import EmptyList from "@/components/ui/EmptyList";
+import EmptyList from "@/components/ui/EmptyList";
 import InputField from "@/components/ui/InputField";
-// import Spinner from "@/components/ui/Spinner";
+import { encryptData } from "@/lib/headerEncryption";
 import {
   CreateUsBeneficiary,
   FetchUsBeneficiariesApi,
   GetUSBeneficiaryFormFields,
 } from "@/services/transactions";
-// import { useSendStore } from "@/store/Send";
+import { useSendStore } from "@/store/Send";
 import {
   FormField,
   IUsBeneficiariesParams,
@@ -42,12 +42,12 @@ const formatCardNumber = (value: string): string => {
 };
 
 const AddCardBeneficiary = ({ close }: Props) => {
-  // const { actions } = useSendStore();
+  const { actions } = useSendStore();
   const { data: fieldsData } = useQuery({
     queryKey: ["us-bank-benefiary-fields"],
     queryFn: GetUSBeneficiaryFormFields,
   });
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: [
       "us-bank-beneficiaries",
       {
@@ -92,8 +92,7 @@ const AddCardBeneficiary = ({ close }: Props) => {
   const qc = useQueryClient();
   const AddBeneficiaryMutation = useMutation({
     mutationFn: (data: IUsBeneficiaryPayload) => CreateUsBeneficiary(data),
-    onSuccess: (response) => {
-      console.log("response", response);
+    onSuccess: () => {
       toast.success("Beneficiary added!");
       qc.invalidateQueries({ queryKey: ["us-bank-beneficiaries"] });
     },
@@ -114,7 +113,9 @@ const AddCardBeneficiary = ({ close }: Props) => {
         const payload: IUsBeneficiaryPayload = {
           label: values.label,
           name: values.name,
-          account: values.card_number,
+          card_number: encryptData(values.card_number.replace(/\s/g, "")),
+          expiry_month: values.expiry_month,
+          expiry_year: values.expiry_year,
           optionType: "card",
         };
 
@@ -133,14 +134,6 @@ const AddCardBeneficiary = ({ close }: Props) => {
     formik.setFieldValue("card_number", formattedValue);
   };
 
-  //   if (fieldLoading) {
-  //     return (
-  //       <div className="flex flex-col gap-5 mt-10 justify-center items-center">
-  //         <Spinner />
-  //         <p> Loading form fields...</p>
-  //       </div>
-  //     );
-  //   }
   return (
     <div>
       <SideWrapperHeader
@@ -152,36 +145,31 @@ const AddCardBeneficiary = ({ close }: Props) => {
         <h5 className="text-raiz-gray-950 text-sm font-bold  leading-[16.80px] mb-[15px]">
           Recent
         </h5>
-        {/* {isLoading ? (
+        {isLoading ? (
           <div>Loading beneficiaries...</div>
         ) : beneficiaries?.length > 0 ? (
           <div className="flex gap-2 overflow-x-scroll no-scrollbar">
-            {beneficiaries?.map((user) => (
+            {beneficiaries?.map((user, index) => (
               <button
-                key={user?.usd_beneficiary_id}
-                className="flex flex-col justify-center items-center gap-1 px-2 flex-shrink-0"
                 onClick={() => actions.selectUsdBeneficiary(user)}
+                key={index}
+                className="flex justify-start bg-[url('/images/')]    bg-raiz-usd-primary rounded-2xl p-4 w-full "
               >
-                Card
+                <div className="flex flex-col gap-1">
+                  <h5 className="text-white text-sm font-normal leading-tight ">
+                    {user?.usd_beneficiary?.account_name}
+                  </h5>
+                  <p className=" text-gray-100 text-xs font-normal  leading-none">
+                    **** **** **** ****
+                  </p>
+                </div>
+                {/* <p className="text-gray-100">Visa</p> */}
               </button>
             ))}
           </div>
         ) : (
           <EmptyList text={"No beneficiary yet"} />
-        )} */}
-        <div className="flex gap-2 justify-between overflow-x-scroll no-scrollbar">
-          <div className="flex justify-between items-end bg-[url('/images/')]   bg-raiz-usd-primary rounded-2xl p-4 w-full">
-            <div className="flex flex-col gap-1">
-              <h5 className="text-white text-sm font-normal leading-tight">
-                Khadijah Arowosegbe
-              </h5>
-              <p className=" text-gray-100 text-xs font-normal  leading-none">
-                **** 1256
-              </p>
-            </div>
-            <p className="text-gray-100">Visa</p>
-          </div>
-        </div>
+        )}
       </div>
       {fields.length > 0 && (
         <form

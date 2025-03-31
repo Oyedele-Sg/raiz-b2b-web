@@ -7,12 +7,17 @@ import { getCurrencySymbol } from "@/utils/helpers";
 import PendingStatus from "../transactions/status/PendingStatus";
 import FailedStatus from "../transactions/status/FailedStatus";
 import SuccessStatus from "../transactions/status/SuccessStatus";
-import { EntityBeneficiary, IExternalAccount } from "@/types/services";
+import {
+  EntityBeneficiary,
+  EntityForeignPayoutBeneficiary,
+  IExternalAccount,
+} from "@/types/services";
 
 export type BeneficiaryType =
   | ISearchedUser
   | IExternalAccount
-  | EntityBeneficiary;
+  | EntityBeneficiary
+  | EntityForeignPayoutBeneficiary;
 interface Props {
   status: PaymentStatusType;
   amount: number;
