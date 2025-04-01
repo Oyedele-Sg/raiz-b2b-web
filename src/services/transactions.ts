@@ -25,6 +25,7 @@ import {
   IUsBeneficiariesResponse,
   IUsBeneficiaryPayload,
 } from "@/types/services";
+import { ITransactionClass } from "@/types/transactions";
 
 export const FetchTransactionReportApi = async (
   params: ITransactionParams
@@ -364,3 +365,8 @@ export const SendIntBeneficiariesApi = async ({
   );
   return response?.data;
 };
+
+export async function GetTransactionClasses(): Promise<ITransactionClass[]> {
+  const response = await AuthAxios.get("/transactions/transaction-class/");
+  return response.data;
+}

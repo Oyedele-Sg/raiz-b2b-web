@@ -138,7 +138,7 @@ const ToGlobal = ({ close, bankType }: Props) => {
     }
   };
 
-  return <div>{displayStep()}</div>;
+  return <>{displayStep()}</>;
 };
 
 export default ToGlobal;

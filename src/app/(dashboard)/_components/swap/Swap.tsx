@@ -54,8 +54,8 @@ const Swap = ({ close }: Props) => {
 
   const rate =
     swapToCurrency === ACCOUNT_CURRENCIES.NGN.name
-      ? exchangeRateData?.buy_rate || 0
-      : exchangeRateData?.sell_rate || 0;
+      ? exchangeRateData?.sell_rate || 0
+      : exchangeRateData?.buy_rate || 0;
 
   const recipientAmount = exchangeRateData
     ? swapToCurrency === "NGN"

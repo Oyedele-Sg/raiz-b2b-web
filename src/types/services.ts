@@ -106,7 +106,7 @@ export interface ITransactionParams {
   wallet_id: string;
   transaction_status_id?: number | null;
   transaction_type_id?: number | null;
-  transaction_class_id?: string | null;
+  transaction_class_id?: number | null;
   payment_method_id?: string | null;
   transaction_report_id?: string | null;
   transaction_category_id?: string | null;

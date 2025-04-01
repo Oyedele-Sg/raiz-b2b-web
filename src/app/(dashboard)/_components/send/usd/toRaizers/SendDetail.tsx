@@ -89,14 +89,14 @@ const SendDetail = ({ goBack, goNext }: Props) => {
   const currentWallet = getCurrentWallet();
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full flex flex-col">
       <SideWrapperHeader
         close={goBack}
         title="Send Money"
         titleColor="text-zinc-900"
       />
-      <div className="flex flex-col h-[85vh] justify-between items-center w-full">
-        <div className="w-full">
+      <div className="flex flex-col h-full justify-between items-center w-full">
+        <div className="w-full ">
           <div className="flex flex-col justify-center items-center">
             <div className="relative w-10 h-10">
               <Image
@@ -217,7 +217,7 @@ const SendDetail = ({ goBack, goNext }: Props) => {
               </span>
             </div> */}
           </div>
-          <Button disabled={!!error} onClick={goNext}>
+          <Button disabled={!!error || !amount} onClick={goNext}>
             Continue
           </Button>
         </div>

@@ -26,7 +26,7 @@ const UsdSend = ({ close }: Props) => {
         break;
     }
   };
-  return <div className="">{displayStep()}</div>;
+  return <>{displayStep()}</>;
 };
 
 export default UsdSend;

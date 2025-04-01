@@ -55,14 +55,14 @@ const Categories = ({ goBack, goNext, loading }: Props) => {
     );
   }
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <SideWrapperHeader
         close={goBack}
         title="Select category"
         titleColor="text-zinc-900"
         rightComponent={<SkipButton />}
       />
-      <div className="flex flex-col h-[80vh] justify-between items-center">
+      <div className="flex flex-col h-full justify-between items-center">
         <div className="grid grid-cols-4 gap-y-5 gap-x-3">
           {data?.map((each, index) => {
             return (

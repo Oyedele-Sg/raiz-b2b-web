@@ -135,7 +135,7 @@ const ToRaizers = ({ close }: { close: () => void }) => {
         break;
     }
   };
-  return <div>{displayStep()}</div>;
+  return <>{displayStep()}</>;
 };
 
 export default ToRaizers;
