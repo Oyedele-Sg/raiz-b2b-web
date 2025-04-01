@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FetchTransactionCategoriesApi } from "@/services/transactions";
 import { ITransactionCategory } from "@/types/transactions";
 import Button from "../ui/Button";
+import Spinner from "../ui/Spinner";
 
 interface Props {
   goBack: () => void;
@@ -17,7 +18,7 @@ interface Props {
 const Categories = ({ goBack, goNext, loading }: Props) => {
   const { actions, category } = useSendStore();
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["transactions-category"],
     queryFn: () => FetchTransactionCategoriesApi(),
   });
@@ -44,15 +45,24 @@ const Categories = ({ goBack, goNext, loading }: Props) => {
       actions.selectCategory(newCategory);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-5 mt-10 justify-center items-center">
+        <Spinner />
+        <p>Fetching categories...</p>
+      </div>
+    );
+  }
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <SideWrapperHeader
         close={goBack}
         title="Select category"
         titleColor="text-zinc-900"
         rightComponent={<SkipButton />}
       />
-      <div className="flex flex-col h-[80vh] justify-between items-center">
+      <div className="flex flex-col h-full justify-between items-center">
         <div className="grid grid-cols-4 gap-y-5 gap-x-3">
           {data?.map((each, index) => {
             return (

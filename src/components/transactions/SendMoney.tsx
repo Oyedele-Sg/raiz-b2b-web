@@ -98,14 +98,17 @@ const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
     }
   };
   return (
-    <div className="w-full">
+    <div
+      className="w-full flex flex-col h-full
+    "
+    >
       <SideWrapperHeader
         close={goBack}
         title="Send Money"
         titleColor="text-zinc-900"
       />
-      <div className="flex flex-col h-[85vh] justify-between items-center w-full">
-        <div className="w-full">
+      <div className="flex flex-col h-full justify-between items-center w-full">
+        <div className="w-full h-full">
           <div className="flex flex-col justify-center items-center">
             <div className="relative w-10 h-10">
               <Avatar
@@ -230,7 +233,7 @@ const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
             ) : null}
           </div>
           <Button
-            disabled={!!error || !purpose}
+            disabled={!!error || !purpose || !amount}
             loading={loading}
             onClick={handleNext}
           >

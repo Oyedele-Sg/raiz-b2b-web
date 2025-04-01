@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import ToUsdBanks from "./ToUsdBanks";
-import ToInternational from "../toInternaional/ToInternational";
-import BankTypeModal from "./BankTypeModal";
-import SendOptions from "../../SendOptions";
+import ToUsdBanks from "./toBanks/ToUsdBanks";
+import ToInternational from "./toInternaional/ToInternational";
+import BankTypeModal from "./toBanks/BankTypeModal";
+import SendOptions from "../SendOptions";
+import ToGlobal from "./toGlobal/ToGlobal";
 
 export type bankTypeProp = "us" | "int" | "global";
 
@@ -45,11 +46,13 @@ const BankTransfer = ({ close }: Props) => {
             setBankType={setBankType}
           />
         );
+      case "global":
+        return <ToGlobal close={close} bankType={bankType} />;
       default:
         break;
     }
   };
-  return <div>{displayScreen()}</div>;
+  return <>{displayScreen()}</>;
 };
 
 export default BankTransfer;

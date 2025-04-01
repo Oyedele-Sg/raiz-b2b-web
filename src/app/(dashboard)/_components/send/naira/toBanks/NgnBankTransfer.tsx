@@ -132,7 +132,7 @@ const NgnBankTransfer = () => {
         break;
     }
   };
-  return <div>{displayStep()}</div>;
+  return <>{displayStep()}</>;
 };
 
 export default NgnBankTransfer;

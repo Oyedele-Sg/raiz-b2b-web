@@ -12,7 +12,7 @@ import { useUser } from "@/lib/hooks/useUser";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
 import { useQuery } from "@tanstack/react-query";
 import { GetTransactionFeeApi } from "@/services/transactions";
-import { bankTypeProp } from "./BankTransfer";
+import { bankTypeProp } from "../BankTransfer";
 
 export type ToUsdBanksStepsType =
   | "add-beneficiary"
@@ -150,7 +150,7 @@ const ToUsdBanks = ({ close, bankType }: Props) => {
     }
   };
 
-  return <div>{displayStep()}</div>;
+  return <>{displayStep()}</>;
 };
 
 export default ToUsdBanks;

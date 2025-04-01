@@ -135,7 +135,7 @@ const AddCardBeneficiary = ({ close }: Props) => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <SideWrapperHeader
         title="Send to Debit Card"
         close={close}
@@ -153,7 +153,7 @@ const AddCardBeneficiary = ({ close }: Props) => {
               <button
                 onClick={() => actions.selectUsdBeneficiary(user)}
                 key={index}
-                className="flex justify-start bg-[url('/images/')]    bg-raiz-usd-primary rounded-2xl p-4 w-full "
+                className="flex justify-start bg-[url('/images/')]  text-left   bg-raiz-usd-primary rounded-2xl p-4 w-full "
               >
                 <div className="flex flex-col gap-1">
                   <h5 className="text-white text-sm font-normal leading-tight ">
@@ -174,9 +174,7 @@ const AddCardBeneficiary = ({ close }: Props) => {
       {fields.length > 0 && (
         <form
           onSubmit={formik.handleSubmit}
-          className={`flex flex-col gap-[15px] justify-between ${
-            beneficiaries?.length > 0 ? "min-h-[75vh]" : "min-h-[80vh]"
-          } pb-7`}
+          className={`flex flex-col gap-[15px] justify-between h-full pb-4`}
         >
           <div className="flex flex-col gap-[15px] h-full">
             <InputField

@@ -114,7 +114,7 @@ const SwapDetail = ({
             <p className="text-zinc-900 text-xs font-normal leading-tight">
               Balance:
               <span className="text-zinc-900 text-xs font-bold leading-tight">
-                {getCurrencySymbol(swapFromCurrency)}
+                {getCurrencySymbol(selectedCurrency?.sign)}
                 {currentWallet?.account_balance}{" "}
               </span>
               <span>({selectedCurrency.name})</span>
