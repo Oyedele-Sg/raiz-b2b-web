@@ -69,3 +69,18 @@ export const tiers: ITiers[] = [
   { level: "Master", min: 400, max: 749 },
   { level: "Veteran", min: 750, max: 999 },
 ];
+
+export const monthsData = [
+  { id: "01", value: "Jan" },
+  { id: "02", value: "Feb" },
+  { id: "03", value: "Mar" },
+  { id: "04", value: "Apr" },
+  { id: "05", value: "May" },
+  { id: "06", value: "Jun" },
+  { id: "07", value: "Jul" },
+  { id: "08", value: "Aug" },
+  { id: "09", value: "Sep" },
+  { id: "10", value: "Oct" },
+  { id: "11", value: "Nov" },
+  { id: "12", value: "Dec" },
+];

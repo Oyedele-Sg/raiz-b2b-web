@@ -14,13 +14,11 @@ const ToDebitCard = ({ close }: Props) => {
     switch (step) {
       case "add-beneficiary":
         return <AddCardBeneficiary close={close} />;
-        break;
-
       default:
         break;
     }
   };
-  return <div>{displayScreen()}</div>;
+  return <>{displayScreen()}</>;
 };
 
 export default ToDebitCard;

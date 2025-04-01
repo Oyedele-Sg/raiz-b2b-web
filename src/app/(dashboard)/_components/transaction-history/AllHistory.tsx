@@ -3,8 +3,9 @@ import SideWrapperHeader from "@/components/SideWrapperHeader";
 import Avatar from "@/components/ui/Avatar";
 import SearchBox from "@/components/ui/SearchBox";
 import Spinner from "@/components/ui/Spinner";
-import { ITransaction } from "@/types/transactions";
+import { ITransaction, ITransactionClass } from "@/types/transactions";
 import {
+  convertField,
   convertTime,
   getCurrencySymbol,
   groupByDate,
@@ -19,11 +20,18 @@ import "@/styles/misc.css";
 interface Props {
   close: () => void;
   data: ITransaction[];
+  activities: ITransactionClass[];
   setSelectedTxn: Dispatch<SetStateAction<ITransaction | null>>;
   setScreen: Dispatch<SetStateAction<"all" | "filter" | "receipt" | "single">>;
   isLoading?: boolean;
   fetchNextPage: () => void;
   hasNextPage?: boolean;
+  filterParams: {
+    transaction_class_id: number;
+    start_date: string;
+    end_date: string;
+  };
+  clearFilters: () => void;
 }
 
 const AllHistory = ({
@@ -34,6 +42,9 @@ const AllHistory = ({
   isLoading,
   fetchNextPage,
   hasNextPage,
+  filterParams,
+  activities,
+  clearFilters,
 }: Props) => {
   const [searchTerm, setSearchTerm] = useState("");
   const filteredData = data.filter(
@@ -51,6 +62,14 @@ const AllHistory = ({
     setScreen("single");
     setSelectedTxn(txn);
   };
+  const paramPresent =
+    filterParams?.end_date ||
+    filterParams?.start_date ||
+    filterParams?.end_date;
+
+  const selectedTxnClass = activities?.find(
+    (i) => i.transaction_class_id === filterParams.transaction_class_id
+  );
   return (
     <div>
       <SideWrapperHeader
@@ -63,17 +82,38 @@ const AllHistory = ({
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button>
-          <Image
-            src={"/icons/filter.svg"}
-            alt="filter"
-            width={24}
-            height={24}
-            className="w-6 h-6"
-          />
-        </button>
+        <div className="relative">
+          <button onClick={() => setScreen("filter")}>
+            <Image
+              src={"/icons/filter.svg"}
+              alt="filter"
+              width={24}
+              height={24}
+              className="w-6 h-6"
+            />
+          </button>
+          {paramPresent && (
+            <div className="w-1 h-1 rounded-full bg-red-600 absolute top-[5px] right-0" />
+          )}
+        </div>
       </div>
       <div className="flex flex-col gap-5">
+        {selectedTxnClass && (
+          <div
+            className={`p-2 rounded-lg w-fit  border-[0.5px] flex items-center gap-2 leading-tight text-xs border-indigo-900 text-indigo-900 bg-indigo-100/60   `}
+          >
+            {convertField(selectedTxnClass?.transaction_class || "")}
+            <button onClick={clearFilters}>
+              <Image
+                src={"/icons/close.svg"}
+                width={8}
+                height={8}
+                alt="close"
+              />
+            </button>
+          </div>
+        )}
+
         {isLoading ? (
           <div className="absolute inset-0 flex items-center justify-center ">
             <Spinner />

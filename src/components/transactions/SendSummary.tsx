@@ -19,7 +19,7 @@ const SendSummary = ({ goBack, goNext, fee }: Props) => {
   const totalPayable = fee ? parseFloat(amount) + fee : amount;
 
   return (
-    <div>
+    <div className="h-full flex flex-col">
       <div className="flex flex-col items-center justify-center mb-4 text-zinc-900">
         <div className="w-12 h-12 mb-4 flex mx-auto items-center justify-center bg-violet-100 bg-opacity-60 rounded-3xl">
           <Image
@@ -38,7 +38,7 @@ const SendSummary = ({ goBack, goNext, fee }: Props) => {
           Send Summary
         </p>
       </div>
-      <div className="flex flex-col lg:h-[75vh] justify-between items-center w-full">
+      <div className="flex flex-col h-full justify-between items-center w-full">
         <div className="w-full flex flex-col gap-[15px]">
           {/* Amount */}
           <ListDetailItem

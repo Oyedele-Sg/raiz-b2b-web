@@ -52,7 +52,7 @@ const BankTransfer = ({ close }: Props) => {
         break;
     }
   };
-  return <div>{displayScreen()}</div>;
+  return <>{displayScreen()}</>;
 };
 
 export default BankTransfer;

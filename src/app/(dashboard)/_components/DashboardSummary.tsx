@@ -21,7 +21,7 @@ import { ACCOUNT_CURRENCIES } from "@/constants/misc";
 const DashboardSummary = () => {
   const { user } = useUser();
   const walletData = user?.business_account?.wallets;
-  const { currency } = useSendStore();
+  const { currency, actions: sendActions } = useSendStore();
   const { actions } = useSwapStore();
   const { setShowBalance, showBalance } = useUserStore();
   const { selectedCurrency } = useCurrencyStore();
@@ -44,6 +44,7 @@ const DashboardSummary = () => {
 
   const closeModal = () => {
     setOpenModal(null);
+    sendActions.reset(selectedCurrency.name);
   };
 
   const handleActionButton = (action: "send" | "request" | "swap") => {

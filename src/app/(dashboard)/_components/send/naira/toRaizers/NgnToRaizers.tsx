@@ -134,7 +134,7 @@ const NgnToRaizers = () => {
     }
   };
 
-  return <div>{displayStep()}</div>;
+  return <>{displayStep()}</>;
 };
 
 export default NgnToRaizers;
