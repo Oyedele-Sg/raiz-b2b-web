@@ -8,7 +8,7 @@ interface Props {
 }
 const ToDebitCard = ({ close }: Props) => {
   const [step, setStep] = useState<ToUsdBanksStepsType>("add-beneficiary");
-  // const [paymentError, setPaymentError] = useState("");
+
   console.log(setStep);
   const displayScreen = () => {
     switch (step) {
