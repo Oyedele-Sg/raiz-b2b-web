@@ -57,7 +57,7 @@ export interface ITransaction {
   currency: string;
   transaction_remarks: string;
   transaction_reference: string;
-  transaction_date_time: string;
+  transaction_date_time: string | Date;
   fee_amount: number;
   vat_amount: number;
   account_balance: number;
@@ -72,8 +72,8 @@ export interface ITransaction {
   beneficiary_bank: string | null;
   beneficiary_bank_name: string | null;
   transaction_report_id: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string | Date;
+  updated_at: string | Date;
   transaction_type: ITransactionType;
   transaction_status: ITransactionStatus;
   transaction_class: ITransactionClass;

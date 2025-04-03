@@ -47,6 +47,11 @@ const DashboardSummary = () => {
     sendActions.reset(selectedCurrency.name);
   };
 
+  const closeSwapModal = () => {
+    setOpenModal(null);
+    actions.reset();
+  };
+
   const handleActionButton = (action: "send" | "request" | "swap") => {
     if (!currentWallet) {
       toast.warning(
@@ -68,7 +73,7 @@ const DashboardSummary = () => {
       case "request":
         return <Request close={closeModal} />;
       case "swap":
-        return <Swap close={closeModal} />;
+        return <Swap close={closeSwapModal} />;
       default:
         break;
     }

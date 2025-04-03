@@ -12,7 +12,6 @@ import AddBeneficiary from "../toBanks/AddBeneficiary";
 import Categories from "@/components/transactions/Categories";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
-import { useUser } from "@/lib/hooks/useUser";
 import InternationPayout from "./InternationalPayout";
 import InternationalSendSummary from "@/components/transactions/InternationalSendSummary";
 import InternationalSendMoney from "@/components/transactions/InternationalSendMoney";
@@ -24,7 +23,6 @@ interface Props {
 }
 
 const ToInternational = ({ close, bankType }: Props) => {
-  const { user } = useUser();
   const [step, setStep] = useState<ToUsdBanksStepsType>("add-beneficiary");
   const [paymentError, setPaymentError] = useState("");
   const [paymentInitiationId, setPaymentInitiationId] = useState("");
@@ -80,24 +78,6 @@ const ToInternational = ({ close, bankType }: Props) => {
     actions.selectUSDSendOption(null);
     close();
   };
-
-  const receiptDetails = transactionDetail &&
-    user && {
-      senderName: user?.business_account?.business_name,
-      beneficiaryName: transactionDetail?.third_party_name,
-      beneficiaryAccount: transactionDetail?.beneficiary_account_number,
-      beneficiaryBank: transactionDetail?.beneficiary_bank_name,
-      senderAccount: transactionDetail?.source_account_number,
-      transactionAmount: transactionDetail?.transaction_amount,
-      purpose: transactionDetail?.transaction_remarks,
-      date: transactionDetail?.transaction_date_time,
-      transactionType: transactionDetail?.transaction_type?.transaction_type,
-      sessionId: transactionDetail?.session_id,
-      referenceNumber: transactionDetail?.transaction_reference,
-      status: transactionDetail?.transaction_status?.transaction_status,
-      currency: transactionDetail?.currency,
-      close: handleDone,
-    };
 
   const displayStep = () => {
     switch (step) {
@@ -158,7 +138,11 @@ const ToInternational = ({ close, bankType }: Props) => {
           )
         );
       case "receipt":
-        return receiptDetails && <RaizReceipt {...receiptDetails} />;
+        return (
+          transactionDetail && (
+            <RaizReceipt data={transactionDetail} close={handleDone} />
+          )
+        );
       default:
         break;
     }

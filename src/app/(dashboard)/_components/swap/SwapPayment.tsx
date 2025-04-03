@@ -1,6 +1,5 @@
 "use client";
 import EnterPin from "@/components/transactions/EnterPin";
-import { ACCOUNT_CURRENCIES } from "@/constants/misc";
 import { BuyDollarApi, SellDollarApi } from "@/services/transactions";
 import { useSwapStore } from "@/store/Swap";
 import { passwordHash } from "@/utils/helpers";
@@ -18,9 +17,7 @@ const SwapPayment = ({ goNext, setPaymentError, close }: Props) => {
   const [pin, setPin] = useState<string>("");
   const qc = useQueryClient();
   const swapMutation =
-    swapFromCurrency === ACCOUNT_CURRENCIES.NGN.name
-      ? BuyDollarApi
-      : SellDollarApi;
+    swapFromCurrency === "NGN" ? BuyDollarApi : SellDollarApi;
   const SwapMoneyMutation = useMutation({
     mutationFn: () =>
       swapMutation({

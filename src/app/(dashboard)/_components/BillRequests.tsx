@@ -15,7 +15,6 @@ import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
 import { convertTime, getCurrencySymbol } from "@/utils/helpers";
 import RejectBill from "./bill-requests/RejectBill";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
-import { useUser } from "@/lib/hooks/useUser";
 import SideModalWrapper from "./SideModalWrapper";
 
 type OpenModalType =
@@ -110,7 +109,6 @@ const BillRequests = () => {
   const [selectedRequest, setSelectedRequest] = useState<IBillRequest | null>(
     null
   );
-  const { user } = useUser();
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatusType>(null);
   const [paymentError, setPaymentError] = useState("");
   const [transactionDetail, setTransactionDetail] =
@@ -127,24 +125,6 @@ const BillRequests = () => {
   });
   const closePopModal = () => setOpenModal(null);
   const openPayModal = () => setOpenModal("pay");
-
-  const receiptDetails = transactionDetail &&
-    user && {
-      senderName: user?.business_account?.business_name,
-      beneficiaryName: transactionDetail?.third_party_name,
-      beneficiaryAccount: transactionDetail?.beneficiary_account_number,
-      beneficiaryBank: transactionDetail?.beneficiary_bank_name,
-      senderAccount: transactionDetail?.source_account_number,
-      transactionAmount: transactionDetail?.transaction_amount,
-      purpose: transactionDetail?.transaction_remarks,
-      date: transactionDetail?.transaction_date_time,
-      transactionType: transactionDetail?.transaction_type?.transaction_type,
-      sessionId: transactionDetail?.session_id,
-      referenceNumber: transactionDetail?.transaction_reference,
-      status: transactionDetail?.transaction_status?.transaction_status,
-      currency: transactionDetail?.currency,
-      close: closePopModal,
-    };
 
   const billRequests = data?.data || [];
 
@@ -202,9 +182,9 @@ const BillRequests = () => {
       }
       case "receipt":
         return (
-          receiptDetails && (
+          transactionDetail && (
             <SideModalWrapper close={() => {}}>
-              <RaizReceipt {...receiptDetails} />
+              <RaizReceipt close={closePopModal} data={transactionDetail} />
             </SideModalWrapper>
           )
         );

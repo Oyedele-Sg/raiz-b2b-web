@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { bankTypeProp } from "../BankTransfer";
 import { useSendStore } from "@/store/Send";
 import { ToUsdBanksStepsType } from "../toBanks/ToUsdBanks";
-import { useUser } from "@/lib/hooks/useUser";
 import { useQuery } from "@tanstack/react-query";
 import { GetTransactionFeeApi } from "@/services/transactions";
 import AddBeneficiary from "../toBanks/AddBeneficiary";
@@ -30,7 +29,6 @@ const ToGlobal = ({ close, bankType }: Props) => {
     status,
     transactionDetail,
   } = useSendStore();
-  const { user } = useUser();
   useEffect(() => {
     if (bankType) {
       setTimeout(() => setStep("add-beneficiary"), 200);
@@ -58,24 +56,6 @@ const ToGlobal = ({ close, bankType }: Props) => {
     actions.selectUSDSendOption(null);
     close();
   };
-
-  const receiptDetails = transactionDetail &&
-    user && {
-      senderName: user?.business_account?.business_name,
-      beneficiaryName: transactionDetail?.third_party_name,
-      beneficiaryAccount: transactionDetail?.beneficiary_account_number,
-      beneficiaryBank: transactionDetail?.beneficiary_bank_name,
-      senderAccount: transactionDetail?.source_account_number,
-      transactionAmount: transactionDetail?.transaction_amount,
-      purpose: transactionDetail?.transaction_remarks,
-      date: transactionDetail?.transaction_date_time,
-      transactionType: transactionDetail?.transaction_type?.transaction_type,
-      sessionId: transactionDetail?.session_id,
-      referenceNumber: transactionDetail?.transaction_reference,
-      status: transactionDetail?.transaction_status?.transaction_status,
-      currency: transactionDetail?.currency,
-      close: handleDone,
-    };
 
   const displayStep = () => {
     switch (step) {
@@ -132,7 +112,11 @@ const ToGlobal = ({ close, bankType }: Props) => {
           )
         );
       case "receipt":
-        return receiptDetails && <RaizReceipt {...receiptDetails} />;
+        return (
+          transactionDetail && (
+            <RaizReceipt close={handleDone} data={transactionDetail} />
+          )
+        );
       default:
         break;
     }

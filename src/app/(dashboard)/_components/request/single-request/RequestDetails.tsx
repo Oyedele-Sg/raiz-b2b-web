@@ -37,16 +37,24 @@ const RequestDetails = ({
   const { selectedCurrency } = useCurrencyStore();
   const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
+  const [rawAmount, setRawAmount] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/[^0-9.]/g, ""); // Remove non-numeric characters except "."
-    if (value.startsWith(".")) value = "0" + value; // Prepend 0 if starts with "."
+    let value = e.target.value.replace(/[^0-9.]/g, ""); // Remove non-numeric except "."
+    if (value.startsWith(".")) value = "0" + value;
 
-    // Prevent multiple decimal points
     const decimalCount = value.split(".").length - 1;
     if (decimalCount > 1) return;
 
+    const [integerPart, decimalPart] = value.split(".");
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const formattedValue =
+      decimalPart !== undefined
+        ? `${formattedInteger}.${decimalPart}`
+        : formattedInteger;
+
+    setRawAmount(formattedValue);
     setAmount(value);
 
     const result = amountSchema.safeParse(value);
@@ -57,22 +65,21 @@ const RequestDetails = ({
     }
   };
 
-  // Display value: show raw input while typing, formatted value when not focused
   const displayValue = () => {
     if (isFocused || !amount)
-      return amount ? `${selectedCurrency.sign}${amount}` : "";
-    const num = parseFloat(amount);
+      return amount ? `${selectedCurrency.sign}${rawAmount}` : "";
+    const num = parseFloat(rawAmount);
     return isNaN(num) ? "" : `${selectedCurrency.sign}${num.toFixed(2)}`;
   };
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <SideWrapperHeader
         close={goBack}
         title="Request Money"
         titleColor="text-zinc-900"
       />
-      <div className="flex flex-col h-[80vh] justify-between items-center">
+      <div className="flex flex-col h-full  justify-between items-center">
         <div className="flex flex-col justify-center items-center">
           <div className="relative w-10 h-10">
             <Image
@@ -123,7 +130,7 @@ const RequestDetails = ({
           />
           {error && <ErrorMessage message={error} />}
           <input
-            className="outline-none h-7 bg-transparent w-fit mx-auto text-center text-zinc-900 placeholder:text-zinc-700 text-base font-normal  leading-normal"
+            className="outline-none w-full h-7 bg-transparent  mx-auto text-center text-zinc-900 placeholder:text-zinc-700 text-base font-normal  leading-normal"
             placeholder={`What is the purpose?`}
             value={narration}
             onChange={(e) => setNarration(e.target.value)}

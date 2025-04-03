@@ -61,6 +61,7 @@ const AddCardBeneficiary = ({ close }: Props) => {
       return FetchUsBeneficiariesApi(params);
     },
   });
+
   const fields: FormField[] = fieldsData?.card || [];
   const beneficiaries = data?.beneficiaries || [];
   const createValidationSchema = () => {
