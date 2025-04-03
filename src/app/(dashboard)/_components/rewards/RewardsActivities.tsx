@@ -6,6 +6,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { IRewardActivityResponse } from "@/types/services";
 import InfiniteScroll from "react-infinite-scroll-component";
 import dayjs from "dayjs";
+import { convertField } from "@/utils/helpers";
 
 const RewardsActivities = () => {
   const limit = 10;
@@ -73,7 +74,9 @@ const RewardsActivities = () => {
                     />
                     <div className="">
                       <p className="text-raiz-gray-950 text-sm capitalize font-semibold">
-                        {each?.reward_activity_type?.reward_activity_type}
+                        {convertField(
+                          each?.reward_activity_type?.reward_activity_type
+                        )}
                       </p>
                       <p className="text-raiz-gray-950 text-xs opacity-50 leading-[15px]">
                         {dayjs(each.created_at).format("D MMM YYYY [@] h:mm A")}

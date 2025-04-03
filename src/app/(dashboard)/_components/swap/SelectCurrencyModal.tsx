@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useUser } from "@/lib/hooks/useUser";
 import { useSwapStore } from "@/store/Swap";
 import { IWallet } from "@/types/user";
-import { ACCOUNT_CURRENCIES } from "@/constants/misc";
 
 interface Props {
   close: () => void;
@@ -27,19 +26,12 @@ const SelectCurrencyModal = ({ close }: Props) => {
   }, [search]);
 
   const handleSelect = (wallet: IWallet) => {
-    if (wallet.wallet_type.currency === ACCOUNT_CURRENCIES.NGN.name) {
-      actions.switchSwapWallet(
-        ACCOUNT_CURRENCIES.NGN.name,
-        ACCOUNT_CURRENCIES.USD.name,
-        wallets
-      );
+    if (wallet.wallet_type.currency === "NGN") {
+      actions.switchSwapWallet("USD", "NGN", wallets);
     } else {
-      actions.switchSwapWallet(
-        ACCOUNT_CURRENCIES.USD.name,
-        ACCOUNT_CURRENCIES.NGN.name,
-        wallets
-      );
+      actions.switchSwapWallet("NGN", "USD", wallets);
     }
+    actions.setAmount("");
     close();
   };
   return (

@@ -6,7 +6,7 @@ import { IWallet } from "@/types/user";
 type CurrencyTypeKey = keyof typeof ACCOUNT_CURRENCIES;
 
 export interface SwapState {
-  swapFromWallet: Record<string, any> | null;
+  swapFromWallet: Record<any, any> | null;
   swapToWallet: Record<string, any> | null;
   swapFromCurrency: CurrencyTypeKey;
   swapToCurrency: CurrencyTypeKey;

@@ -11,7 +11,6 @@ import SendSummary from "@/components/transactions/SendSummary";
 import ExternalPayout from "./ExternalPayout";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
-import { useUser } from "@/lib/hooks/useUser";
 
 type NGNSendToBankStepType =
   | "select-user"
@@ -23,7 +22,6 @@ type NGNSendToBankStepType =
   | "receipt";
 
 const NgnBankTransfer = () => {
-  const { user } = useUser();
   const { externalUser, actions, amount, currency, status, transactionDetail } =
     useSendStore();
   const [step, setStep] = useState<NGNSendToBankStepType>("select-user");
@@ -53,24 +51,6 @@ const NgnBankTransfer = () => {
   };
 
   //   const totalPayable = fee ? parseFloat(amount) + fee : 0;
-
-  const receiptDetails = transactionDetail &&
-    user && {
-      senderName: user?.business_account?.business_name,
-      beneficiaryName: transactionDetail?.third_party_name,
-      beneficiaryAccount: transactionDetail?.beneficiary_account_number,
-      beneficiaryBank: transactionDetail?.beneficiary_bank_name,
-      senderAccount: transactionDetail?.source_account_number,
-      transactionAmount: transactionDetail?.transaction_amount,
-      purpose: transactionDetail?.transaction_remarks,
-      date: transactionDetail?.transaction_date_time,
-      transactionType: transactionDetail?.transaction_type?.transaction_type,
-      sessionId: transactionDetail?.session_id,
-      referenceNumber: transactionDetail?.transaction_reference,
-      status: transactionDetail?.transaction_status?.transaction_status,
-      currency: transactionDetail?.currency,
-      close: handleDone,
-    };
 
   const displayStep = () => {
     switch (step) {
@@ -127,7 +107,11 @@ const NgnBankTransfer = () => {
           )
         );
       case "receipt":
-        return receiptDetails && <RaizReceipt {...receiptDetails} />;
+        return (
+          transactionDetail && (
+            <RaizReceipt close={handleDone} data={transactionDetail} />
+          )
+        );
       default:
         break;
     }

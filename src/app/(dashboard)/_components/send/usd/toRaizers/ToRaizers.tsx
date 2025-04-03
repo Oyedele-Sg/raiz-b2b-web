@@ -2,13 +2,15 @@
 import React, { useEffect, useState } from "react";
 import { useSendStore } from "@/store/Send";
 import FindRecipients from "@/components/transactions/FindRecipients";
-import SendDetail from "./SendDetail";
 import Categories from "@/components/transactions/Categories";
 import SendSummary from "@/components/transactions/SendSummary";
 import Payout from "./Payout";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
 import { useUser } from "@/lib/hooks/useUser";
+import { useP2PBeneficiaries } from "@/lib/hooks/useP2pBeneficiaries";
+import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
+import SendMoney from "@/components/transactions/SendMoney";
 
 export type SendToRaizStepType =
   | "select-user"
@@ -31,6 +33,11 @@ const ToRaizers = ({ close }: { close: () => void }) => {
   const { user } = useUser();
   const [step, setStep] = useState<SendToRaizStepType>("select-user");
   const [paymentError, setPaymentError] = useState("");
+  const currentWallet = useCurrentWallet(user);
+  const { favourites, recents } = useP2PBeneficiaries({
+    walletId: currentWallet?.wallet_id,
+    limit: 50,
+  });
 
   useEffect(() => {
     if (step === "select-user" && selectedUser) {
@@ -40,6 +47,7 @@ const ToRaizers = ({ close }: { close: () => void }) => {
 
   const goBackToStep1 = () => {
     actions.selectUser(null);
+    actions.setAmountAndRemark({ amount: "", purpose: "" });
     setStep("select-user");
   };
 
@@ -48,31 +56,13 @@ const ToRaizers = ({ close }: { close: () => void }) => {
     close();
   };
 
-  const receiptDetails = transactionDetail &&
-    user && {
-      senderName: user?.business_account?.business_name,
-      beneficiaryName: transactionDetail?.third_party_name,
-      beneficiaryAccount: transactionDetail?.beneficiary_account_number,
-      beneficiaryBank: transactionDetail?.beneficiary_bank_name,
-      senderAccount: transactionDetail?.source_account_number,
-      transactionAmount: transactionDetail?.transaction_amount,
-      purpose: transactionDetail?.transaction_remarks,
-      date: transactionDetail?.transaction_date_time,
-      transactionType: transactionDetail?.transaction_type?.transaction_type,
-      sessionId: transactionDetail?.session_id,
-      referenceNumber: transactionDetail?.transaction_reference,
-      status: transactionDetail?.transaction_status?.transaction_status,
-      currency: transactionDetail?.currency,
-      close: handleDone,
-    };
-
   const displayStep = () => {
     switch (step) {
       case "select-user":
         return (
           <FindRecipients
-            recentUsers={[]}
-            beneficiaries={[]}
+            recentUsers={recents}
+            beneficiaries={favourites}
             setSelectedUser={actions.selectUser}
             header
             goBack={() => actions.selectUSDSendOption(null)}
@@ -80,7 +70,7 @@ const ToRaizers = ({ close }: { close: () => void }) => {
         );
       case "details":
         return (
-          <SendDetail
+          <SendMoney
             goBack={goBackToStep1}
             goNext={() => setStep("category")}
             fee={0}
@@ -130,7 +120,11 @@ const ToRaizers = ({ close }: { close: () => void }) => {
           )
         );
       case "receipt":
-        return receiptDetails && <RaizReceipt {...receiptDetails} />;
+        return (
+          transactionDetail && (
+            <RaizReceipt data={transactionDetail} close={handleDone} />
+          )
+        );
       default:
         break;
     }
