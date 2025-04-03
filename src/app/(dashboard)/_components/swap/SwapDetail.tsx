@@ -1,6 +1,4 @@
 import SideWrapperHeader from "@/components/SideWrapperHeader";
-import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
-import { useUser } from "@/lib/hooks/useUser";
 import { useSwapStore } from "@/store/Swap";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
 import React, { useState } from "react";
@@ -28,12 +26,16 @@ const SwapDetail = ({
   timeLeft,
   loading,
 }: Props) => {
-  const { user } = useUser();
-  const currentWallet = useCurrentWallet(user);
   const { selectedCurrency } = useCurrencyStore();
   const [error, setError] = useState<string | null>(null);
-  const { amount, actions, swapFromCurrency, swapToCurrency, swapFromWallet } =
-    useSwapStore();
+  const {
+    amount,
+    actions,
+    swapFromCurrency,
+    swapToCurrency,
+    swapFromWallet,
+    swapToWallet,
+  } = useSwapStore();
   const [showCurrency, setShowCurrency] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const amountSchema = z
@@ -44,7 +46,7 @@ const SwapDetail = ({
     })
     .refine(
       (val) => {
-        const totalAvailable = currentWallet?.account_balance || 0;
+        const totalAvailable = swapFromWallet?.account_balance || 0;
         return parseFloat(val) <= totalAvailable;
       },
       {
@@ -86,6 +88,8 @@ const SwapDetail = ({
     const secs = seconds % 60;
     return `${minutes}:${secs < 10 ? "0" + secs : secs}`;
   };
+
+  // console.log("sswaFrom", swapFromWallet);
   return (
     <div>
       <SideWrapperHeader
@@ -108,14 +112,14 @@ const SwapDetail = ({
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
             />
-            {error && <ErrorMessage message={error} />}
+            {error && amount && <ErrorMessage message={error} />}
           </div>
           <div className="px-4 py-2 mx-auto bg-indigo-100 bg-opacity-60 rounded-2xl flex w-fit flex-col justify-center items-center gap-2">
             <p className="text-zinc-900 text-xs font-normal leading-tight">
               Balance:
               <span className="text-zinc-900 text-xs font-bold leading-tight">
-                {getCurrencySymbol(selectedCurrency?.sign)}
-                {currentWallet?.account_balance}{" "}
+                {getCurrencySymbol(swapFromCurrency)}
+                {swapFromWallet?.account_balance}{" "}
               </span>
               <span>({selectedCurrency.name})</span>
             </p>
@@ -123,13 +127,20 @@ const SwapDetail = ({
         </div>
         <div className="pb-5">
           <p className="text-zinc-900 text-sm font-medium mb-3 font-brSonoma leading-normal">
-            Swap currency
+            Swap Destination
           </p>
           <div className="flex justify-between items-center p-3.5 bg-gray-100 rounded-xl">
             <div className="flex gap-1 items-center">
-              <Image src={"/icons/ngn.svg"} width={24} height={14} alt="" />
+              <Image
+                src={`/icons/${
+                  swapToCurrency === "NGN" ? "ngn" : "dollar"
+                }.svg`}
+                width={24}
+                height={14}
+                alt=""
+              />
               <span className="text-zinc-900 text-sm font-normal leading-tight">
-                {swapFromWallet?.wallet_type?.wallet_type_name}
+                {swapToWallet?.wallet_type?.wallet_type_name}
               </span>
             </div>
             <button

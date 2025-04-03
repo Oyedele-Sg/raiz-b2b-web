@@ -121,13 +121,25 @@ const Swap = ({ close }: Props) => {
         );
       case "status":
         return (
-          <SwapStatusModal
-            status={status}
-            close={handleDone}
-            error={paymentError}
-            tryAgain={() => setStep("confirmation")}
-            viewReceipt={() => setStep("receipt")}
-          />
+          <>
+            <SwapDetail
+              close={close}
+              goNext={() => {
+                setStep("confirmation");
+              }}
+              exchangeRate={rate}
+              recipientAmount={recipientAmount}
+              timeLeft={timeLeft}
+              loading={isPending}
+            />
+            <SwapStatusModal
+              status={status}
+              close={handleDone}
+              error={paymentError}
+              tryAgain={() => setStep("confirmation")}
+              viewReceipt={() => setStep("receipt")}
+            />
+          </>
         );
 
       default:
