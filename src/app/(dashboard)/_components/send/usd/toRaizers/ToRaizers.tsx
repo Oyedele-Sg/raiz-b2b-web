@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { useSendStore } from "@/store/Send";
 import FindRecipients from "@/components/transactions/FindRecipients";
-import SendDetail from "./SendDetail";
 import Categories from "@/components/transactions/Categories";
 import SendSummary from "@/components/transactions/SendSummary";
 import Payout from "./Payout";
@@ -11,6 +10,7 @@ import RaizReceipt from "@/components/transactions/RaizReceipt";
 import { useUser } from "@/lib/hooks/useUser";
 import { useP2PBeneficiaries } from "@/lib/hooks/useP2pBeneficiaries";
 import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
+import SendMoney from "@/components/transactions/SendMoney";
 
 export type SendToRaizStepType =
   | "select-user"
@@ -47,6 +47,7 @@ const ToRaizers = ({ close }: { close: () => void }) => {
 
   const goBackToStep1 = () => {
     actions.selectUser(null);
+    actions.setAmountAndRemark({ amount: "", purpose: "" });
     setStep("select-user");
   };
 
@@ -87,7 +88,7 @@ const ToRaizers = ({ close }: { close: () => void }) => {
         );
       case "details":
         return (
-          <SendDetail
+          <SendMoney
             goBack={goBackToStep1}
             goNext={() => setStep("category")}
             fee={0}
