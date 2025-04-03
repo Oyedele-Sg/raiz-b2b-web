@@ -147,7 +147,9 @@ const RaizReceipt = ({ close, data }: IRaizReceipt) => {
             title="Transaction Type"
             value={data?.transaction_type?.transaction_type || ""}
           />
-          <ListDetailItem title="SessionID" value={data?.session_id || ""} />
+          {data?.session_id && (
+            <ListDetailItem title="SessionID" value={data?.session_id || ""} />
+          )}
           <ListDetailItem
             title="Reference Number"
             value={data?.transaction_reference || ""}
