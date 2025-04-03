@@ -19,12 +19,16 @@ import {
 } from "@/types/services";
 import { convertField, truncateString } from "@/utils/helpers";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Form, Formik } from "formik";
-import React, { useState } from "react";
+import { Form, Formik, FormikProps } from "formik";
+import React, { useRef, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import USBeneficiaryModal from "../toBanks/USBeneficiaryModal";
+import ModalTrigger from "@/components/ui/ModalTrigger";
+import ChooseCountryModal from "./ChooseCountryModal";
+import { ICountry } from "@/types/misc";
+import InputLabel from "@/components/ui/InputLabel";
 
 interface FormValues {
   label: string;
@@ -37,6 +41,8 @@ interface Props {
 const GlobalBeneficiary = ({ close }: Props) => {
   const { actions } = useSendStore();
   const [showBeneficiary, setShowBeneficiary] = useState(false);
+  const [showCountry, setShowCountry] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState<ICountry | null>(null);
   const { data: fieldsData, isLoading: fieldLoading } = useQuery({
     queryKey: ["us-bank-benefiary-fields"],
     queryFn: GetUSBeneficiaryFormFields,
@@ -56,6 +62,10 @@ const GlobalBeneficiary = ({ close }: Props) => {
       return FetchUsBeneficiariesApi(params);
     },
   });
+
+  const formikRef = useRef<FormikProps<FormValues>>(null);
+
+  console.log("errors", formikRef.current?.errors);
 
   const fields: FormField[] = fieldsData?.international_bank || [];
   const beneficiaries = data?.beneficiaries || [];
@@ -81,6 +91,12 @@ const GlobalBeneficiary = ({ close }: Props) => {
     });
 
     return z.object(schemaShape);
+  };
+
+  const handleCountrySelect = (country: ICountry) => {
+    setSelectedCountry(country);
+    setShowCountry(false);
+    formikRef?.current?.setFieldValue("country", country.country_name);
   };
 
   const qc = useQueryClient();
@@ -114,6 +130,7 @@ const GlobalBeneficiary = ({ close }: Props) => {
         type: values.type,
         label: values.label,
         optionType: "bank",
+        country: values.country,
       };
       await AddBeneficiaryMutation.mutateAsync(payload);
       resetForm();
@@ -173,6 +190,7 @@ const GlobalBeneficiary = ({ close }: Props) => {
       </div>
       {fields.length > 0 && (
         <Formik
+          innerRef={formikRef}
           initialValues={initialValues}
           validationSchema={toFormikValidationSchema(createValidationSchema())}
           onSubmit={handleSubmit}
@@ -242,7 +260,7 @@ const GlobalBeneficiary = ({ close }: Props) => {
                           </div>
                         )}
                       </div>
-                    ) : (
+                    ) : field.name !== "country" ? (
                       <InputField
                         label={convertField(field.name)}
                         name={field.name}
@@ -261,6 +279,15 @@ const GlobalBeneficiary = ({ close }: Props) => {
                             : null
                         }
                       />
+                    ) : (
+                      <>
+                        <InputLabel content="Country" />
+                        <ModalTrigger
+                          placeholder="Select country"
+                          value={selectedCountry?.country_name || ""}
+                          onClick={() => setShowCountry(true)}
+                        />
+                      </>
                     )}
                   </div>
                 ))}
@@ -293,6 +320,12 @@ const GlobalBeneficiary = ({ close }: Props) => {
         <USBeneficiaryModal
           close={() => setShowBeneficiary(false)}
           users={beneficiaries}
+        />
+      ) : null}
+      {showCountry ? (
+        <ChooseCountryModal
+          close={() => setShowCountry(false)}
+          onChange={handleCountrySelect}
         />
       ) : null}
     </div>

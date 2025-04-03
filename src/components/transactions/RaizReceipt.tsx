@@ -144,7 +144,7 @@ const RaizReceipt = ({
             </span>
           </div>
         </div>
-        <div className="rounded-b-xl mt-7 bg-primary flex gap-3 px-5 py-4 items-center">
+        <div className="rounded-b-xl mt-7 bg-primary flex gap-3 px-5 py-4 items-center w-full">
           <div className="bg-white flex justify-center items-center w-11 h-11 px-0.5 rounded">
             <Image
               className="w-10 h-10"

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import TxnReceiptDetail from "./TxnReceiptDetail";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
 import { useUser } from "@/lib/hooks/useUser";
+import SideModalWrapper from "../SideModalWrapper";
 
 interface Props {
   close: () => void;
@@ -44,7 +45,14 @@ const TxnReceipt = ({ close, transaction }: Props) => {
           />
         );
       case 2:
-        return receiptDetails && <RaizReceipt {...receiptDetails} />;
+        return (
+          receiptDetails && (
+            <SideModalWrapper close={close}>
+              <RaizReceipt {...receiptDetails} />
+            </SideModalWrapper>
+          )
+        );
+
       default:
         break;
     }

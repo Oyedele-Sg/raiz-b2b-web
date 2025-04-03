@@ -66,13 +66,13 @@ const RequestDetails = ({
   };
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <SideWrapperHeader
         close={goBack}
         title="Request Money"
         titleColor="text-zinc-900"
       />
-      <div className="flex flex-col h-[80vh] justify-between items-center">
+      <div className="flex flex-col h-full  justify-between items-center">
         <div className="flex flex-col justify-center items-center">
           <div className="relative w-10 h-10">
             <Image
