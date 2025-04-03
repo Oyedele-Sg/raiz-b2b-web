@@ -5,40 +5,15 @@ import ListDetailItem from "../ui/ListDetailItem";
 import dayjs from "dayjs";
 import { convertTime } from "@/utils/helpers";
 import html2canvas from "html2canvas";
+import { ITransaction } from "@/types/transactions";
+import { useUser } from "@/lib/hooks/useUser";
 
 export interface IRaizReceipt {
-  senderName: string;
-  beneficiaryName: string;
-  beneficiaryAccount: string;
-  beneficiaryBank: string;
-  senderAccount: string;
-  transactionAmount: number;
-  purpose: string;
-  date: Date;
-  transactionType: string;
-  sessionId: string;
-  referenceNumber: string;
-  status: string;
-  currency: string;
   close: () => void;
+  data: ITransaction;
 }
 
-const RaizReceipt = ({
-  senderName,
-  beneficiaryName,
-  currency,
-  senderAccount,
-  transactionAmount,
-  beneficiaryAccount,
-  beneficiaryBank,
-  referenceNumber,
-  purpose,
-  date,
-  transactionType,
-  sessionId,
-  status,
-  close,
-}: IRaizReceipt) => {
+const RaizReceipt = ({ close, data }: IRaizReceipt) => {
   const receiptRef = useRef<HTMLDivElement>(null);
   const handleShareReceipt = async () => {
     if (!receiptRef.current) return;
@@ -56,7 +31,7 @@ const RaizReceipt = ({
       //   type: "image/png",
       // });
       const link = document.createElement("a");
-      link.download = `receipt-${referenceNumber}.png`;
+      link.download = `receipt-${data?.transaction_reference}.png`;
       link.href = dataUrl;
       link.click();
 
@@ -66,6 +41,7 @@ const RaizReceipt = ({
       alert("Failed to generate receipt. Please try again.");
     }
   };
+  const { user } = useUser();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -77,6 +53,34 @@ const RaizReceipt = ({
     // Cleanup timeout on unmount
     return () => clearTimeout(timer);
   }, []);
+
+  const getSender = () => {
+    let sender = "";
+
+    if (data?.transaction_type?.transaction_type === "credit") {
+      sender = data.third_party_name;
+    }
+
+    if (data?.transaction_type?.transaction_type === "debit") {
+      sender = user?.business_account?.business_name || "";
+    }
+
+    return sender;
+  };
+
+  const getBeneficiary = () => {
+    let beneficiary = "";
+
+    if (data?.transaction_type?.transaction_type === "credit") {
+      beneficiary = user?.business_account?.business_name || "";
+    }
+
+    if (data?.transaction_type?.transaction_type === "debit") {
+      beneficiary = data.third_party_name;
+    }
+
+    return beneficiary;
+  };
 
   return (
     <div>
@@ -98,49 +102,68 @@ const RaizReceipt = ({
           Receipt
         </h6>
         <p className=" text-zinc-900 text-xl font-bold mt-[5px]  leading-normal">
-          {currency}
-          {transactionAmount?.toLocaleString()}
+          {data?.currency}
+          {data?.transaction_amount?.toLocaleString()}
         </p>
         <div className="flex flex-col gap-2  w-full  mt-5 px-5 lg:px-2 xl:px-5 pt-5 border-t border-dashed border-zinc-200">
           {/* Beneficiary */}
-          <ListDetailItem title="Beneficiary" value={beneficiaryName} />
-          <ListDetailItem title="Sender" value={senderName} />
-          {senderAccount && (
-            <ListDetailItem title="Account Debited" value={senderAccount} />
-          )}
-          {beneficiaryAccount && (
+          <ListDetailItem title="Beneficiary" value={getBeneficiary()} />
+          <ListDetailItem title="Sender" value={getSender()} />
+          {data?.source_account_number && (
             <ListDetailItem
-              title="Receiver Account"
-              value={beneficiaryAccount}
+              title="Account Debited"
+              value={data?.source_account_number}
             />
           )}
-          {beneficiaryBank && (
-            <ListDetailItem title="Receiver Bank" value={beneficiaryBank} />
+          {data?.beneficiary_account_number && (
+            <ListDetailItem
+              title="Receiver Account"
+              value={data?.beneficiary_account_number}
+            />
           )}
-          <ListDetailItem title="Purpose" value={purpose} />
+          {data?.beneficiary_bank_name && (
+            <ListDetailItem
+              title="Receiver Bank"
+              value={data?.beneficiary_bank_name}
+            />
+          )}
+          <ListDetailItem
+            title="Purpose"
+            value={data?.transaction_remarks || ""}
+          />
           <ListDetailItem
             title="Date"
-            value={dayjs(convertTime(date)).format("MMM DD, YYYY")}
+            value={dayjs(convertTime(data?.transaction_date_time || "")).format(
+              "MMM DD, YYYY"
+            )}
           />
           <ListDetailItem
             title="Time"
-            value={dayjs(convertTime(date)).format("hh:mm a")}
+            value={dayjs(convertTime(data?.transaction_date_time || "")).format(
+              "hh:mm a"
+            )}
           />
-          <ListDetailItem title="Transaction Type" value={transactionType} />
-          <ListDetailItem title="SessionID" value={sessionId} />
-          <ListDetailItem title="Reference Number" value={referenceNumber} />
+          <ListDetailItem
+            title="Transaction Type"
+            value={data?.transaction_type?.transaction_type || ""}
+          />
+          <ListDetailItem title="SessionID" value={data?.session_id || ""} />
+          <ListDetailItem
+            title="Reference Number"
+            value={data?.transaction_reference || ""}
+          />
           <div className="flex justify-between items-center border-t border-zinc-200 pt-[18px]">
             <span className="text-xs font-normal leading-tight">Status</span>
             <span
               className={`${
-                status === "completed"
+                data?.transaction_status?.transaction_status === "completed"
                   ? "text-green-600"
-                  : status === "failed"
+                  : data?.transaction_status?.transaction_status === "failed"
                   ? "text-red-600"
                   : "text-orange-400"
-              } text-sm font-semibold leading-snug`}
+              } text-sm font-semibold leading-snug capitalize`}
             >
-              {status}
+              {data?.transaction_status?.transaction_status}
             </span>
           </div>
         </div>

@@ -38,6 +38,7 @@ const SwapDetail = ({
   } = useSwapStore();
   const [showCurrency, setShowCurrency] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [rawAmount, setRawAmount] = useState("");
   const amountSchema = z
     .string()
     .regex(/^\d*\.?\d{0,2}$/, "Enter a valid amount (max 2 decimal places)")
@@ -54,30 +55,35 @@ const SwapDetail = ({
       }
     );
 
-  // console.log("ccxx", swapFromWallet);
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
-    value = value.replace(/[^0-9.]/g, "");
-
-    const parts = value.split(".");
-    if (parts.length > 2) {
-      value = parts[0] + "." + parts.slice(1).join("");
-    }
-    if (parts[1] && parts[1].length > 2) {
-      value = `${parts[0]}.${parts[1].slice(0, 2)}`;
-    }
+    let value = e.target.value.replace(/[^0-9.]/g, ""); // Remove non-numeric except "."
     if (value.startsWith(".")) value = "0" + value;
-    if (value === "") value = "";
 
+    const decimalCount = value.split(".").length - 1;
+    if (decimalCount > 1) return;
+
+    const [integerPart, decimalPart] = value.split(".");
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const formattedValue =
+      decimalPart !== undefined
+        ? `${formattedInteger}.${decimalPart}`
+        : formattedInteger;
+
+    setRawAmount(formattedValue);
     actions.setAmount(value);
-    const result = amountSchema.safeParse(value || "0");
-    setError(result.success ? null : result.error.errors[0].message);
+
+    const result = amountSchema.safeParse(value);
+    if (!result.success) {
+      setError(result.error.errors[0].message);
+    } else {
+      setError(null);
+    }
   };
 
   const displayValue = () => {
     if (isFocused || !amount)
-      return amount ? `${getCurrencySymbol(swapFromCurrency)}${amount}` : "";
-    const num = parseFloat(amount);
+      return amount ? `${getCurrencySymbol(swapFromCurrency)}${rawAmount}` : "";
+    const num = parseFloat(rawAmount);
     return isNaN(num)
       ? ""
       : `${getCurrencySymbol(swapFromCurrency)}${num.toFixed(2)}`;
@@ -110,7 +116,6 @@ const SwapDetail = ({
               value={displayValue()}
               onChange={handleAmountChange}
               onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
             />
             {error && amount && <ErrorMessage message={error} />}
           </div>
@@ -119,7 +124,7 @@ const SwapDetail = ({
               Balance:
               <span className="text-zinc-900 text-xs font-bold leading-tight">
                 {getCurrencySymbol(swapFromCurrency)}
-                {swapFromWallet?.account_balance}{" "}
+                {swapFromWallet?.account_balance.toLocaleString()}{" "}
               </span>
               <span>({selectedCurrency.name})</span>
             </p>
@@ -188,7 +193,7 @@ const SwapDetail = ({
               <span className=" font-semibold"> {formatTime(timeLeft)}</span>
             </p>
           </div>
-          <Button disabled={loading || !!error} onClick={goNext}>
+          <Button disabled={loading || !!error || !amount} onClick={goNext}>
             {loading ? "Fetching rates..." : "Continue"}
           </Button>
         </div>

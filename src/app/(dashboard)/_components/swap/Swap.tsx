@@ -59,13 +59,19 @@ const Swap = ({ close }: Props) => {
 
   const recipientAmount = exchangeRateData
     ? swapToCurrency === "NGN"
-      ? (
-          Number(Number(amount || 0).toFixed(2)) *
-            Number(exchangeRateData.buy_rate.toFixed(2)) || 1
-        )?.toLocaleString()
-      : (
-          Number(amount || 0) / exchangeRateData.sell_rate || 1
-        )?.toLocaleString()
+      ? Number(
+          Number(amount || 0) * Number(exchangeRateData.buy_rate)
+        ).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }) || "1.00"
+      : Number(Number(amount || 0) / exchangeRateData.sell_rate).toLocaleString(
+          undefined,
+          {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }
+        ) || "1.00"
     : "0.00";
 
   const handleDone = () => {
