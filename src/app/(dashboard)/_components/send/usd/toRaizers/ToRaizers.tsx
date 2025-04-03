@@ -9,6 +9,8 @@ import Payout from "./Payout";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
 import { useUser } from "@/lib/hooks/useUser";
+import { useP2PBeneficiaries } from "@/lib/hooks/useP2pBeneficiaries";
+import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
 
 export type SendToRaizStepType =
   | "select-user"
@@ -31,6 +33,11 @@ const ToRaizers = ({ close }: { close: () => void }) => {
   const { user } = useUser();
   const [step, setStep] = useState<SendToRaizStepType>("select-user");
   const [paymentError, setPaymentError] = useState("");
+  const currentWallet = useCurrentWallet(user);
+  const { favourites, recents } = useP2PBeneficiaries({
+    walletId: currentWallet?.wallet_id,
+    limit: 50,
+  });
 
   useEffect(() => {
     if (step === "select-user" && selectedUser) {
@@ -71,8 +78,8 @@ const ToRaizers = ({ close }: { close: () => void }) => {
       case "select-user":
         return (
           <FindRecipients
-            recentUsers={[]}
-            beneficiaries={[]}
+            recentUsers={recents}
+            beneficiaries={favourites}
             setSelectedUser={actions.selectUser}
             header
             goBack={() => actions.selectUSDSendOption(null)}
