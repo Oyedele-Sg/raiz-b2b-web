@@ -47,7 +47,7 @@ const TransactionRow = ({
           <p className="opacity-50 text-raiz-gray-950 text-xs font-normal leading-[15px]">
             {isToday
               ? `Today, ${date.format("HH:mm")}`
-              : date.format("DD MMM YYYY @ h:mm A")}
+              : date.format("DD MMM YYYY @ HH:mm")}
           </p>
         </div>
       </div>
