@@ -173,7 +173,7 @@ const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
                 Balance:
                 <span className="text-zinc-900 text-xs font-bold leading-tight">
                   {selectedCurrency?.sign}
-                  {currentWallet?.account_balance}{" "}
+                  {currentWallet?.account_balance?.toLocaleString()}{" "}
                 </span>
                 <span>({selectedCurrency.name})</span>
               </p>

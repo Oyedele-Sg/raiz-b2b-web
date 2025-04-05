@@ -13,6 +13,9 @@ import { z } from "zod";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 import { toast } from "sonner";
 import { customDateType } from "./TxnHistory";
+import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
+import { useUser } from "@/lib/hooks/useUser";
+import { GenerateStatementApi } from "@/services/transactions";
 
 interface Props {
   close: () => void;
@@ -78,7 +81,7 @@ const FilterHistory = ({
   clearAll,
 }: Props) => {
   const [modal, setModal] = useState<"start" | "end" | null>(null);
-
+  const [downloading, setDownloading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const periods = ["Custom", "Current week", "Last week", "Current month"];
 
@@ -181,20 +184,48 @@ const FilterHistory = ({
     clearAll();
   };
 
+  const dates = getPeriodDates();
   const handleApply = () => {
     if (period === "Custom") {
       const startValid = validateCustomDate(customStartDate, "start");
       const endValid = validateCustomDate(customEndDate, "end");
       if (!startValid || !endValid) return;
     }
-
-    const dates = getPeriodDates();
     setParams({
       transaction_class_id: activity,
       start_date: new Date(dates.start).toISOString(),
       end_date: new Date(dates.end).toISOString(),
     });
     close();
+  };
+  const { user } = useUser();
+  const currentWallet = useCurrentWallet(user);
+  const handleDownloadStatement = async () => {
+    if (!currentWallet?.wallet_id) {
+      toast.error("No wallet");
+      return;
+    }
+    setDownloading(true);
+    const params = {
+      wallet_id: currentWallet.wallet_id,
+      startDate: new Date(dates.start).toISOString(),
+      endDate: new Date(dates.end).toISOString(),
+    };
+
+    try {
+      const response = await GenerateStatementApi(params);
+      toast.success(
+        response?.message || "Bank statement generated successfully"
+      );
+      clearFilter();
+      clearAll();
+      close();
+    } catch (error) {
+      toast.error("Failed to generate bank statement");
+      console.log(error);
+    } finally {
+      setDownloading(false);
+    }
   };
   return (
     <div className="flex flex-col h-full">
@@ -310,14 +341,19 @@ const FilterHistory = ({
               </div>
               {errors.endDate && <ErrorMessage message={errors.endDate} />}
 
-              <Button variant="tertiary" className="!border-[#6F5B86] gap-2">
+              <Button
+                loading={downloading}
+                onClick={handleDownloadStatement}
+                variant="tertiary"
+                className="!border-[#6F5B86] gap-2"
+              >
                 <Image
                   src={"/icons/docs-download.svg"}
                   alt="download"
                   width={16}
                   height={16}
                 />
-                Bank Statement
+                {downloading ? "Downlloading..." : "Bank Statement"}
               </Button>
             </div>
           </div>

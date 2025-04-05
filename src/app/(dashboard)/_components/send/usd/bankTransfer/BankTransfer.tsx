@@ -39,15 +39,15 @@ const BankTransfer = ({ close }: Props) => {
           )
         );
       case "int":
+        return <ToInternational close={close} bankType={bankType} />;
+      case "global":
         return (
-          <ToInternational
+          <ToGlobal
             close={close}
             bankType={bankType}
             setBankType={setBankType}
           />
         );
-      case "global":
-        return <ToGlobal close={close} bankType={bankType} />;
       default:
         break;
     }

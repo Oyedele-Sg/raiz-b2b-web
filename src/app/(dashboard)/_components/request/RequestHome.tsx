@@ -52,7 +52,7 @@ const RequestHome = ({ close, setStep }: RequestStepsProps) => {
             </p>
 
             {/* Single request */}
-            <button className="flex gap-4 mt-[30px]">
+            <div className="flex gap-4 mt-[30px]">
               <Image
                 src={"/icons/single-req.svg"}
                 width={30}
@@ -68,10 +68,10 @@ const RequestHome = ({ close, setStep }: RequestStepsProps) => {
                   payment
                 </p>
               </div>
-            </button>
+            </div>
 
             {/* Multile request */}
-            <button className="flex gap-4 mt-[22px]">
+            {/* <button className="flex gap-4 mt-[22px]">
               <Image
                 src={"/icons/multiple-req.svg"}
                 width={30}
@@ -87,7 +87,7 @@ const RequestHome = ({ close, setStep }: RequestStepsProps) => {
                   group of users for a payment
                 </p>
               </div>
-            </button>
+            </button> */}
           </div>
         </div>
         <Button

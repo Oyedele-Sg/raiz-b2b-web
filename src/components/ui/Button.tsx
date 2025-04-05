@@ -75,7 +75,11 @@ const Button: React.FC<ButtonProps> = ({
       type={type}
     >
       {loading ? (
-        <span className="ml-3 w-5 h-5 border-2 border-t-transparent border-white rounded-full animate-spin" />
+        <span
+          className={`ml-3 w-5 h-5 border-2 border-t-transparent ${
+            variant === "primary" ? "border-white" : "border-primary2"
+          } rounded-full animate-spin`}
+        />
       ) : (
         children
       )}

@@ -87,7 +87,7 @@ const SelectUser = () => {
     actions.selectExternalUser(userPayload);
   };
   return (
-    <div>
+    <div className="flex flex-col h-full">
       {recents.length !== 0 && (
         <RecentUsers
           type="external"
@@ -95,7 +95,7 @@ const SelectUser = () => {
           setSelectedUser={actions.selectExternalUser}
         />
       )}
-      <div className="flex flex-col justify-between h-[60vh] xl:h-[65vh] mt-[35px] pb-6">
+      <div className="flex flex-col justify-between h-full mt-[35px] pb-6">
         <div className="w-full">
           <div className="flex justify-between items-center mb-[15px]">
             <h5 className="text-zinc-900 text-sm font-bold leading-none">
