@@ -56,7 +56,6 @@ const Sidebar = () => {
 
   const qc = useQueryClient();
   const PersonaMutation = useMutation({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutationFn: (inquiry_id: string) => PersonaVerificationApi(inquiry_id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["user"] });
@@ -310,7 +309,7 @@ const Sidebar = () => {
         />
       </div>
       <section className="flex flex-col justify-between h-[85%] mt-8 px-4 gap-8">
-        <nav className="flex flex-col gap-1">
+        <nav className="flex flex-col gap-5">
           {SidebarMenus.map((item, index) => renderMenuItem(item, index))}
         </nav>
 

@@ -21,11 +21,11 @@ const Links: { title: string; icon: string; key: key }[] = [
     icon: "/icons/analytics.svg",
     key: "analytics",
   },
-  {
-    title: "Split bills",
-    icon: "/icons/split.svg",
-    key: "split-bills",
-  },
+  // {
+  //   title: "Split bills",
+  //   icon: "/icons/split.svg",
+  //   key: "split-bills",
+  // },
   {
     title: "Acct info",
     icon: "/icons/info.svg",
@@ -81,12 +81,12 @@ const QuickLinks = () => {
           />
         </button>
       </div>
-      <div className="flex justify-between gap-3 w-full overflow-x-scroll">
+      <div className="flex justify-between gap-7 w-full overflow-x-scroll">
         {Links.map((each, i) => (
           <button
             key={i}
             onClick={() => setOpenModal(each.key)}
-            className="px-6 xl:px-8 py-2 xl:py-4 bg-raiz-gray-50 rounded-[20px] border min-w-[100px] border-raiz-gray-200 flex-col justify-center items-center gap-2 inline-flex"
+            className="px-6 xl:px-8 py-2 xl:py-4 bg-raiz-gray-50 rounded-[20px] border min-w-[100px] w-full border-raiz-gray-200 flex-col justify-center items-center gap-2 inline-flex"
           >
             <Image
               src={each?.icon || ""}
