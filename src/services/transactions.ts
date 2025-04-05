@@ -370,3 +370,14 @@ export async function GetTransactionClasses(): Promise<ITransactionClass[]> {
   const response = await AuthAxios.get("/transactions/transaction-class/");
   return response.data;
 }
+
+export const GenerateStatementApi = async (params: {
+  wallet_id: string;
+  startDate: string;
+  endDate: string;
+}) => {
+  const response = await AuthAxios.get(
+    `/business/transactions/reports/statement/generate/?wallet_id=${params.wallet_id}&start_date=${params.startDate}&end_date=${params.endDate}`
+  );
+  return response?.data;
+};

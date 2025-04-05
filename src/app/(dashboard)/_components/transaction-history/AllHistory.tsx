@@ -71,6 +71,7 @@ const AllHistory = ({
   const selectedTxnClass = activities?.find(
     (i) => i.transaction_class_id === filterParams.transaction_class_id
   );
+
   return (
     <div>
       <SideWrapperHeader
