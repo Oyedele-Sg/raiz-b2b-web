@@ -111,10 +111,12 @@ const USBankBeneficiary = ({ close }: Props) => {
   ) => {
     try {
       const payload: IUsBeneficiaryPayload = {
-        account: values.account,
-        name: values.name,
-        routing: values.routing,
-        type: values.type,
+        data: {
+          account: values.account,
+          name: values.name,
+          routing: values.routing,
+          type: values.type,
+        },
         label: values.label,
         optionType: "bank",
       };

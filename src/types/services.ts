@@ -299,16 +299,10 @@ export interface FormField {
 }
 
 export interface IUsBeneficiaryPayload {
-  name: string;
-  account?: string;
-  country?: string;
-  routing?: string;
-  type?: string;
-  label: string;
-  card_number?: string;
-  expiry_month?: string;
-  expiry_year?: string;
   optionType: IUsBeneficiaryOptionType;
+  label: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any;
 }
 
 export interface IUsBeneficiariesParams {

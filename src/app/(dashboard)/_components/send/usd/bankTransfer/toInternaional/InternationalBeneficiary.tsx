@@ -121,14 +121,13 @@ const InternationalBeneficiary = ({ close }: Props) => {
     }: { resetForm: () => void; setSubmitting: (isSubmitting: boolean) => void }
   ) => {
     try {
+      const { label, ...restValues } = values;
       const payload: IUsBeneficiaryPayload = {
-        account: values.account,
-        name: values.name,
-        routing: values.routing,
-        type: values.type,
-        label: values.label,
-        optionType: "bank",
-        country: values.country,
+        data: {
+          ...restValues,
+        },
+        label,
+        optionType: "international_bank",
       };
       await AddBeneficiaryMutation.mutateAsync(payload);
       resetForm();

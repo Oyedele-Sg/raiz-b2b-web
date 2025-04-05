@@ -271,7 +271,7 @@ const GlobalBeneficiary = ({ close }: Props) => {
   }
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <SideWrapperHeader
         title="Global Remittance"
         close={close}
@@ -341,9 +341,7 @@ const GlobalBeneficiary = ({ close }: Props) => {
         formik.values.country?.value !== "GB" && (
           <form
             onSubmit={formik.handleSubmit}
-            className={`flex flex-col gap-[15px] justify-between mt-4 ${
-              beneficiaries?.length > 0 ? "min-h-[75vh]" : "min-h-[80vh]"
-            } pb-7`}
+            className={`flex flex-col gap-[15px] justify-between mt-4 h-full pb-7`}
           >
             <div className="flex flex-col gap-[15px]">
               {fields.map((field) => (
