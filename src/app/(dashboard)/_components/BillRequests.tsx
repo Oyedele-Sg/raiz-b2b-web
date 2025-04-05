@@ -6,7 +6,7 @@ import { IBillRequestParams, IP2pTransferResponse } from "@/types/services";
 import { IBillRequest, PaymentStatusType } from "@/types/transactions";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import AcceptBill from "./bill-requests/AcceptBill";
 import PayBill from "./bill-requests/PayBill";
@@ -16,6 +16,7 @@ import { convertTime, getCurrencySymbol } from "@/utils/helpers";
 import RejectBill from "./bill-requests/RejectBill";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
 import SideModalWrapper from "./SideModalWrapper";
+import { usePathname } from "next/navigation";
 
 type OpenModalType =
   | "accept"
@@ -113,7 +114,8 @@ const BillRequests = () => {
   const [paymentError, setPaymentError] = useState("");
   const [transactionDetail, setTransactionDetail] =
     useState<IP2pTransferResponse | null>(null);
-  const { data, isLoading } = useQuery({
+  const pathname = usePathname();
+  const { data, isLoading, refetch } = useQuery({
     queryKey: [
       "bill-requests",
       { currency: selectedCurrency.name, status_id: 2 },
@@ -128,6 +130,9 @@ const BillRequests = () => {
 
   const billRequests = data?.data || [];
 
+  useEffect(() => {
+    refetch();
+  }, [pathname, refetch]);
   const displayPopModal = () => {
     switch (openModal) {
       case "accept": {

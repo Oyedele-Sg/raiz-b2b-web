@@ -29,7 +29,7 @@ const NgnSend = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       {!user && !externalUser && (
         <SideWrapperHeader
           title="Find Recipient"

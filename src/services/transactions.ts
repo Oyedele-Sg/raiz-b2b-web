@@ -267,15 +267,7 @@ export const GetUSBeneficiaryFormFields = async () => {
 export const CreateUsBeneficiary = async (payload: IUsBeneficiaryPayload) => {
   const response = await AuthAxios.post(
     `/business/transactions/withdrawal/usd/beneficiaries/?label=${payload.label}&option_type=${payload.optionType}`,
-    {
-      name: payload.name,
-      account: payload.account,
-      routing: payload.routing,
-      type: payload.type,
-      ...(payload.card_number && { card_number: payload.card_number }),
-      ...(payload.expiry_month && { expiry_month: payload.expiry_month }),
-      ...(payload.expiry_year && { expiry_year: payload.expiry_year }),
-    }
+    payload.data
   );
   return response?.data;
 };
@@ -370,3 +362,14 @@ export async function GetTransactionClasses(): Promise<ITransactionClass[]> {
   const response = await AuthAxios.get("/transactions/transaction-class/");
   return response.data;
 }
+
+export const GenerateStatementApi = async (params: {
+  wallet_id: string;
+  startDate: string;
+  endDate: string;
+}) => {
+  const response = await AuthAxios.get(
+    `/business/transactions/reports/statement/generate/?wallet_id=${params.wallet_id}&start_date=${params.startDate}&end_date=${params.endDate}`
+  );
+  return response?.data;
+};

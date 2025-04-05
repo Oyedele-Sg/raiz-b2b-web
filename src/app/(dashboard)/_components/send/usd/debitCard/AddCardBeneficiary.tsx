@@ -112,11 +112,13 @@ const AddCardBeneficiary = ({ close }: Props) => {
     onSubmit: async (values, { resetForm, setSubmitting }) => {
       try {
         const payload: IUsBeneficiaryPayload = {
+          data: {
+            account_name: values.name,
+            card_number: encryptData(values.card_number.replace(/\s/g, "")),
+            expiry_month: values.expiry_month,
+            expiry_year: values.expiry_year,
+          },
           label: values.label,
-          name: values.name,
-          card_number: encryptData(values.card_number.replace(/\s/g, "")),
-          expiry_month: values.expiry_month,
-          expiry_year: values.expiry_year,
           optionType: "card",
         };
 

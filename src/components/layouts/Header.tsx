@@ -14,6 +14,7 @@ import { usePathname } from "next/navigation";
 import { useUser } from "@/lib/hooks/useUser";
 import { useQuery } from "@tanstack/react-query";
 import { FetchUserRewardsApi } from "@/services/user";
+import { useNotifications } from "@/lib/hooks/useNotifications";
 
 const Header = () => {
   const pathName = usePathname();
@@ -46,6 +47,15 @@ const Header = () => {
     setShowModal("createNGN");
   };
 
+  const { data, refetch } = useNotifications(15);
+  const notifications = data?.pages[0]?.notifications || [];
+  const hasUnreadNotif = notifications.some(
+    (notification) => !notification.read
+  );
+
+  useEffect(() => {
+    refetch();
+  }, [pathName, refetch]);
   const displayModal = () => {
     switch (showModal) {
       case "notifications":
@@ -73,7 +83,7 @@ const Header = () => {
           >
             Overview
           </Link>
-          <Image
+          {/* <Image
             src={"/icons/forward.svg"}
             alt="forward"
             width={16}
@@ -96,7 +106,7 @@ const Header = () => {
             href={"#"}
           >
             Send
-          </Link>
+          </Link> */}
         </div>
       )}
       <div className="relative h-12 w-[285px] xl:w-[312px] ">
@@ -162,7 +172,9 @@ const Header = () => {
               />
             </svg>
           </button>
-          {/* <span className="w-2.5 h-2.5 bg-red-600 rounded-full absolute top-0 -right-0" /> */}
+          {hasUnreadNotif && (
+            <span className="w-2.5 h-2.5 bg-red-600 rounded-full absolute top-0 -right-0" />
+          )}
         </div>
       </div>
       <AnimatePresence>

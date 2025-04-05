@@ -56,7 +56,6 @@ const Sidebar = () => {
 
   const qc = useQueryClient();
   const PersonaMutation = useMutation({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutationFn: (inquiry_id: string) => PersonaVerificationApi(inquiry_id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["user"] });
@@ -185,12 +184,12 @@ const Sidebar = () => {
       description: "Complete Account Set Up and Get unlimited access",
       action: (
         <div className="flex items-center gap-3">
-          <a
+          {/* <a
             href="#"
             className="text-raiz-gray-500 text-xs xl:text-sm font-bold"
           >
             Learn more
-          </a>
+          </a> */}
           <button
             onClick={() => setShowModal("acctSetup")}
             className="text-primary2 text-xs xl:text-sm font-bold"
@@ -310,7 +309,7 @@ const Sidebar = () => {
         />
       </div>
       <section className="flex flex-col justify-between h-[85%] mt-8 px-4 gap-8">
-        <nav className="flex flex-col gap-1">
+        <nav className="flex flex-col gap-5">
           {SidebarMenus.map((item, index) => renderMenuItem(item, index))}
         </nav>
 

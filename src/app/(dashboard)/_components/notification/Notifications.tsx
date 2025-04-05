@@ -6,16 +6,13 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import NotificationDetailModal from "./NotificationDetailModal";
 import { INotification } from "@/types/user";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { FetchNotificationsApi, MarkAsReadApi } from "@/services/business";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { MarkAsReadApi } from "@/services/business";
 import { INotificationResponse } from "@/types/services";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Spinner from "@/components/ui/Spinner";
 import "@/styles/misc.css";
+import { useNotifications } from "@/lib/hooks/useNotifications";
 
 dayjs.extend(relativeTime);
 
@@ -77,21 +74,8 @@ const Notifications = ({ close }: { close: () => void }) => {
   const qc = useQueryClient();
   const limit = 10;
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    //   isFetchingNextPage,
-    isLoading,
-  } = useInfiniteQuery<INotificationResponse>({
-    queryKey: ["notifications"],
-    queryFn: ({ pageParam = 1 }) =>
-      FetchNotificationsApi({ limit, page: pageParam as number }),
-    getNextPageParam: (lastPage) => {
-      return lastPage.pagination_details.next_page;
-    },
-    initialPageParam: 1,
-  });
+  const { data, fetchNextPage, hasNextPage, isLoading } =
+    useNotifications(limit);
 
   const markAsReadMutation = useMutation({
     mutationFn: (notificationId: string) => MarkAsReadApi(notificationId),

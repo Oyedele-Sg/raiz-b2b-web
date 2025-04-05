@@ -103,10 +103,12 @@ const TxnReceiptDetail = ({ close, transaction, goNext }: Props) => {
                     </button>
                   </div>
                 </div>
-                <ListDetailItem
-                  title="SessionID"
-                  value={transaction?.session_id}
-                />
+                {transaction?.session_id && (
+                  <ListDetailItem
+                    title="SessionID"
+                    value={transaction?.session_id}
+                  />
+                )}
                 <div className="flex justify-between items-center ">
                   <span className="text-xs font-normal leading-tight">
                     Status
