@@ -7,12 +7,10 @@ import { ITransactionParams } from "@/types/services";
 import { useUser } from "@/lib/hooks/useUser";
 import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
 import dayjs from "dayjs";
-import { useCurrencyStore } from "@/store/useCurrencyStore";
 import { ITransaction } from "@/types/transactions";
-import { AccountCurrencyType } from "@/types/misc";
 import Skeleton from "react-loading-skeleton";
 import Avatar from "@/components/ui/Avatar";
-import { convertTime } from "@/utils/helpers";
+import { convertTime, getCurrencySymbol } from "@/utils/helpers";
 import { AnimatePresence } from "motion/react";
 import SideModalWrapper from "./SideModalWrapper";
 import TxnHistory from "./transaction-history/TxnHistory";
@@ -20,11 +18,9 @@ import TxnReceipt from "./transaction-history/TxnReceipt";
 
 const TransactionRow = ({
   transaction,
-  selectedCurrency,
   showDetail,
 }: {
   transaction: ITransaction;
-  selectedCurrency: AccountCurrencyType;
   showDetail: (arg: ITransaction) => void;
 }) => {
   const date = dayjs(convertTime(transaction?.transaction_date_time));
@@ -58,7 +54,7 @@ const TransactionRow = ({
             : "text-raiz-gray-900"
         }  text-sm font-semibold leading-tight`}
       >
-        {selectedCurrency?.sign}
+        {getCurrencySymbol(transaction?.currency)}
         {transaction?.transaction_amount?.toLocaleString()}
       </span>
     </button>
@@ -70,7 +66,6 @@ const Transactions = () => {
   const [openModal, setOpenModal] = useState<"history" | "detail" | null>(null);
   const [selectedTxn, setSelectedTxn] = useState<ITransaction | null>(null);
   const currentWallet = useCurrentWallet(user);
-  const { selectedCurrency } = useCurrencyStore();
   const { data, isLoading } = useQuery({
     queryKey: ["transactions-report", { wallet_id: currentWallet?.wallet_id }],
     queryFn: ({ queryKey }) => {
@@ -117,7 +112,6 @@ const Transactions = () => {
               <TransactionRow
                 key={index}
                 transaction={each}
-                selectedCurrency={selectedCurrency}
                 showDetail={showDetail}
               />
             ))

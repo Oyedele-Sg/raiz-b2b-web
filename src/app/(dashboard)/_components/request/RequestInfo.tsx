@@ -93,7 +93,7 @@ const RequestInfo = ({ setStep, request }: Props) => {
           {/* Receipient */}
           <div className="flex justify-between items-center pb-3 border-b-[0.5px] border-zinc-200">
             <span className="text-zinc-900 text-xs font-normal leading-tight">
-              Receipient
+              Recipient
             </span>
             <span className="text-zinc-900 text-sm font-semibold font-brSonoma leading-tight">
               {request.third_party_account.account_name}
