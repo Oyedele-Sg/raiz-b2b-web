@@ -84,7 +84,7 @@ const DashboardSummary = () => {
       <div className="flex justify-between items-center gap-4 ">
         <div className="">
           <p className="text-text-terttiary-600   font-normal font-inter leading-normal">
-            Total balance
+            Total Balance
           </p>
           <div className="flex gap-2 items-center">
             <p className="text-raiz-gray-950 text-[2rem] font-semibold  leading-[38.40px]">

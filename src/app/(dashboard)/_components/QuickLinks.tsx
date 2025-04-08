@@ -27,7 +27,7 @@ const Links: { title: string; icon: string; key: key }[] = [
   //   key: "split-bills",
   // },
   {
-    title: "Acct info",
+    title: "Acct Info",
     icon: "/icons/info.svg",
     key: "acct-info",
   },

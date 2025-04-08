@@ -168,7 +168,7 @@ const Analytics = ({ close }: Props) => {
                   {isLoading ? (
                     <Skeleton height={15} width={60} />
                   ) : (
-                    data?.total_income.toLocaleString()
+                    data?.total_income.toLocaleString() || 0
                   )}
                 </p>
 
@@ -190,7 +190,7 @@ const Analytics = ({ close }: Props) => {
                   {isLoading ? (
                     <Skeleton height={15} width={60} />
                   ) : (
-                    data?.total_expense.toLocaleString()
+                    data?.total_expense.toLocaleString() || 0
                   )}
                 </p>
 
