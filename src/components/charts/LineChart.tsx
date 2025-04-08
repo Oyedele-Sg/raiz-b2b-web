@@ -122,7 +122,7 @@ const LineChart = ({
         callbacks: {
           label: (context: TooltipItem<"line">) => {
             const originalValue = graphData.actualData[context.dataIndex || 0];
-            return ` ₦ ${originalValue.toLocaleString()}`;
+            return ` ${selectedCurrency.sign}${originalValue.toLocaleString()}`;
           },
         },
         bodyFont: {
