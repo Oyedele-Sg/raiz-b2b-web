@@ -9,6 +9,7 @@ import { getDaysBetween, getLastThreeMonths } from "@/utils/helpers";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import dayjs from "dayjs";
+import Analytics from "./quick-links/analytics/page";
 
 export type PeriodTitle =
   | "12 months"
@@ -18,6 +19,7 @@ export type PeriodTitle =
   | "24 hours";
 
 const SalesReport = () => {
+  const [showModal, setShowModal] = useState(false);
   const periodTabs: { title: PeriodTitle; labels: string[]; day: number }[] = [
     {
       title: "12 months",
@@ -91,11 +93,14 @@ const SalesReport = () => {
     <div className=" h-[361px] w-full mt-6 bg-raiz-gray-50 rounded-xl shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] border border-raiz-gray-100 flex-col justify-start items-start inline-flex p-6">
       <div className="flex justify-between items-center w-full">
         <h6 className="text-raiz-gray-950 text-lg font-bold   leading-snug">
-          Sales report
+          Sales Report
         </h6>
-        <button className="h-[37px]  px-3.5 py-2.5 bg-raiz-gray-50 hover:border-raiz-gray-200 rounded-lg shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] border border-raiz-gray-100 justify-center items-center gap-1 inline-flex ">
+        <button
+          onClick={() => setShowModal(true)}
+          className="h-[37px]  px-3.5 py-2.5 bg-raiz-gray-50 hover:border-raiz-gray-200 rounded-lg shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] border border-raiz-gray-100 justify-center items-center gap-1 inline-flex "
+        >
           <span className="text-raiz-gray-700 text-sm font-bold  leading-[16.80px]">
-            View report
+            View Report
           </span>
         </button>
       </div>
@@ -129,6 +134,8 @@ const SalesReport = () => {
           loading={isLoading}
         />
       </div>
+
+      {showModal && <Analytics close={() => setShowModal(false)} />}
     </div>
   );
 };
