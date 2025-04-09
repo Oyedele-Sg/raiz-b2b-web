@@ -18,9 +18,16 @@ interface Props {
   goNext: () => void;
   fee: number;
   loading?: boolean;
+  minAmount?: number;
 }
 
-const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
+const SendMoney = ({
+  goBack,
+  goNext,
+  fee,
+  minAmount,
+  loading = false,
+}: Props) => {
   const {
     user: selectedUser,
     externalUser,
@@ -88,15 +95,24 @@ const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
   };
 
   const handleNext = () => {
-    if (
-      parseFloat(amount || "0") + fee >
-      (currentWallet?.account_balance || 0)
-    ) {
+    const parsedAmount = parseFloat(amount || "0");
+    const totalAvailable = currentWallet?.account_balance || 0;
+
+    if (parsedAmount + fee > totalAvailable) {
       toast.warning("Account balance too low to carry out this transaction");
-    } else {
-      goNext();
+      return;
     }
+
+    if (minAmount && parsedAmount < minAmount) {
+      toast.warning(
+        `Amount must be at least ${selectedCurrency?.sign}${minAmount}`
+      );
+      return;
+    }
+
+    goNext();
   };
+
   return (
     <div
       className="w-full flex flex-col h-full

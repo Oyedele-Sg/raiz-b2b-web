@@ -3,10 +3,10 @@ import BankModal from "@/components/modals/BankModal";
 import BeneficiariesModal from "@/components/modals/BeneficiariesModal";
 import RecentUsers from "@/components/transactions/RecentUsers";
 import Button from "@/components/ui/Button";
-// import FindRecipients from "@/components/transactions/FindRecipients";
 import InputField from "@/components/ui/InputField";
 import InputLabel from "@/components/ui/InputLabel";
 import ModalTrigger from "@/components/ui/ModalTrigger";
+import Spinner from "@/components/ui/Spinner";
 import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
 import { useExternalBeneficiaries } from "@/lib/hooks/useExternalBeneficiaries";
 import { useUser } from "@/lib/hooks/useUser";
@@ -36,7 +36,7 @@ const SelectUser = () => {
   const [error, setError] = useState<string | null>(null);
   const [isValid, setIsValid] = useState(false);
   const currentWallet = useCurrentWallet(user);
-  const { recents, favourites } = useExternalBeneficiaries({
+  const { recents, favourites, isLoading } = useExternalBeneficiaries({
     walletId: currentWallet?.wallet_id,
     limit: 50,
   });
@@ -86,6 +86,13 @@ const SelectUser = () => {
     if (!bank) return;
     actions.selectExternalUser(userPayload);
   };
+
+  if (isLoading)
+    return (
+      <div className="absolute inset-0 flex items-center justify-center ">
+        <Spinner />
+      </div>
+    );
   return (
     <div className="flex flex-col h-full">
       {recents.length !== 0 && (
