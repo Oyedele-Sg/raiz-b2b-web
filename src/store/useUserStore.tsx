@@ -46,7 +46,10 @@ export const useUserStore = create<UserStore>()(
     {
       name: "user-storage",
       storage: sessionStorageStore,
-      partialize: (state) => ({ user: state.user }),
+      partialize: (state) => ({
+        user: state.user,
+        showBalance: state.showBalance,
+      }),
     }
   )
 );

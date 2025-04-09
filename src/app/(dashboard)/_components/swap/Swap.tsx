@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import SwapDetail from "./SwapDetail";
 import SwapConfirmation from "./SwapConfirmation";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { GetExchangeRate } from "@/services/transactions";
 import { useSwapStore } from "@/store/Swap";
@@ -24,18 +24,25 @@ const Swap = ({ close }: Props) => {
   const [paymentError, setPaymentError] = useState("");
 
   const {
-    mutate: fetchExchangeRate,
     data: exchangeRateData,
-    isPending,
-  } = useMutation({
-    mutationFn: GetExchangeRate,
-    onSuccess: () => setTimeLeft(179),
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["exchange-rate", "NGN"],
+    queryFn: () => GetExchangeRate("NGN"),
+    staleTime: 1000 * 60, // 1 minute
   });
 
   useEffect(() => {
+    if (exchangeRateData) {
+      setTimeLeft(179);
+    }
+  }, [exchangeRateData]);
+
+  useEffect(() => {
     if (timeLeft === 0) {
-      toast.info("Updating...Getting latest prices");
-      fetchExchangeRate("NGN");
+      toast.info("Updating... Getting latest prices");
+      refetch();
       return;
     }
 
@@ -44,13 +51,7 @@ const Swap = ({ close }: Props) => {
     }, 1000);
 
     return () => clearInterval(timerId);
-  }, [timeLeft, fetchExchangeRate]);
-
-  useEffect(() => {
-    if (!exchangeRateData && !isPending) {
-      fetchExchangeRate("NGN");
-    }
-  }, [exchangeRateData, isPending, fetchExchangeRate]);
+  }, [timeLeft, refetch]);
 
   const rate =
     swapToCurrency === ACCOUNT_CURRENCIES.NGN.name
@@ -91,7 +92,7 @@ const Swap = ({ close }: Props) => {
             exchangeRate={rate}
             recipientAmount={recipientAmount}
             timeLeft={timeLeft}
-            loading={isPending}
+            loading={isLoading}
           />
         );
       case "confirmation":
@@ -105,7 +106,7 @@ const Swap = ({ close }: Props) => {
               exchangeRate={rate}
               recipientAmount={recipientAmount}
               timeLeft={timeLeft}
-              loading={isPending}
+              loading={isLoading}
             />
             <SwapConfirmation
               goBack={() => setStep("detail")}
@@ -113,7 +114,7 @@ const Swap = ({ close }: Props) => {
               exchangeRate={rate}
               recipientAmount={recipientAmount}
               timeLeft={timeLeft}
-              loading={isPending}
+              loading={isLoading}
             />
           </>
         );
@@ -136,7 +137,7 @@ const Swap = ({ close }: Props) => {
               exchangeRate={rate}
               recipientAmount={recipientAmount}
               timeLeft={timeLeft}
-              loading={isPending}
+              loading={isLoading}
             />
             <SwapStatusModal
               status={status}
