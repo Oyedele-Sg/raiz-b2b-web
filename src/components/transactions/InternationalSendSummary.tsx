@@ -72,7 +72,9 @@ const InternationalSendSummary = ({
           />
           <ListDetailItem
             title="Exchange rate"
-            value={`$1(USD) = ₦${paymentData?.exchange_rate?.toFixed(2) || 1}`}
+            value={`  ${getCurrencySymbol(currency)}${
+              paymentData?.exchange_rate?.toFixed(2) || 1
+            } = $1(USD)`}
             border
           />
           <ListDetailItem

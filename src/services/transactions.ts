@@ -12,6 +12,7 @@ import {
   IIntBeneficiariesResponse,
   IIntBeneficiaryPayload,
   IIntSendPayload,
+  IntCurrrencyCode,
   IP2pBeneficiariesParams,
   IP2PTransferPayload,
   IP2pTransferResponse,
@@ -370,6 +371,13 @@ export const GenerateStatementApi = async (params: {
 }) => {
   const response = await AuthAxios.get(
     `/business/transactions/reports/statement/generate/?wallet_id=${params.wallet_id}&start_date=${params.startDate}&end_date=${params.endDate}`
+  );
+  return response?.data;
+};
+
+export const GetMinAmountApi = async (currency: IntCurrrencyCode) => {
+  const response = await AuthAxios.get(
+    `/business/transactions/remittance/account-types/minimum-amount/?currency=${currency}`
   );
   return response?.data;
 };

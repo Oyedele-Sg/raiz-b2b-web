@@ -67,6 +67,7 @@ const ToInternational = ({ close, bankType }: Props) => {
             goBack={goBackToStep2}
             goNext={() => setStep("category")}
             fee={fee || 0}
+            minAmount={5}
           />
         );
       case "category":

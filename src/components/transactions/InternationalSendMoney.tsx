@@ -11,12 +11,14 @@ import Image from "next/image";
 import ErrorMessage from "../ui/ErrorMessage";
 import InputField from "../ui/InputField";
 import Button from "../ui/Button";
+import { toast } from "sonner";
 
 interface Props {
   goBack: () => void;
   goNext: () => void;
   fee: number;
   loading?: boolean;
+  minAmount: number;
 }
 
 const InternationalSendMoney = ({
@@ -24,6 +26,7 @@ const InternationalSendMoney = ({
   goNext,
   fee,
   loading = false,
+  minAmount,
 }: Props) => {
   const {
     intBeneficiary,
@@ -35,6 +38,7 @@ const InternationalSendMoney = ({
   const { user } = useUser();
   const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
+  const [rawAmount, setRawAmount] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const currentWallet = useCurrentWallet(user);
   const currency =
@@ -47,40 +51,68 @@ const InternationalSendMoney = ({
       message: "Amount must be at least 1",
     });
 
+  const purposeSchema = z
+    .string()
+    .min(3, { message: "Purpose must be at least 3 characters long" });
+
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
-    value = value.replace(/[^0-9.]/g, "");
-    const parts = value.split(".");
-    if (parts.length > 2) {
-      value = parts[0] + "." + parts.slice(1).join("");
-    }
-    if (parts[1] && parts[1].length > 2) {
-      value = `${parts[0]}.${parts[1].slice(0, 2)}`;
-    }
+    let value = e.target.value.replace(/[^0-9.]/g, ""); // Remove non-numeric except "."
     if (value.startsWith(".")) value = "0" + value;
-    if (value === "") value = "";
+
+    const decimalCount = value.split(".").length - 1;
+    if (decimalCount > 1) return;
+
+    const [integerPart, decimalPart] = value.split(".");
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const formattedValue =
+      decimalPart !== undefined
+        ? `${formattedInteger}.${decimalPart}`
+        : formattedInteger;
+    setRawAmount(formattedValue);
     actions.setAmountAndRemark({ amount: value, purpose });
     const result = amountSchema.safeParse(value || "0");
-    setError(result.success ? null : result.error.errors[0].message);
+    if (!result.success) {
+      setError(result.error.errors[0].message);
+    } else {
+      setError(null);
+    }
   };
   const handlePurposeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    actions.setAmountAndRemark({ amount, purpose: e.target.value });
+    const newPurpose = e.target.value;
+    actions.setAmountAndRemark({ amount, purpose: newPurpose });
+
+    // Re-validate purpose
+    const result = purposeSchema.safeParse(newPurpose);
+    if (!result.success) {
+      setError(result.error.errors[0].message);
+      return;
+    }
+
+    // Also validate amount again to clear error if both are valid
+    const amountResult = amountSchema.safeParse(amount || "0");
+    if (!amountResult.success) {
+      setError(amountResult.error.errors[0].message);
+      return;
+    }
+
+    setError(null);
   };
   const displayValue = () => {
     if (isFocused || !amount)
-      return amount ? `${getCurrencySymbol(currency)}${amount}` : "";
-    const num = parseFloat(amount);
+      return amount ? `${getCurrencySymbol(currency)}${rawAmount}` : "";
+    const num = parseFloat(rawAmount);
     return isNaN(num) ? "" : `${getCurrencySymbol(currency)}${num.toFixed(2)}`;
   };
+
   const handleNext = () => {
-    // if (
-    //   parseFloat(amount || "0") + fee >
-    //   (currentWallet?.account_balance || 0)
-    // ) {
-    //   toast.warning("Account balance too low to carry out this transaction");
-    // } else {
+    const parsedAmount = parseFloat(amount || "0");
+    if (minAmount && parsedAmount < minAmount) {
+      toast.warning(
+        `Amount must be at least ${getCurrencySymbol(currency)}${minAmount}`
+      );
+      return;
+    }
     goNext();
-    // }
   };
   return (
     <div className="w-full">
@@ -139,7 +171,6 @@ const InternationalSendMoney = ({
                 value={displayValue()}
                 onChange={handleAmountChange}
                 onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
               />
             </div>
             <div className="px-4 py-2 bg-indigo-100 bg-opacity-60 rounded-2xl inline-flex flex-col justify-center items-center gap-2">
@@ -151,7 +182,7 @@ const InternationalSendMoney = ({
                   )}
                   {currentWallet?.account_balance}{" "}
                 </span>
-                <span>({currency})</span>
+                <span>({currentWallet?.wallet_type?.currency})</span>
               </p>
             </div>
             <div className="w-full mt-10">
@@ -187,12 +218,12 @@ const InternationalSendMoney = ({
           <div className=" p-3.5 mb-3 bg-gray-100 w-full rounded-lg outline outline-1 outline-offset-[-1px] outline-white inline-flex flex-col justify-center items-start gap-2">
             <div className="w-full flex justify-between items-center">
               <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
-                Recipient gets:
+                Min Amount:
               </span>
               <div className="h-0.5 w-[50%] px-4 bg-white"></div>
               <span className="text-zinc-900  text-xs font-semibold leading-none">
                 {getCurrencySymbol(currency)}
-                {parseFloat(amount || "0").toFixed(2)}
+                {minAmount}
               </span>
             </div>
             {fee ? (

@@ -3,16 +3,19 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ToUsdBanksStepsType } from "../toBanks/ToUsdBanks";
 import { bankTypeProp } from "../BankTransfer";
 import { useSendStore } from "@/store/Send";
-import { useMutation } from "@tanstack/react-query";
-import { SendInternationalInitialPayout } from "@/services/transactions";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  GetMinAmountApi,
+  SendInternationalInitialPayout,
+} from "@/services/transactions";
 import AddBeneficiary from "../toBanks/AddBeneficiary";
 import Categories from "@/components/transactions/Categories";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
 import InternationalSendSummary from "@/components/transactions/InternationalSendSummary";
 import InternationalSendMoney from "@/components/transactions/InternationalSendMoney";
-import InternationPayout from "../toInternaional/InternationalPayout";
-import { IInitialPayoutResponse } from "@/types/services";
+import InternationPayout from "../toInternational/InternationalPayout";
+import { IInitialPayoutResponse, IntCurrrencyCode } from "@/types/services";
 import { toast } from "sonner";
 
 interface Props {
@@ -66,6 +69,18 @@ const ToGlobal = ({ close, bankType }: Props) => {
     setStep("add-beneficiary");
   };
 
+  const { data } = useQuery({
+    queryKey: [
+      "min-Amount",
+      intBeneficiary?.foreign_payout_beneficiary?.beneficiary_currency,
+    ],
+    queryFn: ({ queryKey }) => {
+      const [, currencyCode] = queryKey as [string, IntCurrrencyCode];
+      return GetMinAmountApi(currencyCode);
+    },
+    enabled: !!intBeneficiary?.foreign_payout_beneficiary?.beneficiary_currency,
+  });
+
   const InitiatePayMutation = useMutation({
     mutationFn: () =>
       SendInternationalInitialPayout({
@@ -100,6 +115,7 @@ const ToGlobal = ({ close, bankType }: Props) => {
             goNext={initiatePayout}
             fee={paymentInitiationData?.raiz_charge || 0}
             loading={InitiatePayMutation.isPending}
+            minAmount={data}
           />
         );
       case "category":

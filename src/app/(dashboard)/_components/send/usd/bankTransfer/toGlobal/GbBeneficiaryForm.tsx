@@ -2,7 +2,6 @@
 import ModalTrigger from "@/components/ui/ModalTrigger";
 import { convertField, getReadablePatternMessage } from "@/utils/helpers";
 import React, { useState } from "react";
-import GbTypeModal from "./GbTypeModal";
 import {
   FormField,
   IIntBeneficiaryPayload,
@@ -19,6 +18,7 @@ import Radio from "@/components/ui/Radio";
 import InputField from "@/components/ui/InputField";
 import Button from "@/components/ui/Button";
 import InputLabel from "@/components/ui/InputLabel";
+import GbTypeModal from "./GbTypeModal";
 
 export type gbBenType = "DOMESTIC_GBP" | "SEPA_EUR" | null;
 

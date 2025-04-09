@@ -18,9 +18,16 @@ interface Props {
   goNext: () => void;
   fee: number;
   loading?: boolean;
+  minAmount?: number;
 }
 
-const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
+const SendMoney = ({
+  goBack,
+  goNext,
+  fee,
+  minAmount,
+  loading = false,
+}: Props) => {
   const {
     user: selectedUser,
     externalUser,
@@ -49,6 +56,11 @@ const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
         message: `Amount cannot exceed available balance`,
       }
     );
+
+  const purposeSchema = z
+    .string()
+    .min(3, { message: "Purpose must be at least 3 characters long" });
+
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
 
@@ -77,8 +89,26 @@ const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
     setError(result.success ? null : result.error.errors[0].message);
   };
   const handlePurposeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    actions.setAmountAndRemark({ amount, purpose: e.target.value });
+    const newPurpose = e.target.value;
+    actions.setAmountAndRemark({ amount, purpose: newPurpose });
+
+    // Re-validate purpose
+    const result = purposeSchema.safeParse(newPurpose);
+    if (!result.success) {
+      setError(result.error.errors[0].message);
+      return;
+    }
+
+    // Also validate amount again to clear error if both are valid
+    const amountResult = amountSchema.safeParse(amount || "0");
+    if (!amountResult.success) {
+      setError(amountResult.error.errors[0].message);
+      return;
+    }
+
+    setError(null);
   };
+
   // Display value: show raw input while typing, formatted value when not focused
   const displayValue = () => {
     if (isFocused || !amount)
@@ -88,15 +118,24 @@ const SendMoney = ({ goBack, goNext, fee, loading = false }: Props) => {
   };
 
   const handleNext = () => {
-    if (
-      parseFloat(amount || "0") + fee >
-      (currentWallet?.account_balance || 0)
-    ) {
+    const parsedAmount = parseFloat(amount || "0");
+    const totalAvailable = currentWallet?.account_balance || 0;
+
+    if (parsedAmount + fee > totalAvailable) {
       toast.warning("Account balance too low to carry out this transaction");
-    } else {
-      goNext();
+      return;
     }
+
+    if (minAmount && parsedAmount < minAmount) {
+      toast.warning(
+        `Amount must be at least ${selectedCurrency?.sign}${minAmount}`
+      );
+      return;
+    }
+
+    goNext();
   };
+
   return (
     <div
       className="w-full flex flex-col h-full

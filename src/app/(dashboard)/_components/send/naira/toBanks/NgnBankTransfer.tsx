@@ -62,6 +62,7 @@ const NgnBankTransfer = () => {
             goBack={goBackToStep1}
             goNext={() => setStep("category")}
             fee={fee || 0}
+            minAmount={100}
           />
         );
       case "category":
