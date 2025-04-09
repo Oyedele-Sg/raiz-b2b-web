@@ -73,7 +73,7 @@ const FreezeAcctModal = ({ close, type }: Props) => {
             ? type === "disable"
               ? "Are you certain you wish to disable your account?"
               : "Are you certain you wish unfreeze your account?"
-            : "Enter your transactional PIN to disable account"}
+            : "Enter your transactional PIN to unfreeze account"}
         </p>
 
         {freezeStatus === 2 && (

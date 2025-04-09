@@ -388,15 +388,51 @@ export interface IIntBeneficiariesResponse {
 }
 
 export type IntCountryType =
-  | "GH"
-  | "AU"
-  | "KE"
-  | "UG"
-  | "NG"
-  | "TZ"
-  | "ZM"
-  | "MW"
-  | "GB";
+  | "GH" // Ghana
+  | "AU" // Australia
+  | "KE" // Kenya
+  | "UG" // Uganda
+  | "NG" // Nigeria
+  | "TZ" // Tanzania
+  | "ZM" // Zambia
+  | "MW" // Malawi
+  | "GB" // United Kingdom
+  | "BF" // Burkina Faso
+  | "CM" // Cameroon
+  | "SN" // Senegal
+  | "RW" // Rwanda
+  | "GN" // Guinea
+  | "ML" // Mali
+  | "TG" // Togo
+  | "AE" // United Arab Emirates
+  | "FR" // France
+  | "CI" // Ivory Coast
+  | "BJ" // Benin
+  | "CD"; // Democratic Republic of Congo
+
+export type IntCurrrencyCode = [
+  "GHS", // Ghana
+  "AUD", // Australia
+  "KES", // Kenya
+  "UGX", // Uganda
+  "NGN", // Nigeria
+  "TZS", // Tanzania
+  "ZMW", // Zambia
+  "MWK", // Malawi
+  "GBP", // United Kingdom
+  "XOF", // Burkina Faso (CFA Franc, West African)
+  "CDF", // Cameroon (CFA Franc, Central African)
+  "XOF", // Senegal (CFA Franc, West African)
+  "RWF", // Rwanda
+  "GNF", // Guinea
+  "XOF", // Mali (CFA Franc, West African)
+  "XOF", // Togo (CFA Franc, West African)
+  "AED", // United Arab Emirates
+  "EUR", // France
+  "XOF", // Ivory Coast (CFA Franc, West African)
+  "XOF", // Benin (CFA Franc, West African)
+  "CDF" // Democratic Republic of Congo (CFA Franc, Central African)
+];
 
 export interface IIntBeneficiaryPayload {
   customer_email: string;

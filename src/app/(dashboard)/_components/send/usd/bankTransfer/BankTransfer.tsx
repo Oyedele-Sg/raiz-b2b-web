@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import ToUsdBanks from "./toBanks/ToUsdBanks";
-import ToInternational from "./toInternaional/ToInternational";
+import ToInternational from "./toInternational/ToInternational";
 import BankTypeModal from "./toBanks/BankTypeModal";
 import SendOptions from "../SendOptions";
 import ToGlobal from "./toGlobal/ToGlobal";

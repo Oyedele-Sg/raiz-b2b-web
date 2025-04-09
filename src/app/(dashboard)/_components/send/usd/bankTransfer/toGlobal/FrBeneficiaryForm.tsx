@@ -1,22 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+import Button from "@/components/ui/Button";
 import InputField from "@/components/ui/InputField";
+import ModalTrigger from "@/components/ui/ModalTrigger";
 import { useUser } from "@/lib/hooks/useUser";
+import { CreateIntBeneficiary } from "@/services/transactions";
 import {
   FormField,
   IIntBeneficiaryPayload,
   IntCountryType,
 } from "@/types/services";
 import { convertField } from "@/utils/helpers";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FormikProps, useFormik } from "formik";
 import React, { useState } from "react";
-import Button from "@/components/ui/Button";
-import ModalTrigger from "@/components/ui/ModalTrigger";
-import BeneficiaryTypeModal from "./BeneficiaryTypeModal";
+import { toast } from "sonner";
+import BeneficiaryTypeModal from "../toInternational/BeneficiaryTypeModal";
 import AuPurposeModal from "./AuPurposeModal";
 import AuSendTypeModal from "./AuSendTypeModal";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CreateIntBeneficiary } from "@/services/transactions";
-import { toast } from "sonner";
 
 interface Props {
   fields: FormField[];
@@ -54,7 +55,9 @@ const renderField = (
   if (field.enum && field.name === "remittance_purpose") {
     return (
       <div className="mt-[15px]" key={field.name}>
-        <p className="text-raiz-gray-950 mb-3">Remittance Purpose</p>
+        <p className="text-raiz-gray-950 text-sm font-medium font-brSonoma leading-normal mb-3">
+          Remittance Purpose
+        </p>
         <ModalTrigger
           onClick={() => {
             handleOpenModal(field.enum, "remittance_purpose");
@@ -69,7 +72,9 @@ const renderField = (
   if (field.name === "beneficiary_type") {
     return (
       <div className="mt-[15px]" key={field.name}>
-        <p className="text-raiz-gray-950 mb-3">Beneficiary Type</p>
+        <p className="text-raiz-gray-950 text-sm font-medium font-brSonoma leading-normal mb-3">
+          Beneficiary Type
+        </p>
         <ModalTrigger
           onClick={() => {
             handleOpenModal(field.enum, "beneficiary_type");
@@ -83,7 +88,9 @@ const renderField = (
   if (field.name === "sender_undefined") {
     return (
       <div className="mt-[15px]" key={field.name}>
-        <p className="text-raiz-gray-950 mb-3">Sender Type</p>
+        <p className="text-raiz-gray-950 text-sm font-medium font-brSonoma leading-normal mb-3">
+          Sender Type
+        </p>
         <ModalTrigger
           onClick={() => {
             handleOpenModal(field.enum, "sender_type");
@@ -317,7 +324,7 @@ const renderNestedFields = (
     );
   });
 
-const AuBeneficiaryForm = ({ fields, countryCode }: Props) => {
+const FrBeneficiaryForm = ({ fields, countryCode }: Props) => {
   const [openModal, setOpenModal] = useState<"ben" | "send" | "purpose" | null>(
     null
   );
@@ -357,7 +364,6 @@ const AuBeneficiaryForm = ({ fields, countryCode }: Props) => {
 
   const userState =
     (entity && entity.entity_address && entity.entity_address[0].state) || "";
-
   const remitanceFields = fields.find(
     (item) => item.name === "remittance_purpose"
   );
@@ -365,8 +371,7 @@ const AuBeneficiaryForm = ({ fields, countryCode }: Props) => {
   const qc = useQueryClient();
   const AddBeneficiaryMutation = useMutation({
     mutationFn: (data: IIntBeneficiaryPayload) => CreateIntBeneficiary(data),
-    onSuccess: (response) => {
-      console.log("ressp", response);
+    onSuccess: () => {
       toast.success("Beneficiary added!");
       qc.invalidateQueries({ queryKey: ["int-bank-beneficiaries"] });
     },
@@ -411,7 +416,7 @@ const AuBeneficiaryForm = ({ fields, countryCode }: Props) => {
           beneficiary: {
             type: benType,
             account_name: values.account_name,
-            country: "Australia",
+            country: "France",
             state: values.beneficiary_state,
             post_code: values.beneficiary_post_code,
             address: values.beneficiary_address,
@@ -419,7 +424,6 @@ const AuBeneficiaryForm = ({ fields, countryCode }: Props) => {
           },
           sender: sendObject,
           type: "BANK",
-          BSB_number: values.BSB_number,
           account_number: values.account_number,
           account_name: values.account_name,
           remittance_purpose: remittancePurpose,
@@ -436,7 +440,6 @@ const AuBeneficiaryForm = ({ fields, countryCode }: Props) => {
     if (name === "beneficiary_type") setOpenModal("ben");
     if (name === "sender_type") setOpenModal("send");
   };
-
   const closeModal = () => setOpenModal(null);
   const displayModal = () => {
     switch (openModal) {
@@ -568,4 +571,4 @@ const AuBeneficiaryForm = ({ fields, countryCode }: Props) => {
   );
 };
 
-export default AuBeneficiaryForm;
+export default FrBeneficiaryForm;

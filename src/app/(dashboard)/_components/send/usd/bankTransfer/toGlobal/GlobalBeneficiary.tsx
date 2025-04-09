@@ -38,10 +38,12 @@ import BankModal from "@/components/modals/BankModal";
 import { IBank } from "@/types/misc";
 import { ImSpinner2 } from "react-icons/im";
 import InputLabel from "@/components/ui/InputLabel";
-import AuBeneficiaryForm from "../toInternaional/AuBeneficiaryForm";
-import GbBeneficiaryForm from "../toInternaional/GbBeneficiaryForm";
-import IntBeneficiaryModal from "../toInternaional/IntBeneficiaryModal";
-import IntCountriesModal from "../toInternaional/IntCountriesModal";
+import IntBeneficiaryModal from "../toInternational/IntBeneficiaryModal";
+import IntCountriesModal from "../toInternational/IntCountriesModal";
+import Image from "next/image";
+import AuBeneficiaryForm from "./AuBeneficiaryForm";
+import GbBeneficiaryForm from "./GbBeneficiaryForm";
+import FrBeneficiaryForm from "./FrBeneficiaryForm";
 
 interface FormValues {
   country: IIntCountry | null;
@@ -291,14 +293,26 @@ const GlobalBeneficiary = ({ close }: Props) => {
                 className="flex flex-col justify-center items-center gap-1 px-2 flex-shrink-0"
                 onClick={() => actions.selectIntBeneficiary(user)}
               >
-                <Avatar
-                  src={""}
-                  name={user?.foreign_payout_beneficiary?.beneficiary_name}
-                />
+                <div className="flex relative">
+                  <Avatar
+                    src={""}
+                    name={user?.foreign_payout_beneficiary?.beneficiary_name}
+                  />
+                  {user?.foreign_payout_beneficiary?.beneficiary_country && (
+                    <Image
+                      className="absolute bottom-0 -right-3 w-7 h-5"
+                      src={`/icons/flag-${user.foreign_payout_beneficiary.beneficiary_country.toLowerCase()}.png`}
+                      width={30}
+                      height={20}
+                      alt={user.foreign_payout_beneficiary.beneficiary_country.toLowerCase()}
+                    />
+                  )}
+                </div>
+
                 <p className="text-center text-raiz-gray-950 text-[13px] font-semibold leading-none">
                   {truncateString(
                     user?.foreign_payout_beneficiary?.beneficiary_name || "",
-                    20
+                    15
                   )}
                 </p>
                 <p className="text-center text-raiz-gray-700 text-xs leading-[18px]">
@@ -338,7 +352,8 @@ const GlobalBeneficiary = ({ close }: Props) => {
       {fields.length > 0 &&
         formik.values.country?.value !== "NG" &&
         formik.values.country?.value !== "AU" &&
-        formik.values.country?.value !== "GB" && (
+        formik.values.country?.value !== "GB" &&
+        formik.values.country?.value !== "FR" && (
           <form
             onSubmit={formik.handleSubmit}
             className={`flex flex-col gap-[15px] justify-between mt-4 h-full pb-7`}
@@ -471,6 +486,12 @@ const GlobalBeneficiary = ({ close }: Props) => {
         <GbBeneficiaryForm
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           fields={fields as any}
+          countryCode={formik.values.country.value}
+        />
+      )}
+      {fields.length > 0 && formik.values.country?.value === "FR" && (
+        <FrBeneficiaryForm
+          fields={fields}
           countryCode={formik.values.country.value}
         />
       )}

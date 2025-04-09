@@ -1,7 +1,7 @@
 import React from "react";
 import USBankBeneficiary from "./USBankBeneficiary";
 import { bankTypeProp } from "../BankTransfer";
-import InternationalBeneficiary from "../toInternaional/InternationalBeneficiary";
+import InternationalBeneficiary from "../toInternational/InternationalBeneficiary";
 import GlobalBeneficiary from "../toGlobal/GlobalBeneficiary";
 
 interface Props {
