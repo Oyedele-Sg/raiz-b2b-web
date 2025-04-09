@@ -388,15 +388,27 @@ export interface IIntBeneficiariesResponse {
 }
 
 export type IntCountryType =
-  | "GH"
-  | "AU"
-  | "KE"
-  | "UG"
-  | "NG"
-  | "TZ"
-  | "ZM"
-  | "MW"
-  | "GB";
+  | "GH" // Ghana
+  | "AU" // Australia
+  | "KE" // Kenya
+  | "UG" // Uganda
+  | "NG" // Nigeria
+  | "TZ" // Tanzania
+  | "ZM" // Zambia
+  | "MW" // Malawi
+  | "GB" // United Kingdom
+  | "BF" // Burkina Faso
+  | "CM" // Cameroon
+  | "SN" // Senegal
+  | "RW" // Rwanda
+  | "GN" // Guinea
+  | "ML" // Mali
+  | "TG" // Togo
+  | "AE" // United Arab Emirates
+  | "FR" // France
+  | "CI" // Ivory Coast
+  | "BJ" // Benin
+  | "CD"; // Democratic Republic of Congo
 
 export interface IIntBeneficiaryPayload {
   customer_email: string;
