@@ -46,7 +46,7 @@ const CountryCodeModal = ({ close, formik }: Props) => {
   };
 
   return (
-    <Overlay close={close}>
+    <Overlay width="400px" close={close}>
       <div className="flex flex-col  h-full py-8 px-5 ">
         <h5 className="text-raiz-gray-950 text-xl font-bold  leading-normal">
           Select your Country

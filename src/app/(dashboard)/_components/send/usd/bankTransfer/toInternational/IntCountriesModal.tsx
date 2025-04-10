@@ -24,7 +24,7 @@ const IntCountriesModal = ({ close, setCountry }: Props) => {
     close();
   };
   return (
-    <Overlay close={close}>
+    <Overlay close={close} width="400px">
       <div className="flex flex-col  h-full py-8 px-5 ">
         <h5 className="text-raiz-gray-950 text-xl font-bold  leading-normal">
           Country

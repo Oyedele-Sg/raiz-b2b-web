@@ -35,7 +35,9 @@ const Overlay = ({
           width: width || "auto",
           height: height || "auto",
         }}
-        className="bg-white rounded-[36px]  overflow-y-auto no-scrollbar"
+        className={`bg-white rounded-[36px]  overflow-y-auto no-scrollbar w-[90%] md:w-[${
+          width || "auto"
+        }]`}
       >
         {children}
       </section>
