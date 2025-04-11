@@ -47,7 +47,7 @@ const LoginOtp = ({ setStep, from }: Props) => {
     <AnimatedSection
       key="login-otp"
       className={`py-4 px-3 xl:px-8 ${
-        from === "login" ? "w-[50%] xl:w-[46%]" : "w-full"
+        from === "login" ? "lg:w-[50%] xl:w-[46%]" : "w-full"
       }  h-full flex flex-col justify-between gap-[60px]`}
     >
       <Image src={"/icons/Logo.svg"} width={91.78} height={32} alt="Logo" />

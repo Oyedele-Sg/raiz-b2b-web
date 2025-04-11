@@ -138,7 +138,7 @@ const CreateNewPassword = ({ setPage, otp, setUser }: Props) => {
               formik.touched.confirmPassword && formik.errors.confirmPassword
             }
           />
-          <div className="flex flex-col gap-[15px]">
+          <div className="flex flex-col gap-[15px] mb-6">
             <div className="flex gap-3">
               <div className="w-6 h-6">
                 {formik.errors.password &&

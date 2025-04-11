@@ -94,7 +94,7 @@ const ResetOtp = ({ email, setPage, setOtp }: Props) => {
             renderInput={(props) => (
               <input
                 {...props}
-                className={` !w-[80px] !h-[80px] p-2 focus:bg-[#fcfcfc] bg-raiz-gray-100 rounded-[14.57px]  code-input border focus:border-raiz-gray-800  outline-none flex-col justify-center items-center gap-2 inline-flex mr-3  text-raiz-gray-950 text-xl font-normal`}
+                className={`!w-[60px] !h-[60px] lg:!w-[50px] lg:!h-[50px] xl:!w-[72px] xl:!h-[72px]  p-2 focus:bg-[#fcfcfc] bg-raiz-gray-100 rounded-[14.57px]  code-input border focus:border-raiz-gray-800  outline-none flex-col justify-center items-center gap-2 inline-flex mr-3  text-raiz-gray-950 text-xl font-normal`}
               />
             )}
           />
