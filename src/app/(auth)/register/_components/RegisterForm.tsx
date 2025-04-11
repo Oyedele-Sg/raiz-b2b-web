@@ -186,7 +186,7 @@ const RegisterForm = () => {
   const isLoading = signupMutation.isPending || verifyOtpMutation.isPending;
 
   return (
-    <div className="py-4 px-3 xl:px-8 w-[50%] xl:w-[46%] h-full flex flex-col justify-between gap-[60px]">
+    <div className="py-4 px-3 xl:px-8 lg:w-[50%] xl:w-[46%] h-full flex flex-col justify-between gap-10 lg:gap-[60px]">
       <Image src={"/icons/Logo.svg"} width={91.78} height={32} alt="Logo" />
       <div className="flex flex-col h-full  justify-between">
         <AnimatePresence>{displayStep(currentStep)}</AnimatePresence>
@@ -231,7 +231,7 @@ const RegisterForm = () => {
               : "Continue"}
           </Button>
           {currentStep === 1 && (
-            <p className="text-raiz-gray-800 text-[13px] font-normal  leading-tight mt-3 text-center">
+            <p className="text-raiz-gray-800 text-[13px] font-normal  leading-tight mt-3 text-center pb-3 lg:pb-0">
               Already have an account?{" "}
               <Link className=" font-bold leading-[18.20px]" href={"/login"}>
                 Login

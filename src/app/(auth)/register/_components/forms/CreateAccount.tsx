@@ -117,42 +117,6 @@ const CreateAccount = ({ formik }: RegisterFormProps) => {
               }
               errorMessage={formik.touched.email && formik.errors.email}
             />
-            {/* <div className="">
-              <InputLabel content="Phone Number" />
-              <div className="flex gap-3 w-full mt-2">
-                <button
-                  onClick={() => setShowCountryCode(true)}
-                  className="w-[25%] flex p-[15px] gap-2 rounded-lg bg-raiz-gray-100 items-center"
-                >
-                  <Image
-                    src={"/images/9ja.png"}
-                    alt="country"
-                    width={34}
-                    height={17}
-                  />
-                  <span className="text-raiz-gray-900 text-[13px] font-medium font-brSonoma leading-tight">
-                    (+234)
-                  </span>
-                  <Image
-                    className="w-[34px] h-[17px]"
-                    src={"/icons/arrow-down.svg"}
-                    alt="country"
-                    width={34}
-                    height={17}
-                  />
-                </button>
-                <div className="w-[75%]">
-                  <InputField
-                    placeholder="Enter phone number"
-                    {...formik.getFieldProps("phone_number")}
-                    status={formik.errors.phone_number ? "error" : null}
-                    errorMessage={
-                      formik.touched.phone_number && formik.errors.phone_number
-                    }
-                  />
-                </div>
-              </div>
-            </div> */}
           </div>
           <div className="flex gap-2 mt-3 items-start">
             <button className="w-5 h-5">
