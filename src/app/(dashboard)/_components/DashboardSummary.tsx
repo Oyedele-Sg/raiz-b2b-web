@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SalesReport from "./SalesReport";
 import SideModalWrapper from "./SideModalWrapper";
 import Image from "next/image";
@@ -17,9 +17,10 @@ import { toast } from "sonner";
 import Swap from "./swap/Swap";
 import { useSwapStore } from "@/store/Swap";
 import { ACCOUNT_CURRENCIES } from "@/constants/misc";
+import { usePathname } from "next/navigation";
 
 const DashboardSummary = () => {
-  const { user } = useUser();
+  const { user, refetch } = useUser();
   const walletData = user?.business_account?.wallets;
   const { currency, actions: sendActions } = useSendStore();
   const { actions } = useSwapStore();
@@ -28,7 +29,7 @@ const DashboardSummary = () => {
   const [openModal, setOpenModal] = useState<
     "send" | "request" | "swap" | null
   >(null);
-
+  const pathName = usePathname();
   const NGNAcct = findWalletByCurrency(user, "NGN");
   const USDAcct = findWalletByCurrency(user, "USD");
 
@@ -78,6 +79,10 @@ const DashboardSummary = () => {
         break;
     }
   };
+
+  useEffect(() => {
+    refetch();
+  }, [pathName, refetch]);
 
   return (
     <div className="pt-5">
