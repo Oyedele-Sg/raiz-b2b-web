@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EmptyList from "@/components/ui/EmptyList";
 import { useQuery } from "@tanstack/react-query";
 import { FetchTransactionReportApi } from "@/services/transactions";
@@ -15,6 +15,7 @@ import { AnimatePresence } from "motion/react";
 import SideModalWrapper from "./SideModalWrapper";
 import TxnHistory from "./transaction-history/TxnHistory";
 import TxnReceipt from "./transaction-history/TxnReceipt";
+import { usePathname } from "next/navigation";
 
 const TransactionRow = ({
   transaction,
@@ -66,7 +67,7 @@ const Transactions = () => {
   const [openModal, setOpenModal] = useState<"history" | "detail" | null>(null);
   const [selectedTxn, setSelectedTxn] = useState<ITransaction | null>(null);
   const currentWallet = useCurrentWallet(user);
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ["transactions-report", { wallet_id: currentWallet?.wallet_id }],
     queryFn: ({ queryKey }) => {
       const [, params] = queryKey as [string, ITransactionParams];
@@ -74,6 +75,10 @@ const Transactions = () => {
     },
     enabled: !!currentWallet?.wallet_id,
   });
+  const pathName = usePathname();
+  useEffect(() => {
+    refetch();
+  }, [pathName, refetch]);
 
   const showDetail = (txn: ITransaction) => {
     setOpenModal("detail");

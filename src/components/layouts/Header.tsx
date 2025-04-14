@@ -10,11 +10,30 @@ import SelectAccount from "../../app/(dashboard)/_components/SelectAccount";
 import CreateNgnAcct from "../../app/(dashboard)/_components/createNgnAcct/CreateNgnAcct";
 import AddBvnModal from "../../app/(dashboard)/_components/createNgnAcct/AddBvnModal";
 import NgnSuccessModal from "../../app/(dashboard)/_components/createNgnAcct/NgnSuccessModal";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "@/lib/hooks/useUser";
 import { useQuery } from "@tanstack/react-query";
 import { FetchUserRewardsApi } from "@/services/user";
 import { useNotifications } from "@/lib/hooks/useNotifications";
+import * as motion from "motion/react-client";
+
+const searchItems = [
+  { name: "Dashboard", type: "route", path: "/" },
+  { name: "Top Up", type: "modal" },
+  { name: "Send", type: "modal" },
+  { name: "Create NGN Account", type: "modal" },
+  { name: "Rewards", type: "modal" },
+  { name: "Notifications", type: "modal" },
+  { name: "Profile settings", type: "route", path: "/settings" },
+  {
+    name: "Password & Security",
+    type: "route",
+    path: "/settings/login-security",
+  },
+  { name: "Dollar Wallet (USD)", type: "modal" },
+  { name: "Naira Wallet  (NGN)", type: "modal" },
+  { name: "Account", type: "modal" },
+];
 
 const Header = () => {
   const pathName = usePathname();
@@ -38,15 +57,81 @@ const Header = () => {
   >(null);
   const [showBvnModal, setShowBvnModal] = useState(false);
   const [successful, setSuccessful] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<typeof searchItems>([]);
+  const [isFocused, setIsFocused] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!searchTerm) {
+      setSearchResults([]);
+      return;
+    }
+
+    const results = searchItems.filter((item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setSearchResults(results);
+  }, [searchTerm]);
+
+  const handleSearchAction = (item: (typeof searchItems)[number]) => {
+    if (item.type === "route" && item.path) {
+      router.push(item.path);
+    } else if (item.type === "modal") {
+      switch (item.name) {
+        case "Top Up":
+          // setShowModal("topUp"); // add when you implement this modal
+          break;
+        case "Send":
+          // setShowModal("send"); // add when you implement this modal
+          break;
+        case "Create NGN Account":
+          setShowModal("createNGN");
+          break;
+        case "Rewards":
+          setShowModal("rewards");
+          break;
+        case "Notifications":
+          setShowModal("notifications");
+          break;
+        case "Dollar Wallet (USD)":
+        case "Naira Wallet  (NGN)":
+        case "Account":
+          setShowModal("selectAcct");
+        default:
+          break;
+      }
+    }
+    setSearchTerm("");
+    setSearchResults([]);
+    setFocusedIndex(-1);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setFocusedIndex((prev) => (prev + 1) % searchResults.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setFocusedIndex((prev) =>
+        prev <= 0 ? searchResults.length - 1 : prev - 1
+      );
+    } else if (e.key === "Enter" && focusedIndex >= 0) {
+      e.preventDefault();
+      handleSearchAction(searchResults[focusedIndex]);
+    } else if (e.key === "Escape") {
+      setFocusedIndex(-1);
+      setIsFocused(false);
+    }
+  };
 
   const handleCloseModal = () => {
     setShowModal(null);
   };
-
   const openNGNModal = () => {
     setShowModal("createNGN");
   };
-
   const { data, refetch } = useNotifications(15);
   const notifications = data?.pages[0]?.notifications || [];
   const hasUnreadNotif = notifications.some(
@@ -120,7 +205,54 @@ const Header = () => {
         <input
           placeholder="Search..."
           className="pl-10 h-full bg-raiz-gray-50 rounded-[20px] border border-raiz-gray-200 justify-start items-center gap-2 inline-flex w-full outline-none"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+          onKeyDown={handleKeyDown}
         />
+        <AnimatePresence>
+          {isFocused && searchResults.length > 0 && (
+            <motion.ul
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="absolute top-full mt-2 w-full bg-white border border-gray-200 shadow-xl rounded-2xl z-50 max-h-72 overflow-y-auto"
+            >
+              {searchResults.map((item, index) => (
+                <motion.li
+                  key={index}
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 5 }}
+                  transition={{ duration: 0.15 }}
+                  onMouseDown={() => handleSearchAction(item)}
+                  className={`flex items-center justify-between gap-3 px-4 py-3 cursor-pointer transition-all duration-200 ${
+                    index === focusedIndex
+                      ? "bg-blue-100 text-blue-800"
+                      : "hover:bg-blue-50"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-gray-800 text-sm font-medium">
+                      {item.name}
+                    </span>
+                  </div>
+                  <span
+                    className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                      item.type === "modal"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-green-100 text-green-700"
+                    }`}
+                  >
+                    {item.type}
+                  </span>
+                </motion.li>
+              ))}
+            </motion.ul>
+          )}
+        </AnimatePresence>
       </div>
       <div className="flex gap-4 items-center">
         <button

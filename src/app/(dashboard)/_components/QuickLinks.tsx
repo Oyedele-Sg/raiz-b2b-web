@@ -72,14 +72,14 @@ const QuickLinks = () => {
         <h6 className="text-raiz-gray-900 font-semibold  leading-snug">
           Quick Links
         </h6>
-        <button>
+        {/* <button>
           <Image
             src={"/icons/Dropdown.svg"}
             alt="option"
             width={20}
             height={20}
           />
-        </button>
+        </button> */}
       </div>
       <div className="flex justify-between gap-7 w-full overflow-x-scroll">
         {Links.map((each, i) => (
