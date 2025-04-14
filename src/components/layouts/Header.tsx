@@ -19,8 +19,8 @@ import * as motion from "motion/react-client";
 
 const searchItems = [
   { name: "Dashboard", type: "route", path: "/" },
-  { name: "Top Up", type: "modal" },
-  { name: "Send", type: "modal" },
+  // { name: "Top Up", type: "modal" },
+  // { name: "Send", type: "modal" },
   { name: "Create NGN Account", type: "modal" },
   { name: "Rewards", type: "modal" },
   { name: "Notifications", type: "modal" },
@@ -80,12 +80,6 @@ const Header = () => {
       router.push(item.path);
     } else if (item.type === "modal") {
       switch (item.name) {
-        case "Top Up":
-          // setShowModal("topUp"); // add when you implement this modal
-          break;
-        case "Send":
-          // setShowModal("send"); // add when you implement this modal
-          break;
         case "Create NGN Account":
           setShowModal("createNGN");
           break;
