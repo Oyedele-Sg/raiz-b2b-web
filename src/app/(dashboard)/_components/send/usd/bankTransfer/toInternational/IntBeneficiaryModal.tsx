@@ -50,37 +50,50 @@ const IntBeneficiaryModal = ({ close, users }: Props) => {
             className="pl-10 h-full bg-[#fcfcfc] rounded-[20px] border border-raiz-gray-200 justify-start items-center gap-2 inline-flex w-full outline-none text-sm"
           />
         </div>
-        {filteredUsers.length > 0 ? (
-          filteredUsers.map((user, index) => (
-            <button
-              onClick={() => handleSelect(user)}
-              key={index}
-              className="flex justify-between hover:bg-slate-100 p-3 rounded-xl"
-            >
-              <div className="flex items-center gap-2">
-                <Avatar
-                  src={""}
-                  name={user?.foreign_payout_beneficiary?.beneficiary_name}
-                />
-                <div className="flex flex-col ">
-                  <span className="text-raiz-gray-950 text-sm font-semibold text-left">
-                    {user?.foreign_payout_beneficiary?.beneficiary_name}
-                  </span>
-                  <span className="text-raiz-gray-400 text-sm font-semibold text-left">
-                    {
-                      user?.foreign_payout_beneficiary
-                        ?.beneficiary_account_number
-                    }
-                  </span>
+        <div className="flex flex-col gap-4 mt-5 w-full  min-h-[250px] overflow-y-scroll ">
+          {filteredUsers.length > 0 ? (
+            filteredUsers.map((user, index) => (
+              <button
+                onClick={() => handleSelect(user)}
+                key={index}
+                className="flex justify-between hover:bg-slate-100 p-3 rounded-xl"
+              >
+                <div className="flex items-center gap-6">
+                  <div className="flex relative">
+                    <Avatar
+                      src={""}
+                      name={user?.foreign_payout_beneficiary?.beneficiary_name}
+                    />
+                    {user?.foreign_payout_beneficiary?.beneficiary_country && (
+                      <Image
+                        className="absolute bottom-0 -right-3 w-6 h-4"
+                        src={`/icons/flag-${user.foreign_payout_beneficiary.beneficiary_country.toLowerCase()}.png`}
+                        width={18}
+                        height={14}
+                        alt={user.foreign_payout_beneficiary.beneficiary_country.toLowerCase()}
+                      />
+                    )}
+                  </div>
+                  <div className="flex flex-col ">
+                    <span className="text-raiz-gray-950 text-sm font-semibold text-left">
+                      {user?.foreign_payout_beneficiary?.beneficiary_name}
+                    </span>
+                    <span className="text-raiz-gray-400 text-sm font-semibold text-left">
+                      {
+                        user?.foreign_payout_beneficiary
+                          ?.beneficiary_account_number
+                      }
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </button>
-          ))
-        ) : (
-          <p className="text-center text-sm text-raiz-gray-600">
-            No beneficiary found
-          </p>
-        )}
+              </button>
+            ))
+          ) : (
+            <p className="text-center text-sm text-raiz-gray-600">
+              No beneficiary found
+            </p>
+          )}
+        </div>
       </div>
     </Overlay>
   );
