@@ -11,10 +11,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
   const pathName = usePathname();
   useAutoLogout();
 
-  const shouldShowSideNav =
-    !pathName.includes("/register") &&
-    pathName !== "/login" &&
-    !pathName.includes("/forgot-password");
+  const shouldShowSideNav = pathName.includes("/settings") || pathName === "/";
 
   useEffect(() => {
     if (typeof window !== "undefined") {
