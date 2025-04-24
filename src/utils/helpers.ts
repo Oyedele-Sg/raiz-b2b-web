@@ -210,3 +210,11 @@ export const getReadablePatternMessage = (
 
   return patternMessages[pattern] || `${fieldLabel} format is invalid`;
 };
+
+export const formatCardNumber = (value: string): string => {
+  // Remove all non-digit characters
+  const digits = value.replace(/\D/g, "");
+  // Split into groups of 4 and join with spaces
+  const groups = digits.match(/.{1,4}/g) || [];
+  return groups.join(" ").slice(0, 19); // Limit to 19 chars (16 digits + 3 spaces)
+};

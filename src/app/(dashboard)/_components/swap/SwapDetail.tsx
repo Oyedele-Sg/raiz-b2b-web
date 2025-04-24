@@ -172,12 +172,11 @@ const SwapDetail = ({
             {/* Rate */}
             <div className="w-full flex justify-between items-center">
               <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
-                {getCurrencySymbol(swapFromCurrency)}1({swapFromCurrency})
+                $1(USD)
               </span>
               <div className="h-0.5 w-[75%] px-4 bg-white"></div>
               <span className="text-zinc-900  text-xs font-semibold leading-none">
-                {getCurrencySymbol(swapToCurrency)}
-                {exchangeRate?.toFixed(2) || "0.00"}
+                ₦{exchangeRate?.toFixed(2) || 1}
               </span>
             </div>
           </div>

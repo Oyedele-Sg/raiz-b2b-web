@@ -50,7 +50,7 @@ const IntBeneficiaryModal = ({ close, users }: Props) => {
             className="pl-10 h-full bg-[#fcfcfc] rounded-[20px] border border-raiz-gray-200 justify-start items-center gap-2 inline-flex w-full outline-none text-sm"
           />
         </div>
-        <div className="flex flex-col gap-4 mt-5 w-full  min-h-[250px] overflow-y-scroll ">
+        <div className="flex flex-col gap-4 mt-5 w-full  max-h-[300px] overflow-y-scroll ">
           {filteredUsers.length > 0 ? (
             filteredUsers.map((user, index) => (
               <button

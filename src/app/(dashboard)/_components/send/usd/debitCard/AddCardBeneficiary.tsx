@@ -14,6 +14,7 @@ import {
   IUsBeneficiariesParams,
   IUsBeneficiaryPayload,
 } from "@/types/services";
+import { formatCardNumber } from "@/utils/helpers";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import React from "react";
@@ -32,14 +33,6 @@ interface FormValues {
 interface Props {
   close: () => void;
 }
-
-const formatCardNumber = (value: string): string => {
-  // Remove all non-digit characters
-  const digits = value.replace(/\D/g, "");
-  // Split into groups of 4 and join with spaces
-  const groups = digits.match(/.{1,4}/g) || [];
-  return groups.join(" ").slice(0, 19); // Limit to 19 chars (16 digits + 3 spaces)
-};
 
 const AddCardBeneficiary = ({ close }: Props) => {
   const { actions } = useSendStore();
