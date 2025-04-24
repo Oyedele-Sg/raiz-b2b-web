@@ -39,7 +39,6 @@ const CardAmount = ({ data, goNext }: Props) => {
   const [rawAmount, setRawAmount] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
-  const [paymentError, setPaymentError] = useState<string | null>(null);
   const [fee, setFee] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPayModal, setShowPayModal] = useState(false);
@@ -97,10 +96,8 @@ const CardAmount = ({ data, goNext }: Props) => {
     if (!stripe || !elements || !amount) return;
 
     setLoading(true);
-    setPaymentError(null);
 
     try {
-      // Convert amount to cents (assuming amount is in dollars)
       const amountInCents = Math.round(parseFloat(amount) * 100);
       const res = await PublicAxios.post(
         `/admin/transaction/topup/usd/create-intent/?name=${data?.account_user?.username}&email=${data?.email}&entity_id=${data?.account_user?.entity_id}`,
@@ -114,8 +111,7 @@ const CardAmount = ({ data, goNext }: Props) => {
 
       const cardNumberElement = elements.getElement(CardNumberElement);
       if (!cardNumberElement) {
-        setPaymentError("Card number element not found.");
-        console.log("Card number element not found");
+        toast.error("Card number element not found");
         setLoading(false);
         return;
       }
@@ -132,7 +128,6 @@ const CardAmount = ({ data, goNext }: Props) => {
       if (result.error) {
         console.error("Payment error:", result.error);
         toast.error(result.error.message || "An error occurred");
-        setPaymentError(result?.error?.message || "An error occurred");
         setLoading(false);
         return;
       }
@@ -159,7 +154,7 @@ const CardAmount = ({ data, goNext }: Props) => {
         goNext();
       }
     } catch (err) {
-      setPaymentError("An error occurred during payment processing.");
+      toast.error("An error occurred during payment processing.");
       console.log(err);
     } finally {
       setLoading(false);
