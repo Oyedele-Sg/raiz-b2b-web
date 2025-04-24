@@ -374,6 +374,7 @@ const AuBeneficiaryForm = ({ fields, countryCode }: Props) => {
     onSuccess: () => {
       toast.success("Beneficiary added!");
       qc.invalidateQueries({ queryKey: ["int-bank-beneficiaries"] });
+      formik.resetForm();
     },
   });
   const formik = useFormik({

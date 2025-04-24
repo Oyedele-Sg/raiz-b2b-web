@@ -1,5 +1,6 @@
 import { AuthAxios, CustomAxiosRequestConfig } from "@/lib/authAxios";
 import {
+  IBusinessPaymentData,
   INotificationParams,
   INotificationResponse,
   ITransactionPinPayload,
@@ -73,6 +74,15 @@ export const FetchTransactionReportCategoryApi = async (
     {
       params,
     }
+  );
+  return response?.data;
+};
+
+export const FetchPaymentInfoApi = async (
+  userName: string
+): Promise<IBusinessPaymentData> => {
+  const response = await AuthAxios.get(
+    `/admin/account_user/payment-information/${userName}/`
   );
   return response?.data;
 };

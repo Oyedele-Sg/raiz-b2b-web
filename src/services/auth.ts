@@ -73,7 +73,7 @@ export const ForgotPasswordApi = async (data: { email: string }) => {
 
 export const ResetPasswordApi = async (data: IResetPasswordPayload) => {
   const response = await PublicAxios.post(
-    "/business/auth/reset-password/",
+    "/business/auth/business/reset-password/",
     data
   );
   return response?.data;

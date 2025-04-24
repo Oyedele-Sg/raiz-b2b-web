@@ -7,7 +7,7 @@ import {
   ITransactionStatus,
   ITransactionType,
 } from "./transactions";
-import { INotification, ISearchedUser } from "./user";
+import { INotification, ISearchedUser, IWallet } from "./user";
 
 export interface IRewardPoint {
   reward_point_id: string;
@@ -467,4 +467,26 @@ export interface IIntSendPayload {
   transaction_category_id: number;
   transaction_description: string;
   data: ITransactionPinPayload;
+}
+
+export interface IBusinessPaymentData {
+  account_user: {
+    first_name: string | null;
+    last_name: string | null;
+    date_of_birth: string | null;
+    image: string | null;
+    phone_number: string | null;
+    username: string;
+    selfie_image: string | null;
+    gender: string | null;
+    entity_id: string;
+    last_login: string | null;
+    occupation: string | null;
+    industry: string | null;
+    customer_segmentation: string;
+    qr_code: string | null;
+    account_user_id: string;
+  };
+  email: string;
+  wallets: IWallet[];
 }

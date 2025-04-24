@@ -1,9 +1,19 @@
 import { z } from "zod";
 
+const nameRegex = /^[A-Za-z\-]{3,}$/;
+
 export const registerFormSchemas = {
   1: z.object({
-    firstName: z.string().nonempty("First name is required"),
-    lastName: z.string().nonempty("Last name is required"),
+    firstName: z
+      .string()
+      .nonempty("First name is required")
+      .min(3, "First name must be at least 3 characters")
+      .regex(nameRegex, "First name can only contain letters and hyphens"),
+    lastName: z
+      .string()
+      .nonempty("Last name is required")
+      .min(3, "Last name must be at least 3 characters")
+      .regex(nameRegex, "Last name can only contain letters and hyphens"),
     email: z.string().email("Invalid email address"),
     country_id: z.string().min(1, "Country is required"),
     referral_code: z.string().optional(),
