@@ -1,29 +1,181 @@
 import Image from "next/image";
 import React, { Dispatch, SetStateAction, useState } from "react";
-import CardAmount from "./CardAmount";
+import CardAmount, { formCardValues } from "./CardAmount";
 import { useSendStore } from "@/store/Send";
 import { IBusinessPaymentData } from "@/types/services";
 import PaySuccess from "./PaySuccess";
+import ConfirmPayment from "./ConfirmPayment";
+import { Elements, useStripe } from "@stripe/react-stripe-js";
+import { toast } from "sonner";
+import { loadStripe } from "@stripe/stripe-js";
+import {
+  confirmStripePaymentIntent,
+  createStripePaymentIntent,
+} from "@/services/transactions";
+import { useMutation } from "@tanstack/react-query";
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISH_KEY || ""
+);
 
 interface Props {
   setScreen: Dispatch<SetStateAction<"details" | "card">>;
   data: IBusinessPaymentData;
 }
 
-export type CardSteps = "amount" | "success";
+export type CardSteps = "amount" | "confirm" | "success";
 
 const PayWithCard = ({ setScreen, data }: Props) => {
   const [step, setStep] = useState<CardSteps>("amount");
-  const { actions } = useSendStore();
+  const { actions, amount } = useSendStore();
+  const [billingDetails, setBillingDetails] = useState<formCardValues | null>(
+    null
+  );
+  const stripe = useStripe();
+  const [fee, setFee] = useState<number | null>(null);
+  // const [paymentMethodId, setPaymentMethodId] = useState<string | null>(null);
+
   const goBack = () => {
     actions.reset("USD");
+    setBillingDetails(null);
     setScreen("details");
   };
 
+  const createPaymentIntentMutation = useMutation({
+    mutationFn: async ({
+      amountInCents,
+      payment_method_id,
+    }: {
+      amountInCents: number;
+      payment_method_id: string;
+    }) => {
+      const response = await createStripePaymentIntent(
+        amountInCents,
+        payment_method_id,
+        data
+      );
+      return { ...response, payment_method_id };
+    },
+    onSuccess: (data) => {
+      setFee(data.fee);
+      setStep("confirm");
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Failed to create payment intent");
+      console.error(err);
+    },
+  });
+
+  const confirmPaymentMutation = useMutation({
+    mutationFn: async ({
+      client_secret,
+      payment_intent_id,
+      payment_method_id,
+    }: {
+      client_secret: string;
+      payment_intent_id: string;
+      payment_method_id: string;
+    }) => {
+      if (!stripe) {
+        throw new Error("Stripe not initialized");
+      }
+
+      const result = await stripe.confirmCardPayment(client_secret, {
+        payment_method: payment_method_id,
+      });
+      if (result.error) {
+        throw new Error(result.error.message || "Payment confirmation failed");
+      }
+
+      if (result.paymentIntent?.status === "succeeded") {
+        if (!billingDetails) {
+          throw new Error("Billing details not available");
+        }
+        const transactionData = await confirmStripePaymentIntent(
+          payment_intent_id,
+          data,
+          billingDetails
+        );
+        return transactionData;
+      }
+    },
+    onSuccess: (transactionData) => {
+      actions.setTransactionDetail(transactionData);
+      setStep("success");
+    },
+    onError: (err: Error) => {
+      toast.error(
+        err.message || "An error occurred during payment confirmation"
+      );
+      console.error(err);
+    },
+  });
+
+  const handlePaymentIntent = (
+    payment_method_id: string,
+    formValues: formCardValues
+  ) => {
+    if (!amount || !stripe) {
+      toast.error("Please enter an amount and ensure Stripe is initialized");
+      return;
+    }
+    if (!formValues.firstName || !formValues.lastName || !formValues.email) {
+      toast.error("Please provide complete billing details.");
+      return;
+    }
+
+    setBillingDetails(formValues);
+    const amountInCents = Math.round(parseFloat(amount) * 100);
+    createPaymentIntentMutation.mutate({ amountInCents, payment_method_id });
+  };
+
+  const handleConfirm = (
+    client_secret: string,
+    payment_intent_id: string,
+    payment_method_id: string
+  ) => {
+    confirmPaymentMutation.mutate({
+      client_secret,
+      payment_intent_id,
+      payment_method_id,
+    });
+  };
   const displayScreen = () => {
     switch (step) {
       case "amount":
-        return <CardAmount goNext={() => setStep("success")} data={data} />;
+        return (
+          <CardAmount
+            goNext={handlePaymentIntent}
+            data={data}
+            fee={fee || 0}
+            loading={createPaymentIntentMutation.isPending}
+          />
+        );
+      case "confirm":
+        return (
+          <>
+            <div style={{ display: "none" }}>
+              <CardAmount
+                goNext={handlePaymentIntent}
+                data={data}
+                fee={fee || 0}
+                loading={createPaymentIntentMutation.isPending}
+              />
+            </div>
+            <ConfirmPayment
+              goNext={() =>
+                handleConfirm(
+                  createPaymentIntentMutation.data?.client_secret || "",
+                  createPaymentIntentMutation.data?.payment_intent_id || "",
+                  createPaymentIntentMutation.data?.payment_method_id || ""
+                )
+              }
+              close={() => setStep("amount")}
+              fee={fee || 0}
+              // handlePay={handlePaymentIntent}
+              loading={confirmPaymentMutation.isPending}
+            />
+          </>
+        );
       case "success":
         return <PaySuccess data={data} />;
       default:
@@ -72,10 +224,15 @@ const PayWithCard = ({ setScreen, data }: Props) => {
           </p>{" "}
         </div>
       )}
-
       {displayScreen()}
     </>
   );
 };
 
-export default PayWithCard;
+const WithStripe = (props: Props) => (
+  <Elements stripe={stripePromise}>
+    <PayWithCard {...props} />
+  </Elements>
+);
+
+export default WithStripe;
