@@ -1,5 +1,5 @@
 "use client";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Image from "next/image";
 // import { useUser } from "@/lib/hooks/useUser";
 import Tabs from "@/components/ui/Tabs";
@@ -16,6 +16,25 @@ interface Props {
 
 const PayDetails = ({ setScreen, data }: Props) => {
   const [type, setType] = useState<"usd" | "ngn">("usd");
+
+  const [downloadLink, setDownloadLink] = useState(
+    "https://raizapp.onelink.me/RiOx/webdirect"
+  );
+
+  useEffect(() => {
+    const userAgent = navigator.userAgent || navigator.platform || "";
+
+    if (/android/i.test(userAgent)) {
+      setDownloadLink(
+        "https://play.google.com/store/apps/details?id=com.raiz.application"
+      );
+    } else if (/iPad|iPhone|iPod/.test(userAgent)) {
+      setDownloadLink("https://apps.apple.com/us/app/raiz-mobile/id6473565462");
+    } else {
+      setDownloadLink("https://raizapp.onelink.me/RiOx/webdirect");
+    }
+  }, []);
+
   const handleType = (value: "usd" | "ngn") => {
     // actions.selectCurrency(value === "ngn" ? "NGN" : "USD");
     setType(value);
@@ -40,8 +59,8 @@ const PayDetails = ({ setScreen, data }: Props) => {
         alt="Logo"
       />
       <div className="mt-2">
-        <h2 className="text-raiz-gray-950 font-semibold text-[23px] leading-[40px] capitalize ">
-          {data?.account_user?.username}
+        <h2 className="text-raiz-gray-950 font-semibold text-[23px] leading-[40px]">
+          Pay {NGNAcct?.wallet_name}
         </h2>
         <p className="text-raiz-gray-700 font-[15px] ">
           Transfer the amount you want to fund.
@@ -129,9 +148,9 @@ const PayDetails = ({ setScreen, data }: Props) => {
               <span className="text-center justify-start text-gray-500 text-base font-normal leading-normal">
                 Address
               </span>
-              {/* Fix this */}
               <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
                 270 Park Avenue, NY 10017
+                {/* {USDAcct?.} */}
               </p>
             </div>
           </div>
@@ -157,7 +176,7 @@ const PayDetails = ({ setScreen, data }: Props) => {
                   {NGNAcct?.account_number || ""}
                 </p>
                 <button
-                  onClick={() => copyToClipboard(USDAcct?.account_number || "")}
+                  onClick={() => copyToClipboard(NGNAcct?.account_number || "")}
                 >
                   <Image
                     src={"/icons/copy.svg"}
@@ -186,7 +205,7 @@ const PayDetails = ({ setScreen, data }: Props) => {
           </Button>
           <p className="text-[13px] text-raiz-gray-900  text-center">
             Don&#39;t have raiz app?{" "}
-            <Link className="font-bold" href={"#"}>
+            <Link target="_blank" className="font-bold" href={downloadLink}>
               Download
             </Link>
           </p>

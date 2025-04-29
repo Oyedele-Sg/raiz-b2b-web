@@ -6,26 +6,19 @@ import { IBusinessPaymentData } from "@/types/services";
 import React, { useRef, useState } from "react";
 import { z } from "zod";
 import { loadStripe } from "@stripe/stripe-js";
-import {
-  Elements,
-  CardNumberElement,
-  CardExpiryElement,
-  CardCvcElement,
-  useStripe,
-  useElements,
-} from "@stripe/react-stripe-js";
-import { PublicAxios } from "@/lib/publicAxios";
+import { Elements, useStripe } from "@stripe/react-stripe-js";
 import CardDetails from "./CardDetails";
 import { useFormik } from "formik";
-import { toast } from "sonner";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISH_KEY || ""
 );
 
 interface Props {
-  goNext: () => void;
+  goNext: (payment_method_id: string, formValues: formCardValues) => void;
   data: IBusinessPaymentData;
+  fee: number | null;
+  loading: boolean;
 }
 
 export type formCardValues = {
@@ -34,17 +27,14 @@ export type formCardValues = {
   email: string;
 };
 
-const CardAmount = ({ data, goNext }: Props) => {
+const CardAmount = ({ data, fee, loading, goNext }: Props) => {
   const { amount, actions, purpose } = useSendStore();
   const [rawAmount, setRawAmount] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
-  const [fee, setFee] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
   const [showPayModal, setShowPayModal] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const stripe = useStripe();
-  const elements = useElements();
 
   const amountSchema = z
     .string()
@@ -91,75 +81,6 @@ const CardAmount = ({ data, goNext }: Props) => {
     onSubmit: (values) => console.log("values", values),
   });
 
-  const handlePayment = async () => {
-    console.log("Stripe or Elements not ready", { stripe, elements, amount });
-    if (!stripe || !elements || !amount) return;
-
-    setLoading(true);
-
-    try {
-      const amountInCents = Math.round(parseFloat(amount) * 100);
-      const res = await PublicAxios.post(
-        `/admin/transaction/topup/usd/create-intent/?name=${data?.account_user?.username}&email=${data?.email}&entity_id=${data?.account_user?.entity_id}`,
-        {
-          transaction_amount: amountInCents,
-          curreny: "USD",
-        }
-      );
-      const { client_secret, payment_intent_id, fee } = await res.data;
-      setFee(fee);
-
-      const cardNumberElement = elements.getElement(CardNumberElement);
-      if (!cardNumberElement) {
-        toast.error("Card number element not found");
-        setLoading(false);
-        return;
-      }
-      const result = await stripe.confirmCardPayment(client_secret, {
-        payment_method: {
-          card: cardNumberElement,
-          billing_details: {
-            name: `${formik.values.firstName} ${formik.values.lastName}`,
-            email: formik.values.email,
-          },
-        },
-      });
-
-      if (result.error) {
-        console.error("Payment error:", result.error);
-        toast.error(result.error.message || "An error occurred");
-        setLoading(false);
-        return;
-      }
-
-      if (result.paymentIntent && result.paymentIntent.status === "succeeded") {
-        const params = {
-          entity_id: data?.account_user?.entity_id,
-          payer_first_name: formik.values.firstName,
-          payer_last_name: formik.values.lastName,
-          payer_email: formik.values.email,
-          payment_description: "",
-        };
-        const res = await PublicAxios.post(
-          "/admin/transaction/topup/usd/confirm-intent/",
-          {
-            payment_intent: payment_intent_id,
-            currency: "USD",
-          },
-          {
-            params,
-          }
-        );
-        actions.setTransactionDetail(res?.data);
-        goNext();
-      }
-    } catch (err) {
-      toast.error("An error occurred during payment processing.");
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
-  };
   return (
     <div
       className="w-full flex flex-col h-full mt-11
@@ -274,13 +195,10 @@ const CardAmount = ({ data, goNext }: Props) => {
       {showPayModal && (
         <CardDetails
           close={() => setShowPayModal(false)}
-          handlePay={handlePayment}
           loading={loading}
           formik={formik}
-          CardCvcElement={CardCvcElement}
-          CardExpiryElement={CardExpiryElement}
-          CardNumberElement={CardNumberElement}
           disableBtn={!!error || !amount || !stripe || loading}
+          goNext={goNext}
         />
       )}
     </div>
