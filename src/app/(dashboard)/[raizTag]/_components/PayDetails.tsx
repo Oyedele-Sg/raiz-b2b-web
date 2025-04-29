@@ -59,8 +59,8 @@ const PayDetails = ({ setScreen, data }: Props) => {
         alt="Logo"
       />
       <div className="mt-2">
-        <h2 className="text-raiz-gray-950 font-semibold text-[23px] leading-[40px] capitalize ">
-          {data?.account_user?.username}
+        <h2 className="text-raiz-gray-950 font-semibold text-[23px] leading-[40px]">
+          Pay {NGNAcct?.wallet_name}
         </h2>
         <p className="text-raiz-gray-700 font-[15px] ">
           Transfer the amount you want to fund.

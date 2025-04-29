@@ -67,36 +67,26 @@ const PayWithCard = ({ setScreen, data }: Props) => {
 
   const confirmPaymentMutation = useMutation({
     mutationFn: async ({
-      client_secret,
+      // client_secret,
       payment_intent_id,
-      payment_method_id,
-    }: {
-      client_secret: string;
+    }: // payment_method_id,
+    {
+      // client_secret: string;
       payment_intent_id: string;
-      payment_method_id: string;
+      // payment_method_id: string;
     }) => {
       if (!stripe) {
         throw new Error("Stripe not initialized");
       }
-
-      const result = await stripe.confirmCardPayment(client_secret, {
-        payment_method: payment_method_id,
-      });
-      if (result.error) {
-        throw new Error(result.error.message || "Payment confirmation failed");
+      if (!billingDetails) {
+        throw new Error("Billing details not available");
       }
-
-      if (result.paymentIntent?.status === "succeeded") {
-        if (!billingDetails) {
-          throw new Error("Billing details not available");
-        }
-        const transactionData = await confirmStripePaymentIntent(
-          payment_intent_id,
-          data,
-          billingDetails
-        );
-        return transactionData;
-      }
+      const transactionData = await confirmStripePaymentIntent(
+        payment_intent_id,
+        data,
+        billingDetails
+      );
+      return transactionData;
     },
     onSuccess: (transactionData) => {
       actions.setTransactionDetail(transactionData);
@@ -128,15 +118,9 @@ const PayWithCard = ({ setScreen, data }: Props) => {
     createPaymentIntentMutation.mutate({ amountInCents, payment_method_id });
   };
 
-  const handleConfirm = (
-    client_secret: string,
-    payment_intent_id: string,
-    payment_method_id: string
-  ) => {
+  const handleConfirm = (payment_intent_id: string) => {
     confirmPaymentMutation.mutate({
-      client_secret,
       payment_intent_id,
-      payment_method_id,
     });
   };
   const displayScreen = () => {
@@ -164,9 +148,7 @@ const PayWithCard = ({ setScreen, data }: Props) => {
             <ConfirmPayment
               goNext={() =>
                 handleConfirm(
-                  createPaymentIntentMutation.data?.client_secret || "",
-                  createPaymentIntentMutation.data?.payment_intent_id || "",
-                  createPaymentIntentMutation.data?.payment_method_id || ""
+                  createPaymentIntentMutation.data?.payment_intent_id || ""
                 )
               }
               close={() => setStep("amount")}
