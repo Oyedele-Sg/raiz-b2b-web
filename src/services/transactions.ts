@@ -1,9 +1,11 @@
 import { AuthAxios, CustomAxiosRequestConfig } from "@/lib/authAxios";
+import { PublicAxios } from "@/lib/publicAxios";
 import {
   IAcceptRequestPayload,
   IBeneficiariestResponse,
   IBillRequestParams,
   IBillRequestResponse,
+  IBusinessPaymentData,
   IExternalBeneficiariesResponse,
   IExternalBeneficiaryPayload,
   IExternalTransferPayload,
@@ -380,4 +382,53 @@ export const GetMinAmountApi = async (currency: IntCurrrencyCode) => {
     `/business/transactions/remittance/account-types/minimum-amount/?currency=${currency}`
   );
   return response?.data;
+};
+
+export const createStripePaymentIntent = async (
+  amountInCents: number,
+  payment_method_id: string,
+  data: IBusinessPaymentData
+) => {
+  const res = await PublicAxios.post(
+    `/admin/transaction/topup/usd/create-intent/?name=${data?.account_user?.username}&email=${data?.email}&entity_id=${data?.account_user?.entity_id}`,
+    {
+      transaction_amount: amountInCents,
+      curreny: "USD",
+      payment_method_id,
+    }
+  );
+
+  return {
+    ...res.data,
+    payment_method_id,
+  };
+};
+
+export const confirmStripePaymentIntent = async (
+  payment_intent_id: string,
+  data: IBusinessPaymentData,
+  payer: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  }
+) => {
+  const params = {
+    entity_id: data?.account_user?.entity_id,
+    payer_first_name: payer.firstName,
+    payer_last_name: payer.lastName,
+    payer_email: payer.email,
+    payment_description: "",
+  };
+
+  const res = await PublicAxios.post(
+    "/admin/transaction/topup/usd/confirm-intent/",
+    {
+      payment_intent: payment_intent_id,
+      currency: "USD",
+    },
+    { params }
+  );
+
+  return res.data;
 };
