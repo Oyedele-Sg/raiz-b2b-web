@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import InputField from "@/components/ui/InputField";
 import { useUser } from "@/lib/hooks/useUser";
 import {

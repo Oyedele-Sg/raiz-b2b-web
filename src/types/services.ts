@@ -1,3 +1,4 @@
+import { IBeneficiaryBank } from "@/app/(dashboard)/_components/send/usd/bankTransfer/toGlobal/BankSelectModal";
 import { IPagination } from "./misc";
 import {
   IBillRequest,
@@ -296,6 +297,7 @@ export interface FormField {
   pattern?: string;
   const?: string;
   fields?: FormField[];
+  banks?: IBeneficiaryBank[];
 }
 
 export interface IUsBeneficiaryPayload {

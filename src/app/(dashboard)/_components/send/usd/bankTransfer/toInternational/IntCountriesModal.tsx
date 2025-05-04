@@ -15,9 +15,11 @@ const IntCountriesModal = ({ close, setCountry }: Props) => {
     setSearch(e.target.value);
   };
   const filteredCountries: IIntCountry[] = useMemo(() => {
-    return IntCountries.filter((country) =>
-      country?.name.toLowerCase().includes(search.toLowerCase())
-    );
+    return IntCountries.slice()
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .filter((country) =>
+        country?.name.toLowerCase().includes(search.toLowerCase())
+      );
   }, [search]);
   const handleSelect = (country: IIntCountry) => {
     setCountry(country);

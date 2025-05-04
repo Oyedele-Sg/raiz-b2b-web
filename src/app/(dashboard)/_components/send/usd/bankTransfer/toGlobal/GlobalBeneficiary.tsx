@@ -44,6 +44,7 @@ import Image from "next/image";
 import AuBeneficiaryForm from "./AuBeneficiaryForm";
 import GbBeneficiaryForm from "./GbBeneficiaryForm";
 import FrBeneficiaryForm from "./FrBeneficiaryForm";
+import BeneficiaryForm from "./BeneficiaryForm";
 
 interface FormValues {
   country: IIntCountry | null;
@@ -353,7 +354,8 @@ const GlobalBeneficiary = ({ close }: Props) => {
         formik.values.country?.value !== "NG" &&
         formik.values.country?.value !== "AU" &&
         formik.values.country?.value !== "GB" &&
-        formik.values.country?.value !== "FR" && (
+        formik.values.country?.value !== "FR" &&
+        formik.values.country?.value !== "AE" && (
           <form
             onSubmit={formik.handleSubmit}
             className={`flex flex-col gap-[15px] justify-between mt-4 h-full pb-7`}
@@ -493,6 +495,27 @@ const GlobalBeneficiary = ({ close }: Props) => {
         <FrBeneficiaryForm
           fields={fields}
           countryCode={formik.values.country.value}
+        />
+      )}
+      {fields.length > 0 && formik.values.country?.value === "AE" && (
+        <BeneficiaryForm
+          fields={fields}
+          countryCode={formik.values.country.value}
+          countryName={"United Arab Emirates"}
+          banks={
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            fieldsData?.AE?.find((field: any) => field.name === "bank_code")
+              ?.banks || []
+          }
+          bankDetailsFields={[
+            {
+              name: "account_number",
+              label: "Account Number",
+              pattern: "^[A-Za-z0-9]{23}$",
+            },
+            { name: "bank_code", label: "Bank" },
+          ]}
+          reset={() => formik.resetForm()}
         />
       )}
       {showModal === "country" && (
