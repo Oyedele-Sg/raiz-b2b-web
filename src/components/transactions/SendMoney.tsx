@@ -1,9 +1,8 @@
 "use client";
-import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
 import { useUser } from "@/lib/hooks/useUser";
 import { useSendStore } from "@/store/Send";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import SideWrapperHeader from "../SideWrapperHeader";
 import ErrorMessage from "../ui/ErrorMessage";
@@ -35,12 +34,23 @@ const SendMoney = ({
     purpose,
     actions,
   } = useSendStore();
-  const { user } = useUser();
+  const { user, refetch } = useUser();
   const { selectedCurrency } = useCurrencyStore();
   const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
+  const [rawAmount, setRawAmount] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const currentWallet = useCurrentWallet(user);
+  const currentWallet = useMemo(() => {
+    if (!user || !user?.business_account?.wallets || !selectedCurrency?.name)
+      return null;
+    return user?.business_account?.wallets.find(
+      (wallet) => wallet.wallet_type.currency === selectedCurrency.name
+    );
+  }, [user, selectedCurrency]);
+
+  useEffect(() => {
+    refetch();
+  }, []);
   const amountSchema = z
     .string()
     .regex(/^\d*\.?\d{0,2}$/, "Enter a valid amount (max 2 decimal places)")
@@ -62,32 +72,30 @@ const SendMoney = ({
     .min(3, { message: "Purpose must be at least 3 characters long" });
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
-
-    // Allow only numbers and one decimal point
-    value = value.replace(/[^0-9.]/g, "");
-
-    // Prevent multiple decimal points
-    const parts = value.split(".");
-    if (parts.length > 2) {
-      value = parts[0] + "." + parts.slice(1).join("");
-    }
-
-    // Limit to 2 decimal places
-    if (parts[1] && parts[1].length > 2) {
-      value = `${parts[0]}.${parts[1].slice(0, 2)}`;
-    }
-
-    // Handle special cases
+    let value = e.target.value.replace(/[^0-9.]/g, "");
     if (value.startsWith(".")) value = "0" + value;
-    if (value === "") value = ""; // Let it be empty while typing
 
+    const decimalCount = value.split(".").length - 1;
+    if (decimalCount > 1) return;
+
+    const [integerPart, decimalPart] = value.split(".");
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const formattedValue =
+      decimalPart !== undefined
+        ? `${formattedInteger}.${decimalPart}`
+        : formattedInteger;
+
+    setRawAmount(formattedValue);
     actions.setAmountAndRemark({ amount: value, purpose });
 
-    // Validate amount
-    const result = amountSchema.safeParse(value || "0"); // Use "0" for empty string validation
-    setError(result.success ? null : result.error.errors[0].message);
+    const result = amountSchema.safeParse(value);
+    if (!result.success) {
+      setError(result.error.errors[0].message);
+    } else {
+      setError(null);
+    }
   };
+
   const handlePurposeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPurpose = e.target.value;
     actions.setAmountAndRemark({ amount, purpose: newPurpose });
@@ -109,11 +117,10 @@ const SendMoney = ({
     setError(null);
   };
 
-  // Display value: show raw input while typing, formatted value when not focused
   const displayValue = () => {
     if (isFocused || !amount)
-      return amount ? `${selectedCurrency.sign}${amount}` : "";
-    const num = parseFloat(amount);
+      return amount ? `${selectedCurrency.sign}${rawAmount}` : "";
+    const num = parseFloat(rawAmount);
     return isNaN(num) ? "" : `${selectedCurrency.sign}${num.toFixed(2)}`;
   };
 
@@ -200,11 +207,10 @@ const SendMoney = ({
                 ref={inputRef}
                 autoFocus
                 className="outline-none h-[91px] bg-transparent w-fit xl:mx-auto text-center text-zinc-900 placeholder:text-zinc-900 text-3xl font-semibold leading-10"
-                placeholder="0.00"
+                placeholder={`${selectedCurrency.sign}0.00`}
                 value={displayValue()}
                 onChange={handleAmountChange}
                 onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
               />
             </div>
             <div className="px-4 py-2 bg-indigo-100 bg-opacity-60 rounded-2xl inline-flex flex-col justify-center items-center gap-2">

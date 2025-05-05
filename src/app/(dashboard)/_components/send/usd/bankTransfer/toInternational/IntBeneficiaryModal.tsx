@@ -15,11 +15,17 @@ const IntBeneficiaryModal = ({ close, users }: Props) => {
   const [search, setSearch] = useState("");
   const { actions } = useSendStore();
   const filteredUsers = useMemo(() => {
-    return users.filter((user) =>
-      user?.foreign_payout_beneficiary?.beneficiary_name
-        .toLowerCase()
-        .includes(search.toLowerCase())
-    );
+    return users
+      .sort((a, b) =>
+        a.foreign_payout_beneficiary.beneficiary_name.localeCompare(
+          b.foreign_payout_beneficiary.beneficiary_name
+        )
+      )
+      .filter((user) =>
+        user?.foreign_payout_beneficiary?.beneficiary_name
+          .toLowerCase()
+          .includes(search.toLowerCase())
+      );
   }, [search, users]);
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);

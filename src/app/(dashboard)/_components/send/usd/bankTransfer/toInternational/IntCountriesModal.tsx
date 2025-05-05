@@ -15,9 +15,11 @@ const IntCountriesModal = ({ close, setCountry }: Props) => {
     setSearch(e.target.value);
   };
   const filteredCountries: IIntCountry[] = useMemo(() => {
-    return IntCountries.filter((country) =>
-      country?.name.toLowerCase().includes(search.toLowerCase())
-    );
+    return IntCountries.slice()
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .filter((country) =>
+        country?.name.toLowerCase().includes(search.toLowerCase())
+      );
   }, [search]);
   const handleSelect = (country: IIntCountry) => {
     setCountry(country);
@@ -53,7 +55,7 @@ const IntCountriesModal = ({ close, setCountry }: Props) => {
                 className="flex gap-2 hover:bg-slate-100 p-3 rounded-xl items-start"
               >
                 <Image
-                  src={country.logo}
+                  src={country.logo || "/icons/flag-not.png"}
                   alt={country.name}
                   width={16}
                   height={16}

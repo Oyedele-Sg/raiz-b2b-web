@@ -1,8 +1,8 @@
 "use client";
-import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
 import { useUser } from "@/lib/hooks/useUser";
 import { useSendStore } from "@/store/Send";
-import React, { useRef, useState } from "react";
+import { useCurrencyStore } from "@/store/useCurrencyStore";
+import React, { useRef, useState, useMemo } from "react";
 import { z } from "zod";
 import SideWrapperHeader from "../SideWrapperHeader";
 import Avatar from "../ui/Avatar";
@@ -24,32 +24,29 @@ interface Props {
 const InternationalSendMoney = ({
   goBack,
   goNext,
-  fee,
   loading = false,
   minAmount,
 }: Props) => {
-  const {
-    intBeneficiary,
-    amount,
-    purpose,
-    actions,
-    currency: senderCurrency,
-  } = useSendStore();
+  const { intBeneficiary, amount, purpose, actions } = useSendStore();
   const { user } = useUser();
+  const { selectedCurrency } = useCurrencyStore();
   const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [rawAmount, setRawAmount] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const currentWallet = useCurrentWallet(user);
+  const currentWallet = useMemo(() => {
+    if (!user || !user?.business_account?.wallets || !selectedCurrency?.name)
+      return null;
+    return user?.business_account?.wallets.find(
+      (wallet) => wallet.wallet_type.currency === selectedCurrency.name
+    );
+  }, [user, selectedCurrency]);
   const currency =
     intBeneficiary?.foreign_payout_beneficiary?.beneficiary_currency || "";
   const selectedUser = intBeneficiary?.foreign_payout_beneficiary;
   const amountSchema = z
     .string()
-    .regex(/^\d*\.?\d{0,2}$/, "Enter a valid amount (max 2 decimal places)")
-    .refine((val) => parseFloat(val) >= 1, {
-      message: "Amount must be at least 1",
-    });
+    .regex(/^\d*\.?\d{0,2}$/, "Enter a valid amount (max 2 decimal places)");
 
   const purposeSchema = z
     .string()
@@ -226,7 +223,7 @@ const InternationalSendMoney = ({
                 {minAmount}
               </span>
             </div>
-            {fee ? (
+            {/* {fee ? (
               <div className="w-full flex justify-between items-center">
                 <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
                   Fee:
@@ -237,7 +234,7 @@ const InternationalSendMoney = ({
                   {fee?.toFixed(2) || "0.00"}
                 </span>
               </div>
-            ) : null}
+            ) : null} */}
           </div>
 
           <Button

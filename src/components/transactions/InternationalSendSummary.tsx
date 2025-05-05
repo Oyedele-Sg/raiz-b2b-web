@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Button from "../ui/Button";
 import ListDetailItem from "../ui/ListDetailItem";
-import { formatTime, getCurrencySymbol } from "@/utils/helpers";
+import { formatTime, getCurrencySymbol, convertTime } from "@/utils/helpers";
 import { IInitialPayoutResponse } from "@/types/services";
 import dayjs from "dayjs";
 
@@ -29,7 +29,7 @@ const InternationalSendSummary = ({
     intBeneficiary,
     currency: senderCurrency,
   } = useSendStore();
-  //   const totalPayable = fee ? parseFloat(amount) + fee : amount;
+
   const currency =
     intBeneficiary?.foreign_payout_beneficiary?.beneficiary_currency || "";
   return (
@@ -46,7 +46,7 @@ const InternationalSendSummary = ({
         </div>
         <p className="text-center text-xl font-bold leading-normal">
           {getCurrencySymbol(currency)}
-          {amount.toLocaleString()}
+          {Number(amount).toLocaleString()}
         </p>
         <p className="text-center   text-xs font-normal  leading-tight">
           Send Summary
@@ -84,7 +84,9 @@ const InternationalSendSummary = ({
           <ListDetailItem title="Purpose" value={purpose} />
           <ListDetailItem
             title="Date"
-            value={dayjs(paymentData?.created_at).format("DD MMM YYYY @ hh:mm")}
+            value={dayjs(convertTime(paymentData?.created_at || "")).format(
+              "DD MMM YYYY @ hh:mm"
+            )}
           />
           <div
             className={`flex text-zinc-900 justify-between gap-4 items-start pb-3    `}

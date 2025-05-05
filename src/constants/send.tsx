@@ -1,12 +1,38 @@
+import AuBeneficiaryForm from "@/app/(dashboard)/_components/send/usd/bankTransfer/toGlobal/AuBeneficiaryForm";
+import BeneficiaryForm from "@/app/(dashboard)/_components/send/usd/bankTransfer/toGlobal/BeneficiaryForm";
+import FrBeneficiaryForm from "@/app/(dashboard)/_components/send/usd/bankTransfer/toGlobal/FrBeneficiaryForm";
+// import GbBeneficiaryForm from "@/app/(dashboard)/_components/send/usd/bankTransfer/toGlobal/GbBeneficiaryForm";
 import { IUSDSendOptions } from "@/types/misc";
-import { IntCountryType } from "@/types/services";
-import { ReactNode } from "react";
+import { FormField, IntCountryType } from "@/types/services";
+import { ComponentType, ReactNode } from "react";
 
 interface Options {
   title: string;
   subtitle: string;
   icon: ReactNode;
   key: IUSDSendOptions;
+}
+
+export interface IBankDetailField {
+  name: string;
+  label: string;
+  pattern?: string;
+}
+
+export interface BeneficiaryFormProps {
+  fields: FormField[];
+  countryCode: string;
+  countryName: string;
+  bankDetailsFields?: IBankDetailField[];
+  banks?: { id: number; code: string; name: string }[];
+  reset?: () => void;
+}
+
+export interface CountryConfig {
+  countryName: string;
+  bankDetailsFields: IBankDetailField[];
+  banks?: { id: number; code: string; name: string }[];
+  formComponent: ComponentType<BeneficiaryFormProps>;
 }
 
 export interface IIntCountry {
@@ -208,4 +234,450 @@ export const IntCountries: IIntCountry[] = [
     value: "CD",
     logo: "/icons/flag-cd.png",
   },
+  { name: "Austria", value: "AT", logo: "/icons/flag-at.png" },
+  { name: "Andorra", value: "AD", logo: "/icons/flag-ad.png" },
+  { name: "Belgium", value: "BE", logo: "/icons/flag-be.png" },
+  { name: "Bulgaria", value: "BG", logo: "/icons/flag-bg.png" },
+  { name: "Czech Republic", value: "CZ", logo: "/icons/flag-cz.png" },
+  { name: "Germany", value: "DE", logo: "/icons/flag-de.png" },
+  { name: "Denmark", value: "DK", logo: "/icons/flag-dk.png" },
+  { name: "Estonia", value: "EE", logo: "/icons/flag-ee.png" },
+  { name: "Spain", value: "ES", logo: "/icons/flag-es.png" },
+  { name: "Finland", value: "FI", logo: "/icons/flag-fi.png" },
+  { name: "Greece", value: "GR", logo: "/icons/flag-gr.png" },
+  { name: "Croatia", value: "HR", logo: "/icons/flag-hr.png" },
+  { name: "Hungary", value: "HU", logo: "/icons/flag-hu.png" },
+  { name: "Ireland", value: "IE", logo: "/icons/flag-ie.png" },
+  { name: "Iceland", value: "IS", logo: "/icons/flag-is.png" },
+  { name: "Italy", value: "IT", logo: "/icons/flag-it.png" },
+  { name: "Latvia", value: "LV", logo: "/icons/flag-lv.png" },
+  { name: "Lithuania", value: "LT", logo: "/icons/flag-lt.png" },
+  { name: "Liechtenstein", value: "LI", logo: "/icons/flag-li.png" },
+  { name: "Luxembourg", value: "LU", logo: "/icons/flag-lu.png" },
+  { name: "Monaco", value: "MC", logo: "/icons/flag-mc.png" },
+  { name: "Malta", value: "MT", logo: "/icons/flag-mt.png" },
+  { name: "Netherlands", value: "NL", logo: "/icons/flag-nl.png" },
+  { name: "Norway", value: "NO", logo: "/icons/flag-no.png" },
+  { name: "Poland", value: "PL", logo: "/icons/flag-pl.png" },
+  { name: "Portugal", value: "PT", logo: "/icons/flag-pt.png" },
+  { name: "Romania", value: "RO", logo: "/icons/flag-ro.png" },
+  { name: "Slovakia", value: "SK", logo: "/icons/flag-sk.png" },
+  { name: "Slovenia", value: "SI", logo: "/icons/flag-si.png" },
+  { name: "Sweden", value: "SE", logo: "/icons/flag-se.png" },
+  { name: "Singapore", value: "SG", logo: "/icons/flag-sg.png" },
+  { name: "San Marino", value: "SM", logo: "/icons/flag-sm.png" },
+  { name: "Vatican City", value: "VA", logo: "/icons/flag-va.png" },
 ];
+
+export const GlobalCountryConfig: Record<string, CountryConfig> = {
+  AE: {
+    countryName: "United Arab Emirates",
+    bankDetailsFields: [
+      { name: "bank_code", label: "Bank" },
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{23}$",
+      },
+    ],
+    banks: [],
+    formComponent: BeneficiaryForm,
+  },
+  AD: {
+    countryName: "Andorra",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{24}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  AT: {
+    countryName: "Austria",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{20}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  AU: {
+    countryName: "Australia",
+    bankDetailsFields: [
+      { name: "bank_code", label: "Bank Code" },
+      {
+        name: "BSB_number",
+        label: "BSB Number",
+        pattern: "^[0-9]{6}$",
+      },
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[0-9]{6,9}$",
+      },
+    ],
+    banks: [],
+    formComponent: AuBeneficiaryForm,
+  },
+  FR: {
+    countryName: "France",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{27}$",
+      },
+    ],
+    formComponent: FrBeneficiaryForm,
+  },
+  BE: {
+    countryName: "Belgium",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{16}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  BG: {
+    countryName: "Bulgaria",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{22}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  CZ: {
+    countryName: "Czech Republic",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{24}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  DE: {
+    countryName: "Germany",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{22}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  DK: {
+    countryName: "Denmark",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{18}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  EE: {
+    countryName: "Estonia",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{20}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  ES: {
+    countryName: "Spain",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{24}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  FI: {
+    countryName: "Finland",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{18}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  GR: {
+    countryName: "Greece",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{27}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  HR: {
+    countryName: "Croatia",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{21}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  HU: {
+    countryName: "Hungary",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{28}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  IE: {
+    countryName: "Ireland",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{22}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  IS: {
+    countryName: "Iceland",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{26}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  IT: {
+    countryName: "Italy",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{27}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  LV: {
+    countryName: "Latvia",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{21}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  LT: {
+    countryName: "Lithuania",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{20}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  LI: {
+    countryName: "Liechtenstein",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{21}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  LU: {
+    countryName: "Luxembourg",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{20}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  MC: {
+    countryName: "Monaco",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{27}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  MT: {
+    countryName: "Malta",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{31}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  NL: {
+    countryName: "Netherlands",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{18}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  NO: {
+    countryName: "Norway",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{15}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  PL: {
+    countryName: "Poland",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{28}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  PT: {
+    countryName: "Portugal",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{25}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  RO: {
+    countryName: "Romania",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{24}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  SK: {
+    countryName: "Slovakia",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{24}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  SI: {
+    countryName: "Slovenia",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{19}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  SE: {
+    countryName: "Sweden",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{24}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  SG: {
+    countryName: "Singapore",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[0-9]{7,16}$",
+      },
+      {
+        name: "bank_code",
+        label: "Bank",
+      },
+    ],
+    banks: [],
+    formComponent: BeneficiaryForm,
+  },
+  SM: {
+    countryName: "San Marino",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{27}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+  VA: {
+    countryName: "Vatican City",
+    bankDetailsFields: [
+      {
+        name: "account_number",
+        label: "Account Number",
+        pattern: "^[A-Za-z0-9]{22}$",
+      },
+    ],
+    formComponent: BeneficiaryForm,
+  },
+};

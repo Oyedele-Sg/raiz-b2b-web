@@ -150,16 +150,42 @@ export const groupByDate = <T extends Record<string, any>>(
 };
 
 const currencySymbols: Record<string, string> = {
-  USD: "$",
-  NGN: "₦",
-  EUR: "€",
-  GBP: "£",
-  JPY: "¥",
-  CAD: "C$",
-  AUD: "A$",
-  INR: "₹",
-  CNY: "¥",
-  ZAR: "R",
+  USD: "$", // US Dollar
+  NGN: "₦", // Nigerian Naira
+  EUR: "€", // Euro
+  GBP: "£", // British Pound
+  JPY: "¥", // Japanese Yen
+  CNY: "¥", // Chinese Yuan
+  INR: "₹", // Indian Rupee
+  CAD: "C$", // Canadian Dollar
+  AUD: "A$", // Australian Dollar
+  NZD: "NZ$", // New Zealand Dollar
+  CHF: "CHF", // Swiss Franc
+  SEK: "kr", // Swedish Krona
+  NOK: "kr", // Norwegian Krone
+  DKK: "kr", // Danish Krone
+  ZAR: "R", // South African Rand
+  BRL: "R$", // Brazilian Real
+  MXN: "$", // Mexican Peso
+  RUB: "₽", // Russian Ruble
+  KRW: "₩", // South Korean Won
+  SGD: "S$", // Singapore Dollar
+  HKD: "HK$", // Hong Kong Dollar
+  TRY: "₺", // Turkish Lira
+  SAR: "﷼", // Saudi Riyal
+  AED: "د.إ", // UAE Dirham
+  ARS: "$", // Argentine Peso
+  CLP: "$", // Chilean Peso
+  COP: "$", // Colombian Peso
+  MYR: "RM", // Malaysian Ringgit
+  THB: "฿", // Thai Baht
+  IDR: "Rp", // Indonesian Rupiah
+  PHP: "₱", // Philippine Peso
+  VND: "₫", // Vietnamese Dong
+  EGP: "£", // Egyptian Pound
+  KES: "KSh", // Kenyan Shilling
+  GHS: "₵", // Ghanaian Cedi
+  TZS: "TSh", // Tanzanian Shilling
 };
 
 export const getCurrencySymbol = (currencyCode: string): string => {
