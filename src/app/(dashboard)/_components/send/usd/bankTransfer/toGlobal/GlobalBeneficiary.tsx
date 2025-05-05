@@ -5,7 +5,7 @@ import Button from "@/components/ui/Button";
 import EmptyList from "@/components/ui/EmptyList";
 import InputField from "@/components/ui/InputField";
 import ModalTrigger from "@/components/ui/ModalTrigger";
-import Radio from "@/components/ui/Radio";
+// import Radio from "@/components/ui/Radio";
 import Spinner from "@/components/ui/Spinner";
 import { useUser } from "@/lib/hooks/useUser";
 import {
@@ -22,7 +22,7 @@ import {
   IntCountryType,
 } from "@/types/services";
 import {
-  convertField,
+  // convertField,
   getReadablePatternMessage,
   truncateString,
 } from "@/utils/helpers";
@@ -41,10 +41,11 @@ import InputLabel from "@/components/ui/InputLabel";
 import IntBeneficiaryModal from "../toInternational/IntBeneficiaryModal";
 import IntCountriesModal from "../toInternational/IntCountriesModal";
 import Image from "next/image";
-import AuBeneficiaryForm from "./AuBeneficiaryForm";
+// import AuBeneficiaryForm from "./AuBeneficiaryForm";
 import GbBeneficiaryForm from "./GbBeneficiaryForm";
-import FrBeneficiaryForm from "./FrBeneficiaryForm";
-import BeneficiaryForm from "./BeneficiaryForm";
+// import FrBeneficiaryForm from "./FrBeneficiaryForm";
+// import BeneficiaryForm from "./BeneficiaryForm";
+import DynamicBeneficiaryForm from "./DynamicBeneficiaryForm";
 
 interface FormValues {
   country: IIntCountry | null;
@@ -317,8 +318,11 @@ const GlobalBeneficiary = ({ close }: Props) => {
                   )}
                 </p>
                 <p className="text-center text-raiz-gray-700 text-xs leading-[18px]">
-                  {user?.foreign_payout_beneficiary
-                    ?.beneficiary_account_number || ""}
+                  {truncateString(
+                    user?.foreign_payout_beneficiary
+                      ?.beneficiary_account_number || "",
+                    15
+                  )}
                 </p>
               </button>
             ))}
@@ -350,100 +354,11 @@ const GlobalBeneficiary = ({ close }: Props) => {
             : formik.values.country?.name || ""
         }
       />
-      {fields.length > 0 &&
-        formik.values.country?.value !== "NG" &&
-        formik.values.country?.value !== "AU" &&
-        formik.values.country?.value !== "GB" &&
-        formik.values.country?.value !== "FR" &&
-        formik.values.country?.value !== "AE" && (
-          <form
-            onSubmit={formik.handleSubmit}
-            className={`flex flex-col gap-[15px] justify-between mt-4 h-full pb-7`}
-          >
-            <div className="flex flex-col gap-[15px]">
-              {fields.map((field) => (
-                <div key={field.name} className="flex flex-col">
-                  {field.enum ? (
-                    <div className="flex flex-col gap-2">
-                      <label className="text-sm font-medium text-gray-700 capitalize">
-                        {convertField(field.name)}
-                      </label>
-                      <div className="flex flex-col gap-3">
-                        {field.enum.map((option) => (
-                          <button
-                            type="button"
-                            onClick={() =>
-                              formik.setFieldValue(field.name, option)
-                            }
-                            key={option}
-                            className="flex items-center gap-2"
-                          >
-                            <Radio
-                              checked={formik.values[field.name] === option}
-                              onChange={() =>
-                                formik.setFieldValue(field.name, option)
-                              }
-                            />
-                            <span className="text-sm text-gray-700">
-                              {option
-                                .replace(/_/g, " ")
-                                .toLowerCase()
-                                .replace(/^./, (c) => c.toUpperCase())}
-                            </span>
-                          </button>
-                        ))}
-                      </div>
-                      {formik.errors[field.name] &&
-                        formik.touched[field.name] && (
-                          <div className="text-red-500 text-sm mt-1">
-                            {formik.errors[field.name] as string}
-                          </div>
-                        )}
-                    </div>
-                  ) : field.const ? (
-                    <InputField
-                      label={convertField(field.name)}
-                      name={field.name}
-                      type="text"
-                      disabled
-                      value={field.const || ""}
-                    />
-                  ) : (
-                    <InputField
-                      label={convertField(field.name)}
-                      name={field.name}
-                      type="text"
-                      value={formik.values[field.name] || ""}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      errorMessage={
-                        formik.touched[field.name] && formik.errors[field.name]
-                          ? (formik.errors[field.name] as string)
-                          : undefined
-                      }
-                      status={
-                        formik.touched[field.name] && formik.errors[field.name]
-                          ? "error"
-                          : null
-                      }
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-            <Button
-              disabled={!formik.isValid || !formik.dirty || formik.isSubmitting}
-              type="submit"
-              loading={formik.isSubmitting}
-            >
-              Add Beneficiary
-            </Button>
-          </form>
-        )}
+
       {fields.length > 0 && formik.values.country?.value === "NG" && (
         <form
           onSubmit={NgFormik.handleSubmit}
-          className={`flex flex-col gap-[15px] justify-between h-[60vh] lg:h-[65vh] pb-7`}
+          className="flex flex-col gap-[15px] justify-between h-[60vh] lg:h-[65vh] pb-7"
         >
           <div className="flex flex-col gap-[15px]">
             <div className="mt-[15px]">
@@ -472,13 +387,20 @@ const GlobalBeneficiary = ({ close }: Props) => {
           <Button
             loading={AddBeneficiaryMutation.isPending}
             type="submit"
-            disabled={!data || isFetching}
+            disabled={!ngData || isFetching}
           >
             Continue
           </Button>
         </form>
       )}
-      {fields.length > 0 && formik.values.country?.value === "AU" && (
+      {fields.length > 0 && formik.values.country?.value === "GB" && (
+        <GbBeneficiaryForm
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          fields={fields as any}
+          countryCode={formik.values.country.value}
+        />
+      )}
+      {/* {fields.length > 0 && formik.values.country?.value === "AU" && (
         <AuBeneficiaryForm
           fields={fields}
           countryCode={formik.values.country.value}
@@ -518,6 +440,32 @@ const GlobalBeneficiary = ({ close }: Props) => {
           reset={() => formik.resetForm()}
         />
       )}
+      {fields.length > 0 && formik.values.country?.value === "AT" && (
+        <BeneficiaryForm
+          fields={fields}
+          countryCode={formik.values.country.value}
+          countryName={"Austria"}
+          bankDetailsFields={[
+            {
+              name: "account_number",
+              label: "Account Number",
+              pattern: "^[A-Za-z0-9]{20}$",
+            },
+          ]}
+          reset={() => formik.resetForm()}
+        />
+      )} */}
+      {fields.length > 0 &&
+        formik.values.country?.value !== "NG" &&
+        formik.values.country?.value !== "GB" && (
+          <DynamicBeneficiaryForm
+            fields={fields}
+            formik={formik}
+            fieldsData={fieldsData || {}}
+            reset={() => formik.resetForm()}
+          />
+        )}
+
       {showModal === "country" && (
         <IntCountriesModal
           setCountry={(country) => formik.setFieldValue("country", country)}

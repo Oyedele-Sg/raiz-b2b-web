@@ -392,6 +392,39 @@ export interface IIntBeneficiariesResponse {
 export type IntCountryType =
   | "GH" // Ghana
   | "AU" // Australia
+  | "AT" // Austria
+  | "AD" // Andorra
+  | "BE" // Belgium
+  | "BG" // Bulgaria
+  | "CZ" // Czech Republic
+  | "DE" // Germany
+  | "DK" // Denmark
+  | "EE" // Estonia
+  | "ES" // Spain
+  | "FI" // Finland
+  | "GR" // Greece
+  | "HR" // Croatia
+  | "HU" // Hungary
+  | "IE" // Ireland
+  | "IS" // Iceland
+  | "IT" // Italy
+  | "LV" // Latvia
+  | "LT" // Lithuania
+  | "LU" // Luxembourg
+  | "LI" // Liechtenstein
+  | "MT" // Malta
+  | "MC" // Monaco
+  | "NL" // Netherlands
+  | "NO" // Norway
+  | "PL" // Poland
+  | "PT" // Portugal
+  | "RO" // Romania
+  | "SE" // Sweden
+  | "SK" // Slovakia
+  | "SI" // Slovenia
+  | "SG" // Singapore
+  | "SM" // San Marino
+  | "VA" // Vatican City
   | "KE" // Kenya
   | "UG" // Uganda
   | "NG" // Nigeria
@@ -412,29 +445,31 @@ export type IntCountryType =
   | "BJ" // Benin
   | "CD"; // Democratic Republic of Congo
 
-export type IntCurrrencyCode = [
-  "GHS", // Ghana
-  "AUD", // Australia
-  "KES", // Kenya
-  "UGX", // Uganda
-  "NGN", // Nigeria
-  "TZS", // Tanzania
-  "ZMW", // Zambia
-  "MWK", // Malawi
-  "GBP", // United Kingdom
-  "XOF", // Burkina Faso (CFA Franc, West African)
-  "CDF", // Cameroon (CFA Franc, Central African)
-  "XOF", // Senegal (CFA Franc, West African)
-  "RWF", // Rwanda
-  "GNF", // Guinea
-  "XOF", // Mali (CFA Franc, West African)
-  "XOF", // Togo (CFA Franc, West African)
-  "AED", // United Arab Emirates
-  "EUR", // France
-  "XOF", // Ivory Coast (CFA Franc, West African)
-  "XOF", // Benin (CFA Franc, West African)
-  "CDF" // Democratic Republic of Congo (CFA Franc, Central African)
-];
+export type IntCurrrencyCode =
+  | "GHS" // Ghana
+  | "AUD" // Australia
+  | "EUR" // Austria , Andorra, Belgium, Germany, Czech Republic, Bulgaria, France, Estonia, Spain, Netherlands, Portugal, Italy, Ireland, Finland, Greece, Latvia, Lithuania, Slovakia
+  | "DKK" // Denmark (Danish Krone)
+  | "SGD" // Singapore
+  | "KES" // Kenya
+  | "UGX" // Uganda
+  | "NGN" // Nigeria
+  | "TZS" // Tanzania
+  | "ZMW" // Zambia
+  | "MWK" // Malawi
+  | "GBP" // United Kingdom
+  | "XOF" // Burkina Faso (CFA Franc, West African)
+  | "CDF" // Cameroon (CFA Franc, Central African)
+  | "XOF" // Senegal (CFA Franc, West African)
+  | "RWF" // Rwanda
+  | "GNF" // Guinea
+  | "XOF" // Mali (CFA Franc, West African)
+  | "XOF" // Togo (CFA Franc, West African)
+  | "AED" // United Arab Emirates
+  | "EUR" // France
+  | "XOF" // Ivory Coast (CFA Franc, West African)
+  | "XOF" // Benin (CFA Franc, West African)
+  | "CDF"; // Democratic Republic of Congo (CFA Franc, Central African)
 
 export interface IIntBeneficiaryPayload {
   customer_email: string;

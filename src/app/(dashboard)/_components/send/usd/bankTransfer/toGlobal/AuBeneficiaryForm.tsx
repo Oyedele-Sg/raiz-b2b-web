@@ -387,7 +387,7 @@ const AuBeneficiaryForm = ({ fields, countryCode }: Props) => {
         entity.entity_address[0].country.country_name
       ) {
       }
-      console.log(JSON.stringify(values, null, 2));
+
       let sendObject = {};
       if (sendType === "INDIVIDUAL") {
         sendObject = {

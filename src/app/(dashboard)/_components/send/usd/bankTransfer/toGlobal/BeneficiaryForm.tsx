@@ -31,10 +31,10 @@ interface Bank {
 interface Props {
   fields: FormField[];
   countryCode: string;
-  countryName: string;
-  bankDetailsFields: { name: string; label: string; pattern?: string }[];
+  countryName?: string;
+  bankDetailsFields?: { name: string; label: string; pattern?: string }[];
   banks?: Bank[];
-  reset: () => void;
+  reset?: () => void;
 }
 
 const renderField = (
@@ -506,8 +506,8 @@ const renderNestedFields = (
 const BeneficiaryForm = ({
   fields,
   countryCode,
-  countryName,
-  bankDetailsFields,
+  countryName = "",
+  bankDetailsFields = [],
   banks,
   reset,
 }: Props) => {
@@ -530,7 +530,7 @@ const BeneficiaryForm = ({
       toast.success("Beneficiary added!");
       qc.invalidateQueries({ queryKey: ["int-bank-beneficiaries"] });
       formik.resetForm();
-      reset();
+      reset?.();
     },
   });
 
@@ -689,10 +689,15 @@ const BeneficiaryForm = ({
         data: {
           beneficiary: {
             type: benType,
-            account_name: values.account_name,
+            // account_name: values.account_name,
             country: countryName,
             city: values.beneficiary_city,
             address: values.beneficiary_address,
+            ...(values.beneficiary_post_code
+              ? {
+                  post_code: values.beneficiary_post_code,
+                }
+              : {}),
           },
           sender: sendObject,
           type: "BANK",
@@ -707,6 +712,9 @@ const BeneficiaryForm = ({
       AddBeneficiaryMutation.mutate(data);
     },
   });
+
+  // console.log("formik.errors", formik.errors);
+  // console.log("values", formik.values);
 
   const handleOpenModal = (
     value: string[] | Bank[] | undefined,
