@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import InputField from "@/components/ui/InputField";
 import { useUser } from "@/lib/hooks/useUser";
 import {
@@ -386,7 +387,7 @@ const AuBeneficiaryForm = ({ fields, countryCode }: Props) => {
         entity.entity_address[0].country.country_name
       ) {
       }
-      console.log(JSON.stringify(values, null, 2));
+
       let sendObject = {};
       if (sendType === "INDIVIDUAL") {
         sendObject = {

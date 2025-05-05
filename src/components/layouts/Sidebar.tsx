@@ -19,6 +19,8 @@ import { toast } from "sonner";
 import dynamic from "next/dynamic";
 import SetTransactionPin from "@/app/(dashboard)/_components/transaction-pin/SetTransactionPin";
 import { findWalletByCurrency } from "@/utils/helpers";
+import PaymentLinkModal from "../modals/PaymentLinkModal";
+
 // Dynamically import PersonaReact with SSR disabled
 const PersonaReact = dynamic(() => import("persona-react"), { ssr: false });
 
@@ -31,6 +33,7 @@ const Sidebar = () => {
   const [showBvnModal, setShowBvnModal] = useState(false);
   const [successful, setSuccessful] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showPaymentLinkModal, setShowPaymentLinkModal] = useState(false);
   const [isIframeLoading, setIsIframeLoading] = useState(true);
   const [canRenderPersona, setCanRenderPersona] = useState(false);
 
@@ -157,6 +160,7 @@ const Sidebar = () => {
   };
 
   const NGNAcct = findWalletByCurrency(user, "NGN");
+  const USDAcct = findWalletByCurrency(user, "USD");
   const verificationStatus =
     user?.business_account?.business_verifications?.[0]?.verification_status;
   const hasTransactionPin = user?.has_transaction_pin;
@@ -295,6 +299,25 @@ const Sidebar = () => {
       ),
       bg: "bg-[#eaecff]/40",
     },
+    {
+      condition:
+        verificationStatus === "completed" &&
+        NGNAcct &&
+        hasTransactionPin &&
+        USDAcct,
+      icon: <Image src={"/icons/paylink.svg"} width={32} height={32} alt="" />,
+      title: "Payment Link",
+      description: "Allows Guest Users to Securely Send you Money Seamlessly.",
+      action: (
+        <button
+          onClick={() => setShowPaymentLinkModal(true)}
+          className="text-primary2 text-sm font-bold"
+        >
+          Share Link
+        </button>
+      ),
+      bg: "bg-[#eaecff]/40",
+    },
   ];
 
   return (
@@ -369,6 +392,9 @@ const Sidebar = () => {
       {successful && <NgnSuccessModal close={() => setSuccessful(false)} />}
       {showLogoutModal && (
         <LogoutModal close={() => setShowLogoutModal(false)} />
+      )}
+      {showPaymentLinkModal && (
+        <PaymentLinkModal close={() => setShowPaymentLinkModal(false)} />
       )}
     </aside>
   );

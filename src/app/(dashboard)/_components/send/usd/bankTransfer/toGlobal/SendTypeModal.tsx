@@ -7,31 +7,30 @@ import { FormikProps } from "formik";
 interface Props {
   data: string[];
   close: () => void;
-  setBenType: (arg: string) => void;
-  benType: string;
+  setSendType: (arg: string) => void;
+  sendType: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formik?: FormikProps<any>;
 }
 
-const BeneficiaryTypeModal = ({
-  data,
+const SendTypeModal = ({
+  setSendType,
   close,
-  setBenType,
-  benType,
+  data,
+  sendType,
   formik,
 }: Props) => {
   const handleClick = (val: string) => {
-    formik?.setFieldValue("beneficiary", val);
-    formik?.setFieldTouched("beneficiary", true);
-    setBenType(val);
+    formik?.setFieldValue("sender", val);
+    formik?.setFieldTouched("sender", true);
+    setSendType(val);
     close();
   };
-
   return (
     <Overlay close={close} width="375px">
       <div className="flex flex-col  h-full py-8 px-5 ">
         <h5 className="text-raiz-gray-950 text-xl font-bold  leading-normal">
-          Beneficiary Type
+          Send Type
         </h5>
         <div className="flex flex-col gap-4 mt-5 w-full items-start">
           {data?.map((each, index) => (
@@ -41,7 +40,7 @@ const BeneficiaryTypeModal = ({
               key={index}
             >
               <Radio
-                checked={each === benType}
+                checked={each === sendType}
                 onChange={() => handleClick(each)}
               />
               {convertField(each)}
@@ -53,4 +52,4 @@ const BeneficiaryTypeModal = ({
   );
 };
 
-export default BeneficiaryTypeModal;
+export default SendTypeModal;

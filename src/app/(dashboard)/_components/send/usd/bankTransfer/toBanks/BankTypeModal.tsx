@@ -87,7 +87,7 @@ const BankTypeModal = ({ close, bankType, setBankType }: Props) => {
             </p>
           </button>
           {/* int */}
-          <button
+          {/* <button
             onClick={() => setBankType("int")}
             className={`border ${
               bankType === "int" ? "border-indigo-900" : "border-zinc-200"
@@ -112,7 +112,7 @@ const BankTypeModal = ({ close, bankType, setBankType }: Props) => {
             <p className="text-center  text-zinc-900 text-xs font-normal  leading-tight">
               Send to an International bank for free
             </p>
-          </button>
+          </button> */}
         </div>
       </div>
     </Overlay>
