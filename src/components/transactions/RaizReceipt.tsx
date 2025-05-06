@@ -7,13 +7,16 @@ import { convertTime } from "@/utils/helpers";
 import html2canvas from "html2canvas";
 import { ITransaction } from "@/types/transactions";
 import { useUser } from "@/lib/hooks/useUser";
+import QRCode from "react-qr-code";
 
 export interface IRaizReceipt {
   close: () => void;
   data: ITransaction;
+  type?: "guest";
+  senderName?: string;
 }
 
-const RaizReceipt = ({ close, data }: IRaizReceipt) => {
+const RaizReceipt = ({ close, data, type, senderName }: IRaizReceipt) => {
   const receiptRef = useRef<HTMLDivElement>(null);
   const handleShareReceipt = async () => {
     if (!receiptRef.current) return;
@@ -56,6 +59,9 @@ const RaizReceipt = ({ close, data }: IRaizReceipt) => {
 
   const getSender = () => {
     let sender = "";
+    if (type === "guest" && senderName) {
+      return senderName;
+    }
 
     if (data?.transaction_type?.transaction_type === "credit") {
       sender = data.third_party_name;
@@ -70,7 +76,9 @@ const RaizReceipt = ({ close, data }: IRaizReceipt) => {
 
   const getBeneficiary = () => {
     let beneficiary = "";
-
+    if (type === "guest") {
+      return user?.business_account?.business_name;
+    }
     if (data?.transaction_type?.transaction_type === "credit") {
       beneficiary = user?.business_account?.business_name || "";
     }
@@ -107,7 +115,9 @@ const RaizReceipt = ({ close, data }: IRaizReceipt) => {
         </p>
         <div className="flex flex-col gap-2  w-full  mt-5 px-5 lg:px-2 xl:px-5 pt-5 border-t border-dashed border-zinc-200">
           {/* Beneficiary */}
-          <ListDetailItem title="Beneficiary" value={getBeneficiary()} />
+
+          <ListDetailItem title="Beneficiary" value={getBeneficiary() || ""} />
+
           <ListDetailItem title="Sender" value={getSender()} />
           {data?.source_account_number && (
             <ListDetailItem
@@ -171,12 +181,9 @@ const RaizReceipt = ({ close, data }: IRaizReceipt) => {
         </div>
         <div className="rounded-b-xl mt-7 bg-primary flex gap-3 px-5 py-4 items-center w-full">
           <div className="bg-white flex justify-center items-center w-11 h-11 px-0.5 rounded">
-            <Image
-              className="w-10 h-10"
-              src={"/icons/qr.svg"}
-              width={40}
-              height={40}
-              alt="qr"
+            <QRCode
+              value={"https://raizapp.onelink.me/RiOx/webdirect"}
+              size={40}
             />
           </div>
           <p className="text-white text-sm font-bold leading-none">

@@ -19,6 +19,7 @@ const ConfirmPayment = ({ close, fee, goNext, loading }: Props) => {
     // handlePay();
     goNext();
   };
+
   return (
     <Overlay close={close} width="400px">
       <div className="flex flex-col  h-full py-8 px-5 w-full">

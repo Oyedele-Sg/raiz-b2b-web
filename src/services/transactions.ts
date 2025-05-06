@@ -65,7 +65,9 @@ export const FetchBillRequestApi = async (
 export const FetchTransactionCategoriesApi = async (): Promise<
   ITransactionCategory[]
 > => {
-  const response = await AuthAxios.get("/transactions/transaction-categories/");
+  const response = await AuthAxios.get(
+    "/business/transactions/transaction-categories/"
+  );
   return response?.data;
 };
 
@@ -411,14 +413,15 @@ export const confirmStripePaymentIntent = async (
     firstName: string;
     lastName: string;
     email: string;
-  }
+  },
+  purpose: string
 ) => {
   const params = {
     entity_id: data?.account_user?.entity_id,
     payer_first_name: payer.firstName,
     payer_last_name: payer.lastName,
     payer_email: payer.email,
-    payment_description: "",
+    payment_description: purpose,
   };
 
   const res = await PublicAxios.post(
