@@ -189,8 +189,8 @@ const GetRaizedinfo = [
         </defs>
       </svg>
     ),
-    title: "Checking/Savings account",
-    desc: "Manage your everyday finances in one place.",
+    title: "Tracking my sales",
+    desc: "Track  sales on your business account.",
   },
   {
     svg: (
