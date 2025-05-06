@@ -13,6 +13,10 @@ import {
   createStripePaymentIntent,
 } from "@/services/transactions";
 import { useMutation } from "@tanstack/react-query";
+import { useFormik } from "formik";
+import { toFormikValidationSchema } from "zod-formik-adapter";
+import { z } from "zod";
+import { nameRegex } from "@/app/(auth)/register/_components/validation";
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISH_KEY || ""
 );
@@ -26,7 +30,7 @@ export type CardSteps = "amount" | "confirm" | "success";
 
 const PayWithCard = ({ setScreen, data }: Props) => {
   const [step, setStep] = useState<CardSteps>("amount");
-  const { actions, amount } = useSendStore();
+  const { actions, amount, purpose } = useSendStore();
   const [billingDetails, setBillingDetails] = useState<formCardValues | null>(
     null
   );
@@ -84,7 +88,8 @@ const PayWithCard = ({ setScreen, data }: Props) => {
       const transactionData = await confirmStripePaymentIntent(
         payment_intent_id,
         data,
-        billingDetails
+        billingDetails,
+        purpose
       );
       return transactionData;
     },
@@ -123,6 +128,30 @@ const PayWithCard = ({ setScreen, data }: Props) => {
       payment_intent_id,
     });
   };
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+    },
+    validationSchema: toFormikValidationSchema(
+      z.object({
+        firstName: z
+          .string()
+          .nonempty("First name is required")
+          .min(3, "First name must be at least 3 characters")
+          .regex(nameRegex, "First name can only contain letters and hyphens"),
+        lastName: z
+          .string()
+          .nonempty("Last name is required")
+          .min(3, "Last name must be at least 3 characters")
+          .regex(nameRegex, "Last name can only contain letters and hyphens"),
+        email: z.string().email("Invalid email address"),
+      })
+    ),
+    onSubmit: (values) => console.log("values", values),
+  });
+
   const displayScreen = () => {
     switch (step) {
       case "amount":
@@ -132,6 +161,7 @@ const PayWithCard = ({ setScreen, data }: Props) => {
             data={data}
             fee={fee || 0}
             loading={createPaymentIntentMutation.isPending}
+            formik={formik}
           />
         );
       case "confirm":
@@ -143,6 +173,7 @@ const PayWithCard = ({ setScreen, data }: Props) => {
                 data={data}
                 fee={fee || 0}
                 loading={createPaymentIntentMutation.isPending}
+                formik={formik}
               />
             </div>
             <ConfirmPayment
@@ -159,7 +190,12 @@ const PayWithCard = ({ setScreen, data }: Props) => {
           </>
         );
       case "success":
-        return <PaySuccess data={data} />;
+        return (
+          <PaySuccess
+            data={data}
+            senderName={`${formik.values.firstName} ${formik.values.lastName}`}
+          />
+        );
       default:
         break;
     }

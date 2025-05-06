@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const nameRegex = /^[A-Za-z\-]{3,}$/;
+export const nameRegex = /^[A-Za-z\-]{3,}$/;
 
 export const registerFormSchemas = {
   1: z.object({
