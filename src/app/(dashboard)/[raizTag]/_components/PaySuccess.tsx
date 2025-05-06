@@ -12,9 +12,10 @@ import Link from "next/link";
 
 interface Props {
   data: IBusinessPaymentData;
+  senderName: string;
 }
 
-const PaySuccess = ({ data }: Props) => {
+const PaySuccess = ({ data, senderName }: Props) => {
   const [showReceipt, setShowReceipt] = useState(false);
   const { transactionDetail } = useSendStore();
 
@@ -39,6 +40,7 @@ const PaySuccess = ({ data }: Props) => {
   const closeReceipt = () => {
     setShowReceipt(false);
   };
+
   return (
     <div className="w-full flex flex-col h-full mt-11 ">
       <div className="flex flex-col justify-between h-full  w-full">
@@ -65,7 +67,7 @@ const PaySuccess = ({ data }: Props) => {
           <p className="text-sm text-raiz-gray-950">
             Check out everything you unlock with the app. 🌟💰
           </p>
-          <div className="flex flex-col mt-8 flex-colgap-4 xl:gap-6 p-[30px] rounded-[20px] bg-[rgba(234,236,255,0.60)]">
+          <div className="flex flex-col mt-8  gap-4 xl:gap-6 p-[30px] rounded-[20px] bg-[rgba(234,236,255,0.60)]">
             {GetRaizedinfo.map((each, index) => (
               <div key={index} className="flex gap-4">
                 {each.svg}
@@ -107,7 +109,12 @@ const PaySuccess = ({ data }: Props) => {
       </div>
       {showReceipt && transactionDetail && (
         <SideModalWrapper close={() => {}}>
-          <RaizReceipt close={closeReceipt} data={transactionDetail} />
+          <RaizReceipt
+            close={closeReceipt}
+            data={transactionDetail}
+            type="guest"
+            senderName={senderName}
+          />
         </SideModalWrapper>
       )}
     </div>

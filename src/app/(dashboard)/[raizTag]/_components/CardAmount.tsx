@@ -4,11 +4,14 @@ import Button from "@/components/ui/Button";
 import { useSendStore } from "@/store/Send";
 import { IBusinessPaymentData } from "@/types/services";
 import React, { useRef, useState } from "react";
+import Image from "next/image";
 import { z } from "zod";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, useStripe } from "@stripe/react-stripe-js";
 import CardDetails from "./CardDetails";
-import { useFormik } from "formik";
+import InputField from "@/components/ui/InputField";
+import ErrorMessage from "@/components/ui/ErrorMessage";
+import { FormikProps } from "formik";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISH_KEY || ""
@@ -19,6 +22,8 @@ interface Props {
   data: IBusinessPaymentData;
   fee: number | null;
   loading: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  formik: FormikProps<any>;
 }
 
 export type formCardValues = {
@@ -27,7 +32,7 @@ export type formCardValues = {
   email: string;
 };
 
-const CardAmount = ({ data, fee, loading, goNext }: Props) => {
+const CardAmount = ({ data, fee, loading, goNext, formik }: Props) => {
   const { amount, actions, purpose } = useSendStore();
   const [rawAmount, setRawAmount] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -72,14 +77,30 @@ const CardAmount = ({ data, fee, loading, goNext }: Props) => {
     return isNaN(num) ? "" : `$${num.toFixed(2)}`;
   };
 
-  const formik = useFormik({
-    initialValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-    },
-    onSubmit: (values) => console.log("values", values),
-  });
+  const purposeSchema = z
+    .string()
+    .min(3, { message: "Purpose must be at least 3 characters long" });
+
+  const handlePurposeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPurpose = e.target.value;
+    actions.setAmountAndRemark({ amount, purpose: newPurpose });
+
+    // Re-validate purpose
+    const result = purposeSchema.safeParse(newPurpose);
+    if (!result.success) {
+      setError(result.error.errors[0].message);
+      return;
+    }
+
+    // Also validate amount again to clear error if both are valid
+    const amountResult = amountSchema.safeParse(amount || "0");
+    if (!amountResult.success) {
+      setError(amountResult.error.errors[0].message);
+      return;
+    }
+
+    setError(null);
+  };
 
   return (
     <div
@@ -141,6 +162,29 @@ const CardAmount = ({ data, fee, loading, goNext }: Props) => {
                 onFocus={() => setIsFocused(true)}
               />
             </div>
+            <div className="w-full mt-10">
+              <div className="flex items-center justify-between  font-brSonoma font-medium mb-3 w-full">
+                <p className="text-zinc-900 text-sm leading-normal">Purpose</p>
+                <div className="flex gap-1 items-center">
+                  <Image
+                    src={"/icons/dollar.svg"}
+                    alt="currency"
+                    width={16}
+                    height={16}
+                  />
+                  <span className="text-zinc-700 text-xs leading-tight">
+                    USD
+                  </span>
+                </div>
+              </div>
+              <InputField
+                name="purpose"
+                placeholder="What is the purpose?"
+                value={purpose || ""}
+                onChange={handlePurposeChange}
+              />
+            </div>
+            {error && <ErrorMessage message={error} />}
             {/* <div className="w-full mt-4 p-4 border rounded-lg">
               <CardElement
                 options={{
