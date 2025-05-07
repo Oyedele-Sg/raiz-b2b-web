@@ -60,17 +60,17 @@ const USDAcctInfo = ({ close }: Props) => {
             </div>
           </div>
 
-          {/* Routing Number (ACH) */}
+          {/* Routing Number (RTP) */}
           <div className="flex justify-between items-center border-b border-[#e4e0ea] pb-3">
             <span className="text-[13px] font-normal leading-tight">
-              Routing Number (ACH)
+              Routing Number (RTP)
             </span>
             <div className="flex gap-1 items-center">
               {" "}
               <span className="text-sm font-semibold leading-none">
                 {
                   USDAcct?.routing?.find(
-                    (route) => route.routing_type_name === "ACH"
+                    (route) => route.routing_type_name === "RTP"
                   )?.routing
                 }
               </span>
@@ -78,7 +78,7 @@ const USDAcctInfo = ({ close }: Props) => {
                 onClick={() =>
                   copyToClipboard(
                     USDAcct?.routing?.find(
-                      (route) => route.routing_type_name === "ACH"
+                      (route) => route.routing_type_name === "RTP"
                     )?.routing || ""
                   )
                 }
@@ -112,6 +112,39 @@ const USDAcctInfo = ({ close }: Props) => {
                   copyToClipboard(
                     USDAcct?.routing?.find(
                       (route) => route.routing_type_name === "WIRE"
+                    )?.routing || ""
+                  )
+                }
+              >
+                <Image
+                  src={"/icons/copy.svg"}
+                  alt={"copy"}
+                  width={16}
+                  height={16}
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* Routing Number (ACH) */}
+          <div className="flex justify-between items-center border-b border-[#e4e0ea] pb-3">
+            <span className="text-[13px] font-normal leading-tight">
+              Routing Number (ACH)
+            </span>
+            <div className="flex gap-1 items-center">
+              {" "}
+              <span className="text-sm font-semibold leading-none">
+                {
+                  USDAcct?.routing?.find(
+                    (route) => route.routing_type_name === "ACH"
+                  )?.routing
+                }
+              </span>
+              <button
+                onClick={() =>
+                  copyToClipboard(
+                    USDAcct?.routing?.find(
+                      (route) => route.routing_type_name === "ACH"
                     )?.routing || ""
                   )
                 }
