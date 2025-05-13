@@ -37,11 +37,11 @@ const SendOptions = ({ close }: Props) => {
         />
       </div>
       {/* options */}
-      <div className="flex flex-col gap-0.5 mt-11 ">
+      <div className="flex flex-col gap-0.5 lg:mt-8 xl:mt-11 pb-10">
         {usdSendOptions.map((each, index) => {
           return (
             <button
-              className="px-4 py-5 hover:bg-[#e5ebff]/60 rounded-[20px] justify-between items-center inline-flex"
+              className="px-4 py-5 hover:bg-[#e5ebff]/60 rounded-[20px] justify-between gap-4 items-center inline-flex"
               key={index}
               onClick={() => actions.selectUSDSendOption(each.key)}
             >

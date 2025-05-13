@@ -89,7 +89,7 @@ const Categories = ({ goBack, goNext, loading }: Props) => {
                     width={64}
                     height={64}
                   />
-                  <p className="text-center text-zinc-900 text-xs font-normal leading-none">
+                  <p className="text-center text-zinc-900 text-[10px] xl:text-xs font-normal leading-none">
                     {each?.transaction_category}
                   </p>
                 </button>

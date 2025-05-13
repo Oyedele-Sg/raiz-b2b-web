@@ -318,7 +318,9 @@ export type IUsBeneficiaryOptionType =
   | "bank"
   | "zelle"
   | "card"
-  | "international_bank";
+  | "international_bank"
+  | "paypal"
+  | "interac";
 export interface UsdBeneficiary {
   beneficiary_id: string;
   option_type: IUsBeneficiaryOptionType;
@@ -336,6 +338,7 @@ export interface EntityBeneficiary {
   entity_usd_beneficiary_id: string;
   created_at: string;
   updated_at: string;
+  label: string;
   usd_beneficiary: UsdBeneficiary;
 }
 

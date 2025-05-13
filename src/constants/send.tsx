@@ -117,6 +117,45 @@ export const usdSendOptions: Options[] = [
     ),
     key: "to debit card",
   },
+  {
+    title: "Send to Paypal",
+    subtitle: "Send money via our paypal feature",
+    icon: (
+      <svg
+        width="21"
+        height="26"
+        viewBox="0 0 21 26"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g clipPath="url(#clip0_25532_23337)">
+          <path
+            d="M17.9117 6.22998C17.9117 9.32665 15.0195 12.98 10.6437 12.98H6.42859L6.22169 14.27L5.23834 20.48H0L3.15132 0.47998H11.6383C14.4961 0.47998 16.7445 2.05387 17.5726 4.24109C17.8115 4.87702 17.9265 5.55183 17.9117 6.22998Z"
+            fill="#002991"
+          />
+          <path
+            d="M20.9309 11.98C20.6513 13.6585 19.7763 15.184 18.4624 16.2833C17.1486 17.3827 15.4817 17.9841 13.7601 17.98H10.8331L9.61477 25.48H4.40454L5.23833 20.48L6.22224 14.27L6.42859 12.98H10.6437C15.0139 12.98 17.9117 9.32665 17.9117 6.22998C20.0622 7.32665 21.316 9.54276 20.9309 11.98Z"
+            fill="#60CDFF"
+          />
+          <path
+            d="M17.9118 6.22998C17.01 5.76387 15.9164 5.47998 14.7262 5.47998H7.61952L6.42871 12.98H10.6438C15.014 12.98 17.9118 9.32665 17.9118 6.22998Z"
+            fill="#008CFF"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_25532_23337">
+            <rect
+              width="21"
+              height="25"
+              fill="white"
+              transform="translate(0 0.47998)"
+            />
+          </clipPath>
+        </defs>
+      </svg>
+    ),
+    key: "to paypal",
+  },
   // {
   //   title: "Send to Zelle",
   //   subtitle: "Send money via our Zelle feature",

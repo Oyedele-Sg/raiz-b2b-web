@@ -47,6 +47,7 @@ export type IUSDSendOptions =
   | "to Raizer"
   | "bank transfer"
   | "to debit card"
+  | "to paypal"
   | "to zelle"
   | "to cashapp";
 
