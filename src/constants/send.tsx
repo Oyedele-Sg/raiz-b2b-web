@@ -348,6 +348,7 @@ export const IntCountries: IIntCountry[] = [
   { name: "Singapore", value: "SG", logo: "/icons/flag-sg.png" },
   { name: "San Marino", value: "SM", logo: "/icons/flag-sm.png" },
   { name: "Vatican City", value: "VA", logo: "/icons/flag-va.png" },
+  { name: "China", value: "CN", logo: "/icons/flag-cn.png" },
 ];
 
 export const GlobalCountryConfig: Record<string, CountryConfig> = {
