@@ -211,7 +211,7 @@ const CardDetails = ({ close, loading, formik, disableBtn, goNext }: Props) => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-4 w-full">
+          <div className="flex flex-col gap-4 w-full my-3">
             <Button
               onClick={handleSubmit}
               loading={loading}

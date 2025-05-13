@@ -10,7 +10,7 @@ interface Props {
 const ListDetailItem = ({ title, value, border }: Props) => {
   return (
     <div
-      className={`flex text-zinc-900 justify-between gap-4 items-start pb-3  ${
+      className={`flex flex-wrap text-zinc-900 justify-between gap-4 items-start pb-3  ${
         border ? "border-b-[0.5px] border-zinc-200" : ""
       } `}
     >

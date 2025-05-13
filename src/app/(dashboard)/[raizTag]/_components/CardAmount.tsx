@@ -162,7 +162,7 @@ const CardAmount = ({ data, fee, loading, goNext, formik }: Props) => {
                 onFocus={() => setIsFocused(true)}
               />
             </div>
-            <div className="w-full mt-10">
+            <div className="w-full my-10">
               <div className="flex items-center justify-between  font-brSonoma font-medium mb-3 w-full">
                 <p className="text-zinc-900 text-sm leading-normal">Purpose</p>
                 <div className="flex gap-1 items-center">
@@ -201,7 +201,7 @@ const CardAmount = ({ data, fee, loading, goNext, formik }: Props) => {
             </div> */}
           </div>
         </div>
-        <div className="w-full ">
+        <div className="w-full pb-5">
           <div className=" p-3.5 mb-3 bg-gray-100 w-full rounded-lg outline outline-1 outline-offset-[-1px] outline-white inline-flex flex-col justify-center items-start gap-2">
             <div className="w-full flex justify-between items-center">
               <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">

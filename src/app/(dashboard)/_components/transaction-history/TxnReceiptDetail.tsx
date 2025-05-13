@@ -192,7 +192,7 @@ const TxnReceiptDetail = ({ close, transaction, goNext }: Props) => {
               </div>
             </a>
           </div>
-          <div className="flex flex-col w-full">
+          <div className="flex flex-col w-full py-5">
             <Button
               onClick={goNext}
               className="gap-1.5 items-center"
