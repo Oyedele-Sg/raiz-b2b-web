@@ -48,6 +48,7 @@ export type IUSDSendOptions =
   | "bank transfer"
   | "to debit card"
   | "to paypal"
+  | "to interac"
   | "to zelle"
   | "to cashapp";
 
