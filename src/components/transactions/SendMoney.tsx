@@ -252,7 +252,7 @@ const SendMoney = ({
             </div>
           </div>
         </div>
-        <div className="w-full ">
+        <div className="w-full py-6">
           <div className=" p-3.5 mb-3 bg-gray-100 w-full rounded-lg outline outline-1 outline-offset-[-1px] outline-white inline-flex flex-col justify-center items-start gap-2">
             <div className="w-full flex justify-between items-center">
               <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
