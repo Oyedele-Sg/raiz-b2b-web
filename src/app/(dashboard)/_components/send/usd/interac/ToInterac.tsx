@@ -16,7 +16,7 @@ interface Props {
   close: () => void;
 }
 
-const ToInterac = ({}: Props) => {
+const ToInterac = ({ close }: Props) => {
   const [step, setStep] = useState<ToUsdBanksStepsType>("add-beneficiary");
   const [paymentError, setPaymentError] = useState("");
   const {
