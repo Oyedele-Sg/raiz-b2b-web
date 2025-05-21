@@ -64,7 +64,7 @@ const CNBeneficiaryForm = ({
   >(null);
   const [type, setType] = useState<cnBenType>(null);
   // const [benType, setBenType] = useState<string>("");
-  const [sendType, setSendType] = useState<string>("");
+  // const [sendType, setSendType] = useState<string>("");
   // const [remittancePurpose, setRemittancePurpose] = useState<string>("");
   const [selectedBank, setSelectedBank] = useState<IBeneficiaryBank>({
     id: 0,
@@ -393,7 +393,7 @@ const CNBeneficiaryForm = ({
               placeholder={`Choose ${convertField(
                 subField.name
               ).toLowerCase()}`}
-              value={sendType || ""}
+              value={""}
             />
             {formik.touched[fieldName] && formik.errors[fieldName] && (
               <p className="text-red-500 text-sm mt-1">
