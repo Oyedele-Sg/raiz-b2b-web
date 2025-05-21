@@ -41,11 +41,9 @@ import InputLabel from "@/components/ui/InputLabel";
 import IntBeneficiaryModal from "../toInternational/IntBeneficiaryModal";
 import IntCountriesModal from "../toInternational/IntCountriesModal";
 import Image from "next/image";
-// import AuBeneficiaryForm from "./AuBeneficiaryForm";
 import GbBeneficiaryForm from "./GbBeneficiaryForm";
-// import FrBeneficiaryForm from "./FrBeneficiaryForm";
-// import BeneficiaryForm from "./BeneficiaryForm";
 import DynamicBeneficiaryForm from "./DynamicBeneficiaryForm";
+import CNBeneficiaryForm from "./CNBeneficiaryForm";
 
 interface FormValues {
   country: IIntCountry | null;
@@ -400,64 +398,32 @@ const GlobalBeneficiary = ({ close }: Props) => {
           countryCode={formik.values.country.value}
         />
       )}
-      {/* {fields.length > 0 && formik.values.country?.value === "AU" && (
-        <AuBeneficiaryForm
-          fields={fields}
-          countryCode={formik.values.country.value}
-        />
-      )}
-      {fields.length > 0 && formik.values.country?.value === "GB" && (
-        <GbBeneficiaryForm
+      {fields.length > 0 && formik.values.country?.value === "CN" && (
+        <CNBeneficiaryForm
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           fields={fields as any}
           countryCode={formik.values.country.value}
-        />
-      )}
-      {fields.length > 0 && formik.values.country?.value === "FR" && (
-        <FrBeneficiaryForm
-          fields={fields}
-          countryCode={formik.values.country.value}
-        />
-      )}
-      {fields.length > 0 && formik.values.country?.value === "AE" && (
-        <BeneficiaryForm
-          fields={fields}
-          countryCode={formik.values.country.value}
-          countryName={"United Arab Emirates"}
-          banks={
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            fieldsData?.AE?.find((field: any) => field.name === "bank_code")
-              ?.banks || []
-          }
+          countryName={"China"}
           bankDetailsFields={[
-            {
-              name: "account_number",
-              label: "Account Number",
-              pattern: "^[A-Za-z0-9]{23}$",
-            },
             { name: "bank_code", label: "Bank" },
-          ]}
-          reset={() => formik.resetForm()}
-        />
-      )}
-      {fields.length > 0 && formik.values.country?.value === "AT" && (
-        <BeneficiaryForm
-          fields={fields}
-          countryCode={formik.values.country.value}
-          countryName={"Austria"}
-          bankDetailsFields={[
             {
               name: "account_number",
               label: "Account Number",
-              pattern: "^[A-Za-z0-9]{20}$",
+              pattern: "^\\+86[1][3-9]\\d{9}$",
             },
+            // {
+            //   name: "account_name",
+            //   label: "Account Name",
+            //   pattern: "[^\\s@]+(\\s+)[^\\s@]+",
+            // },
           ]}
-          reset={() => formik.resetForm()}
         />
-      )} */}
+      )}
+
       {fields.length > 0 &&
         formik.values.country?.value !== "NG" &&
-        formik.values.country?.value !== "GB" && (
+        formik.values.country?.value !== "GB" &&
+        formik.values.country?.value !== "CN" && (
           <DynamicBeneficiaryForm
             fields={fields}
             formik={formik}

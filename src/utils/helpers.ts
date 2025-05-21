@@ -244,3 +244,36 @@ export const formatCardNumber = (value: string): string => {
   const groups = digits.match(/.{1,4}/g) || [];
   return groups.join(" ").slice(0, 19); // Limit to 19 chars (16 digits + 3 spaces)
 };
+
+// Utility function to remove undefined values from an object
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const removeUndefinedValues = <T extends Record<string, any>>(
+  obj: T
+): T => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const cleaned: Record<string, any> = {};
+
+  for (const [key, value] of Object.entries(obj)) {
+    if (value === undefined) {
+      continue; // Skip undefined values
+    }
+    if (value !== null && typeof value === "object" && !Array.isArray(value)) {
+      // Recursively clean nested objects
+      cleaned[key] = removeUndefinedValues(value);
+    } else if (Array.isArray(value)) {
+      // Handle arrays by cleaning each element
+      cleaned[key] = value
+        .map((item) =>
+          item !== null && typeof item === "object" && !Array.isArray(item)
+            ? removeUndefinedValues(item)
+            : item
+        )
+        .filter((item) => item !== undefined);
+    } else {
+      // Copy non-undefined, non-object values
+      cleaned[key] = value;
+    }
+  }
+
+  return cleaned as T;
+};
