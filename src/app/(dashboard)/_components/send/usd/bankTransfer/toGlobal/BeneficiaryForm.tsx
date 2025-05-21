@@ -22,7 +22,7 @@ import PurposeModal from "./PurposeModal";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 
-interface Bank {
+export interface Bank {
   id: number;
   code: string;
   name: string;
@@ -437,7 +437,7 @@ const renderField = (
   );
 };
 
-const renderNestedFields = (
+export const renderNestedFields = (
   formikProps: FormikProps<any>,
   type: string,
   userCountryName: string,

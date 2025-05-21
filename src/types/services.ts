@@ -428,6 +428,7 @@ export type IntCountryType =
   | "SG" // Singapore
   | "SM" // San Marino
   | "VA" // Vatican City
+  | "CN" // China
   | "KE" // Kenya
   | "UG" // Uganda
   | "NG" // Nigeria
@@ -454,6 +455,7 @@ export type IntCurrrencyCode =
   | "EUR" // Austria , Andorra, Belgium, Germany, Czech Republic, Bulgaria, France, Estonia, Spain, Netherlands, Portugal, Italy, Ireland, Finland, Greece, Latvia, Lithuania, Slovakia
   | "DKK" // Denmark (Danish Krone)
   | "SGD" // Singapore
+  | "CNY" // China
   | "KES" // Kenya
   | "UGX" // Uganda
   | "NGN" // Nigeria

@@ -1,5 +1,6 @@
 import AuBeneficiaryForm from "@/app/(dashboard)/_components/send/usd/bankTransfer/toGlobal/AuBeneficiaryForm";
 import BeneficiaryForm from "@/app/(dashboard)/_components/send/usd/bankTransfer/toGlobal/BeneficiaryForm";
+// import CNBeneficiaryForm from "@/app/(dashboard)/_components/send/usd/bankTransfer/toGlobal/CNBeneficiaryForm";
 import FrBeneficiaryForm from "@/app/(dashboard)/_components/send/usd/bankTransfer/toGlobal/FrBeneficiaryForm";
 // import GbBeneficiaryForm from "@/app/(dashboard)/_components/send/usd/bankTransfer/toGlobal/GbBeneficiaryForm";
 import { IUSDSendOptions } from "@/types/misc";
@@ -348,6 +349,7 @@ export const IntCountries: IIntCountry[] = [
   { name: "Singapore", value: "SG", logo: "/icons/flag-sg.png" },
   { name: "San Marino", value: "SM", logo: "/icons/flag-sm.png" },
   { name: "Vatican City", value: "VA", logo: "/icons/flag-va.png" },
+  { name: "China", value: "CN", logo: "/icons/flag-cn.png" },
 ];
 
 export const GlobalCountryConfig: Record<string, CountryConfig> = {
@@ -761,4 +763,9 @@ export const GlobalCountryConfig: Record<string, CountryConfig> = {
     ],
     formComponent: BeneficiaryForm,
   },
+  // CN: {
+  //   countryName: "China",
+  //   bankDetailsFields: [],
+  //   formComponent: CNBeneficiaryForm,
+  // },
 };

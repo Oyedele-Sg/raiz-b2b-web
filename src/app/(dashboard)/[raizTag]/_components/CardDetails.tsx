@@ -215,7 +215,7 @@ const CardDetails = ({ close, loading, formik, disableBtn, goNext }: Props) => {
             <Button
               onClick={handleSubmit}
               loading={loading}
-              disabled={disableBtn}
+              disabled={disableBtn || !formik.isValid}
             >
               Proceed to pay
             </Button>
