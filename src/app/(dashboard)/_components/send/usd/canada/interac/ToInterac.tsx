@@ -1,12 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { ToUsdBanksStepsType } from "../bankTransfer/toBanks/ToUsdBanks";
+import { ToUsdBanksStepsType } from "../../bankTransfer/toBanks/ToUsdBanks";
 import { useSendStore } from "@/store/Send";
 import { GetTransactionFeeApi } from "@/services/transactions";
 import { useQuery } from "@tanstack/react-query";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
-import UsdBankPay from "../bankTransfer/toBanks/UsdBankPay";
+import UsdBankPay from "../../bankTransfer/toBanks/UsdBankPay";
 import SendSummary from "@/components/transactions/SendSummary";
 import Categories from "@/components/transactions/Categories";
 import SendMoney from "@/components/transactions/SendMoney";

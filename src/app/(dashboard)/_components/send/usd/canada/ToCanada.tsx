@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import ToInterac from "../interac/ToInterac";
+import ToInterac from "./interac/ToInterac";
 import SendOptions from "../SendOptions";
 import CanadaTypeModal from "./CanadaTypeModal";
+import ToEft from "./eft/ToEft";
 
-export type canadaSendType = "interac" | "etf" | "tuition";
+export type canadaSendType = "interac" | "eft" | "tuition";
 
 interface Props {
   close: () => void;
@@ -28,12 +29,8 @@ const ToCanada = ({ close }: Props) => {
         );
       case "interac":
         return <ToInterac close={close} />;
-      case "etf":
-        return (
-          <div>
-            <h1>ETF</h1>
-          </div>
-        );
+      case "eft":
+        return <ToEft close={close} />;
       case "tuition":
         return (
           <div>
