@@ -320,7 +320,8 @@ export type IUsBeneficiaryOptionType =
   | "card"
   | "international_bank"
   | "paypal"
-  | "interac";
+  | "interac"
+  | "eft";
 export interface UsdBeneficiary {
   beneficiary_id: string;
   option_type: IUsBeneficiaryOptionType;

@@ -1,3 +1,4 @@
+import { ICanadianBank } from "@/app/(dashboard)/_components/send/usd/canada/eft/CanadianBanksModal";
 import { AuthAxios, CustomAxiosRequestConfig } from "@/lib/authAxios";
 import { PublicAxios } from "@/lib/publicAxios";
 import {
@@ -289,6 +290,13 @@ export const FetchUsBeneficiariesApi = async (
   const response = await AuthAxios.get(
     `/business/transactions/withdrawal/usd/beneficiaries/`,
     { params: queryParams }
+  );
+  return response?.data;
+};
+
+export const GetCanadianBanks = async (): Promise<ICanadianBank[]> => {
+  const response = await AuthAxios.get(
+    `/business/transactions/withdrawal/usd/beneficiaries/canada/banks/`
   );
   return response?.data;
 };
