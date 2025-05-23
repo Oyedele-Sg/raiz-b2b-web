@@ -13,7 +13,7 @@ const ModalTrigger = ({ onClick, placeholder, value }: Props) => {
     <button
       onClick={onClick}
       type="button"
-      className="flex justify-between w-full h-[50px] p-[15px] bg-raiz-gray-100 rounded-lg items-center"
+      className="flex justify-between w-full h-[50px] p-[15px] bg-raiz-gray-100 rounded-lg items-center text-left"
     >
       <span
         className={`${
