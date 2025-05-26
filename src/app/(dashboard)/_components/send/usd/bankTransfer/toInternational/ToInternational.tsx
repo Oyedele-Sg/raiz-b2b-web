@@ -4,7 +4,7 @@ import { bankTypeProp } from "../BankTransfer";
 import { useSendStore } from "@/store/Send";
 import { ToUsdBanksStepsType } from "../toBanks/ToUsdBanks";
 import { useQuery } from "@tanstack/react-query";
-import { GetTransactionFeeApi } from "@/services/transactions";
+import { GetIntTransactionFeeApi } from "@/services/transactions";
 import AddBeneficiary from "../toBanks/AddBeneficiary";
 import SendMoney from "@/components/transactions/SendMoney";
 import Categories from "@/components/transactions/Categories";
@@ -36,7 +36,7 @@ const ToInternational = ({ close, bankType }: Props) => {
   }, [bankType]);
   const { data: fee } = useQuery({
     queryKey: ["transactions-fee", amount, currency],
-    queryFn: () => GetTransactionFeeApi(Number(amount), "WIRE"),
+    queryFn: () => GetIntTransactionFeeApi(Number(amount), "WIRE"),
     enabled: !!amount,
   });
 

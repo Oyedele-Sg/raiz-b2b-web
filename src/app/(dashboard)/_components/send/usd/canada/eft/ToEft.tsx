@@ -1,9 +1,11 @@
 "use client";
 import Categories from "@/components/transactions/Categories";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
-import SendMoney from "@/components/transactions/SendMoney";
-import SendSummary from "@/components/transactions/SendSummary";
-import { GetTransactionFeeApi } from "@/services/transactions";
+// import SendSummary from "@/components/transactions/SendSummary";
+import {
+  GetCadTransactionFeeApi,
+  GetTransactionFeeApi,
+} from "@/services/transactions";
 import { useSendStore } from "@/store/Send";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
@@ -11,6 +13,9 @@ import { ToUsdBanksStepsType } from "../../bankTransfer/toBanks/ToUsdBanks";
 import UsdBankPay from "../../bankTransfer/toBanks/UsdBankPay";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
 import AddEftBeneficiary from "./AddEftBeneficiary";
+import CadSendMoney from "../CadSendMoney";
+import CadSendSummary from "../CadSendSummary";
+import { toast } from "sonner";
 
 interface Props {
   close: () => void;
@@ -27,16 +32,43 @@ const ToEft = ({}: Props) => {
     status,
     transactionDetail,
   } = useSendStore();
+
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+
+  useEffect(() => {
+    if (timeLeft === 0 && usdBeneficiary) {
+      toast.info("Timed out! Please restart  process.");
+      setStep("add-beneficiary");
+      actions.selectIntBeneficiary(null);
+      return;
+    }
+    const timerId = setInterval(() => {
+      setTimeLeft((prev) => Math.max(prev - 1, 0));
+    }, 1000);
+    return () => clearInterval(timerId);
+  }, [timeLeft]);
+
   const goBackToStep1 = () => {
     actions.selectUsdBeneficiary(null);
     setStep("add-beneficiary");
   };
-  const { data: fee } = useQuery({
-    queryKey: ["transactions-fee", amount, currency],
-    queryFn: () =>
-      GetTransactionFeeApi(Number(amount), currency as "USD" | "NGN" | "WIRE"),
+  const { data: rate, isLoading: rateLoading } = useQuery({
+    queryKey: ["cad-transactions-rate", amount, currency],
+    queryFn: () => GetCadTransactionFeeApi(Number(amount)),
     enabled: !!amount,
   });
+
+  const { data: fee } = useQuery({
+    queryKey: ["transactions-fee", amount],
+    queryFn: () => GetTransactionFeeApi(Number(amount), "USD"),
+    enabled: !!amount,
+  });
+
+  useEffect(() => {
+    if (!rateLoading && rate) {
+      setTimeLeft(120);
+    }
+  }, [rateLoading, rate]);
 
   useEffect(() => {
     if (usdBeneficiary) {
@@ -49,18 +81,17 @@ const ToEft = ({}: Props) => {
     close();
   };
 
-  console.log("step", step);
-
   const displayScreen = () => {
     switch (step) {
       case "add-beneficiary":
         return <AddEftBeneficiary close={close} />;
       case "details":
         return (
-          <SendMoney
+          <CadSendMoney
             goBack={goBackToStep1}
             goNext={() => setStep("category")}
-            fee={fee || 0}
+            rate={rate || 0}
+            loading={rateLoading}
           />
         );
       case "category":
@@ -73,10 +104,17 @@ const ToEft = ({}: Props) => {
         );
       case "summary":
         return (
-          <SendSummary
+          // <SendSummary
+          //   goBack={() => setStep("category")}
+          //   goNext={() => setStep("pay")}
+          //   fee={fee || 0}
+          // />
+          <CadSendSummary
             goBack={() => setStep("category")}
             goNext={() => setStep("pay")}
             fee={fee || 0}
+            timeLeft={timeLeft}
+            rate={rate || 0}
           />
         );
       case "pay":

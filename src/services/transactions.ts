@@ -147,7 +147,26 @@ export const GetTransactionFeeApi = async (
   transfer_type: "NGN" | "USD" | "WIRE"
 ): Promise<number> => {
   const response = await AuthAxios.get(
+    `/business/transactions/charges/get/usd/?amount=${amount}&transfer_type=${transfer_type}`
+  );
+  return response?.data;
+};
+
+export const GetIntTransactionFeeApi = async (
+  amount: number,
+  transfer_type: "NGN" | "USD" | "WIRE"
+): Promise<number> => {
+  const response = await AuthAxios.get(
     `/business/transactions/charges/get/?amount=${amount}&transfer_type=${transfer_type}`
+  );
+  return response?.data;
+};
+
+export const GetCadTransactionFeeApi = async (
+  cad_amount: number
+): Promise<number> => {
+  const response = await AuthAxios.get(
+    `/business/transactions/withdrawal/usd/interac-exchange-rate/?cad_amount=${cad_amount}`
   );
   return response?.data;
 };
