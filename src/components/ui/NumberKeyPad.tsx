@@ -87,9 +87,10 @@ const NumberKeypad: React.FC<NumberKeypadProps> = ({
         renderInput={(props, index) => (
           <input
             {...props}
-            type="tel"
+            type="password"
             autoComplete="off"
             maxLength={1}
+            aria-label={`PIN input field ${index + 1}`}
             ref={(el) => {
               if (el) {
                 inputRefs.current[index] = el; // Store input ref
