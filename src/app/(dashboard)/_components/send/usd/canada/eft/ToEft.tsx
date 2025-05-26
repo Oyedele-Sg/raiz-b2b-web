@@ -1,9 +1,11 @@
 "use client";
 import Categories from "@/components/transactions/Categories";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
-import SendMoney from "@/components/transactions/SendMoney";
 import SendSummary from "@/components/transactions/SendSummary";
-import { GetTransactionFeeApi } from "@/services/transactions";
+import {
+  GetCadTransactionFeeApi,
+  GetTransactionFeeApi,
+} from "@/services/transactions";
 import { useSendStore } from "@/store/Send";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
@@ -11,6 +13,7 @@ import { ToUsdBanksStepsType } from "../../bankTransfer/toBanks/ToUsdBanks";
 import UsdBankPay from "../../bankTransfer/toBanks/UsdBankPay";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
 import AddEftBeneficiary from "./AddEftBeneficiary";
+import CadSendMoney from "../CadSendMoney";
 
 interface Props {
   close: () => void;
@@ -31,10 +34,15 @@ const ToEft = ({}: Props) => {
     actions.selectUsdBeneficiary(null);
     setStep("add-beneficiary");
   };
+  const { data: rate, isLoading: rateLoading } = useQuery({
+    queryKey: ["cad-transactions-rate", amount, currency],
+    queryFn: () => GetCadTransactionFeeApi(Number(amount)),
+    enabled: !!amount,
+  });
+
   const { data: fee } = useQuery({
-    queryKey: ["transactions-fee", amount, currency],
-    queryFn: () =>
-      GetTransactionFeeApi(Number(amount), currency as "USD" | "NGN" | "WIRE"),
+    queryKey: ["transactions-fee", amount],
+    queryFn: () => GetTransactionFeeApi(Number(amount), "USD"),
     enabled: !!amount,
   });
 
@@ -49,18 +57,17 @@ const ToEft = ({}: Props) => {
     close();
   };
 
-  console.log("step", step);
-
   const displayScreen = () => {
     switch (step) {
       case "add-beneficiary":
         return <AddEftBeneficiary close={close} />;
       case "details":
         return (
-          <SendMoney
+          <CadSendMoney
             goBack={goBackToStep1}
             goNext={() => setStep("category")}
-            fee={fee || 0}
+            rate={rate || 0}
+            loading={rateLoading}
           />
         );
       case "category":

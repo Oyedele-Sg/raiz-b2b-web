@@ -1,6 +1,5 @@
-// components/NumberKeypad.tsx
 import Image from "next/image";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import OTPInput from "react-otp-input";
 
 interface NumberKeypadProps {
@@ -17,6 +16,14 @@ const NumberKeypad: React.FC<NumberKeypadProps> = ({
   setOtpValue,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const inputRefs = useRef<HTMLInputElement[]>([]); // Ref to store input elements
+
+  // Focus the first input on mount
+  useEffect(() => {
+    if (inputRefs.current[0]) {
+      inputRefs.current[0].focus(); // Focus the first input
+    }
+  }, []);
 
   const handleNumberClick = (number: string) => {
     if (currentIndex < maxLength) {
@@ -26,6 +33,11 @@ const NumberKeypad: React.FC<NumberKeypadProps> = ({
 
       if (onInputChange) {
         onInputChange(newValue);
+      }
+
+      // Focus the next input if available
+      if (currentIndex + 1 < maxLength && inputRefs.current[currentIndex + 1]) {
+        inputRefs.current[currentIndex + 1].focus();
       }
     }
   };
@@ -39,6 +51,11 @@ const NumberKeypad: React.FC<NumberKeypadProps> = ({
       if (onInputChange) {
         onInputChange(newValue);
       }
+
+      // Focus the previous input
+      if (inputRefs.current[currentIndex - 1]) {
+        inputRefs.current[currentIndex - 1].focus();
+      }
     }
   };
 
@@ -50,8 +67,13 @@ const NumberKeypad: React.FC<NumberKeypadProps> = ({
       if (onInputChange) {
         onInputChange(sanitizedValue);
       }
+
+      // Focus the input corresponding to the current length
+      if (inputRefs.current[sanitizedValue.length]) {
+        inputRefs.current[sanitizedValue.length].focus();
+      }
     },
-    [maxLength, onInputChange]
+    [maxLength, onInputChange, setOtpValue]
   );
 
   return (
@@ -61,18 +83,24 @@ const NumberKeypad: React.FC<NumberKeypadProps> = ({
         onChange={handleOtpChange}
         numInputs={maxLength}
         renderSeparator={<span className="mx-2" />}
-        renderInput={(props) => (
+        inputType="tel"
+        renderInput={(props, index) => (
           <input
             {...props}
-            type="password"
+            type="tel"
+            autoComplete="off"
             maxLength={1}
+            ref={(el) => {
+              if (el) {
+                inputRefs.current[index] = el; // Store input ref
+              }
+            }}
             onKeyDown={(e) => {
-              if (
-                e.key === "Backspace" &&
-                !otpValue[currentIndex - 1] &&
-                currentIndex > 0
-              ) {
-                handleBackspace();
+              if (e.key === "Backspace" || e.key === "Delete") {
+                if (otpValue.length > 0) {
+                  handleBackspace();
+                }
+                e.preventDefault(); // Prevent default backspace/delete behavior
               }
             }}
             className="!w-[56px] !h-[56px] p-2 focus:bg-[#fcfcfc] bg-[#f3f1f6] rounded-full border focus:border-gray-800 outline-none flex-col justify-center items-center gap-2 inline-flex text-gray-950 text-xl font-normal"
@@ -91,13 +119,10 @@ const NumberKeypad: React.FC<NumberKeypadProps> = ({
             {number}
           </button>
         ))}
-        <div
-          //   onClick={() => handleNumberClick("")}
-          className="w-14 h-14 rounded-full  transition-colors flex items-center justify-center text-xl font-semibold "
-        ></div>
+        <div className="w-14 h-14 rounded-full transition-colors flex items-center justify-center text-xl font-semibold"></div>
         <button
           onClick={() => handleNumberClick("0")}
-          className="w-14 h-14 rounded-full bg-[#f3f1f6] hover:bg-gray-300 transition-colors flex items-center justify-center text-xl font-semibold "
+          className="w-14 h-14 rounded-full bg-[#f3f1f6] hover:bg-gray-300 transition-colors flex items-center justify-center text-xl font-semibold"
         >
           0
         </button>
