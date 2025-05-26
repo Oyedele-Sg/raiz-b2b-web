@@ -6,7 +6,7 @@ import SelectUser from "./SelectUser";
 import SendMoney from "@/components/transactions/SendMoney";
 import Categories from "@/components/transactions/Categories";
 import { useQuery } from "@tanstack/react-query";
-import { GetTransactionFeeApi } from "@/services/transactions";
+import { GetIntTransactionFeeApi } from "@/services/transactions";
 import SendSummary from "@/components/transactions/SendSummary";
 import ExternalPayout from "./ExternalPayout";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
@@ -26,11 +26,13 @@ const NgnBankTransfer = () => {
     useSendStore();
   const [step, setStep] = useState<NGNSendToBankStepType>("select-user");
   const [paymentError, setPaymentError] = useState("");
-
   const { data: fee } = useQuery({
     queryKey: ["transactions-fee", amount, currency],
     queryFn: () =>
-      GetTransactionFeeApi(Number(amount), currency as "USD" | "NGN" | "WIRE"),
+      GetIntTransactionFeeApi(
+        Number(amount),
+        currency as "USD" | "NGN" | "WIRE"
+      ),
     enabled: !!amount,
   });
 

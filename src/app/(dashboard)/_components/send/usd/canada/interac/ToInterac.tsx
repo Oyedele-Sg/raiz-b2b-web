@@ -2,15 +2,19 @@
 import React, { useEffect, useState } from "react";
 import { ToUsdBanksStepsType } from "../../bankTransfer/toBanks/ToUsdBanks";
 import { useSendStore } from "@/store/Send";
-import { GetTransactionFeeApi } from "@/services/transactions";
+import {
+  GetCadTransactionFeeApi,
+  GetTransactionFeeApi,
+} from "@/services/transactions";
 import { useQuery } from "@tanstack/react-query";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
 import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
 import UsdBankPay from "../../bankTransfer/toBanks/UsdBankPay";
-import SendSummary from "@/components/transactions/SendSummary";
 import Categories from "@/components/transactions/Categories";
-import SendMoney from "@/components/transactions/SendMoney";
 import AddInteracBeneficiary from "./AddInteracBeneficiary";
+import CadSendMoney from "../CadSendMoney";
+import CadSendSummary from "../CadSendSummary";
+import { toast } from "sonner";
 
 interface Props {
   close: () => void;
@@ -31,12 +35,40 @@ const ToInterac = ({ close }: Props) => {
     actions.selectUsdBeneficiary(null);
     setStep("add-beneficiary");
   };
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+
+  useEffect(() => {
+    if (timeLeft === 0 && usdBeneficiary) {
+      toast.info("Timed out! Please restart  process.");
+      setStep("add-beneficiary");
+      actions.selectIntBeneficiary(null);
+      return;
+    }
+    const timerId = setInterval(() => {
+      setTimeLeft((prev) => Math.max(prev - 1, 0));
+    }, 1000);
+    return () => clearInterval(timerId);
+  }, [timeLeft]);
+
   const { data: fee } = useQuery({
     queryKey: ["transactions-fee", amount, currency],
     queryFn: () =>
       GetTransactionFeeApi(Number(amount), currency as "USD" | "NGN" | "WIRE"),
     enabled: !!amount,
   });
+
+  const { data: rate, isLoading: rateLoading } = useQuery({
+    queryKey: ["cad-transactions-rate", amount, currency],
+    queryFn: () => GetCadTransactionFeeApi(Number(amount)),
+    enabled: !!amount,
+  });
+
+  useEffect(() => {
+    if (!rateLoading && rate) {
+      setTimeLeft(120);
+    }
+  }, [rateLoading, rate]);
+
   useEffect(() => {
     if (usdBeneficiary) {
       setStep("details");
@@ -54,10 +86,11 @@ const ToInterac = ({ close }: Props) => {
         return <AddInteracBeneficiary close={close} />;
       case "details":
         return (
-          <SendMoney
+          <CadSendMoney
             goBack={goBackToStep1}
             goNext={() => setStep("category")}
-            fee={fee || 0}
+            rate={rate || 0}
+            loading={rateLoading}
           />
         );
       case "category":
@@ -70,10 +103,12 @@ const ToInterac = ({ close }: Props) => {
         );
       case "summary":
         return (
-          <SendSummary
+          <CadSendSummary
             goBack={() => setStep("category")}
             goNext={() => setStep("pay")}
             fee={fee || 0}
+            timeLeft={timeLeft}
+            rate={rate || 0}
           />
         );
       case "pay":
