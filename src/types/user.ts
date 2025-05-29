@@ -52,6 +52,18 @@ export interface IWalletType {
   wallet_type_name: string;
 }
 
+export interface ICryptoWallet {
+  wallet_id: string;
+  crypto_id: string;
+  chain: string;
+  address: string;
+  is_primary: boolean;
+  qr_code: string | null;
+  secondary_crypto_detail_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface IWallet {
   account_balance: number;
   account_number: string;
@@ -63,6 +75,7 @@ export interface IWallet {
   wallet_name: string;
   wallet_type: IWalletType;
   wallet_type_id: number;
+  secondary_crypto_details?: ICryptoWallet[];
 }
 
 export interface IBusinessAccount {

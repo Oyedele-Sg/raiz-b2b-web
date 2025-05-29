@@ -1,11 +1,19 @@
+"use client";
 import React from "react";
 // import Header from "./_components/Header";
 import DashboardSummary from "./_components/DashboardSummary";
 import QuickLinks from "./_components/QuickLinks";
 import Transactions from "./_components/Transactions";
 import BillRequests from "./_components/BillRequests";
+import { useCurrencyStore } from "@/store/useCurrencyStore";
+import CryptoDashboard from "./_components/crypto/dashboard/CryptoDashboard";
 
 export default function Home() {
+  const { selectedCurrency } = useCurrencyStore();
+
+  if (selectedCurrency.name === "SBC") {
+    return <CryptoDashboard />;
+  }
   return (
     <section>
       <DashboardSummary />

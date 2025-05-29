@@ -42,7 +42,7 @@ const CreateNgnAcct = ({ close }: { close: () => void }) => {
     <>
       <div className=" h-full pb-[30px]">
         <SideWrapperHeader title="NGN Account" close={close} />
-        <div className="flex flex-col justify-between h-full pb-[30px]">
+        <div className="flex flex-col justify-between gap-8 h-full pb-[30px]">
           <div className="">
             <div className="flex flex-col justify-center items-center mt-[104px] gap-3">
               <svg
