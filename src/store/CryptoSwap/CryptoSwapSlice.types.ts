@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ACCOUNT_CURRENCIES, SWAP_ACCOUNT_CURRENCIES } from "@/constants/misc";
+import { sbcType } from "@/app/(dashboard)/_components/crypto/send/CryptoSend";
+import { CRYPTO_SWAP_ACCOUNT_CURRENCIES } from "@/constants/misc";
 import { PaymentStatusType } from "@/types/transactions";
 import { IWallet } from "@/types/user";
 
-export type CurrencyTypeKey = keyof typeof SWAP_ACCOUNT_CURRENCIES;
+export type CurrencyTypeKey = keyof typeof CRYPTO_SWAP_ACCOUNT_CURRENCIES;
 
 export interface SwapState {
   swapFromWallet: Record<any, any> | null;
@@ -16,6 +17,7 @@ export interface SwapState {
     wallets: Array<{ wallet_type: { currency: CurrencyTypeKey } }>;
   };
   status: PaymentStatusType | null;
+  coinType: sbcType | null;
 }
 
 export interface SwapActions {
@@ -26,6 +28,7 @@ export interface SwapActions {
   ) => void;
   setAmount: (amount: string) => void;
   setTransactionPin: (pin: string) => void;
+  setCoinType: (coinType: sbcType) => void;
   setStatus: (status: PaymentStatusType | null) => void;
   reset: () => void;
 }
@@ -33,14 +36,15 @@ export interface SwapActions {
 export const initialSwapState: SwapState = {
   swapFromWallet: null,
   swapToWallet: null,
-  swapFromCurrency: ACCOUNT_CURRENCIES.USD.name,
-  swapToCurrency: ACCOUNT_CURRENCIES.NGN.name,
+  swapFromCurrency: CRYPTO_SWAP_ACCOUNT_CURRENCIES.USD.name,
+  swapToCurrency: CRYPTO_SWAP_ACCOUNT_CURRENCIES.SBC.name,
   amount: "",
   transactionPin: "",
   walletData: undefined,
   status: null,
+  coinType: null,
 };
 
-export interface SwapSlice extends SwapState {
+export interface CryptoSwapSlice extends SwapState {
   actions: SwapActions;
 }

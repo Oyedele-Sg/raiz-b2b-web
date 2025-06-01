@@ -61,6 +61,16 @@ export const ACCOUNT_CURRENCIES = {
   SBC: { name: "SBC", sign: "$" } as const,
 } as const;
 
+export const SWAP_ACCOUNT_CURRENCIES = {
+  USD: { name: "USD", sign: "$" } as const,
+  NGN: { name: "NGN", sign: "₦" } as const,
+} as const;
+
+export const CRYPTO_SWAP_ACCOUNT_CURRENCIES = {
+  USD: { name: "USD", sign: "$" } as const,
+  SBC: { name: "SBC", sign: "$" } as const,
+} as const;
+
 export const tiers: ITiers[] = [
   { level: "Amateur ", min: 0, max: 24 },
   { level: "Senior  ", min: 25, max: 49 },

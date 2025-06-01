@@ -1,9 +1,8 @@
 "use client";
 import Button from "@/components/ui/Button";
-import { ACCOUNT_CURRENCIES } from "@/constants/misc";
+import { CRYPTO_SWAP_ACCOUNT_CURRENCIES } from "@/constants/misc";
 import { useUser } from "@/lib/hooks/useUser";
 import { useSendStore } from "@/store/Send";
-import { useSwapStore } from "@/store/Swap";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
 import { useUserStore } from "@/store/useUserStore";
 import { findWalletByCurrency } from "@/utils/helpers";
@@ -11,21 +10,24 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import CryptoDeposit from "./CryptoDeposit";
-import CryptoTransactions from "./CryptoTransactions";
+// import { AnimatePresence } from "motion/react";
+// import SideModalWrapper from "../../SideModalWrapper";
+import CryptoSend from "../send/CryptoSend";
+import CryptoSwap from "../swap/CryptoSwap";
+import { useCryptoSwapStore } from "@/store/CryptoSwap";
 
 const CryptoDashboardSummary = () => {
   const [openModal, setOpenModal] = useState<
     "send" | "request" | "swap" | null
   >(null);
   const pathName = usePathname();
-  const { actions } = useSwapStore();
+  const { actions } = useCryptoSwapStore();
   const { user, refetch } = useUser();
   const walletData = user?.business_account?.wallets;
   const USDAcct = findWalletByCurrency(user, "USD");
   const { setShowBalance, showBalance } = useUserStore();
   const { selectedCurrency } = useCurrencyStore();
-  const { currency, actions: sendActions } = useSendStore();
+  const { actions: sendActions } = useSendStore();
 
   const currentWallet = findWalletByCurrency(user, "SBC");
 
@@ -47,6 +49,19 @@ const CryptoDashboardSummary = () => {
       setOpenModal(action);
     }
   };
+
+  // const displayScreen = () => {
+  //   switch (openModal) {
+  //     // case "send":
+  //     //   return <CryptoSend  close={closeModal}/>;
+  //     case "request":
+  //       return "Request";
+  //     // case "swap":
+  //     //   return <CryptoSwap close={closeSwapModal} />;
+  //     default:
+  //       break;
+  //   }
+  // };
 
   useEffect(() => {
     refetch();
@@ -119,16 +134,19 @@ const CryptoDashboardSummary = () => {
               if (!USDAcct) {
                 toast.info("You must have a second wallet to use this feature");
               } else {
-                if (selectedCurrency.name === ACCOUNT_CURRENCIES.NGN.name) {
+                if (
+                  selectedCurrency.name ===
+                  CRYPTO_SWAP_ACCOUNT_CURRENCIES.SBC.name
+                ) {
                   actions.switchSwapWallet(
-                    ACCOUNT_CURRENCIES.NGN.name,
-                    ACCOUNT_CURRENCIES.USD.name,
+                    CRYPTO_SWAP_ACCOUNT_CURRENCIES.SBC.name,
+                    CRYPTO_SWAP_ACCOUNT_CURRENCIES.USD.name,
                     walletData
                   );
                 } else {
                   actions.switchSwapWallet(
-                    ACCOUNT_CURRENCIES.USD.name,
-                    ACCOUNT_CURRENCIES.NGN.name,
+                    CRYPTO_SWAP_ACCOUNT_CURRENCIES.USD.name,
+                    CRYPTO_SWAP_ACCOUNT_CURRENCIES.SBC.name,
                     walletData
                   );
                 }
@@ -149,8 +167,19 @@ const CryptoDashboardSummary = () => {
           </Button>
         </div>
       </div>
-      <CryptoDeposit />
-      <CryptoTransactions />
+
+      {/* <AnimatePresence>
+        {openModal && openModal !== "send" ? (
+          <SideModalWrapper
+            close={closeModal}
+            wrapperStyle={openModal === "request" ? "!p-0" : ""}
+          >
+            {displayScreen()}
+          </SideModalWrapper>
+        ) : null}
+      </AnimatePresence> */}
+      {openModal === "send" && <CryptoSend close={closeModal} />}
+      {openModal === "swap" && <CryptoSwap close={closeSwapModal} />}
     </div>
   );
 };

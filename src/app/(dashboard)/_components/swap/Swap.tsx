@@ -19,14 +19,16 @@ interface Props {
 
 const Swap = ({ close }: Props) => {
   const [step, setStep] = useState<SwapStep>("detail");
-  const [timeLeft, setTimeLeft] = useState<number>(179);
-  const { amount, swapToCurrency, status, actions } = useSwapStore();
+  const [timeLeft, setTimeLeft] = useState<number>(119);
+  const { amount, swapToCurrency, status, actions, swapFromCurrency } =
+    useSwapStore();
   const [paymentError, setPaymentError] = useState("");
 
   const {
     data: exchangeRateData,
     isLoading,
     refetch,
+    isFetching,
   } = useQuery({
     queryKey: ["exchange-rate", "NGN"],
     queryFn: () => GetExchangeRate("NGN"),
@@ -35,7 +37,7 @@ const Swap = ({ close }: Props) => {
 
   useEffect(() => {
     if (exchangeRateData) {
-      setTimeLeft(179);
+      setTimeLeft(119);
     }
   }, [exchangeRateData]);
 
@@ -92,7 +94,7 @@ const Swap = ({ close }: Props) => {
             exchangeRate={rate}
             recipientAmount={recipientAmount}
             timeLeft={timeLeft}
-            loading={isLoading}
+            loading={isLoading || isFetching}
           />
         );
       case "confirmation":
@@ -145,6 +147,9 @@ const Swap = ({ close }: Props) => {
               error={paymentError}
               tryAgain={() => setStep("confirmation")}
               viewReceipt={() => setStep("receipt")}
+              swapFromCurrency={swapFromCurrency}
+              swapToCurrency={swapToCurrency}
+              amount={amount}
             />
           </>
         );

@@ -1,23 +1,23 @@
+"use client";
 import Overlay from "@/components/ui/Overlay";
-import React, { useMemo, useState } from "react";
-import Image from "next/image";
 import { useUser } from "@/lib/hooks/useUser";
-import { useSwapStore } from "@/store/Swap";
+import { useCryptoSwapStore } from "@/store/CryptoSwap";
+import { CurrencyTypeKey } from "@/store/CryptoSwap/CryptoSwapSlice.types";
 import { IWallet } from "@/types/user";
+import React, { useMemo } from "react";
 import { toast } from "sonner";
-import { CurrencyTypeKey } from "@/store/Swap/swapSlice.types";
+import Image from "next/image";
 
 interface Props {
   close: () => void;
-  //   setSelectedCurrency: () => void;
 }
 
-const SelectCurrencyModal = ({ close }: Props) => {
-  const [search, setSearch] = useState("");
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
-  const { actions } = useSwapStore();
+const SelectSwapCurrencyModal = ({ close }: Props) => {
+  //   const [search, setSearch] = useState("");
+  //   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //     setSearch(e.target.value);
+  //   };
+  const { actions } = useCryptoSwapStore();
   const { user } = useUser();
   const wallets = useMemo(
     () => user?.business_account?.wallets || [],
@@ -27,22 +27,22 @@ const SelectCurrencyModal = ({ close }: Props) => {
   const filteredWallets = useMemo(() => {
     return wallets.filter(
       (wallet) =>
-        ["USD", "NGN"].includes(wallet.wallet_type.currency) &&
-        wallet.wallet_type.currency.toLowerCase().includes(search.toLowerCase())
+        ["USD", "SBC"].includes(wallet.wallet_type.currency) &&
+        wallet.wallet_type.currency.toLowerCase()
     );
-  }, [search, wallets]);
+  }, [wallets]);
 
   const handleSelect = (selectedWallet: IWallet) => {
     const selectedCurrency = selectedWallet.wallet_type.currency;
 
     const oppositeCurrency = wallets.find(
       (wallet) =>
-        (selectedCurrency === "USD" && wallet.wallet_type.currency === "NGN") ||
-        (selectedCurrency === "NGN" && wallet.wallet_type.currency === "USD")
+        (selectedCurrency === "USD" && wallet.wallet_type.currency === "SBC") ||
+        (selectedCurrency === "SBC" && wallet.wallet_type.currency === "USD")
     )?.wallet_type.currency;
 
     if (!oppositeCurrency) {
-      toast.warning("Only USD to NGN and NGN to USD swaps are allowed.");
+      toast.warning("Only USD to SBC and SBC to USD swaps are allowed.");
       return;
     }
 
@@ -62,21 +62,6 @@ const SelectCurrencyModal = ({ close }: Props) => {
         <h5 className="text-raiz-gray-950 text-xl font-bold  leading-normal">
           Currency
         </h5>
-        <div className="relative h-12 min-w-[300px]  mt-[15px] mb-[30px]">
-          <Image
-            className="absolute top-3.5 left-3"
-            src={"/icons/search.svg"}
-            alt="search"
-            width={22}
-            height={22}
-          />
-          <input
-            value={search}
-            onChange={handleSearch}
-            placeholder="Search"
-            className="pl-10 h-full bg-[#fcfcfc] rounded-[20px] border border-raiz-gray-200 justify-start items-center gap-2 inline-flex w-full outline-none text-sm"
-          />
-        </div>
         {filteredWallets.length > 0 ? (
           filteredWallets.map((wallet, index) => (
             <button
@@ -114,4 +99,4 @@ const SelectCurrencyModal = ({ close }: Props) => {
   );
 };
 
-export default SelectCurrencyModal;
+export default SelectSwapCurrencyModal;

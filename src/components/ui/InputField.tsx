@@ -75,7 +75,7 @@ const InputField: React.FC<InputProps> = ({
                   iconPosition === "right"
                     ? "absolute right-4"
                     : "absolute left-4"
-                }`}
+                } z-10`}
               >
                 {typeof icon === "string" ? (
                   <Image

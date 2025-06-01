@@ -55,6 +55,11 @@ export const useSendStore = create<SendSlice>((set) => ({
         ...state,
         transactionDetail: detail,
       })),
+    setCryptoAddress: (address) =>
+      set((state) => ({ ...state, cryptoAddress: address })),
+    setCryptoNetwork: (network) =>
+      set((state) => ({ ...state, cryptoNetwork: network })),
+    setCryptoType: (type) => set(() => ({ cryptoType: type })),
     reset: (currency) =>
       set(() => ({
         ...initialSendState,

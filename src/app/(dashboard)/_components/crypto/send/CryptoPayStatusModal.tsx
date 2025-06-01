@@ -4,55 +4,46 @@ import LoadingStatus from "@/components/transactions/status/LoadingStatus";
 import PendingStatus from "@/components/transactions/status/PendingStatus";
 import SuccessStatus from "@/components/transactions/status/SuccessStatus";
 import Overlay from "@/components/ui/Overlay";
+import { useSendStore } from "@/store/Send";
 import { PaymentStatusType } from "@/types/transactions";
-import { getCurrencySymbol } from "@/utils/helpers";
 import React from "react";
 
 interface Props {
-  status: PaymentStatusType;
-  //   amount: number;
   close: () => void;
   error: string;
   tryAgain: () => void;
   viewReceipt: () => void;
-  swapFromCurrency: string;
-  swapToCurrency: string;
-  amount: string;
+  status: PaymentStatusType;
+  amount: number;
 }
 
-const SwapStatusModal = ({
-  status,
+const CryptoPayStatusModal = ({
   close,
-  error,
   tryAgain,
-  swapFromCurrency,
-  swapToCurrency,
+  viewReceipt,
+  error,
+  status,
   amount,
 }: Props) => {
-  const user = {
-    entity_id: "",
-    account_name: "",
-    username: "",
-    selfie_image: null,
-  };
-  const displayStatus = () => {
+  const { cryptoAddress, cryptoType } = useSendStore();
+  const formattedAmount = `${cryptoType}${amount}`;
+
+  const renderStatus = () => {
     switch (status) {
       case "loading":
         return (
           <LoadingStatus
-            user={user}
-            loadingText={`Swapping  ${getCurrencySymbol(
-              swapFromCurrency
-            )}${amount} to ${swapToCurrency}`}
-            type="p2p"
+            loadingText={`Sending ${formattedAmount} to`}
+            type={"crypto"}
           />
         );
       case "success":
         return (
           <SuccessStatus
-            text=""
-            title={`Your swap was successful`}
+            text="Your payment was successful!"
+            title={`${formattedAmount} sent to  ${cryptoAddress}`}
             close={close}
+            viewReceipt={viewReceipt}
           />
         );
       case "failed":
@@ -60,16 +51,16 @@ const SwapStatusModal = ({
       case "pending":
         return <PendingStatus close={close} />;
       default:
-        break;
+        return null;
     }
   };
   return (
     <Overlay close={() => {}} width="400px">
       <div className="flex flex-col h-[488px]  w-full from-indigo-900 to-violet-600">
-        {displayStatus()}
+        {renderStatus()}
       </div>
     </Overlay>
   );
 };
 
-export default SwapStatusModal;
+export default CryptoPayStatusModal;
