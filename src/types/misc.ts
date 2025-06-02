@@ -107,3 +107,5 @@ export interface IBank {
   bg2Url: string;
   bgUrl: string;
 }
+
+export type IChain = "tron" | "ethereum" | "polygon" | "bsc";

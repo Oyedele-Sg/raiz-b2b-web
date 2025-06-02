@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FetchUserRewardsApi } from "@/services/user";
 import { useNotifications } from "@/lib/hooks/useNotifications";
 import * as motion from "motion/react-client";
+import CreateCryptoWallet from "@/app/(dashboard)/_components/crypto/dashboard/CreateCryptoWallet";
 
 const searchItems = [
   { name: "Dashboard", type: "route", path: "/" },
@@ -53,7 +54,12 @@ const Header = () => {
   }, [user]);
 
   const [showModal, setShowModal] = useState<
-    "notifications" | "rewards" | "selectAcct" | "createNGN" | null
+    | "notifications"
+    | "rewards"
+    | "selectAcct"
+    | "createNGN"
+    | "createCrypto"
+    | null
   >(null);
   const [showBvnModal, setShowBvnModal] = useState(false);
   const [successful, setSuccessful] = useState(false);
@@ -126,6 +132,10 @@ const Header = () => {
   const openNGNModal = () => {
     setShowModal("createNGN");
   };
+
+  const openCryptoModal = () => {
+    setShowModal("createCrypto");
+  };
   const { data, refetch } = useNotifications(15);
   const notifications = data?.pages[0]?.notifications || [];
   const hasUnreadNotif = notifications.some(
@@ -148,6 +158,8 @@ const Header = () => {
             // openBvnModal={() => setShowBvnModal(true)}
           />
         );
+      case "createCrypto":
+        return <CreateCryptoWallet close={handleCloseModal} />;
       default:
         break;
     }
@@ -307,7 +319,13 @@ const Header = () => {
         {showModal !== null && showModal !== "selectAcct" && (
           <SideModalWrapper
             close={handleCloseModal}
-            wrapperStyle={showModal === "createNGN" ? "!bg-primary2" : ""}
+            wrapperStyle={
+              showModal === "createNGN"
+                ? "!bg-primary2"
+                : showModal === "createCrypto"
+                ? "!bg-raiz-crypto-primary"
+                : ""
+            }
           >
             {displayModal()}
           </SideModalWrapper>
@@ -322,7 +340,11 @@ const Header = () => {
         )}
       </AnimatePresence>
       {showModal === "selectAcct" && (
-        <SelectAccount close={handleCloseModal} openNgnModal={openNGNModal} />
+        <SelectAccount
+          close={handleCloseModal}
+          openNgnModal={openNGNModal}
+          openCryptoModal={openCryptoModal}
+        />
       )}
       {successful && <NgnSuccessModal close={() => setSuccessful(false)} />}
     </div>

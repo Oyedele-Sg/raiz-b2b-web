@@ -114,7 +114,7 @@ const SuccessStatus = ({
           <h4 className="mt-[15px] text-gray-100 text-xl font-bold leading-relaxed">
             {title}
           </h4>
-          <p className="text-gray-100 mt-3 text-xs font-normal leading-tight">
+          <p className="text-gray-100 mt-3 text-xs font-normal leading-tight text-wrap">
             {text}
           </p>
         </div>

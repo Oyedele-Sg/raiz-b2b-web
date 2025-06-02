@@ -5,21 +5,23 @@ import { useCurrencyStore } from "@/store/useCurrencyStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateUSDWalletApi } from "@/services/business";
 import { toast } from "sonner";
-import { findWalletByCurrency } from "@/utils/helpers";
+import { findWalletByCurrency, truncateString } from "@/utils/helpers";
 import { useUser } from "@/lib/hooks/useUser";
 import { useSendStore } from "@/store/Send";
 
 interface Props {
   close: () => void;
   openNgnModal: () => void;
+  openCryptoModal: () => void;
 }
 
-const SelectAccount = ({ close, openNgnModal }: Props) => {
+const SelectAccount = ({ close, openNgnModal, openCryptoModal }: Props) => {
   const { user } = useUser();
   const { actions } = useSendStore();
   const { selectedCurrency, setSelectedCurrency } = useCurrencyStore();
   const NGNAcct = findWalletByCurrency(user, "NGN");
   const USDAcct = findWalletByCurrency(user, "USD");
+  const CryptoAcct = findWalletByCurrency(user, "SBC");
 
   const qc = useQueryClient();
   const USDWalletMutation = useMutation({
@@ -46,6 +48,16 @@ const SelectAccount = ({ close, openNgnModal }: Props) => {
       close();
     } else {
       USDWalletMutation.mutate();
+    }
+  };
+
+  const handleCrypto = () => {
+    if (CryptoAcct) {
+      setSelectedCurrency("SBC", user);
+      actions.selectCurrency("SBC");
+      close();
+    } else {
+      openCryptoModal();
     }
   };
 
@@ -117,6 +129,42 @@ const SelectAccount = ({ close, openNgnModal }: Props) => {
               <Image
                 src={"/icons/tick-circle.svg"}
                 alt="USD"
+                width={24}
+                height={24}
+              />
+            )}
+          </button>
+          {/* Crypto */}
+          <button
+            onClick={handleCrypto}
+            className={`px-3 py-4  justify-between items-center gap-10 w-full rounded-[20px]  inline-flex ${
+              selectedCurrency.name === "SBC" && CryptoAcct
+                ? "bg-[#eaecff]/60"
+                : "bg-white"
+            }`}
+          >
+            <div className="flex gap-3">
+              <Image
+                src={"/icons/usd-coin.svg"}
+                alt=""
+                width={40}
+                height={40}
+              />
+              <div className="flex flex-col items-start">
+                <p className="text-raiz-gray-900 text-base font-medium font-brSonoma leading-tight">
+                  {CryptoAcct
+                    ? truncateString(CryptoAcct?.account_number, 26)
+                    : "Get USDC & USDT Wallet"}
+                </p>
+                <p className="opacity-50 text-raiz-gray-950 text-[13px] font-normal  leading-tight">
+                  {CryptoAcct?.wallet_type.wallet_type_name || "Crypto Wallet"}
+                </p>
+              </div>
+            </div>
+            {selectedCurrency.name === "SBC" && CryptoAcct && (
+              <Image
+                src={"/icons/tick-circle.svg"}
+                alt=""
                 width={24}
                 height={24}
               />

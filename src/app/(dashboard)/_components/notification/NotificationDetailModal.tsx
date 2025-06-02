@@ -20,7 +20,7 @@ const NotificationDetailModal = ({ close, notification }: Props) => {
     <Overlay width="375px" close={close}>
       <div className="flex flex-col  h-full py-8 px-5 ">
         <Image src={categoryIcon} alt="close" width={40} height={40} />
-        <h4 className="text-raiz-gray-950 text-xl font-semibold leading-normal mt-[28px] mb-3">
+        <h4 className="text-raiz-gray-950 text-xl font-semibold leading-normal mt-[28px] mb-3 break-words">
           {notification?.notification_title}
         </h4>
         <p className="text-raiz-gray-700 text-[13px] font-normal leading-tight">

@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useUser } from "@/lib/hooks/useUser";
 import { useSwapStore } from "@/store/Swap";
 import { IWallet } from "@/types/user";
+import { toast } from "sonner";
+import { CurrencyTypeKey } from "@/store/Swap/swapSlice.types";
 
 interface Props {
   close: () => void;
@@ -17,23 +19,43 @@ const SelectCurrencyModal = ({ close }: Props) => {
   };
   const { actions } = useSwapStore();
   const { user } = useUser();
-  const wallets = user?.business_account?.wallets || [];
+  const wallets = useMemo(
+    () => user?.business_account?.wallets || [],
+    [user?.business_account?.wallets]
+  );
 
   const filteredWallets = useMemo(() => {
-    return wallets.filter((wallet) =>
-      wallet?.wallet_type.currency.toLowerCase().includes(search.toLowerCase())
+    return wallets.filter(
+      (wallet) =>
+        ["USD", "NGN"].includes(wallet.wallet_type.currency) &&
+        wallet.wallet_type.currency.toLowerCase().includes(search.toLowerCase())
     );
-  }, [search]);
+  }, [search, wallets]);
 
-  const handleSelect = (wallet: IWallet) => {
-    if (wallet.wallet_type.currency === "NGN") {
-      actions.switchSwapWallet("USD", "NGN", wallets);
-    } else {
-      actions.switchSwapWallet("NGN", "USD", wallets);
+  const handleSelect = (selectedWallet: IWallet) => {
+    const selectedCurrency = selectedWallet.wallet_type.currency;
+
+    const oppositeCurrency = wallets.find(
+      (wallet) =>
+        (selectedCurrency === "USD" && wallet.wallet_type.currency === "NGN") ||
+        (selectedCurrency === "NGN" && wallet.wallet_type.currency === "USD")
+    )?.wallet_type.currency;
+
+    if (!oppositeCurrency) {
+      toast.warning("Only USD to NGN and NGN to USD swaps are allowed.");
+      return;
     }
+
+    actions.switchSwapWallet(
+      oppositeCurrency as CurrencyTypeKey,
+      selectedCurrency as CurrencyTypeKey,
+      wallets
+    );
+
     actions.setAmount("");
     close();
   };
+
   return (
     <Overlay close={close} width="375px">
       <div className="flex flex-col  h-full py-8 px-5 ">
@@ -68,7 +90,9 @@ const SelectCurrencyModal = ({ close }: Props) => {
                   src={
                     wallet.wallet_type.currency === "USD"
                       ? "/icons/dollar.svg"
-                      : "/icons/ngn.svg"
+                      : wallet.wallet_type.currency === "NGN"
+                      ? "/icons/ngn.svg"
+                      : "/icons/bsc.svg"
                   }
                   alt={wallet?.wallet_name}
                   width={24}

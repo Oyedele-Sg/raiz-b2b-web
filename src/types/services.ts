@@ -1,5 +1,5 @@
 import { IBeneficiaryBank } from "@/app/(dashboard)/_components/send/usd/bankTransfer/toGlobal/BankSelectModal";
-import { IPagination } from "./misc";
+import { IChain, IPagination } from "./misc";
 import {
   IBillRequest,
   IPaymentMethod,
@@ -9,6 +9,7 @@ import {
   ITransactionType,
 } from "./transactions";
 import { INotification, ISearchedUser, IWallet } from "./user";
+import { sbcType } from "@/app/(dashboard)/_components/crypto/send/CryptoSend";
 
 export interface IRewardPoint {
   reward_point_id: string;
@@ -284,7 +285,7 @@ export interface IExternalBeneficiaryPayload {
 export interface ISwapPayload {
   amount: number;
   transaction_pin: string;
-  currency: "NGN";
+  currency: string;
 }
 
 export interface FormField {
@@ -354,6 +355,16 @@ export interface ISendMoneyUsBankPayload {
   usd_beneficiary_id: string;
   transaction_reason: string;
   transaction_category_id: number;
+}
+
+export interface ISendCryptoPayload {
+  transaction_category_id: number;
+  transaction_amount: number;
+  transaction_pin: string;
+  crypto_address: string;
+  crypto_network: IChain;
+  crypto_type: sbcType;
+  transaction_description: string;
 }
 
 export interface IIntBeneficiariesParams {
