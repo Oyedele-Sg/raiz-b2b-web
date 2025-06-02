@@ -155,7 +155,7 @@ export const GetTransactionFeeApi = async (
 
 export const GetIntTransactionFeeApi = async (
   amount: number,
-  transfer_type: "NGN" | "USD" | "WIRE"
+  transfer_type: "NGN" | "USD" | "WIRE" | "CRYPTO" | "CRYPTO_SWAP"
 ): Promise<number> => {
   const response = await AuthAxios.get(
     `/business/transactions/charges/get/?amount=${amount}&transfer_type=${transfer_type}`
@@ -359,10 +359,11 @@ export const SendMoneyUSBankApi = async (
 };
 
 export const SendCryptoApi = async (
-  data: ISendCryptoPayload
+  data: ISendCryptoPayload,
+  wallet_id: string
 ): Promise<IP2pTransferResponse> => {
   const response = await AuthAxios.post(
-    "/business/transactions/crypto/send/",
+    `/business/transactions/crypto/send/?wallet_id=${wallet_id}`,
     data
   );
   return response?.data;

@@ -33,7 +33,7 @@ const SendCrypto = ({
   const { selectedCurrency } = useCurrencyStore();
   const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
-  const [rawAmount, setRawAmount] = useState("");
+  const [rawAmount, setRawAmount] = useState(amount);
   const inputRef = useRef<HTMLInputElement>(null);
   const currentWallet = findWalletByCurrency(user, "SBC");
   useEffect(() => {
@@ -206,21 +206,21 @@ const SendCrypto = ({
                   {parseFloat(amount || "0").toFixed(2)}
                 </span>
               </div>
-              {fee ? (
-                <div className="w-full flex justify-between items-center">
-                  <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
-                    Fee:
-                  </span>
-                  <div className="h-0.5 w-[75%] px-4 bg-white"></div>
-                  <span className="text-zinc-900  text-xs font-semibold leading-none">
-                    {selectedCurrency?.sign}
-                    {fee?.toFixed(2) || "0.00"}
-                  </span>
-                </div>
-              ) : null}
+
+              <div className="w-full flex justify-between items-center">
+                <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
+                  Fee:
+                </span>
+                <div className="h-0.5 w-[75%] px-4 bg-white"></div>
+                <span className="text-zinc-900  text-xs font-semibold leading-none">
+                  {loading
+                    ? "..."
+                    : `${selectedCurrency?.sign}${fee?.toFixed(2) || 0.0}`}
+                </span>
+              </div>
             </div>
             <Button
-              disabled={!!error || !purpose || !amount}
+              disabled={!!error || !purpose || !amount || loading}
               loading={loading}
               onClick={handleNext}
             >

@@ -6,6 +6,8 @@ import CryptoSwapDetail from "./CryptoSwapDetail";
 import CryptoSwapConfirmation from "./CryptoSwapConfirmation";
 import CryptoSwapPay from "./CryptoSwapPay";
 import SwapStatusModal from "../../swap/SwapStatusModal";
+import { useQuery } from "@tanstack/react-query";
+import { GetIntTransactionFeeApi } from "@/services/transactions";
 
 export type CryptoSwapStep =
   | "coin-type"
@@ -21,14 +23,19 @@ interface Props {
 
 const CryptoSwap = ({ close }: Props) => {
   const [step, setStep] = useState<CryptoSwapStep>("coin-type");
-  const { status, actions, swapFromCurrency, swapToCurrency, amount } =
-    useCryptoSwapStore();
+  const { status, actions, swapToCurrency, amount } = useCryptoSwapStore();
   const [paymentError, setPaymentError] = useState("");
 
   const handleDone = () => {
     actions.reset();
     close();
   };
+
+  const { data: fee, isLoading } = useQuery({
+    queryKey: ["transactions-fee", amount],
+    queryFn: () => GetIntTransactionFeeApi(Number(amount), "CRYPTO_SWAP"),
+    enabled: !!amount,
+  });
 
   const displayScreen = () => {
     switch (step) {
@@ -43,6 +50,8 @@ const CryptoSwap = ({ close }: Props) => {
             goNext={() => {
               setStep("confirmation");
             }}
+            fee={fee || 0}
+            loading={isLoading}
           />
         );
       case "confirmation":
@@ -50,6 +59,7 @@ const CryptoSwap = ({ close }: Props) => {
           <CryptoSwapConfirmation
             goBack={() => setStep("detail")}
             goNext={() => setStep("pay")}
+            fee={fee || 0}
           />
         );
       case "pay":
@@ -68,7 +78,6 @@ const CryptoSwap = ({ close }: Props) => {
             error={paymentError}
             tryAgain={() => setStep("confirmation")}
             viewReceipt={() => setStep("receipt")}
-            swapFromCurrency={swapFromCurrency}
             swapToCurrency={swapToCurrency}
             amount={amount}
           />

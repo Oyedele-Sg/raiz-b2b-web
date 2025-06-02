@@ -9,6 +9,8 @@ import CryptoPay from "./CryptoPay";
 import { useSendStore } from "@/store/Send";
 import CryptoPayStatusModal from "./CryptoPayStatusModal";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
+import { useQuery } from "@tanstack/react-query";
+import { GetIntTransactionFeeApi } from "@/services/transactions";
 
 export type cryptoSendSteps =
   | "coin-type"
@@ -28,14 +30,14 @@ const CryptoSend = ({ close }: Props) => {
   const [step, setStep] = useState<cryptoSendSteps | null>("coin-type");
   const [coinType, setCoinType] = useState<sbcType | null>(null);
   const [paymentError, setPaymentError] = useState("");
-  const {
-    usdBeneficiary,
-    actions,
-    amount,
-    currency,
-    status,
-    transactionDetail,
-  } = useSendStore();
+  const { actions, amount, status, transactionDetail, currency } =
+    useSendStore();
+
+  const { data: fee, isLoading } = useQuery({
+    queryKey: ["transactions-fee", amount, currency],
+    queryFn: () => GetIntTransactionFeeApi(Number(amount), "CRYPTO"),
+    enabled: !!amount,
+  });
 
   const handleDone = () => {
     actions.reset("SBC");
@@ -74,15 +76,16 @@ const CryptoSend = ({ close }: Props) => {
           <SendCrypto
             goBack={() => setStep("review")}
             goNext={() => setStep("summary")}
-            fee={0}
+            fee={fee || 0}
+            loading={isLoading}
           />
         );
       case "summary":
         return (
           <CryptoSendSummary
-            goBack={() => setStep("pay")}
-            goNext={() => setStep("send")}
-            fee={0}
+            goBack={() => setStep("send")}
+            goNext={() => setStep("pay")}
+            fee={fee || 0}
           />
         );
       case "pay":
@@ -91,23 +94,21 @@ const CryptoSend = ({ close }: Props) => {
             goNext={() => setStep("status")}
             close={() => setStep("summary")}
             setPaymentError={setPaymentError}
-            fee={0}
+            fee={fee || 0}
           />
         );
       case "status":
         return (
-          currency &&
-          usdBeneficiary && (
-            <CryptoPayStatusModal
-              status={status}
-              amount={parseFloat(amount)}
-              close={handleDone}
-              error={paymentError}
-              tryAgain={() => setStep("summary")}
-              viewReceipt={() => setStep("receipt")}
-            />
-          )
+          <CryptoPayStatusModal
+            status={status}
+            amount={parseFloat(amount)}
+            close={handleDone}
+            error={paymentError}
+            tryAgain={() => setStep("summary")}
+            viewReceipt={() => setStep("receipt")}
+          />
         );
+
       case "receipt":
         return (
           transactionDetail && (

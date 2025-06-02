@@ -15,9 +15,17 @@ interface Props {
   close: () => void;
   goNext: () => void;
   exchangeRate?: number;
+  fee: number;
+  loading: boolean;
 }
 
-const CryptoSwapDetail = ({ close, goNext, exchangeRate = 1 }: Props) => {
+const CryptoSwapDetail = ({
+  close,
+  goNext,
+  exchangeRate = 1,
+  fee,
+  loading,
+}: Props) => {
   const { selectedCurrency } = useCurrencyStore();
   const [error, setError] = useState<string | null>(null);
   const {
@@ -145,12 +153,20 @@ const CryptoSwapDetail = ({ close, goNext, exchangeRate = 1 }: Props) => {
                 <span className="text-raiz-crypto-primary text-xs font-normal font-brSonoma leading-normal">
                   Recipient gets:
                 </span>
-                <div className="h-0.5 w-[50%] px-4 bg-white"></div>
+                <div className="h-0.5 w-[36%] px-4 bg-white"></div>
                 <span className="text-zinc-900  text-xs font-semibold leading-none">
-                  {`${coinType}${amount}`}
+                  {`${amount} ${coinType} `}
                 </span>
               </div>
-
+              <div className="w-full flex justify-between items-center">
+                <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
+                  Fee:
+                </span>
+                <div className="h-0.5 w-[75%] px-4 bg-white"></div>
+                <span className="text-zinc-900  text-xs font-semibold leading-none">
+                  {loading ? "..." : `$${fee?.toFixed(2) || "0.00"}`}
+                </span>
+              </div>
               {/* Rate */}
               <div className="w-full flex justify-between items-center">
                 <span className="text-raiz-crypto-primary text-xs font-normal font-brSonoma leading-normal">
@@ -158,7 +174,7 @@ const CryptoSwapDetail = ({ close, goNext, exchangeRate = 1 }: Props) => {
                 </span>
                 <div className="h-0.5 w-[60%] px-6 bg-white"></div>
                 <span className="text-zinc-900  text-xs font-semibold leading-none">
-                  {coinType} {exchangeRate || 1}
+                  {exchangeRate || 1} {coinType}
                 </span>
               </div>
             </div>

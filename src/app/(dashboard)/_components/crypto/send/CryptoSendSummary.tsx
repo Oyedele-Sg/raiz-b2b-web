@@ -16,12 +16,12 @@ interface Props {
 }
 
 const CryptoSendSummary = ({ goBack, goNext, fee }: Props) => {
-  const { cryptoNetwork, amount, purpose } = useSendStore();
+  const { cryptoNetwork, amount, purpose, cryptoAddress } = useSendStore();
   const chain = CHAINS.find((i) => i.value === cryptoNetwork);
   const totalPayable = fee ? parseFloat(amount) + fee : amount;
   return (
     <Overlay close={goBack} width="375px">
-      <div className="h-full flex flex-col">
+      <div className="h-full flex flex-col px-6 py-8">
         <div className="flex flex-col items-center justify-center mb-4 text-zinc-900">
           <div className="w-12 h-12 mb-4 flex mx-auto items-center justify-center bg-violet-100 bg-opacity-60 rounded-3xl">
             <Image
@@ -41,14 +41,14 @@ const CryptoSendSummary = ({ goBack, goNext, fee }: Props) => {
         </div>
         <div className="w-full flex flex-col gap-[15px]">
           <ListDetailItem title="Network" value={`${chain?.name}`} border />
-          <ListDetailItem title="Address" value={purpose} border />
+          <ListDetailItem title="Purpose" value={purpose} border />
           <div className="flex justify-between items-center pb-3 border-b">
             <span className="text-xs font-normal leading-tight">Address</span>
             <div className="flex gap-1 items-center">
               <span className="text-sm text-right font-semibold font-brSonoma leading-tight">
-                {truncateString(cryptoNetwork, 19)}
+                {truncateString(cryptoAddress, 19)}
               </span>
-              <button onClick={() => copyToClipboard(cryptoNetwork)}>
+              <button onClick={() => copyToClipboard(cryptoAddress)}>
                 <Image
                   src={"/icons/copy.svg"}
                   alt={"copy"}
@@ -58,9 +58,9 @@ const CryptoSendSummary = ({ goBack, goNext, fee }: Props) => {
               </button>
             </div>
           </div>
-          <ListDetailItem title="You send" value={`${amount} `} border />
-          <ListDetailItem title="Recipient gets" value={""} border />
-          <ListDetailItem title="Fees" value={fee} border />
+          <ListDetailItem title="You send" value={`$${totalPayable}`} border />
+          <ListDetailItem title="Recipient gets" value={`$${amount}`} border />
+          <ListDetailItem title="Fees" value={`$${fee}`} border />
           <ListDetailItem
             title="Date"
             value={dayjs(new Date()).format("DD MMM YYYY @ hh:mm")}

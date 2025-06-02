@@ -12,7 +12,8 @@ interface Props {
 }
 const CryptoSwapConfirmation = ({ goBack, goNext, fee }: Props) => {
   const { amount, coinType } = useCryptoSwapStore();
-  const parsedAmount = parseFloat(amount).toLocaleString();
+  const parsedAmount = parseFloat(amount);
+  const totalPayable = fee ? (fee + parsedAmount)?.toLocaleString() : 0;
   return (
     <Overlay close={goBack} width="375px">
       <div className="h-full flex flex-col px-5 py-8">
@@ -27,7 +28,7 @@ const CryptoSwapConfirmation = ({ goBack, goNext, fee }: Props) => {
             />
           </div>
           <p className="text-center text-xl font-bold leading-normal">
-            ${amount.toLocaleString()}
+            ${totalPayable?.toLocaleString()}
           </p>
           <p className="text-center   text-xs font-normal  leading-tight">
             Swap Summary
@@ -37,11 +38,15 @@ const CryptoSwapConfirmation = ({ goBack, goNext, fee }: Props) => {
           <ListDetailItem title="Coin" value={`${coinType}`} border />
           <ListDetailItem
             title="You swap"
-            value={`${parsedAmount} ${coinType}`}
+            value={`${parsedAmount?.toLocaleString()} ${coinType}`}
             border
           />
           <ListDetailItem title="You get" value={`$${parsedAmount}`} border />
-          <ListDetailItem title="Fees" value={fee || 0} border />
+          <ListDetailItem
+            title="Fees"
+            value={`$${fee?.toLocaleString()}` || 0}
+            border
+          />
           <Button onClick={goNext}>Confirm Swap</Button>
           <Button onClick={goBack} variant="secondary">
             Cancel

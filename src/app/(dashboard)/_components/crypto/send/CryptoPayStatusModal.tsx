@@ -26,7 +26,7 @@ const CryptoPayStatusModal = ({
   amount,
 }: Props) => {
   const { cryptoAddress, cryptoType } = useSendStore();
-  const formattedAmount = `${cryptoType}${amount}`;
+  const formattedAmount = `${amount} ${cryptoType}`;
 
   const renderStatus = () => {
     switch (status) {
@@ -40,8 +40,8 @@ const CryptoPayStatusModal = ({
       case "success":
         return (
           <SuccessStatus
-            text="Your payment was successful!"
-            title={`${formattedAmount} sent to  ${cryptoAddress}`}
+            title={`${formattedAmount}  sent to `}
+            text={` ${cryptoAddress}`}
             close={close}
             viewReceipt={viewReceipt}
           />

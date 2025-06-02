@@ -3,11 +3,12 @@ import { SendCryptoApi } from "@/services/transactions";
 import { useSendStore } from "@/store/Send";
 import { IChain } from "@/types/misc";
 import { ISendCryptoPayload } from "@/types/services";
-import { passwordHash } from "@/utils/helpers";
+import { findWalletByCurrency, passwordHash } from "@/utils/helpers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { sbcType } from "./CryptoSend";
 import EnterPin from "@/components/transactions/EnterPin";
+import { useUser } from "@/lib/hooks/useUser";
 
 interface Props {
   close: () => void;
@@ -28,8 +29,11 @@ const CryptoPay = ({ close, goNext, setPaymentError }: Props) => {
     cryptoType,
   } = useSendStore();
   const qc = useQueryClient();
+  const { user } = useUser();
+  const wallet = findWalletByCurrency(user, "SBC");
   const SendMoneyMutation = useMutation({
-    mutationFn: (data: ISendCryptoPayload) => SendCryptoApi(data),
+    mutationFn: (data: ISendCryptoPayload) =>
+      SendCryptoApi(data, wallet?.wallet_id || ""),
     onMutate: () => {
       actions.setStatus("loading");
       goNext();

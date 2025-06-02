@@ -1,14 +1,23 @@
+"use client";
 import React from "react";
 import CryptoDashboardSummary from "./CryptoDashboardSummary";
-import CryptoTransactions from "./CryptoTransactions";
 import CryptoDeposit from "./CryptoDeposit";
+import Transactions from "../../Transactions";
+import { useUser } from "@/lib/hooks/useUser";
+import { findWalletByCurrency } from "@/utils/helpers";
 
 const CryptoDashboard = () => {
+  const { user } = useUser();
+  const SBCAcct = findWalletByCurrency(user, "SBC");
   return (
     <section>
       <CryptoDashboardSummary />
       <CryptoDeposit />
-      <CryptoTransactions />
+      <div className="w-full my-8">
+        {SBCAcct && (
+          <Transactions currentWallet={SBCAcct} maxHeight="max-h-80" />
+        )}
+      </div>
     </section>
   );
 };

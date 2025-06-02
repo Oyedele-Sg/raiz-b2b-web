@@ -20,8 +20,7 @@ interface Props {
 const Swap = ({ close }: Props) => {
   const [step, setStep] = useState<SwapStep>("detail");
   const [timeLeft, setTimeLeft] = useState<number>(119);
-  const { amount, swapToCurrency, status, actions, swapFromCurrency } =
-    useSwapStore();
+  const { amount, swapToCurrency, status, actions } = useSwapStore();
   const [paymentError, setPaymentError] = useState("");
 
   const {
@@ -147,7 +146,6 @@ const Swap = ({ close }: Props) => {
               error={paymentError}
               tryAgain={() => setStep("confirmation")}
               viewReceipt={() => setStep("receipt")}
-              swapFromCurrency={swapFromCurrency}
               swapToCurrency={swapToCurrency}
               amount={amount}
             />
