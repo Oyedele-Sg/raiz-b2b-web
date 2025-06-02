@@ -41,6 +41,8 @@ const Button: React.FC<ButtonProps> = ({
         return "bg-raiz-usd-primary text-[#f9f9f9] hover:bg-raiz-usd-primary/90";
       case "ngn":
         return "bg-primary2 text-[#f9f9f9] hover:bg-primary2/90";
+      case "sbc":
+        return "bg-raiz-crypto-primary text-[#f9f9f9] hover:bg-raiz-crypto-primary/90";
       default:
         return "bg-primary2 text-[#f9f9f9] hover:bg-primary2/90";
     }

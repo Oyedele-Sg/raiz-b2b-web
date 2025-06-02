@@ -44,6 +44,9 @@ export default {
           usd: {
             primary: "#0D6494",
           },
+          crypto: {
+            primary: "#0055CC",
+          },
           purple: {
             90: "#54098b",
           },

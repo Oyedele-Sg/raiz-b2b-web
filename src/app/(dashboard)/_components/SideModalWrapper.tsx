@@ -25,7 +25,7 @@ const SideModalWrapper = ({ children, close, wrapperStyle }: Props) => {
         key="modal"
         className={`h-screen p-[25px] xl:p-[30px] bg-raiz-gray-50 overflow-y-scroll no-scrollbar rounded-tl-[36px] rounded-bl-[36px] justify-start  gap-2 inline-flex fixed right-0 top-0 bottom-0 w-[75%] sm:w-[50%] lg:w-[31%] xl:w-[28.57%] ${wrapperStyle}`}
       >
-        <div className="w-full">{children}</div>
+        <div className="w-full flex flex-col">{children}</div>
       </motion.div>
     </Overlay>
   );

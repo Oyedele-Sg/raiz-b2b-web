@@ -8,6 +8,7 @@ import {
   ITxnReportCategoryResponse,
   ITxnReportPayload,
 } from "../types/services";
+import { IChain } from "@/types/misc";
 
 export const FreezeDebitApi = async (data: ITransactionPinPayload) => {
   const response = await AuthAxios.patch(
@@ -33,6 +34,13 @@ export const CreateUSDWalletApi = async () => {
 export const CreateNGNVirtualWalletApi = async () => {
   const response = await AuthAxios.post(
     "/business/entities/virtual-accounts/naira/"
+  );
+  return response?.data;
+};
+
+export const CreateCryptoWalletApi = async (chain: IChain = "bsc") => {
+  const response = await AuthAxios.post(
+    `/business/entities/wallets/crypto/?chain=${chain}`
   );
   return response?.data;
 };

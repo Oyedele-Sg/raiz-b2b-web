@@ -1,3 +1,4 @@
+import { sbcType } from "@/app/(dashboard)/_components/crypto/send/CryptoSend";
 import { ACCOUNT_CURRENCIES } from "@/constants/misc";
 import { INGNSendOptions, IUSDSendOptions } from "@/types/misc";
 import {
@@ -25,6 +26,9 @@ export interface SendState {
   transactionPin: string;
   status: PaymentStatusType | null;
   transactionDetail: IP2pTransferResponse | null;
+  cryptoAddress: string;
+  cryptoNetwork: string;
+  cryptoType: sbcType | null;
 }
 
 export interface AmountAndRemarksPayload {
@@ -45,6 +49,9 @@ export interface SendActions {
   setTransactionPin: (pin: string) => void;
   setStatus: (status: PaymentStatusType | null) => void;
   setTransactionDetail: (detail: IP2pTransferResponse) => void;
+  setCryptoAddress: (address: string) => void;
+  setCryptoNetwork: (network: string) => void;
+  setCryptoType: (type: sbcType) => void;
   reset: (currency: CurrencyTypeKey) => void;
 }
 
@@ -62,6 +69,9 @@ export const initialSendState: SendState = {
   transactionPin: "",
   status: null,
   transactionDetail: null,
+  cryptoAddress: "",
+  cryptoNetwork: "",
+  cryptoType: null,
 };
 
 export interface SendSlice extends SendState {

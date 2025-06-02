@@ -20,6 +20,7 @@ import {
   IP2PTransferPayload,
   IP2pTransferResponse,
   IRequestFundsPayload,
+  ISendCryptoPayload,
   ISendMoneyUsBankPayload,
   ISwapPayload,
   ITransactionCategory,
@@ -154,7 +155,7 @@ export const GetTransactionFeeApi = async (
 
 export const GetIntTransactionFeeApi = async (
   amount: number,
-  transfer_type: "NGN" | "USD" | "WIRE"
+  transfer_type: "NGN" | "USD" | "WIRE" | "CRYPTO" | "CRYPTO_SWAP"
 ): Promise<number> => {
   const response = await AuthAxios.get(
     `/business/transactions/charges/get/?amount=${amount}&transfer_type=${transfer_type}`
@@ -259,6 +260,17 @@ export async function GetExchangeRate(currencyCode: string): Promise<{
   return response.data;
 }
 
+export async function GetSwapRate(currencyCode: string): Promise<{
+  buy_rate: number;
+  currency: string;
+  sell_rate: number;
+}> {
+  const response = await AuthAxios.get(
+    `/business/transactions/swap/exchange-rates/?currency=${currencyCode}`
+  );
+  return response.data;
+}
+
 export async function SellDollarApi(payload: ISwapPayload) {
   const response = await AuthAxios.post(
     "/business/transactions/swap/sell-dollar/",
@@ -270,6 +282,22 @@ export async function SellDollarApi(payload: ISwapPayload) {
 export async function BuyDollarApi(payload: ISwapPayload) {
   const response = await AuthAxios.post(
     "/business/transactions/swap/buy-dollar/",
+    payload
+  );
+  return response.data;
+}
+
+export async function BuyStableCoinApi(payload: ISwapPayload) {
+  const response = await AuthAxios.post(
+    "/business/transactions/swap/buy-stablecoin/",
+    payload
+  );
+  return response.data;
+}
+
+export async function SellStableCoinApi(payload: ISwapPayload) {
+  const response = await AuthAxios.post(
+    "/business/transactions/swap/sell-stablecoin/",
     payload
   );
   return response.data;
@@ -325,6 +353,17 @@ export const SendMoneyUSBankApi = async (
 ): Promise<IP2pTransferResponse> => {
   const response = await AuthAxios.post(
     "/business/transactions/withdrawal/usd/initiate/",
+    data
+  );
+  return response?.data;
+};
+
+export const SendCryptoApi = async (
+  data: ISendCryptoPayload,
+  wallet_id: string
+): Promise<IP2pTransferResponse> => {
+  const response = await AuthAxios.post(
+    `/business/transactions/crypto/send/?wallet_id=${wallet_id}`,
     data
   );
   return response?.data;

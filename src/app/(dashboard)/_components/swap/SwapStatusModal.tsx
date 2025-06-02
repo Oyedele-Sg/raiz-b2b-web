@@ -4,10 +4,8 @@ import LoadingStatus from "@/components/transactions/status/LoadingStatus";
 import PendingStatus from "@/components/transactions/status/PendingStatus";
 import SuccessStatus from "@/components/transactions/status/SuccessStatus";
 import Overlay from "@/components/ui/Overlay";
-import { useSwapStore } from "@/store/Swap";
+import { useCryptoSwapStore } from "@/store/CryptoSwap";
 import { PaymentStatusType } from "@/types/transactions";
-import { getCurrencySymbol } from "@/utils/helpers";
-import React from "react";
 
 interface Props {
   status: PaymentStatusType;
@@ -16,10 +14,19 @@ interface Props {
   error: string;
   tryAgain: () => void;
   viewReceipt: () => void;
+  swapToCurrency: string;
+  amount: string;
 }
 
-const SwapStatusModal = ({ status, close, error, tryAgain }: Props) => {
-  const { swapFromCurrency, swapToCurrency, amount } = useSwapStore();
+const SwapStatusModal = ({
+  status,
+  close,
+  error,
+  tryAgain,
+  swapToCurrency,
+  amount,
+}: Props) => {
+  const { coinType } = useCryptoSwapStore();
   const user = {
     entity_id: "",
     account_name: "",
@@ -32,9 +39,7 @@ const SwapStatusModal = ({ status, close, error, tryAgain }: Props) => {
         return (
           <LoadingStatus
             user={user}
-            loadingText={`Swapping  ${getCurrencySymbol(
-              swapFromCurrency
-            )}${amount} to ${swapToCurrency}`}
+            loadingText={`Swapping  ${coinType} ${amount} to ${swapToCurrency}`}
             type="p2p"
           />
         );

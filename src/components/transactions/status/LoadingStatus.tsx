@@ -3,9 +3,9 @@ import Avatar from "@/components/ui/Avatar";
 import { BeneficiaryType } from "@/components/modals/PaymentStatusModal";
 
 interface LoadingStatusProps {
-  user: BeneficiaryType;
+  user?: BeneficiaryType;
   loadingText: string;
-  type: "p2p" | "external";
+  type: "p2p" | "external" | "crypto";
 }
 
 const LoadingStatus: React.FC<LoadingStatusProps> = ({
@@ -14,16 +14,18 @@ const LoadingStatus: React.FC<LoadingStatusProps> = ({
   type = "p2p",
 }) => {
   const getAccountName = (): string => {
-    if ("account_name" in user) return user.account_name; // ISearchedUser
-    if ("bank_account_name" in user) return user.bank_account_name; // IExternalAccount
-    if ("usd_beneficiary" in user) return user.usd_beneficiary.account_name; // EntityBeneficiary
-    if ("foreign_payout_beneficiary" in user)
-      return user.foreign_payout_beneficiary.beneficiary_name; // EntityForeignPayout
+    if (user) {
+      if ("account_name" in user) return user.account_name; // ISearchedUser
+      if ("bank_account_name" in user) return user.bank_account_name; // IExternalAccount
+      if ("usd_beneficiary" in user) return user.usd_beneficiary.account_name; // EntityBeneficiary
+      if ("foreign_payout_beneficiary" in user)
+        return user.foreign_payout_beneficiary.beneficiary_name; // EntityForeignPayout
+    }
     return "Recipient";
   };
 
   const getAvatarSrc = (): string | null => {
-    if (type === "p2p" && "selfie_image" in user) {
+    if (type === "p2p" && user && "selfie_image" in user) {
       return user.selfie_image;
     }
     return null;

@@ -1,4 +1,4 @@
-import { ITiers } from "@/types/misc";
+import { IChain, ITiers } from "@/types/misc";
 
 export const months = [
   "Jan",
@@ -58,6 +58,17 @@ export const nigeriaStates = [
 export const ACCOUNT_CURRENCIES = {
   USD: { name: "USD", sign: "$" } as const,
   NGN: { name: "NGN", sign: "₦" } as const,
+  SBC: { name: "SBC", sign: "$" } as const,
+} as const;
+
+export const SWAP_ACCOUNT_CURRENCIES = {
+  USD: { name: "USD", sign: "$" } as const,
+  NGN: { name: "NGN", sign: "₦" } as const,
+} as const;
+
+export const CRYPTO_SWAP_ACCOUNT_CURRENCIES = {
+  USD: { name: "USD", sign: "$" } as const,
+  SBC: { name: "SBC", sign: "$" } as const,
 } as const;
 
 export const tiers: ITiers[] = [
@@ -83,4 +94,27 @@ export const monthsData = [
   { id: "10", value: "Oct" },
   { id: "11", value: "Nov" },
   { id: "12", value: "Dec" },
+];
+
+export const CHAINS: { name: string; value: IChain; icon: string }[] = [
+  {
+    name: "BNB Smart Chain (BEP20)",
+    value: "bsc",
+    icon: "/icons/bsc.svg",
+  },
+  {
+    name: "Tron (TRC20)",
+    value: "tron",
+    icon: "/icons/tron.svg",
+  },
+  {
+    name: "Polygon",
+    value: "polygon",
+    icon: "/icons/polygon.svg",
+  },
+  {
+    name: "Ethereum (ERC20)",
+    value: "ethereum",
+    icon: "/icons/eth.svg",
+  },
 ];

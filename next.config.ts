@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "www.google.com",
       },
+      {
+        protocol: "https",
+        hostname: "images.app.goo.gl",
+      },
     ],
   },
 };

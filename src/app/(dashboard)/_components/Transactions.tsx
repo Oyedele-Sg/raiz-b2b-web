@@ -4,8 +4,8 @@ import EmptyList from "@/components/ui/EmptyList";
 import { useQuery } from "@tanstack/react-query";
 import { FetchTransactionReportApi } from "@/services/transactions";
 import { ITransactionParams } from "@/types/services";
-import { useUser } from "@/lib/hooks/useUser";
-import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
+// import { useUser } from "@/lib/hooks/useUser";
+// import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
 import dayjs from "dayjs";
 import { ITransaction } from "@/types/transactions";
 import Skeleton from "react-loading-skeleton";
@@ -16,6 +16,12 @@ import SideModalWrapper from "./SideModalWrapper";
 import TxnHistory from "./transaction-history/TxnHistory";
 import TxnReceipt from "./transaction-history/TxnReceipt";
 import { usePathname } from "next/navigation";
+import { IWallet } from "@/types/user";
+
+interface Props {
+  currentWallet: IWallet;
+  maxHeight?: string;
+}
 
 const TransactionRow = ({
   transaction,
@@ -62,11 +68,11 @@ const TransactionRow = ({
   );
 };
 
-const Transactions = () => {
-  const { user } = useUser();
+const Transactions = ({ currentWallet, maxHeight = "max-h-72" }: Props) => {
+  // const { user } = useUser();
   const [openModal, setOpenModal] = useState<"history" | "detail" | null>(null);
   const [selectedTxn, setSelectedTxn] = useState<ITransaction | null>(null);
-  const currentWallet = useCurrentWallet(user);
+  // const currentWallet = useCurrentWallet(user);
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["transactions-report", { wallet_id: currentWallet?.wallet_id }],
     queryFn: ({ queryKey }) => {
@@ -89,7 +95,7 @@ const Transactions = () => {
   const transactions = data?.transaction_reports || [];
   return (
     <>
-      <div className=" p-6 rounded-[20px] border border-raiz-gray-200 flex-col justify-start items-start gap-5 inline-flex">
+      <div className=" p-6 rounded-[20px] border border-raiz-gray-200 flex-col justify-start items-start gap-5 inline-flex w-full">
         <div className="w-full mb-5 flex justify-between items-center">
           <h6 className="text-gray-900 text-base font-semibold  leading-snug">
             Transactions
@@ -109,7 +115,9 @@ const Transactions = () => {
             </svg>
           </button>
         </div>
-        <div className="flex flex-col gap-3 w-full max-h-72 overflow-y-scroll no-scrollbar">
+        <div
+          className={`flex flex-col gap-3 w-full ${maxHeight} overflow-y-scroll no-scrollbar`}
+        >
           {isLoading ? (
             <Skeleton count={4} className="mb-3" height={48} />
           ) : transactions?.length > 0 ? (

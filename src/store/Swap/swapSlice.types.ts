@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ACCOUNT_CURRENCIES } from "@/constants/misc";
+import { ACCOUNT_CURRENCIES, SWAP_ACCOUNT_CURRENCIES } from "@/constants/misc";
 import { PaymentStatusType } from "@/types/transactions";
 import { IWallet } from "@/types/user";
 
-export type CurrencyTypeKey = keyof typeof ACCOUNT_CURRENCIES;
+export type CurrencyTypeKey = keyof typeof SWAP_ACCOUNT_CURRENCIES;
 
 export interface SwapState {
   swapFromWallet: Record<any, any> | null;

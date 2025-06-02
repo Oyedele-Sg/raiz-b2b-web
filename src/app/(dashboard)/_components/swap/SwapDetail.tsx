@@ -138,7 +138,11 @@ const SwapDetail = ({
             <div className="flex gap-1 items-center">
               <Image
                 src={`/icons/${
-                  swapToCurrency === "NGN" ? "ngn" : "dollar"
+                  swapToCurrency === "NGN"
+                    ? "ngn"
+                    : swapToCurrency === "USD"
+                    ? "dollar"
+                    : "bsc"
                 }.svg`}
                 width={24}
                 height={14}
