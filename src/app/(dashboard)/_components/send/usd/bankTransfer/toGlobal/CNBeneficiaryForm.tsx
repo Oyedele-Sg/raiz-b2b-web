@@ -26,6 +26,7 @@ import CnTypeModal from "./CnTypeModal";
 import { Bank } from "./BeneficiaryForm";
 import BankSelectModal, { IBeneficiaryBank } from "./BankSelectModal";
 import ChinaCurrencyTypeModal from "./ChinaCurrencyTypeModal";
+import IdSelectModal from "./IdSelectModal";
 
 export type cnBenType = "BANK" | "ALIPAY" | "WECHATPAY" | null;
 
@@ -60,12 +61,20 @@ const CNBeneficiaryForm = ({
 }: Props) => {
   const { user } = useUser();
   const [openModal, setOpenModal] = useState<
-    "type" | "ben" | "send" | "purpose" | "bank" | "bankCurrency" | null
+    | "type"
+    | "ben"
+    | "send"
+    | "purpose"
+    | "bank"
+    | "bankCurrency"
+    | "id_type"
+    | null
   >(null);
   const [type, setType] = useState<cnBenType>(null);
   // const [benType, setBenType] = useState<string>("");
   // const [sendType, setSendType] = useState<string>("");
   // const [remittancePurpose, setRemittancePurpose] = useState<string>("");
+  const [idType, setIdType] = useState<string>("");
   const [selectedBank, setSelectedBank] = useState<IBeneficiaryBank>({
     id: 0,
     code: "",
@@ -161,12 +170,49 @@ const CNBeneficiaryForm = ({
   const AddBeneficiaryMutation = useMutation({
     mutationFn: (data: IIntBeneficiaryPayload) => CreateIntBeneficiary(data),
     onSuccess: (response) => {
-      toast.warning(response?.message);
+      toast.success(response?.message);
       qc.invalidateQueries({ queryKey: ["int-bank-beneficiaries"] });
+      setType(null);
     },
   });
+
+  const entity = user?.business_account?.entity;
+  const userCountryName =
+    (entity &&
+      entity.entity_address &&
+      entity.entity_address[0]?.country?.country_name) ||
+    "";
+  const userZipCode =
+    (entity && entity.entity_address && entity.entity_address[0]?.zip_code) ||
+    "";
+  const userAddress =
+    `${entity?.entity_address[0].street}, ${entity?.entity_address[0].city}, ${entity?.entity_address[0].state},  ${entity?.entity_address[0].country.country_name}` ||
+    "";
+
   const formikConfig: FormikConfig<FormValues> = {
-    initialValues: {},
+    initialValues: {
+      // Initialize sender fields with user data
+      sender_first_name: user?.first_name || "",
+      sender_last_name: user?.last_name || "",
+      sender_country: userCountryName || "",
+      sender_post_code: userZipCode || "",
+      sender_address: userAddress || "",
+      // Add other sender fields if needed (e.g., for ALIPAY)
+      sender_type: "",
+      sender_country_of_birth: "",
+      sender_date_of_birth: "",
+      sender_nationality_country: "",
+      sender_id_type: "",
+      sender_id_number: "",
+      // Initialize other fields based on formDetail
+      type: "",
+      account_number: "",
+      account_name: "",
+      remittance_purpose: "",
+      bank_code: "",
+      // Add beneficiary fields if applicable
+      beneficiary_country: countryName || "",
+    },
     // validationSchema: toFormikValidationSchema(createValidationSchema()),
     onSubmit: async (values, { resetForm, setSubmitting }) => {
       const result: {
@@ -213,7 +259,7 @@ const CNBeneficiaryForm = ({
         };
         const data = type === "BANK" ? bankPayload : result;
         const finalPayload = {
-          data,
+          data: { ...data, type },
           customer_email: user?.business_account?.business_email || "",
           country: countryCode as IntCountryType,
         };
@@ -231,20 +277,15 @@ const CNBeneficiaryForm = ({
   const formik = useFormik<FormValues>(formikConfig);
   // console.log("errr", formik.errors);
   // console.log("vals", formik.values);
-  // const entity = user?.business_account?.entity;
-  // const userName = `${user?.first_name || ""} ${user?.last_name || ""}`.trim();
-  // const userCountryName =
-  //   (entity &&
-  //     entity.entity_address &&
-  //     entity.entity_address[0]?.country?.country_name) ||
-  //   "";
-  // const userCountryCity =
-  //   (entity && entity.entity_address && entity.entity_address[0]?.city) || "";
-  // const userZipCode =
-  //   (entity && entity.entity_address && entity.entity_address[0]?.zip_code) ||
-  //   "";
-  // const userState =
-  //   (entity && entity.entity_address && entity.entity_address[0]?.state) || "";
+
+  const idTypeFields =
+    fieldsMap?.ALIPAY?.find((i) => i.name === "sender")?.fields?.find(
+      (i) => i.name === "id_type"
+    )?.enum || [];
+
+  // const idTypesFields = fields.find(
+  //   (item) => item
+  // );
 
   const handleOpenModal = (
     value: string[] | Bank[] | undefined,
@@ -255,6 +296,7 @@ const CNBeneficiaryForm = ({
     if (name === "sender_type") setOpenModal("send");
     if (name === "bank_code") setOpenModal("bank");
     if (name === "bank_currency") setOpenModal("bankCurrency");
+    if (name === "id_type") setOpenModal("id_type");
   };
 
   const closeModal = () => setOpenModal(null);
@@ -313,6 +355,16 @@ const CNBeneficiaryForm = ({
             formik={formik}
           />
         );
+      case "id_type":
+        return (
+          <IdSelectModal
+            data={idTypeFields}
+            close={closeModal}
+            setIdType={setIdType}
+            idType={idType}
+            formik={formik}
+          />
+        );
       default:
         return null;
     }
@@ -328,7 +380,6 @@ const CNBeneficiaryForm = ({
 
     return parentField.fields.map((subField, subIndex) => {
       const fieldName = `${parentField.name}_${subField.name}`;
-
       // Handle const fields (disabled inputs)
       if (subField.const) {
         return (
@@ -339,6 +390,23 @@ const CNBeneficiaryForm = ({
               type="text"
               disabled
               value={subField.const || ""}
+            />
+          </div>
+        );
+      }
+
+      if (subField.name === "id_type") {
+        return (
+          <div className="mt-[15px]" key={fieldName}>
+            <p className="text-raiz-gray-950 text-sm font-medium font-brSonoma leading-normal mb-3">
+              ID Type
+            </p>
+            <ModalTrigger
+              onClick={() => {
+                handleOpenModal(subField.enum, "id_type");
+              }}
+              placeholder={"Choose id type"}
+              value={convertField(idType)}
             />
           </div>
         );
@@ -418,6 +486,137 @@ const CNBeneficiaryForm = ({
           </div>
         );
       }
+      if (fieldName === "sender_first_name") {
+        return (
+          <div key={subIndex} className="mt-[15px]">
+            <InputField
+              key={fieldName}
+              label={"First Name"}
+              name={fieldName}
+              disabled
+              placeholder="Enter first name"
+              value={user?.first_name || ""}
+              onChange={formik.handleChange(fieldName)}
+              onBlur={formik.handleBlur}
+              errorMessage={
+                formik.touched[fieldName] && formik.errors[fieldName]
+                  ? (formik.errors[fieldName] as string)
+                  : undefined
+              }
+              status={
+                formik.touched[fieldName] && formik.errors[fieldName]
+                  ? "error"
+                  : null
+              }
+            />
+          </div>
+        );
+      }
+      if (fieldName === "sender_last_name") {
+        return (
+          <div key={subIndex} className="mt-[15px]">
+            <InputField
+              key={fieldName}
+              label={"Last Name"}
+              name={fieldName}
+              disabled
+              placeholder="Enter last name"
+              value={user?.last_name || ""}
+              onChange={formik.handleChange(fieldName)}
+              onBlur={formik.handleBlur}
+              errorMessage={
+                formik.touched[fieldName] && formik.errors[fieldName]
+                  ? (formik.errors[fieldName] as string)
+                  : undefined
+              }
+              status={
+                formik.touched[fieldName] && formik.errors[fieldName]
+                  ? "error"
+                  : null
+              }
+            />
+          </div>
+        );
+      }
+      if (fieldName === "sender_country") {
+        return (
+          <div key={subIndex} className="mt-[15px]">
+            <InputField
+              key={fieldName}
+              label={"Country"}
+              name={fieldName}
+              disabled
+              placeholder="Enter country"
+              value={userCountryName || ""}
+              onChange={formik.handleChange(fieldName)}
+              onBlur={formik.handleBlur}
+              errorMessage={
+                formik.touched[fieldName] && formik.errors[fieldName]
+                  ? (formik.errors[fieldName] as string)
+                  : undefined
+              }
+              status={
+                formik.touched[fieldName] && formik.errors[fieldName]
+                  ? "error"
+                  : null
+              }
+            />
+          </div>
+        );
+      }
+      if (fieldName === "sender_post_code") {
+        return (
+          <div key={subIndex} className="mt-[15px]">
+            <InputField
+              key={fieldName}
+              label={"Post code"}
+              name={fieldName}
+              disabled
+              placeholder="Enter post code"
+              value={userZipCode || ""}
+              onChange={formik.handleChange(fieldName)}
+              onBlur={formik.handleBlur}
+              errorMessage={
+                formik.touched[fieldName] && formik.errors[fieldName]
+                  ? (formik.errors[fieldName] as string)
+                  : undefined
+              }
+              status={
+                formik.touched[fieldName] && formik.errors[fieldName]
+                  ? "error"
+                  : null
+              }
+            />
+          </div>
+        );
+      }
+      if (fieldName === "sender_address") {
+        return (
+          <div key={subIndex} className="mt-[15px]">
+            <InputField
+              key={fieldName}
+              label={"Address"}
+              name={fieldName}
+              disabled
+              placeholder="Enter address"
+              value={userAddress || ""}
+              onChange={formik.handleChange(fieldName)}
+              onBlur={formik.handleBlur}
+              errorMessage={
+                formik.touched[fieldName] && formik.errors[fieldName]
+                  ? (formik.errors[fieldName] as string)
+                  : undefined
+              }
+              status={
+                formik.touched[fieldName] && formik.errors[fieldName]
+                  ? "error"
+                  : null
+              }
+            />
+          </div>
+        );
+      }
+
       // Handle regular input fields
       return (
         <div key={subIndex} className="mt-[15px]">
