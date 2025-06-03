@@ -132,7 +132,8 @@ const ToGlobal = ({ close, bankType }: Props) => {
             <InternationalSendSummary
               goBack={() => setStep("category")}
               goNext={() => setStep("pay")}
-              fee={paymentInitiationData?.raiz_charge || 0}
+              // cofirm if to use raiz charge or fee
+              fee={paymentInitiationData?.fees || 0}
               paymentData={paymentInitiationData}
               timeLeft={timeLeft}
             />
@@ -163,7 +164,7 @@ const ToGlobal = ({ close, bankType }: Props) => {
               user={intBeneficiary}
               close={handleDone}
               error={paymentError}
-              tryAgain={() => setStep("summary")}
+              tryAgain={() => setStep("details")}
               viewReceipt={() => setStep("receipt")}
               type="external"
             />
