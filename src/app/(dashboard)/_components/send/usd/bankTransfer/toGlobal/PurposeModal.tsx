@@ -7,22 +7,16 @@ import { FormikProps } from "formik";
 interface Props {
   data: string[];
   close: () => void;
-  setRemittancePurpose: (arg: string) => void;
-  remittancePurpose: string;
+  setRemittancePurpose?: (arg: string) => void;
+  remittancePurpose?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formik?: FormikProps<any>;
 }
-const PurposeModal = ({
-  data,
-  close,
-  setRemittancePurpose,
-  remittancePurpose,
-  formik,
-}: Props) => {
+const PurposeModal = ({ data, close, setRemittancePurpose, formik }: Props) => {
   const handleClick = (val: string) => {
     formik?.setFieldValue("remittance_purpose", val);
     formik?.setFieldTouched("remittance_purpose", true);
-    setRemittancePurpose(val);
+    setRemittancePurpose?.(val);
     close();
   };
 
@@ -40,7 +34,7 @@ const PurposeModal = ({
               key={index}
             >
               <Radio
-                checked={each === remittancePurpose}
+                checked={each === formik?.values.remittance_purpose}
                 onChange={() => handleClick(each)}
               />
               {convertField(each)}

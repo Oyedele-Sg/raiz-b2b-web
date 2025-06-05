@@ -90,7 +90,7 @@ const GlobalBeneficiary = ({ close }: Props) => {
   const AddBeneficiaryMutation = useMutation({
     mutationFn: (data: IIntBeneficiaryPayload) => CreateIntBeneficiary(data),
     onSuccess: (response) => {
-      toast.warning(response?.message);
+      toast.success(response?.message);
       qc.invalidateQueries({ queryKey: ["int-bank-beneficiaries"] });
       NgFormik.resetForm();
     },

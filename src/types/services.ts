@@ -295,6 +295,8 @@ export interface FormField {
   enum?: string[];
   max_length?: number;
   min_length?: number;
+  maxLength?: number;
+  minLength?: number;
   pattern?: string;
   const?: string;
   fields?: FormField[];

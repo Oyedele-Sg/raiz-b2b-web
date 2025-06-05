@@ -297,7 +297,7 @@ export const IntCountries: IIntCountry[] = [
   { name: "Tanzania", value: "TZ", logo: "/icons/flag-tz.png" },
   { name: "Zambia", value: "ZM", logo: "/icons/flag-zm.png" },
   { name: "Malawi", value: "MW", logo: "/icons/flag-mw.png" },
-  { name: "United Kingdom", value: "GB", logo: "/icons/flag-uk.png" },
+  { name: "United Kingdom", value: "GB", logo: "/icons/flag-gb.png" },
   { name: "Burkina Faso", value: "BF", logo: "/icons/flag-bf.png" },
   { name: "Cameroon", value: "CM", logo: "/icons/flag-cm.png" },
   { name: "Senegal", value: "SN", logo: "/icons/flag-sn.png" },

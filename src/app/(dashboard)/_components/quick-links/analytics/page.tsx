@@ -77,7 +77,7 @@ const Analytics = ({ close }: Props) => {
       {
         label: "Custom",
         value: "custom",
-        dateRange: "Pick a specific period of time",
+        dateRange: "Pick a specific period of time to date",
         days: null,
       },
     ];

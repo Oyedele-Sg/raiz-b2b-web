@@ -22,19 +22,19 @@ const Categories = ({ goBack, goNext, loading }: Props) => {
     queryKey: ["transactions-category"],
     queryFn: () => FetchTransactionCategoriesApi(),
   });
-  const SkipButton = () => {
-    return (
-      <button
-        onClick={() => {
-          actions.selectCategory(null);
-          goNext();
-        }}
-        className="text-right justify-center text-zinc-700 text-sm leading-tight"
-      >
-        Skip
-      </button>
-    );
-  };
+  // const SkipButton = () => {
+  //   return (
+  //     <button
+  //       onClick={() => {
+  //         actions.selectCategory(null);
+  //         goNext();
+  //       }}
+  //       className="text-right justify-center text-zinc-700 text-sm leading-tight"
+  //     >
+  //       Skip
+  //     </button>
+  //   );
+  // };
 
   const handleSelect = (newCategory: ITransactionCategory) => {
     if (
@@ -60,13 +60,13 @@ const Categories = ({ goBack, goNext, loading }: Props) => {
         close={goBack}
         title="Select category"
         titleColor="text-zinc-900"
-        rightComponent={<SkipButton />}
+        // rightComponent={<SkipButton />}
       />
       <div className="flex flex-col h-full justify-between items-center">
-        <div className="grid grid-cols-4 gap-y-5 gap-x-3">
+        <div className="grid grid-cols-4 gap-y-5 gap-x-3 w-full justify-center items-center">
           {data?.map((each, index) => {
             return (
-              <div key={index} className="relative">
+              <div key={index} className="relative w-full ">
                 {each.transaction_category_id ===
                   category?.transaction_category_id && (
                   <Image
@@ -79,7 +79,7 @@ const Categories = ({ goBack, goNext, loading }: Props) => {
                 )}
                 <button
                   onClick={() => handleSelect(each)}
-                  className="flex flex-wrap gap-2 items-center justify-center"
+                  className="flex flex-wrap flex-col w-full gap-2 items-center justify-center"
                 >
                   <Image
                     className="w-12 h-12"
@@ -97,7 +97,7 @@ const Categories = ({ goBack, goNext, loading }: Props) => {
             );
           })}
         </div>
-        <Button loading={loading} onClick={goNext}>
+        <Button disabled={!category} loading={loading} onClick={goNext}>
           Continue
         </Button>
       </div>

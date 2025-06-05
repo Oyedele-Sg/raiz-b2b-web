@@ -182,6 +182,17 @@ const InternationalSendMoney = ({
                 <span>({currentWallet?.wallet_type?.currency})</span>
               </p>
             </div>
+            <div className="w-full flex justify-center my-4">
+              <div className="w-full flex justify-between items-center my-4 px-4 py-2 bg-indigo-50 bg-opacity-50 rounded-lg">
+                <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
+                  Minimum Amount:
+                </span>
+                <span className="text-zinc-900 text-sm font-semibold leading-none flex items-center gap-1">
+                  {getCurrencySymbol(currency)}
+                  {minAmount?.toLocaleString()}
+                </span>
+              </div>
+            </div>
             <div className="w-full mt-10">
               <div className="flex items-center justify-between  font-brSonoma font-medium mb-3 w-full">
                 <p className="text-zinc-900 text-sm leading-normal">Purpose</p>
@@ -212,8 +223,8 @@ const InternationalSendMoney = ({
           </div>
         </div>
         <div className="w-full ">
-          <div className=" p-3.5 mb-3 bg-gray-100 w-full rounded-lg outline outline-1 outline-offset-[-1px] outline-white inline-flex flex-col justify-center items-start gap-2">
-            <div className="w-full flex justify-between items-center">
+          {/* <div className=" p-3.5 mb-3 bg-grays-100 w-full rounded-lg outline outline-1 outline-offset-[-1px] outline-white inline-flex flex-col justify-center items-start gap-2"> */}
+          {/* <div className="w-full flex justify-between items-center">
               <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
                 Min Amount:
               </span>
@@ -222,8 +233,8 @@ const InternationalSendMoney = ({
                 {getCurrencySymbol(currency)}
                 {minAmount}
               </span>
-            </div>
-            {/* {fee ? (
+            </div> */}
+          {/* {fee ? (
               <div className="w-full flex justify-between items-center">
                 <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
                   Fee:
@@ -235,7 +246,7 @@ const InternationalSendMoney = ({
                 </span>
               </div>
             ) : null} */}
-          </div>
+          {/* </div> */}
 
           <Button
             disabled={!!error || !purpose}

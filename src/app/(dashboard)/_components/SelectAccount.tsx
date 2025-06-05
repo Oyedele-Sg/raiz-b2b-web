@@ -5,7 +5,7 @@ import { useCurrencyStore } from "@/store/useCurrencyStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateUSDWalletApi } from "@/services/business";
 import { toast } from "sonner";
-import { findWalletByCurrency, truncateString } from "@/utils/helpers";
+import { findWalletByCurrency } from "@/utils/helpers";
 import { useUser } from "@/lib/hooks/useUser";
 import { useSendStore } from "@/store/Send";
 
@@ -152,9 +152,7 @@ const SelectAccount = ({ close, openNgnModal, openCryptoModal }: Props) => {
               />
               <div className="flex flex-col items-start">
                 <p className="text-raiz-gray-900 text-base font-medium font-brSonoma leading-tight">
-                  {CryptoAcct
-                    ? truncateString(CryptoAcct?.account_number, 26)
-                    : "Get USDC & USDT Wallet"}
+                  {CryptoAcct ? "USDC & USDT Wallet" : "Get USDC & USDT Wallet"}
                 </p>
                 <p className="opacity-50 text-raiz-gray-950 text-[13px] font-normal  leading-tight">
                   {CryptoAcct?.wallet_type.wallet_type_name || "Crypto Wallet"}

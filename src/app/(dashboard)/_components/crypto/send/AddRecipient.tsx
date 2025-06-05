@@ -20,33 +20,12 @@ const AddRecipient = ({ close, goNext }: Props) => {
   const [modal, setModal] = useState(false);
   const { actions, cryptoAddress, cryptoNetwork } = useSendStore();
 
-  const schema = z
-    .object({
-      address: z.string().min(1, "Address is required"),
-      network: z.enum(["bsc", "tron", "polygon", "ethereum"], {
-        required_error: "Network is required",
-      }),
-    })
-    .superRefine((values, ctx) => {
-      const { address, network } = values;
-
-      const patterns: Record<string, RegExp> = {
-        ethereum: /^0x[a-fA-F0-9]{40}$/,
-        bsc: /^0x[a-fA-F0-9]{40}$/,
-        polygon: /^0x[a-fA-F0-9]{40}$/,
-        tron: /^T[a-zA-Z0-9]{33}$/,
-      };
-
-      const pattern = patterns[network];
-
-      if (pattern && !pattern.test(address)) {
-        ctx.addIssue({
-          path: ["address"],
-          message: `Invalid address format for ${network.toUpperCase()}`,
-          code: z.ZodIssueCode.custom,
-        });
-      }
-    });
+  const schema = z.object({
+    address: z.string().min(1, "Address is required"),
+    network: z.enum(["bsc", "tron", "polygon", "ethereum"], {
+      required_error: "Network is required",
+    }),
+  });
 
   const formik = useFormik({
     initialValues: {

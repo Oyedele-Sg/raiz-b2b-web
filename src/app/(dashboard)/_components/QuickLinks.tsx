@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import NGNAcctInfo from "./quick-links/acctInfo/NGNAcctInfo";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
 import USDAcctInfo from "./quick-links/acctInfo/USDAcctInfo";
-import SelectCardModal from "./quick-links/cards/SelectCardModal";
+// import SelectCardModal from "./quick-links/cards/SelectCardModal";
 import TopUp from "./quick-links/topUp/TopUp";
 import Analytics from "./quick-links/analytics/page";
 
@@ -32,7 +32,7 @@ const Links: { title: string; icon: string; key: key }[] = [
     key: "acct-info",
   },
   {
-    title: "Card",
+    title: "Card (Coming soon)",
     icon: "/icons/card.svg",
     key: "card",
   },
@@ -54,8 +54,8 @@ const QuickLinks = () => {
         ) : (
           <USDAcctInfo close={closeModal} />
         );
-      case "card":
-        return <SelectCardModal close={closeModal} />;
+      // case "card":
+      //   return <SelectCardModal close={closeModal} />;
       // case "swap":
       //   return <h1>Swap</h1>;
       case "top-up":
