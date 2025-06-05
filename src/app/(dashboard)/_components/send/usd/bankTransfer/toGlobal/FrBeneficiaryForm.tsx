@@ -22,6 +22,7 @@ import AuSendTypeModal from "./AuSendTypeModal";
 interface Props {
   fields: FormField[];
   countryCode: string;
+  reset?: () => void;
 }
 
 const renderField = (
@@ -324,7 +325,7 @@ const renderNestedFields = (
     );
   });
 
-const FrBeneficiaryForm = ({ fields, countryCode }: Props) => {
+const FrBeneficiaryForm = ({ fields, countryCode, reset }: Props) => {
   const [openModal, setOpenModal] = useState<"ben" | "send" | "purpose" | null>(
     null
   );
@@ -375,6 +376,7 @@ const FrBeneficiaryForm = ({ fields, countryCode }: Props) => {
       toast.success("Beneficiary added!");
       qc.invalidateQueries({ queryKey: ["int-bank-beneficiaries"] });
       formik.resetForm();
+      reset?.();
     },
   });
   const formik = useFormik({
@@ -483,7 +485,7 @@ const FrBeneficiaryForm = ({ fields, countryCode }: Props) => {
             const type = "beneficiary";
             return (
               <div key={index}>
-                <p className="text-raiz-gray-950 font-semibold my-3">
+                <p className="text-raiz-gray-950 font-semibold my-3  border-b border-gray-500 py-0.5">
                   {convertField(field.name)}
                 </p>
 
@@ -517,7 +519,7 @@ const FrBeneficiaryForm = ({ fields, countryCode }: Props) => {
             const type = "sender";
             return (
               <div key={index}>
-                <p className="text-raiz-gray-950 font-semibold my-3">
+                <p className="text-raiz-gray-950 font-semibold my-3  border-b border-gray-500 py-0.5">
                   {convertField(field.name)}
                 </p>
                 {renderNestedFields(

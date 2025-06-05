@@ -11,6 +11,7 @@ import CryptoPayStatusModal from "./CryptoPayStatusModal";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
 import { useQuery } from "@tanstack/react-query";
 import { GetIntTransactionFeeApi } from "@/services/transactions";
+import SideModalWrapper from "../../SideModalWrapper";
 
 export type cryptoSendSteps =
   | "coin-type"
@@ -112,7 +113,9 @@ const CryptoSend = ({ close }: Props) => {
       case "receipt":
         return (
           transactionDetail && (
-            <RaizReceipt close={handleDone} data={transactionDetail} />
+            <SideModalWrapper close={handleDone}>
+              <RaizReceipt close={handleDone} data={transactionDetail} />
+            </SideModalWrapper>
           )
         );
       default:

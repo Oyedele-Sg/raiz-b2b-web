@@ -1,10 +1,11 @@
 import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
+import InputField from "@/components/ui/InputField";
 import Overlay from "@/components/ui/Overlay";
 import { RejectRequestApi } from "@/services/transactions";
 import { IBillRequest } from "@/types/transactions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 
 interface Props {
@@ -14,9 +15,10 @@ interface Props {
 
 const RejectBill = ({ close, request }: Props) => {
   const user = request?.third_party_account;
+  const [reason, setReason] = useState("");
   const qc = useQueryClient();
   const DeclineRquestMutation = useMutation({
-    mutationFn: () => RejectRequestApi(request?.request_transfer_id),
+    mutationFn: () => RejectRequestApi(request?.request_transfer_id, reason),
     onSuccess: (response) => {
       toast.success(response?.message);
       qc.invalidateQueries({ queryKey: ["bill-requests"] });
@@ -32,9 +34,18 @@ const RejectBill = ({ close, request }: Props) => {
           Reject Bill
         </h3>
         <Avatar name={user?.account_name} src={user?.selfie_image} />
-        <p className="text-zinc-900 text-sm my-4 leading-tight">
-          Are you certain you wish to reject this bill?
+        <p className="text-zinc-900 text-sm text-center my-4 leading-tight">
+          Can we know the reason you want to delete this bill request?
         </p>
+        <div className="w-full">
+          <InputField
+            name="reason"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            className="w-full"
+            placeholder="Enter your reason"
+          />
+        </div>
         <div className="flex flex-col gap-3 mt-5 w-full">
           <Button
             loading={DeclineRquestMutation.isPending}

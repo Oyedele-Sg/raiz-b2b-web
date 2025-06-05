@@ -59,8 +59,7 @@ const ResetOtp = ({ email, setPage, setOtp }: Props) => {
               Enter OTP
             </h2>
             <p className="text-raiz-gray-700 text-[15px] font-normal  leading-snug mb-[44px]">
-              Please enter the OTP code sent to your phone number ending in XXXX
-              and your email {email}
+              Please enter the OTP code sent to your email {email}
             </p>
           </div>
           <svg

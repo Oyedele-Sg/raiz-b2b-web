@@ -9,6 +9,7 @@ import {
   Legend,
   CategoryScale,
   LinearScale,
+  TooltipItem,
 } from "chart.js";
 import { IoIosArrowDown } from "react-icons/io";
 import { DateOption } from "@/app/(dashboard)/_components/quick-links/analytics/page";
@@ -87,6 +88,18 @@ const AnalyticsChart = ({
     plugins: {
       legend: {
         display: false,
+      },
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          label: (context: TooltipItem<"line">) => {
+            const value = context.raw as number;
+            return ` ${selectedCurrency.sign}${value.toLocaleString()}`;
+          },
+        },
+        bodyFont: {
+          size: 14,
+        },
       },
     },
     scales: {

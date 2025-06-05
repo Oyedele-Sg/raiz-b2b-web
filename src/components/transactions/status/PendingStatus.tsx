@@ -22,7 +22,7 @@ const PendingStatus = ({ close }: Props) => {
             alt="pending"
           />
           <h4 className="mt-[15px] text-gray-100 text-xl font-bold leading-relaxed">
-            Transfer Pending
+            Processing Payment
           </h4>
           <p className="text-gray-100 mt-3 text-xs font-normal leading-tight">
             Your transaction is currently pending. Please wait while we process

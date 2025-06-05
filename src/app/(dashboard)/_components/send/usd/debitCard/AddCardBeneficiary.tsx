@@ -28,6 +28,7 @@ interface FormValues {
   card_number: string;
   expiry_month: string;
   expiry_year: string;
+  cvv: string;
 }
 
 interface Props {
@@ -81,6 +82,11 @@ const AddCardBeneficiary = ({ close }: Props) => {
         .refine((val) => parseInt(val) >= new Date().getFullYear(), {
           message: "Year must be current or future",
         }),
+      cvv: z
+        .string()
+        .min(3, "CVV must be 3 or 4 digits")
+        .max(4, "CVV must be 3 or 4 digits")
+        .regex(/^\d{3,4}$/, "Invalid CVV"),
     });
   };
   const qc = useQueryClient();
@@ -98,6 +104,7 @@ const AddCardBeneficiary = ({ close }: Props) => {
     card_number: "",
     expiry_month: "",
     expiry_year: "",
+    cvv: "",
   };
   const formik = useFormik({
     initialValues,
@@ -106,10 +113,10 @@ const AddCardBeneficiary = ({ close }: Props) => {
       try {
         const payload: IUsBeneficiaryPayload = {
           data: {
-            account_name: values.name,
+            name: values.name,
             card_number: encryptData(values.card_number.replace(/\s/g, "")),
-            expiry_month: values.expiry_month,
-            expiry_year: values.expiry_year,
+            expiry_date: `${values.expiry_year}-${values.expiry_month}`,
+            cvv: encryptData(values.cvv),
           },
           label: values.label,
           optionType: "card",
@@ -240,6 +247,14 @@ const AddCardBeneficiary = ({ close }: Props) => {
                 }
               />
             </div>
+            <InputField
+              label="CVV"
+              placeholder="123"
+              {...formik.getFieldProps("cvv")}
+              type="password"
+              errorMessage={formik.touched.cvv && formik.errors.cvv}
+              status={formik.touched.cvv && formik.errors.cvv ? "error" : null}
+            />
           </div>
           <Button
             type="submit"

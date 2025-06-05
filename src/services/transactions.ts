@@ -87,9 +87,9 @@ export const AcceptRequestApi = async ({
   return response?.data;
 };
 
-export const RejectRequestApi = async (request_id: string) => {
+export const RejectRequestApi = async (request_id: string, reason?: string) => {
   const response = await AuthAxios.patch(
-    `/business/transactions/requests/funds/${request_id}/decline/`,
+    `/business/transactions/requests/funds/${request_id}/decline/?reason_for_decline=${reason}`,
     null,
     {
       params: {

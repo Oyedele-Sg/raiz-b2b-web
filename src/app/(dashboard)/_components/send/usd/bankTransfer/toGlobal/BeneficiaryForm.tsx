@@ -783,8 +783,8 @@ const BeneficiaryForm = ({
             const type = "beneficiary";
             return (
               <div key={index}>
-                <p className="text-raiz-gray-950 font-semibold my-3">
-                  {convertField(field.name)}
+                <p className="text-raiz-gray-950 font-semibold my-3  border-b border-gray-500 py-0.5">
+                  Beneficiary Information
                 </p>
                 {renderNestedFields(
                   formik,
@@ -804,9 +804,9 @@ const BeneficiaryForm = ({
                   field?.fields,
                   bankDetailsFields
                 )}
-                <p className="text-raiz-gray-950 font-medium mt-3 mb-3">
+                {/* <p className="text-raiz-gray-950 text-sm font-medium mt-3 -mb-3">
                   Bank Details
-                </p>
+                </p> */}
                 {bankDetailsFields.map((bankField) =>
                   bankField.name === "bank_code" ? (
                     <div className="mt-[15px]" key={bankField.name}>
@@ -868,8 +868,8 @@ const BeneficiaryForm = ({
             const type = "sender";
             return (
               <div key={index}>
-                <p className="text-raiz-gray-950 font-semibold my-3">
-                  {convertField(field.name)}
+                <p className="text-raiz-gray-950 font-semibold my-3 border-b border-gray-500 py-0.5">
+                  Sender Information
                 </p>
                 {renderNestedFields(
                   formik,
