@@ -39,11 +39,11 @@ const SwapCoinType = ({ close, goNext }: Props) => {
         </div>
         <div className="flex  flex-col gap-5">
           {/* USDC */}
-          <button
+          <div
             onClick={() => handleClick("USDC")}
             className={`border ${
               coinType === "USDC" ? "border-indigo-900" : "border-zinc-200"
-            } rounded-[20px] flex flex-col justify-center items-center w-full pt-[19px] pb-[21px]`}
+            } rounded-[20px] cursor-pointer flex flex-col justify-center items-center w-full pt-[19px] pb-[21px]`}
           >
             <div className="flex justify-between w-full px-[30px] mb-5">
               <span />
@@ -62,13 +62,13 @@ const SwapCoinType = ({ close, goNext }: Props) => {
             <p className="text-center  text-zinc-900 text-xs font-normal  leading-tight">
               Swap USDC
             </p>
-          </button>
+          </div>
           {/* USDT */}
-          <button
+          <div
             onClick={() => handleClick("USDT")}
             className={`border ${
               coinType === "USDT" ? "border-indigo-900" : "border-zinc-200"
-            } rounded-[20px] flex flex-col justify-center items-center w-full pt-[19px] pb-[21px]`}
+            } rounded-[20px] flex flex-col cursor-pointer justify-center items-center w-full pt-[19px] pb-[21px]`}
           >
             <div className="flex justify-between w-full px-[30px] mb-5">
               <span />
@@ -87,7 +87,7 @@ const SwapCoinType = ({ close, goNext }: Props) => {
             <p className="text-center  text-zinc-900 text-xs font-normal  leading-tight">
               Swap USDT
             </p>
-          </button>
+          </div>
         </div>
       </div>
     </Overlay>

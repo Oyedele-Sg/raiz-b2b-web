@@ -42,7 +42,7 @@ const NgnSend = () => {
       {!user && !externalUser && (
         <Tabs
           options={[
-            { label: "Send to Riazer", value: "to Raizer" },
+            { label: "Send to Raizer", value: "to Raizer" },
             { label: "Send to other bank", value: "to other bank" },
           ]}
           selected={ngnSendType}

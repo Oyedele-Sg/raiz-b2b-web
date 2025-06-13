@@ -39,7 +39,7 @@ const SwapStatusModal = ({
         return (
           <LoadingStatus
             user={user}
-            loadingText={`Swapping  ${coinType} ${amount} to ${swapToCurrency}`}
+            loadingText={`Swapping ${amount} ${coinType} to ${swapToCurrency}`}
             type="p2p"
           />
         );
