@@ -546,3 +546,49 @@ export interface IBusinessPaymentData {
   email: string;
   wallets: IWallet[];
 }
+
+export interface IPaymentChannel {
+  channel_id: string;
+  channel_name: string;
+  country_code: string;
+  max: number;
+  min: number;
+  estimated_settlement_time: number;
+}
+
+export interface IPaymentNetwork {
+  network_id: string;
+  network_name: string;
+  channel_id: string;
+  country_code: string;
+  account_type: string;
+}
+
+export interface InitiateAfricaPayinPayload {
+  data: {
+    channel_id: string;
+    network_id: string;
+    account_type: string;
+    account_number: string;
+    amount: number;
+    sender_name: string;
+    transaction_description: string;
+  };
+  username: string;
+}
+
+export interface InitiateAfricaPayinResponse {
+  payin_id: string;
+  amount: number;
+  payout_amount: number;
+  rate: number;
+  payout_currency: string;
+  expires_at: Date;
+}
+
+export interface FinalizeAfricaPayinResponse
+  extends InitiateAfricaPayinResponse {
+  collection_account_number: string;
+  collection_bank_name: string;
+  collection_account_name: string;
+}

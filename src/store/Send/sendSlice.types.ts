@@ -1,5 +1,6 @@
 import { sbcType } from "@/app/(dashboard)/_components/crypto/send/CryptoSend";
 import { ACCOUNT_CURRENCIES } from "@/constants/misc";
+import { IIntCountry } from "@/constants/send";
 import { INGNSendOptions, IUSDSendOptions } from "@/types/misc";
 import {
   EntityBeneficiary,
@@ -29,6 +30,7 @@ export interface SendState {
   cryptoAddress: string;
   cryptoNetwork: string;
   cryptoType: sbcType | null;
+  guestLocalCurrency: IIntCountry | null;
 }
 
 export interface AmountAndRemarksPayload {
@@ -52,6 +54,7 @@ export interface SendActions {
   setCryptoAddress: (address: string) => void;
   setCryptoNetwork: (network: string) => void;
   setCryptoType: (type: sbcType) => void;
+  setGuestLocalCurrency: (currency: IIntCountry) => void;
   reset: (currency: CurrencyTypeKey) => void;
 }
 
@@ -72,6 +75,7 @@ export const initialSendState: SendState = {
   cryptoAddress: "",
   cryptoNetwork: "",
   cryptoType: null,
+  guestLocalCurrency: null,
 };
 
 export interface SendSlice extends SendState {

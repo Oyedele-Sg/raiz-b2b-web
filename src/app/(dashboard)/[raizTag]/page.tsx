@@ -2,20 +2,42 @@
 import Slider from "@/app/(auth)/_components/authSlide/Slider";
 import React, { useState } from "react";
 import Image from "next/image";
-import PayDetails from "./_components/PayDetails";
 import PayWithCard from "./_components/PayWithCard";
 import { useQuery } from "@tanstack/react-query";
 import { FetchPaymentInfoApi } from "@/services/business";
 import { useParams } from "next/navigation";
 import Spinner from "@/components/ui/Spinner";
+import SelectPayType from "./_components/SelectPayType";
+import GuestPayDetail from "./_components/GuestPayDetail";
+import PayLocalAmount from "./_components/PayLocalAmount";
+
+export type LocalPaymentMethod = "bankTransfer" | "mobileMoney";
+export type GuestPaymentType = "local" | "usd";
+export type GuestPayDetailsSteps = "details" | "summary" | "status" | "receipt";
 
 const PayBusinessPage = () => {
   const params = useParams();
-  const [screen, setScreen] = useState<"details" | "card">("details");
+  const [screen, setScreen] = useState<GuestPaymentType | "detail" | null>(
+    null
+  );
+  const [step, setStep] = useState<GuestPayDetailsSteps>("details");
+  const [paymentType, setPaymentType] = useState<
+    GuestPaymentType | undefined
+  >();
+  const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const { data, isLoading, error } = useQuery({
     queryKey: ["business-payment-info"],
     queryFn: () => FetchPaymentInfoApi(params?.raizTag as string),
   });
+
+  const handleGeneralNextStep = () => {
+    if (!paymentType) return;
+    if (paymentType === "local") {
+      setScreen("local");
+    } else {
+      setScreen("usd");
+    }
+  };
 
   if ((error || !data) && !isLoading) {
     return (
@@ -58,7 +80,6 @@ const PayBusinessPage = () => {
     <section className="p-6 md:p-12 h-[calc(100vh-2rem)] md:h-[100vh]">
       <div className="flex flex-col  md:flex-row  h-full gap-4">
         <Slider />
-
         <div className="py-4 px-3 xl:px-8 lg:w-[50%] xl:w-[46%] h-full flex flex-col  ">
           <Image src={"/icons/Logo.svg"} width={91.78} height={32} alt="Logo" />
           {isLoading ? (
@@ -67,11 +88,46 @@ const PayBusinessPage = () => {
             </div>
           ) : (
             <div className="flex flex-col h-full">
-              {data && screen === "details" && (
-                <PayDetails setScreen={setScreen} data={data} />
+              {data && !screen && (
+                <SelectPayType
+                  data={data}
+                  goNext={handleGeneralNextStep}
+                  paymentType={paymentType}
+                  setPaymentType={setPaymentType}
+                />
               )}
-              {data && screen === "card" && (
+              {data && screen === "local" && (
+                <PayLocalAmount
+                  data={data}
+                  goBack={() => setScreen(null)}
+                  goNext={() => setScreen("detail")}
+                  paymentMethod={paymentMethod}
+                  setPaymentMethod={setPaymentMethod}
+                />
+              )}
+              {data && screen === "usd" && (
                 <PayWithCard setScreen={setScreen} data={data} />
+              )}
+              {data && screen === "detail" && (
+                <>
+                  {step === "details" && (
+                    <PayLocalAmount
+                      data={data}
+                      goBack={() => setScreen(null)}
+                      goNext={() => setScreen("detail")}
+                      paymentMethod={paymentMethod}
+                      setPaymentMethod={setPaymentMethod}
+                    />
+                  )}
+                  <GuestPayDetail
+                    goBack={() => setScreen("local")}
+                    close={() => setScreen(null)}
+                    data={data}
+                    setStep={setStep}
+                    step={step}
+                    setGuestPayType={setPaymentType}
+                  />
+                </>
               )}
             </div>
           )}

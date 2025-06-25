@@ -40,6 +40,7 @@ export interface IIntCountry {
   name: string;
   value: IntCountryType;
   logo: string;
+  currency?: string;
 }
 
 export const usdSendOptions: Options[] = [
@@ -767,3 +768,18 @@ export const GlobalCountryConfig: Record<string, CountryConfig> = {
   //   formComponent: CNBeneficiaryForm,
   // },
 };
+
+export const GuestCurrencies: IIntCountry[] = [
+  {
+    name: "Nigeria (NGN)",
+    value: "NG",
+    logo: "/icons/flag-ng.png",
+    currency: "NGN",
+  },
+  {
+    name: "Ghana (GHS)",
+    value: "GH",
+    logo: "/icons/flag-gh.png",
+    currency: "GHS",
+  },
+];

@@ -12,6 +12,7 @@ import CardDetails from "./CardDetails";
 import InputField from "@/components/ui/InputField";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 import { FormikProps } from "formik";
+import { useGuestSendStore } from "@/store/GuestSend";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISH_KEY || ""
@@ -33,8 +34,9 @@ export type formCardValues = {
 };
 
 const CardAmount = ({ data, fee, loading, goNext, formik }: Props) => {
-  const { amount, actions, purpose } = useSendStore();
-  const [rawAmount, setRawAmount] = useState("");
+  const { actions, purpose } = useSendStore();
+  const { amount } = useGuestSendStore();
+  const [rawAmount, setRawAmount] = useState(amount);
   const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [showPayModal, setShowPayModal] = useState(false);

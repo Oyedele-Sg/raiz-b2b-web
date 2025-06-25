@@ -17,12 +17,14 @@ import { useFormik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
 import { nameRegex } from "@/app/(auth)/register/_components/validation";
+import { GuestPaymentType } from "../page";
+import { useGuestSendStore } from "@/store/GuestSend";
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISH_KEY || ""
 );
 
 interface Props {
-  setScreen: Dispatch<SetStateAction<"details" | "card">>;
+  setScreen: Dispatch<SetStateAction<GuestPaymentType | "detail" | null>>;
   data: IBusinessPaymentData;
 }
 
@@ -30,7 +32,8 @@ export type CardSteps = "amount" | "confirm" | "success";
 
 const PayWithCard = ({ setScreen, data }: Props) => {
   const [step, setStep] = useState<CardSteps>("amount");
-  const { actions, amount, purpose } = useSendStore();
+  const { actions, purpose } = useSendStore();
+  const { amount } = useGuestSendStore();
   const [billingDetails, setBillingDetails] = useState<formCardValues | null>(
     null
   );
@@ -41,7 +44,7 @@ const PayWithCard = ({ setScreen, data }: Props) => {
   const goBack = () => {
     actions.reset("USD");
     setBillingDetails(null);
-    setScreen("details");
+    setScreen(null);
   };
 
   const createPaymentIntentMutation = useMutation({
