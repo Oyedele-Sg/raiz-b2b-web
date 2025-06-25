@@ -1,59 +1,59 @@
 "use client";
 import FailedStatus from "@/components/transactions/status/FailedStatus";
-import LoadingStatus from "@/components/transactions/status/LoadingStatus";
+// import LoadingStatus from "@/components/transactions/status/LoadingStatus";
 import PendingStatus from "@/components/transactions/status/PendingStatus";
 import SuccessStatus from "@/components/transactions/status/SuccessStatus";
 import Overlay from "@/components/ui/Overlay";
-import { useCryptoSwapStore } from "@/store/CryptoSwap";
-import { PaymentStatusType } from "@/types/transactions";
+import { GuestPayStatusType } from "@/types/transactions";
 
 interface Props {
-  status: PaymentStatusType;
+  status: GuestPayStatusType;
   //   amount: number;
   close: () => void;
   error: string;
   tryAgain: () => void;
   viewReceipt: () => void;
-  swapToCurrency: string;
+  currency: string;
   amount: string;
+  merchantName: string;
 }
 
-const SwapStatusModal = ({
+const GuestSendStatusModal = ({
   status,
   close,
   error,
   tryAgain,
-  swapToCurrency,
   amount,
+  merchantName,
 }: Props) => {
-  const { coinType } = useCryptoSwapStore();
-  const user = {
-    entity_id: "",
-    account_name: "",
-    username: "",
-    selfie_image: null,
-  };
+  //   const user = {
+  //     entity_id: "",
+  //     account_name: "",
+  //     username: "",
+  //     selfie_image: null,
+  //   };
   const displayStatus = () => {
     switch (status) {
-      case "loading":
-        return (
-          <LoadingStatus
-            user={user}
-            loadingText={`Swapping ${amount} ${coinType} to ${swapToCurrency}`}
-            type="p2p"
-          />
-        );
-      case "success":
+      //   case "processing":
+      //     return (
+      //       <LoadingStatus
+      //         user={user}
+      //         loadingText={`Sending ${currency}${amount} to ${merchantName}`}
+      //         type="p2p"
+      //       />
+      //     );
+      case "complete":
         return (
           <SuccessStatus
             text=""
-            title={`Your swap was successful`}
+            title={`You've successfully sent $${amount} to ${merchantName}`}
             close={close}
           />
         );
       case "failed":
         return <FailedStatus close={close} error={error} tryAgain={tryAgain} />;
-      case "pending":
+      case "processing":
+      case "process":
         return <PendingStatus close={close} />;
       default:
         break;
@@ -68,4 +68,4 @@ const SwapStatusModal = ({
   );
 };
 
-export default SwapStatusModal;
+export default GuestSendStatusModal;

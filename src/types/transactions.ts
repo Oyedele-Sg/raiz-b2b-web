@@ -109,3 +109,10 @@ export type PaymentStatusType =
   | "loading"
   | "failed"
   | null;
+
+export type GuestPayStatusType =
+  | "complete"
+  | "processing"
+  | "process"
+  | "failed"
+  | null;

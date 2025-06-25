@@ -186,6 +186,38 @@ const currencySymbols: Record<string, string> = {
   KES: "KSh", // Kenyan Shilling
   GHS: "₵", // Ghanaian Cedi
   TZS: "TSh", // Tanzanian Shilling
+  UGX: "USh", // Ugandan Shilling
+  RWF: "FRw", // Rwandan Franc
+  BIF: "FBu", // Burundian Franc
+  XOF: "CFA", // West African CFA franc (BCEAO)
+  XAF: "FCFA", // Central African CFA franc (BEAC)
+  ZMW: "ZK", // Zambian Kwacha
+  MZN: "MT", // Mozambican Metical
+  MWK: "MK", // Malawian Kwacha
+  GMD: "D", // Gambian Dalasi
+  SLL: "Le", // Sierra Leonean Leone
+  LRD: "$L", // Liberian Dollar
+  GNF: "FG", // Guinean Franc
+  MAD: "د.م.", // Moroccan Dirham
+  DZD: "دج", // Algerian Dinar
+  TND: "د.ت", // Tunisian Dinar
+  LYD: "ل.د", // Libyan Dinar
+  SDG: "ج.س.", // Sudanese Pound
+  SSP: "£", // South Sudanese Pound
+  ERN: "Nfk", // Eritrean Nakfa
+  ETB: "Br", // Ethiopian Birr
+  DJF: "Fdj", // Djiboutian Franc
+  SOS: "Sh.So.", // Somali Shilling
+  SZL: "E", // Swazi Lilangeni
+  NAD: "$", // Namibian Dollar
+  BWP: "P", // Botswana Pula
+  MUR: "₨", // Mauritian Rupee
+  SCR: "₨", // Seychellois Rupee
+  MGA: "Ar", // Malagasy Ariary
+  KMF: "CF", // Comorian Franc
+  CVE: "$", // Cape Verdean Escudo
+  STD: "Db", // São Tomé and Príncipe Dobra
+  MRU: "UM", // Mauritanian Ouguiya
 };
 
 export const getCurrencySymbol = (currencyCode: string): string => {

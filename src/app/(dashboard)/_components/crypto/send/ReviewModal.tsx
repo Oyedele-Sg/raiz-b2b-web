@@ -15,7 +15,7 @@ const ReviewModal = ({ close, goNext }: Props) => {
     <Overlay close={close} width="375px">
       <div className="flex flex-col  h-full py-8 px-5 w-full">
         <p className="text-center   text-xl  font-bold mb-4  leading-tight">
-          Review Reecipient
+          Review Recipient
         </p>
         <div className="flex flex-col gap-5">
           <InputField
