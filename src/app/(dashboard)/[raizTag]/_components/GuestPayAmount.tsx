@@ -79,10 +79,12 @@ const GuestPayAmount = ({ close, goNext }: Props) => {
   });
 
   const networksArr =
-    networks?.map((each) => ({
-      label: each.network_name,
-      value: each.network_id,
-    })) || [];
+    networks
+      ?.map((each) => ({
+        label: each.network_name,
+        value: each.network_id,
+      }))
+      ?.sort((a, b) => a.label.localeCompare(b.label)) || [];
 
   const finalizeMutation = useMutation({
     mutationFn: (id: string) => FinalizeAfricaPayinApi(id),
@@ -131,7 +133,7 @@ const GuestPayAmount = ({ close, goNext }: Props) => {
     <SideModalWrapper close={close}>
       <div className="w-full h-full flex flex-col">
         <SideWrapperHeader
-          title="Mobile Money Details"
+          title="Payment Details"
           close={close}
           titleColor="text-zinc-900"
         />

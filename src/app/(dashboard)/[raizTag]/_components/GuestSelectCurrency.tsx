@@ -22,12 +22,14 @@ const GuestSelectCurrency = ({ close }: Props) => {
 
   const countriesArr: IIntCountry[] = useMemo(
     () =>
-      countries?.map((each) => ({
-        name: each.country_name,
-        value: each.country_code as IntCountryType,
-        currency: each.currency,
-        logo: `/icons/flag-${each.country_code.toLowerCase()}.png`,
-      })) || [],
+      countries
+        ?.map((each) => ({
+          name: each.country_name,
+          value: each.country_code as IntCountryType,
+          currency: each.currency,
+          logo: `/icons/flag-${each.country_code.toLowerCase()}.png`,
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name)) || [],
     [countries]
   );
 

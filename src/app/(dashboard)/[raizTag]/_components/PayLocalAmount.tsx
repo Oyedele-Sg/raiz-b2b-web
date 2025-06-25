@@ -135,7 +135,7 @@ const PayLocalAmount = ({
     return isNaN(num) ? "" : `$${num.toFixed(2)}`;
   };
 
-  const { data: channels } = useQuery({
+  const { data: channels, isLoading: isLoadingChannels } = useQuery({
     queryKey: ["afican-payin-channels", guestLocalCurrency?.value],
     queryFn: () => GetAfricaPayinChannelsApi(guestLocalCurrency?.value || ""),
     enabled: !!guestLocalCurrency?.value,
@@ -167,7 +167,8 @@ const PayLocalAmount = ({
         </button>
         <header className="flex items-center justify-between mt-2">
           <h2 className="text-raiz-gray-950 text-[23px] font-semibold  leading-10">
-            Pay {data?.wallets[0]?.wallet_name || ""} your way
+            Pay {data?.wallets[0]?.wallet_name || ""} $
+            {Number(amount).toLocaleString()}
           </h2>
           <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
             <path
@@ -290,8 +291,9 @@ const PayLocalAmount = ({
             </div>
           </div>
           <SelectField
-            label="Payment Method"
-            placeholder="Select a payment method"
+            isLoading={isLoadingChannels}
+            label="Payment Channel"
+            placeholder="Select a payment channel"
             name="method"
             options={paymentMethods}
             onChange={(i) => {
