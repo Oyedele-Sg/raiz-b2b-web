@@ -28,6 +28,7 @@ interface SelectFieldProps {
   style?: React.CSSProperties;
   isSearchable?: boolean;
   height?: string;
+  isLoading?: boolean;
 }
 
 const SelectField: React.FC<SelectFieldProps> = ({
@@ -45,6 +46,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   isSearchable = true,
   style,
   height,
+  isLoading,
 }) => {
   const [optionsIsShown, setOptionsIsShown] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<Option | null>(value);
@@ -166,8 +168,9 @@ const SelectField: React.FC<SelectFieldProps> = ({
         placeholder={placeholder}
         menuIsOpen={optionsIsShown}
         name={name}
-        isDisabled={disabled}
+        isDisabled={disabled || isLoading}
         isSearchable={isSearchable}
+        isLoading={isLoading}
       />
       <p
         className={`${
