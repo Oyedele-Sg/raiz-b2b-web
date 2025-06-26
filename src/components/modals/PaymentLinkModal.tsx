@@ -1,11 +1,13 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Overlay from "../ui/Overlay";
 import Image from "next/image";
 import ListDetailItem from "../ui/ListDetailItem";
 import { useUser } from "@/lib/hooks/useUser";
 import { copyToClipboard, truncateString } from "@/utils/helpers";
 import QRCode from "react-qr-code";
+import InputField from "@/components/ui/InputField";
+import { encryptData } from "@/lib/headerEncryption";
 
 interface Props {
   close: () => void;
@@ -13,11 +15,18 @@ interface Props {
 
 const PaymentLinkModal = ({ close }: Props) => {
   const { user } = useUser();
+  const [amount, setAmount] = useState("");
   const username = user?.business_account?.username;
-  const link =
+  const baseLink =
     typeof window !== "undefined" && username
       ? `${window.location.origin}/${username}`
       : "";
+
+  const link = amount
+    ? `${baseLink}?data=${encodeURIComponent(
+        encryptData(JSON.stringify({ amount }))
+      )}`
+    : baseLink;
 
   return (
     <Overlay width="375px" close={close}>
@@ -27,9 +36,21 @@ const PaymentLinkModal = ({ close }: Props) => {
         <p className="text-center  text-zinc-900 text-xs leading-tight">
           Allow guest users send you money securely
         </p>
-        <div className="w-64 h-64 relative bg-violet-100/60 rounded-[20px] p-[17px] my-8">
+        <div className="my-4 w-full">
+          <InputField
+            name="amount"
+            type="number"
+            label="Amount in USD (Optional)"
+            placeholder="0.00"
+            value={amount}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setAmount(e.target.value)
+            }
+          />
+        </div>
+        <div className="w-44 h-44 relative bg-violet-100/60 rounded-[20px] p-[17px] my-4">
           {/* <Image src={"/icons/qr.svg"} alt="QR Code" width={231} height={231} /> */}
-          <QRCode value={link} size={225} />
+          <QRCode value={link} size={140} />
         </div>
         <div className="flex flex-col gap-2 mt-4 w-full">
           <ListDetailItem title="Receiver" value={username || ""} border />

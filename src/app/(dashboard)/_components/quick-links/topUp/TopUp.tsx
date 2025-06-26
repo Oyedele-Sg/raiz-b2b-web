@@ -143,7 +143,7 @@ const TopUp = ({ close }: Props) => {
               Transfer the amount you want to fund using mobile banking
             </p>
             <p className=" text-slate-800 text-sm font-normal leading-snug">
-              Your Raiz wallet balance will be funded immediately
+              Your Raiz account balance will be funded immediately
             </p>
           </div>
           <Button

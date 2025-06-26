@@ -106,7 +106,7 @@ const SelectCurrencyModal = ({ close }: Props) => {
           ))
         ) : (
           <p className="text-center text-sm text-raiz-gray-600">
-            No wallet found
+            No account found
           </p>
         )}
       </div>

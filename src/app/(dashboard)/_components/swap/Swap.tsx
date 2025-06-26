@@ -146,8 +146,6 @@ const Swap = ({ close }: Props) => {
               error={paymentError}
               tryAgain={() => setStep("confirmation")}
               viewReceipt={() => setStep("receipt")}
-              swapToCurrency={swapToCurrency}
-              amount={amount}
             />
           </>
         );

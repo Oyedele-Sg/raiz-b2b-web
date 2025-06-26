@@ -1,15 +1,17 @@
 "use client";
 import Slider from "@/app/(auth)/_components/authSlide/Slider";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import PayWithCard from "./_components/PayWithCard";
 import { useQuery } from "@tanstack/react-query";
 import { FetchPaymentInfoApi } from "@/services/business";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Spinner from "@/components/ui/Spinner";
 import SelectPayType from "./_components/SelectPayType";
 import GuestPayDetail from "./_components/GuestPayDetail";
 import PayLocalAmount from "./_components/PayLocalAmount";
+import { decryptData } from "@/lib/headerEncryption";
+import { useGuestSendStore } from "@/store/GuestSend";
 
 export type LocalPaymentMethod = "bankTransfer" | "mobileMoney";
 export type GuestPaymentType = "local" | "usd";
@@ -17,6 +19,8 @@ export type GuestPayDetailsSteps = "details" | "summary" | "status" | "receipt";
 
 const PayBusinessPage = () => {
   const params = useParams();
+  const searchParams = useSearchParams();
+  const [amount, setAmount] = useState<string | undefined>();
   const [screen, setScreen] = useState<GuestPaymentType | "detail" | null>(
     null
   );
@@ -25,10 +29,31 @@ const PayBusinessPage = () => {
     GuestPaymentType | undefined
   >();
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
+  const { actions } = useGuestSendStore();
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["business-payment-info"],
     queryFn: () => FetchPaymentInfoApi(params?.raizTag as string),
   });
+
+  useEffect(() => {
+    const encryptedData = searchParams.get("data");
+
+    if (encryptedData) {
+      try {
+        const decrypted = decryptData(encryptedData);
+        if (decrypted) {
+          const data = JSON.parse(decrypted);
+          if (data.amount) {
+            setAmount(data.amount);
+            actions.setField("amount", data.amount);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to decrypt or parse data", error);
+      }
+    }
+  }, [searchParams]);
 
   const handleGeneralNextStep = () => {
     if (!paymentType) return;
@@ -94,6 +119,7 @@ const PayBusinessPage = () => {
                   goNext={handleGeneralNextStep}
                   paymentType={paymentType}
                   setPaymentType={setPaymentType}
+                  amountFromLink={amount}
                 />
               )}
               {data && screen === "local" && (
@@ -103,10 +129,15 @@ const PayBusinessPage = () => {
                   goNext={() => setScreen("detail")}
                   paymentMethod={paymentMethod}
                   setPaymentMethod={setPaymentMethod}
+                  amountFromLink={amount}
                 />
               )}
               {data && screen === "usd" && (
-                <PayWithCard setScreen={setScreen} data={data} />
+                <PayWithCard
+                  setScreen={setScreen}
+                  data={data}
+                  amountFromLink={amount}
+                />
               )}
               {data && screen === "detail" && (
                 <>

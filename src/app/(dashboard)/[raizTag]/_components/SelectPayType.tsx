@@ -14,6 +14,7 @@ interface Props {
   goNext: () => void;
   paymentType: GuestPaymentType | undefined;
   setPaymentType: Dispatch<SetStateAction<GuestPaymentType | undefined>>;
+  amountFromLink?: string;
 }
 
 const SelectPayType = ({
@@ -21,6 +22,7 @@ const SelectPayType = ({
   goNext,
   paymentType,
   setPaymentType,
+  amountFromLink,
 }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { amount, actions } = useGuestSendStore();
@@ -165,6 +167,7 @@ const SelectPayType = ({
                 value={displayValue()}
                 onChange={handleAmountChange}
                 onFocus={() => setIsFocused(true)}
+                disabled={!!amountFromLink}
               />
             </div>
             {error && <ErrorMessage message={error} />}
