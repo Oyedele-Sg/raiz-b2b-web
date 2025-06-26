@@ -16,3 +16,7 @@ export const generateNonce = () => {
 // Function to encrypt data
 export const encryptData = (data: string): string =>
   AES256.encrypt(data, PUBLIC_KEY);
+
+// Function to decrypt data
+export const decryptData = (encryptedData: string): string =>
+  AES256.decrypt(encryptedData, PUBLIC_KEY);

@@ -31,8 +31,8 @@ const searchItems = [
     type: "route",
     path: "/settings/login-security",
   },
-  { name: "Dollar Wallet (USD)", type: "modal" },
-  { name: "Naira Wallet  (NGN)", type: "modal" },
+  { name: "Dollar Account (USD)", type: "modal" },
+  { name: "Naira Account  (NGN)", type: "modal" },
   { name: "Account", type: "modal" },
 ];
 
@@ -95,8 +95,8 @@ const Header = () => {
         case "Notifications":
           setShowModal("notifications");
           break;
-        case "Dollar Wallet (USD)":
-        case "Naira Wallet  (NGN)":
+        case "Dollar Account (USD)":
+        case "Naira Account  (NGN)":
         case "Account":
           setShowModal("selectAcct");
         default:

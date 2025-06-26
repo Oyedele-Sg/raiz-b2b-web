@@ -25,6 +25,7 @@ interface Props {
   loading: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formik: FormikProps<any>;
+  amountFromLink?: string;
 }
 
 export type formCardValues = {
@@ -33,9 +34,16 @@ export type formCardValues = {
   email: string;
 };
 
-const CardAmount = ({ data, fee, loading, goNext, formik }: Props) => {
+const CardAmount = ({
+  data,
+  fee,
+  loading,
+  goNext,
+  formik,
+  amountFromLink,
+}: Props) => {
   const { actions, purpose } = useSendStore();
-  const { amount } = useGuestSendStore();
+  const { amount, actions: guestActions } = useGuestSendStore();
   const [rawAmount, setRawAmount] = useState(amount);
   const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -64,7 +72,7 @@ const CardAmount = ({ data, fee, loading, goNext, formik }: Props) => {
         : formattedInteger;
 
     setRawAmount(formattedValue);
-    actions.setAmountAndRemark({ amount: value, purpose });
+    guestActions.setField("amount", value);
 
     const result = amountSchema.safeParse(value);
     if (!result.success) {
@@ -162,6 +170,7 @@ const CardAmount = ({ data, fee, loading, goNext, formik }: Props) => {
                 value={displayValue()}
                 onChange={handleAmountChange}
                 onFocus={() => setIsFocused(true)}
+                disabled={!!amountFromLink}
               />
             </div>
             <div className="w-full my-10">

@@ -5,9 +5,9 @@ import SwapCoinType from "./SwapCoinType";
 import CryptoSwapDetail from "./CryptoSwapDetail";
 import CryptoSwapConfirmation from "./CryptoSwapConfirmation";
 import CryptoSwapPay from "./CryptoSwapPay";
-import SwapStatusModal from "../../swap/SwapStatusModal";
 import { useQuery } from "@tanstack/react-query";
 import { GetIntTransactionFeeApi } from "@/services/transactions";
+import CryptoSwapStatusModal from "./CryptoSwapStatusModal";
 
 export type CryptoSwapStep =
   | "coin-type"
@@ -23,7 +23,7 @@ interface Props {
 
 const CryptoSwap = ({ close }: Props) => {
   const [step, setStep] = useState<CryptoSwapStep>("coin-type");
-  const { status, actions, swapToCurrency, amount } = useCryptoSwapStore();
+  const { status, actions, amount } = useCryptoSwapStore();
   const [paymentError, setPaymentError] = useState("");
 
   const handleDone = () => {
@@ -72,14 +72,12 @@ const CryptoSwap = ({ close }: Props) => {
         );
       case "status":
         return (
-          <SwapStatusModal
+          <CryptoSwapStatusModal
             status={status}
             close={handleDone}
             error={paymentError}
             tryAgain={() => setStep("confirmation")}
             viewReceipt={() => setStep("receipt")}
-            swapToCurrency={swapToCurrency}
-            amount={amount}
           />
         );
       default:

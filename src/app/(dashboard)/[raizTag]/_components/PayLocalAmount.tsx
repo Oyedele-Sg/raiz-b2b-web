@@ -19,6 +19,7 @@ interface Props {
   goNext: () => void;
   paymentMethod: string | null;
   setPaymentMethod: (v: string | null) => void;
+  amountFromLink?: string;
 }
 const PayLocalAmount = ({
   data,
@@ -26,6 +27,7 @@ const PayLocalAmount = ({
   goNext,
   paymentMethod,
   setPaymentMethod,
+  amountFromLink,
 }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { amount, guestLocalCurrency, actions, max, min } = useGuestSendStore();
@@ -33,6 +35,13 @@ const PayLocalAmount = ({
   const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [showCurrency, setShowCurrency] = useState(false);
+
+  useEffect(() => {
+    if (amountFromLink) {
+      actions.setField("amount", amountFromLink);
+      setRawAmount(amountFromLink);
+    }
+  }, [amountFromLink, actions]);
 
   // if the min/max are in usd
   // const amountSchema = z
@@ -252,15 +261,16 @@ const PayLocalAmount = ({
             <p className="text-center mt-10 justify-start text-zinc-900 text-base mb-3">
               How much do you want to send?
             </p>
-            <div className="flex items-center">
+            <div className="relative w-full mt-3">
               <input
                 ref={inputRef}
-                autoFocus
-                className="outline-none h-[91px] bg-transparent w-fit xl:mx-auto text-center text-zinc-900 placeholder:text-zinc-900 text-3xl font-semibold leading-10"
-                placeholder="0.00"
                 value={displayValue()}
                 onChange={handleAmountChange}
                 onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                disabled={!!amountFromLink}
+                placeholder="$0.00"
+                className="w-full h-16 bg-transparent text-center text-4xl font-bold focus:outline-none"
               />
             </div>
 

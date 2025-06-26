@@ -26,20 +26,27 @@ const stripePromise = loadStripe(
 interface Props {
   setScreen: Dispatch<SetStateAction<GuestPaymentType | "detail" | null>>;
   data: IBusinessPaymentData;
+  amountFromLink?: string;
 }
 
 export type CardSteps = "amount" | "confirm" | "success";
 
-const PayWithCard = ({ setScreen, data }: Props) => {
+const PayWithCard = ({ setScreen, data, amountFromLink }: Props) => {
   const [step, setStep] = useState<CardSteps>("amount");
   const { actions, purpose } = useSendStore();
-  const { amount } = useGuestSendStore();
+  const { amount, actions: guestActions } = useGuestSendStore();
   const [billingDetails, setBillingDetails] = useState<formCardValues | null>(
     null
   );
   const stripe = useStripe();
   const [fee, setFee] = useState<number | null>(null);
   // const [paymentMethodId, setPaymentMethodId] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (amountFromLink) {
+      guestActions.setField("amount", amountFromLink);
+    }
+  }, [amountFromLink, guestActions]);
 
   const goBack = () => {
     actions.reset("USD");
@@ -165,6 +172,7 @@ const PayWithCard = ({ setScreen, data }: Props) => {
             fee={fee || 0}
             loading={createPaymentIntentMutation.isPending}
             formik={formik}
+            amountFromLink={amountFromLink}
           />
         );
       case "confirm":
@@ -177,6 +185,7 @@ const PayWithCard = ({ setScreen, data }: Props) => {
                 fee={fee || 0}
                 loading={createPaymentIntentMutation.isPending}
                 formik={formik}
+                amountFromLink={amountFromLink}
               />
             </div>
             <ConfirmPayment

@@ -64,7 +64,7 @@ const CreateNgnAcct = ({ close }: { close: () => void }) => {
                 />
               </svg>
               <h3 className="text-center text-raiz-gray-50 text-xl font-bold leading-normal mt-2">
-                What you get with your Naira wallet/account
+                What you get with your Naira account
               </h3>
               <p className="text-center text-raiz-gray-100 text-sm font-normal  leading-tight">
                 An NGN account lets you hold, send, and receive Naira, making
@@ -98,7 +98,7 @@ const CreateNgnAcct = ({ close }: { close: () => void }) => {
             loading={NGNWalletMutation.isPending}
             className="!bg-raiz-gray-50 text-primary2 hover:bg-raiz-gray-50 disabled:!bg-slate-500  "
           >
-            Create NGN Wallet
+            Create NGN Account
           </Button>
         </div>
       </div>

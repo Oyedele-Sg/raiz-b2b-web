@@ -62,8 +62,8 @@ const GetRaizedinfo = [
         />
       </svg>
     ),
-    title: "Managing Wallets",
-    desc: "Create and organize multiple business wallets.",
+    title: "Managing Accounts",
+    desc: "Create and organize multiple business accounts.",
   },
   {
     svg: (

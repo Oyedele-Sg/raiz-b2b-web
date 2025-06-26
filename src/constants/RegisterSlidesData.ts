@@ -1,8 +1,8 @@
 export const RegisterSlidesData = [
   {
-    title: "Smart Wallets for Your Everyday Needs",
+    title: "Multicurrency account for Your Everyday Needs",
     description:
-      "Effortlessly manage company funds with dedicated USD and multi-currency wallets tailored for seamless business operations.",
+      "Effortlessly manage company funds with dedicated USD and multi-currency accounts tailored for seamless business operations.",
     bgImage: "/images/slide1.png",
   },
   {
