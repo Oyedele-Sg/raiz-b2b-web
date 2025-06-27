@@ -7,6 +7,7 @@ import axios, {
 import { toast } from "sonner";
 import { encryptData, generateNonce } from "./headerEncryption";
 import { GetItemFromCookie } from "@/utils/CookiesFunc";
+import { fetchPublicIP } from "@/utils/helpers";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -46,22 +47,34 @@ const handleError = async (error: CustomAxiosError) => {
   return Promise.reject(error.response);
 };
 
+// Fetch IP and cache it
+let cachedIP: string | null = null;
+
 export const AuthAxios: AxiosInstance = axios.create({
   baseURL: BASE_URL,
 });
 
 AuthAxios.interceptors.request.use(
-  (config) => {
+  async (config) => {
     const token = GetItemFromCookie("access_token");
-    // Generate nonce and signature for every request
     const nonceStr = generateNonce();
     const signature = encryptData(nonceStr);
 
     config.headers["nonce-str"] = nonceStr;
     config.headers["signature"] = signature;
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    if (!cachedIP) {
+      cachedIP = await fetchPublicIP();
+    }
+
+    if (cachedIP) {
+      config.headers["ip-address"] = cachedIP;
+    }
+
     return config;
   },
   (error) => Promise.reject(error)

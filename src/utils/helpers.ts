@@ -5,6 +5,7 @@ import { ICurrencyName } from "@/types/misc";
 import { IUser } from "@/types/user";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import axios from "axios";
 
 dayjs.extend(utc);
 
@@ -308,4 +309,13 @@ export const removeUndefinedValues = <T extends Record<string, any>>(
   }
 
   return cleaned as T;
+};
+
+export const fetchPublicIP = async (): Promise<string | null> => {
+  try {
+    const response = await axios.get("https://api.ipify.org?format=json");
+    return response.data.ip;
+  } catch {
+    return null;
+  }
 };

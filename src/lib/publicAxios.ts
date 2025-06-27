@@ -7,6 +7,7 @@ import axios, {
 } from "axios";
 import { toast } from "sonner";
 import { encryptData, generateNonce } from "./headerEncryption";
+import { fetchPublicIP } from "@/utils/helpers";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -32,6 +33,9 @@ export const PublicAxios = axios.create({
   baseURL: BASE_URL,
 });
 
+// Cache IP to avoid multiple fetches
+let cachedIP: string | null = null;
+
 const addNetworkCheckInterceptor = (axiosInstance: AxiosInstance) => {
   axiosInstance.interceptors.request.use(
     async (requestConfig) => {
@@ -41,9 +45,18 @@ const addNetworkCheckInterceptor = (axiosInstance: AxiosInstance) => {
 
         const nonceStr = generateNonce();
         const signature = encryptData(nonceStr);
+        // Fetch and cache IP address if not already done
+        if (!cachedIP) {
+          cachedIP = await fetchPublicIP();
+        }
 
         requestConfig.headers["nonce-str"] = nonceStr;
         requestConfig.headers["signature"] = signature;
+
+        if (cachedIP) {
+          requestConfig.headers["ip-address"] = cachedIP;
+        }
+
         return requestConfig;
       } catch (error) {
         return Promise.reject(error);
