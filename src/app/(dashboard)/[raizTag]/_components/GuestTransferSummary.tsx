@@ -193,15 +193,24 @@ const GuestTransferSummary = ({ goBack, goNext }: Props) => {
             >
               I&apos;ve Sent the Payment
             </Button>
-            <p className="text-[13px] mt-1 text-raiz-gray-900  text-center">
-              Don&#39;t have raiz app?{" "}
+            <p className="text-[13px] text-raiz-gray-900  text-center mt-2">
+              Don&#39;t have Raiz App?{" "}
               <Link
                 target="_blank"
                 className="font-bold"
                 href={"https://raizapp.onelink.me/RiOx/webdirect"}
               >
                 Download
-              </Link>
+              </Link>{" "}
+              | {"  "}
+              <Link
+                target="_blank"
+                className="font-bold"
+                href={"https://business.raiz.app/register"}
+              >
+                Sign up{" "}
+              </Link>{" "}
+              for Raiz Business
             </p>
           </div>
         </div>
