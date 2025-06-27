@@ -1,3 +1,4 @@
+import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 import * as motion from "motion/react-client";
 import React, { ReactNode } from "react";
 
@@ -14,6 +15,7 @@ const Overlay = ({
   close: () => void;
   className?: string;
 }) => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   return (
     <motion.section
       initial={{ opacity: 0 }}
@@ -25,19 +27,19 @@ const Overlay = ({
       }}
       key="overlay"
       onClick={close}
-      className={`fixed inset-0 flex items-center justify-center bg-[rgba(0,0,0,0.4)]  z-50 ${className}`}
+      className={`fixed inset-0 flex items-center justify-center bg-[rgba(0,0,0,0.4)] z-50 ${
+        className || ""
+      }`}
     >
       <section
         onClick={(e) => {
           e.stopPropagation();
         }}
         style={{
-          width: width || "auto",
+          width: isMobile ? "90%" : width || "auto",
           height: height || "auto",
         }}
-        className={`bg-white rounded-[36px]  overflow-y-auto no-scrollbar w-[90%] md:w-[${
-          width || "auto"
-        }]`}
+        className="bg-white rounded-[36px] overflow-y-auto no-scrollbar"
       >
         {children}
       </section>

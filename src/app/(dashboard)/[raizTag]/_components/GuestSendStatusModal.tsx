@@ -1,6 +1,5 @@
 "use client";
 import FailedStatus from "@/components/transactions/status/FailedStatus";
-// import LoadingStatus from "@/components/transactions/status/LoadingStatus";
 import PendingStatus from "@/components/transactions/status/PendingStatus";
 import SuccessStatus from "@/components/transactions/status/SuccessStatus";
 import Overlay from "@/components/ui/Overlay";
@@ -59,9 +58,10 @@ const GuestSendStatusModal = ({
         break;
     }
   };
+
   return (
-    <Overlay close={() => {}} width="400px">
-      <div className="flex flex-col h-[488px]  w-full from-indigo-900 to-violet-600">
+    <Overlay close={() => {}} width={"400px"}>
+      <div className="flex flex-col h-[400px] sm:h-[488px]  w-full from-indigo-900 to-violet-600">
         {displayStatus()}
       </div>
     </Overlay>

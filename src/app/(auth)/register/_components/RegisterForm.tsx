@@ -186,7 +186,7 @@ const RegisterForm = () => {
   const isLoading = signupMutation.isPending || verifyOtpMutation.isPending;
 
   return (
-    <div className="py-4 px-3 xl:px-8 lg:w-[50%] xl:w-[46%] h-full flex flex-col justify-between gap-10 lg:gap-[60px]">
+    <div className="py-4 px-0 md:px-3 xl:px-8 lg:w-[50%] xl:w-[46%] h-full flex flex-col justify-between gap-10 lg:gap-[60px]">
       <Image src={"/icons/Logo.svg"} width={91.78} height={32} alt="Logo" />
       <div className="flex flex-col h-full  justify-between">
         <AnimatePresence>{displayStep(currentStep)}</AnimatePresence>

@@ -6,7 +6,7 @@ import ListDetailItem from "../ui/ListDetailItem";
 import { useUser } from "@/lib/hooks/useUser";
 import { copyToClipboard, truncateString } from "@/utils/helpers";
 import QRCode from "react-qr-code";
-import InputField from "@/components/ui/InputField";
+// import InputField from "@/components/ui/InputField";
 import { encryptData } from "@/lib/headerEncryption";
 
 interface Props {
@@ -15,6 +15,7 @@ interface Props {
 
 const PaymentLinkModal = ({ close }: Props) => {
   const { user } = useUser();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [amount, setAmount] = useState("");
   const username = user?.business_account?.username;
   const baseLink =
@@ -36,7 +37,7 @@ const PaymentLinkModal = ({ close }: Props) => {
         <p className="text-center  text-zinc-900 text-xs leading-tight">
           Allow guest users send you money securely
         </p>
-        <div className="my-4 w-full">
+        {/* <div className="my-4 w-full">
           <InputField
             name="amount"
             type="number"
@@ -47,7 +48,7 @@ const PaymentLinkModal = ({ close }: Props) => {
               setAmount(e.target.value)
             }
           />
-        </div>
+        </div> */}
         <div className="w-44 h-44 relative bg-violet-100/60 rounded-[20px] p-[17px] my-4">
           {/* <Image src={"/icons/qr.svg"} alt="QR Code" width={231} height={231} /> */}
           <QRCode value={link} size={140} />

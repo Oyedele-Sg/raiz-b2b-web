@@ -67,11 +67,11 @@ const SelectPayType = ({
 
   const paymentTypes = [
     { label: "Pay locally", value: "local" },
-    { label: "Pay with USD Card", value: "usd" },
+    // { label: "Pay with USD Card", value: "usd" },
   ];
   return (
     <section className="flex flex-col  h-full">
-      <div className="mt-10">
+      <div className="mt-6 md:mt-10">
         <header className="flex items-center justify-between mt-2">
           <h2 className="text-raiz-gray-950 text-[23px] font-semibold  leading-10">
             Pay {data?.wallets[0]?.wallet_name || ""}
