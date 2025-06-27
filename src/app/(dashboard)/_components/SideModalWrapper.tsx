@@ -1,7 +1,8 @@
 "use client";
 import Overlay from "@/components/ui/Overlay";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import * as motion from "motion/react-client";
+import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 
 interface Props {
   children: ReactNode;
@@ -10,12 +11,27 @@ interface Props {
 }
 
 const SideModalWrapper = ({ children, close, wrapperStyle }: Props) => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  if (!isHydrated) return null; // Avoid mismatch between SSR and client render
+
+  const initial = isMobile
+    ? { opacity: 0, y: "100%" }
+    : { opacity: 0, x: "100%" };
+  const animate = { opacity: 1, x: 0, y: 0 };
+  const exit = isMobile ? { opacity: 0, y: "100%" } : { opacity: 0, x: "100%" };
+
   return (
     <Overlay close={close}>
       <motion.div
-        initial={{ opacity: 0, x: "100%" }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: "100%" }}
+        initial={initial}
+        animate={animate}
+        exit={exit}
         transition={{
           type: "spring",
           stiffness: 180,
@@ -23,7 +39,11 @@ const SideModalWrapper = ({ children, close, wrapperStyle }: Props) => {
           ease: "easeInOut",
         }}
         key="modal"
-        className={`h-screen p-[25px] xl:p-[30px] bg-raiz-gray-50 overflow-y-scroll no-scrollbar rounded-tl-[36px] rounded-bl-[36px] justify-start  gap-2 inline-flex fixed right-0 top-0 bottom-0 w-[75%] sm:w-[50%] lg:w-[31%] xl:w-[28.57%] ${wrapperStyle}`}
+        className={`p-[25px] xl:p-[30px] bg-raiz-gray-50 no-scrollbar rounded-tl-[36px] md:rounded-bl-[36px] rounded-tr-[36px] md:rounded-tr-0 justify-start gap-2 inline-flex fixed right-0 md:top-0 bottom-0 w-full md:w-[50%] lg:w-[31%] xl:w-[28.57%] ${
+          isMobile
+            ? "max-h-[60vh] overflow-y-auto"
+            : "md:h-screen overflow-y-scroll"
+        } ${wrapperStyle}`}
       >
         <div className="w-full flex flex-col">{children}</div>
       </motion.div>

@@ -138,7 +138,7 @@ const GuestPayAmount = ({ close, goNext }: Props) => {
           titleColor="text-zinc-900"
         />
         <form
-          className="flex flex-col justify-between h-full"
+          className="flex flex-col justify-between gap-3 h-full"
           onSubmit={formik.handleSubmit}
         >
           <div className="flex flex-col gap-[15px]">

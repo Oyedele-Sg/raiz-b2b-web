@@ -68,7 +68,7 @@ const CountryCodeModal = ({ close, formik }: Props) => {
         </div>
 
         {/* Countries */}
-        <div className="flex flex-col gap-[20px] font-brSonoma h-[350px] overflow-y-scroll ">
+        <div className="flex flex-col gap-[20px] font-brSonoma h-[287px] md:h-[350px] overflow-y-scroll ">
           {loading ? (
             <p className="text-center text-sm text-raiz-gray-600">
               Loading countries...

@@ -1,3 +1,5 @@
+"use client";
+import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 import React, { ReactNode } from "react";
 
 interface Props {
@@ -15,6 +17,7 @@ const SideWrapperHeader = ({
   titleColor,
   backArrow = true,
 }: Props) => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   return (
     <div className=" flex justify-between items-center mb-[30px] w-full">
       {backArrow && (
@@ -25,7 +28,7 @@ const SideWrapperHeader = ({
               height="19"
               viewBox="0 0 19 19"
               fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+              className={isMobile ? "-rotate-90" : ""}
             >
               <path
                 d="M18.48 8.43332V10.7667H4.48L10.8967 17.1833L9.24 18.84L0 9.59999L9.24 0.359985L10.8967 2.01665L4.48 8.43332H18.48Z"
