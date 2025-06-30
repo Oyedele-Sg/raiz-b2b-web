@@ -1,63 +1,208 @@
-import Image from "next/image";
-import React from "react";
+"use client";
+import EmptyList from "@/components/ui/EmptyList";
+import { FetchBillRequestApi } from "@/services/transactions";
+import { useCurrencyStore } from "@/store/useCurrencyStore";
+import { IBillRequestParams, IP2pTransferResponse } from "@/types/services";
+import { IBillRequest, PaymentStatusType } from "@/types/transactions";
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import AcceptBill from "./bill-requests/AcceptBill";
+import PayBill from "./bill-requests/PayBill";
+import Avatar from "@/components/ui/Avatar";
+import PaymentStatusModal from "@/components/modals/PaymentStatusModal";
+import { convertTime, getCurrencySymbol } from "@/utils/helpers";
+import RejectBill from "./bill-requests/RejectBill";
+import RaizReceipt from "@/components/transactions/RaizReceipt";
+import SideModalWrapper from "./SideModalWrapper";
+import { usePathname } from "next/navigation";
 
-const billRequests = [
-  {
-    id: 1,
-    requester: "James B",
-    time: "Today, 15:05",
-    amount: 4000000,
-    imageUrl: "/images/pfp.png",
-  },
-  {
-    id: 2,
-    requester: "Sarah K",
-    time: "Yesterday, 14:20",
-    amount: 2500000,
-    imageUrl: "/images/pfp.png",
-  },
-  {
-    id: 3,
-    requester: "Michael D",
-    time: "2 hours ago",
-    amount: 1500000,
-    imageUrl: "/images/pfp.png",
-  },
-  {
-    id: 4,
-    requester: "Linda W",
-    time: "Today, 12:40",
-    amount: 3200000,
-    imageUrl: "/images/pfp.png",
-  },
-  {
-    id: 5,
-    requester: "David T",
-    time: "3 hours ago",
-    amount: 500000,
-    imageUrl: "/images/pfp.png",
-  },
-  {
-    id: 6,
-    requester: "Jessica L",
-    time: "Yesterday, 10:15",
-    amount: 4500000,
-    imageUrl: "/images/pfp.png",
-  },
-  {
-    id: 7,
-    requester: "Kevin M",
-    time: "Today, 16:00",
-    amount: 1200000,
-    imageUrl: "/images/pfp.png",
-  },
-];
+type OpenModalType =
+  | "accept"
+  | "pay"
+  | "status"
+  | "reject"
+  | "delete"
+  | "delete-success"
+  | "accept-sucsess"
+  | "reject-success"
+  | "receipt"
+  | null;
+
+const BillRow = ({
+  request,
+  setSelectedRequest,
+  setOpenModal,
+}: {
+  request: IBillRequest;
+  setSelectedRequest: (arg: IBillRequest) => void;
+  setOpenModal: (arg: OpenModalType) => void;
+}) => {
+  const date = dayjs(convertTime(request?.created_at));
+  const isToday = date.isSame(dayjs(), "day");
+
+  const handleAccept = () => {
+    setSelectedRequest(request);
+    setOpenModal("accept");
+  };
+
+  const handleReject = () => {
+    setSelectedRequest(request);
+    setOpenModal("reject");
+  };
+  return (
+    <div className="w-full px-[15px] py-[18px] bg-[#f3eee9] rounded-[20px] flex-col justify-center items-start gap-4 inline-flex">
+      <div className=" flex items-center justify-between w-full">
+        <div className="flex gap-2 ">
+          <Avatar
+            name={request?.third_party_account?.account_name}
+            src={request?.third_party_account?.selfie_image}
+          />
+          <div className="flex flex-col gap-0.5">
+            <p className="text-raiz-gray-900 text-[13px] xl:text-sm font-semibold leading-tight">
+              {request?.third_party_account?.account_name}
+            </p>
+            <p className="text-raiz-gray-800 text-[11px] xl:text-[13px] font-normal  leading-none">
+              {isToday
+                ? `Today, ${date.format("HH:mm")}`
+                : date.format("DD MMM YYYY, HH:mm")}
+            </p>
+          </div>
+        </div>
+        <span className="text-raiz-gray-900 text-sm xl:text-base font-semibold ">
+          {getCurrencySymbol(request?.currency)}
+          {request?.transaction_amount?.toLocaleString()}
+        </span>
+      </div>
+      <div className="flex w-full justify-between items-center gap-2">
+        <button
+          onClick={handleReject}
+          className="w-1/2 h-10 px-5 py-2 bg-[#f1e0cb] rounded-3xl justify-center items-center gap-1.5 inline-flex"
+        >
+          <span className="text-raiz-gray-800 text-sm font-medium font-brSonoma leading-[16.80px]">
+            Reject
+          </span>
+        </button>
+        <button
+          onClick={handleAccept}
+          className="w-1/2 h-10 px-5 py-2 bg-[#3c2875] rounded-3xl justify-center items-center gap-1.5 inline-flex"
+        >
+          <svg width="17" height="16" viewBox="0 0 17 16" fill="none">
+            <path
+              d="M11.2601 1.97336L5.24008 3.97336C1.19341 5.3267 1.19341 7.53336 5.24008 8.88003L7.02674 9.47336L7.62008 11.26C8.96674 15.3067 11.1801 15.3067 12.5267 11.26L14.5334 5.2467C15.4267 2.5467 13.9601 1.07336 11.2601 1.97336ZM11.4734 5.56003L8.94008 8.1067C8.84008 8.2067 8.71341 8.25336 8.58674 8.25336C8.46008 8.25336 8.33341 8.2067 8.23341 8.1067C8.04008 7.91336 8.04008 7.59336 8.23341 7.40003L10.7667 4.85336C10.9601 4.66003 11.2801 4.66003 11.4734 4.85336C11.6667 5.0467 11.6667 5.3667 11.4734 5.56003Z"
+              fill="#F4F4F4"
+            />
+          </svg>
+
+          <span className="text-secondary-white text-sm font-medium font-brSonoma leading-[16.80px]">
+            Accept
+          </span>
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const BillRequests = () => {
+  const [openModal, setOpenModal] = useState<OpenModalType>(null);
+  const { selectedCurrency } = useCurrencyStore();
+  const [selectedRequest, setSelectedRequest] = useState<IBillRequest | null>(
+    null
+  );
+  const [paymentStatus, setPaymentStatus] = useState<PaymentStatusType>(null);
+  const [paymentError, setPaymentError] = useState("");
+  const [transactionDetail, setTransactionDetail] =
+    useState<IP2pTransferResponse | null>(null);
+  const pathname = usePathname();
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: [
+      "bill-requests",
+      { currency: selectedCurrency.name, status_id: 2 },
+    ],
+    queryFn: ({ queryKey }) => {
+      const [, params] = queryKey as [string, IBillRequestParams];
+      return FetchBillRequestApi(params);
+    },
+  });
+  const closePopModal = () => setOpenModal(null);
+  const openPayModal = () => setOpenModal("pay");
+
+  const billRequests = data?.data || [];
+
+  useEffect(() => {
+    refetch();
+  }, [pathname, refetch]);
+  const displayPopModal = () => {
+    switch (openModal) {
+      case "accept": {
+        return (
+          selectedRequest && (
+            <AcceptBill
+              close={closePopModal}
+              request={selectedRequest}
+              openPayModal={openPayModal}
+            />
+          )
+        );
+      }
+      case "pay": {
+        return (
+          selectedRequest && (
+            <PayBill
+              close={closePopModal}
+              goNext={() => setOpenModal("status")}
+              status={paymentStatus}
+              setStatus={setPaymentStatus}
+              request={selectedRequest}
+              setPaymentError={setPaymentError}
+              setTransactionDetail={setTransactionDetail}
+            />
+          )
+        );
+      }
+      case "status": {
+        return (
+          selectedRequest && (
+            <PaymentStatusModal
+              status={paymentStatus}
+              amount={selectedRequest?.transaction_amount || 0}
+              currency={selectedRequest?.currency || ""}
+              user={selectedRequest?.third_party_account}
+              close={closePopModal}
+              error={paymentError}
+              tryAgain={() => setOpenModal("accept")}
+              viewReceipt={() => setOpenModal("receipt")}
+              type="p2p"
+            />
+          )
+        );
+      }
+      case "reject": {
+        return (
+          selectedRequest && (
+            <RejectBill request={selectedRequest} close={closePopModal} />
+          )
+        );
+      }
+      case "receipt":
+        return (
+          transactionDetail && (
+            <SideModalWrapper close={() => {}}>
+              <RaizReceipt close={closePopModal} data={transactionDetail} />
+            </SideModalWrapper>
+          )
+        );
+
+      default:
+        break;
+    }
+  };
+
   return (
     <div className="w-full">
       <div className="flex items-center justify-between w-full mb-5">
-        <h6 className="text-raiz-gray-900 text-base font-semibold font-monzo leading-snug">
+        <h6 className="text-raiz-gray-900 text-base font-semibold  leading-snug">
           Bill Request
         </h6>
         <button>
@@ -70,54 +215,38 @@ const BillRequests = () => {
         </button>
       </div>
       <section className="flex flex-col gap-4 w-full max-h-[568px] overflow-y-scroll">
-        {billRequests.map((request) => (
-          <div
-            key={request.id}
-            className="w-full px-[15px] py-[18px] bg-[#f3eee9] rounded-[20px] flex-col justify-center items-start gap-4 inline-flex"
-          >
-            <div className="font-monzo flex items-center justify-between w-full">
-              <div className="flex gap-2 ">
-                <Image
-                  src={request.imageUrl}
-                  width={38}
-                  height={38}
-                  alt="requester"
-                />
+        {isLoading ? (
+          <div className="w-full px-[15px] py-[18px] rounded-[20px] flex-col justify-center items-start gap-4 inline-flex">
+            <div className="flex items-center justify-between w-full">
+              <div className="flex gap-2">
+                <Skeleton circle width={38} height={38} />
                 <div className="flex flex-col gap-0.5">
-                  <p className="text-raiz-gray-900 text-[13px] xl:text-sm font-semibold leading-tight">
-                    {request.requester}
-                  </p>
-                  <p className="text-raiz-gray-800 text-[11px] xl:text-[13px] font-normal  leading-none">
-                    {request.time}
-                  </p>
+                  <Skeleton width={120} height={14} />
+                  <Skeleton width={100} height={12} />
                 </div>
               </div>
-              <span className="text-raiz-gray-900 text-sm xl:text-base font-semibold ">
-                ₦{request.amount.toLocaleString()}
-              </span>
+              <Skeleton width={80} height={18} />
             </div>
-            <div className="flex w-full justify-between items-center gap-2">
-              <button className="w-1/2 h-10 px-5 py-2 bg-[#f1e0cb] rounded-3xl justify-center items-center gap-1.5 inline-flex">
-                <span className="text-raiz-gray-800 text-sm font-medium font-brSonoma leading-[16.80px]">
-                  Reject
-                </span>
-              </button>
-              <button className="w-1/2 h-10 px-5 py-2 bg-[#3c2875] rounded-3xl justify-center items-center gap-1.5 inline-flex">
-                <svg width="17" height="16" viewBox="0 0 17 16" fill="none">
-                  <path
-                    d="M11.2601 1.97336L5.24008 3.97336C1.19341 5.3267 1.19341 7.53336 5.24008 8.88003L7.02674 9.47336L7.62008 11.26C8.96674 15.3067 11.1801 15.3067 12.5267 11.26L14.5334 5.2467C15.4267 2.5467 13.9601 1.07336 11.2601 1.97336ZM11.4734 5.56003L8.94008 8.1067C8.84008 8.2067 8.71341 8.25336 8.58674 8.25336C8.46008 8.25336 8.33341 8.2067 8.23341 8.1067C8.04008 7.91336 8.04008 7.59336 8.23341 7.40003L10.7667 4.85336C10.9601 4.66003 11.2801 4.66003 11.4734 4.85336C11.6667 5.0467 11.6667 5.3667 11.4734 5.56003Z"
-                    fill="#F4F4F4"
-                  />
-                </svg>
 
-                <span className="text-secondary-white text-sm font-medium font-brSonoma leading-[16.80px]">
-                  Accept
-                </span>
-              </button>
+            <div className="flex w-full justify-between items-center gap-2">
+              <Skeleton width="50%" height={40} borderRadius={9999} />
+              <Skeleton width="50%" height={40} borderRadius={9999} />
             </div>
           </div>
-        ))}
+        ) : billRequests?.length > 0 ? (
+          billRequests.map((request, index) => (
+            <BillRow
+              key={index}
+              request={request}
+              setSelectedRequest={setSelectedRequest}
+              setOpenModal={setOpenModal}
+            />
+          ))
+        ) : (
+          <EmptyList text="No bill request yet" />
+        )}
       </section>
+      {displayPopModal()}
     </div>
   );
 };

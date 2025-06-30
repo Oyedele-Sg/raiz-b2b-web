@@ -6,7 +6,7 @@ const customersData = [
     title: "All customers",
     icon: "/icons/users.svg",
     value: 2420,
-    change: 40,
+    change: 0,
   },
   {
     title: "New customers",
@@ -26,7 +26,9 @@ const CustomersInfo = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-[2rem] ">
       {customersData.map((each, index) => {
-        const isPositive = each.change >= 0;
+        const value =
+          each.change > 0 ? "positive" : each.change < 0 ? "negative" : "zero";
+
         return (
           <div
             key={index}
@@ -42,7 +44,7 @@ const CustomersInfo = () => {
                     height={28}
                   />
                 </div>
-                <span className="text-gray-950  font-bold font-monzo leading-tight">
+                <span className="text-gray-950  font-bold  leading-tight">
                   {each.title}
                 </span>
               </div>
@@ -57,33 +59,42 @@ const CustomersInfo = () => {
             </div>
             <div className="flex w-full justify-between items-end gap-4">
               <div className="flex items-start gap-1.5">
-                <span className="text-gray-950 text-[1.2rem] xl:text-[2rem] font-semibold font-monzo leading-[38.40px]">
+                <span className="text-gray-950 text-[1.2rem] xl:text-[2rem] font-semibold  leading-[38.40px]">
                   {each.value.toLocaleString()}
                 </span>
-                <div className="flex items-center gap-0.5">
-                  <Image
-                    src={
-                      isPositive
-                        ? "/icons/trend-up.svg"
-                        : "/icons/trend-down.svg"
-                    }
-                    alt="change"
-                    width={20}
-                    height={20}
-                  />
-                  <span
-                    className={`${
-                      isPositive ? "text-raiz-success-500" : "text-raiz-error"
-                    }  text-center text-[11px]  xl:text-sm font-bold font-monzo leading-[16.80px]`}
-                  >{`${each.change}%`}</span>
-                </div>
+                {value !== "zero" && (
+                  <div className="flex items-center gap-0.5">
+                    <Image
+                      src={
+                        value === "positive"
+                          ? "/icons/trend-up.svg"
+                          : "/icons/trend-down.svg"
+                      }
+                      alt="change"
+                      width={20}
+                      height={20}
+                    />
+
+                    <span
+                      className={`${
+                        value === "positive"
+                          ? "text-raiz-success-500"
+                          : value === "negative"
+                          ? "text-raiz-error"
+                          : "text-raiz-gray-950"
+                      }  text-center text-[11px]  xl:text-sm font-bold  leading-[16.80px]`}
+                    >{`${each.change}%`}</span>
+                  </div>
+                )}
               </div>
               <Image
                 className="w-[100px] xl:w-[128px]"
                 src={
-                  isPositive
+                  value === "positive"
                     ? "/icons/positiveChart.svg"
-                    : "/icons/NegativeChart.svg"
+                    : value === "negative"
+                    ? "/icons/NegativeChart.svg"
+                    : "/icons/zeroChart.svg"
                 }
                 alt="chart"
                 width={128}
