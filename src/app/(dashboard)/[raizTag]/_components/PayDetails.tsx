@@ -1,5 +1,5 @@
 "use client";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import Image from "next/image";
 // import { useUser } from "@/lib/hooks/useUser";
 import Tabs from "@/components/ui/Tabs";
@@ -16,24 +16,6 @@ interface Props {
 
 const PayDetails = ({ setScreen, data }: Props) => {
   const [type, setType] = useState<"usd" | "ngn">("usd");
-
-  const [downloadLink, setDownloadLink] = useState(
-    "https://raizapp.onelink.me/RiOx/webdirect"
-  );
-
-  useEffect(() => {
-    const userAgent = navigator.userAgent || navigator.platform || "";
-
-    if (/android/i.test(userAgent)) {
-      setDownloadLink(
-        "https://play.google.com/store/apps/details?id=com.raiz.application"
-      );
-    } else if (/iPad|iPhone|iPod/.test(userAgent)) {
-      setDownloadLink("https://apps.apple.com/us/app/raiz-mobile/id6473565462");
-    } else {
-      setDownloadLink("https://raizapp.onelink.me/RiOx/webdirect");
-    }
-  }, []);
 
   const handleType = (value: "usd" | "ngn") => {
     // actions.selectCurrency(value === "ngn" ? "NGN" : "USD");
@@ -203,11 +185,24 @@ const PayDetails = ({ setScreen, data }: Props) => {
           <Button onClick={() => setScreen("card")} className="mt-5 mb-4">
             Pay with Card
           </Button>
-          <p className="text-[13px] text-raiz-gray-900  text-center">
-            Don&#39;t have raiz app?{" "}
-            <Link target="_blank" className="font-bold" href={downloadLink}>
+          <p className="text-[13px] text-raiz-gray-900  text-center mt-2">
+            Don&#39;t have Raiz App?{" "}
+            <Link
+              target="_blank"
+              className="font-bold"
+              href={"https://raizapp.onelink.me/RiOx/webdirect"}
+            >
               Download
-            </Link>
+            </Link>{" "}
+            | {"  "}
+            <Link
+              target="_blank"
+              className="font-bold"
+              href={"https://business.raiz.app/register"}
+            >
+              Sign up{" "}
+            </Link>{" "}
+            for Raiz Business
           </p>
         </div>
       </div>
