@@ -7,6 +7,9 @@ import USDAcctInfo from "./quick-links/acctInfo/USDAcctInfo";
 // import SelectCardModal from "./quick-links/cards/SelectCardModal";
 import TopUp from "./quick-links/topUp/TopUp";
 import Analytics from "./quick-links/analytics/page";
+import { findWalletByCurrency } from "@/utils/helpers";
+import { useUser } from "@/lib/hooks/useUser";
+import { toast } from "sonner";
 
 type key = "acct-info" | "card" | "split-bills" | "analytics" | "top-up";
 
@@ -41,6 +44,23 @@ const Links: { title: string; icon: string; key: key }[] = [
 const QuickLinks = () => {
   const { selectedCurrency } = useCurrencyStore();
   const [openModal, setOpenModal] = useState<key | null>(null);
+  const { user } = useUser();
+
+  const NGNAcct = findWalletByCurrency(user, "NGN");
+  const USDAcct = findWalletByCurrency(user, "USD");
+  const CryptoAcct = findWalletByCurrency(user, "SBC");
+
+  const hasAtLeastOneWallet = NGNAcct || USDAcct || CryptoAcct;
+
+  const handleQuickLinkClick = (key: key) => {
+    if (!hasAtLeastOneWallet) {
+      toast.warning(
+        "You need to have at least one wallet (NGN, USD, or Crypto) to use Quick Links."
+      );
+      return;
+    }
+    setOpenModal(key);
+  };
 
   const closeModal = () => {
     setOpenModal(null);
@@ -85,7 +105,7 @@ const QuickLinks = () => {
         {Links.map((each, i) => (
           <button
             key={i}
-            onClick={() => setOpenModal(each.key)}
+            onClick={() => handleQuickLinkClick(each.key)}
             className="px-6 xl:px-8 py-2 xl:py-4 bg-raiz-gray-50 rounded-[20px] border min-w-[100px] w-full border-raiz-gray-200 flex-col justify-center items-center gap-2 inline-flex"
           >
             <Image

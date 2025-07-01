@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import SideModalWrapper from "../../app/(dashboard)/_components/SideModalWrapper";
 import Notifications from "../../app/(dashboard)/_components/notification/Notifications";
 import { AnimatePresence } from "motion/react";
@@ -17,6 +17,7 @@ import { FetchUserRewardsApi } from "@/services/user";
 import { useNotifications } from "@/lib/hooks/useNotifications";
 import * as motion from "motion/react-client";
 import CreateCryptoWallet from "@/app/(dashboard)/_components/crypto/dashboard/CreateCryptoWallet";
+import { useCurrencyStore } from "@/store/useCurrencyStore";
 
 const searchItems = [
   { name: "Dashboard", type: "route", path: "/" },
@@ -68,6 +69,14 @@ const Header = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const router = useRouter();
+  const { selectedCurrency } = useCurrencyStore();
+  const currentWallet = useMemo(() => {
+    if (!user || !user?.business_account?.wallets || !selectedCurrency?.name)
+      return null;
+    return user?.business_account?.wallets.find(
+      (wallet) => wallet.wallet_type.currency === selectedCurrency.name
+    );
+  }, [user, selectedCurrency]);
 
   useEffect(() => {
     if (!searchTerm) {
@@ -275,10 +284,12 @@ const Header = () => {
           />
           <div className="flex items-start flex-col gap-1 text-sm font-semibold">
             <p className="text-gray-700 text-sm  font-semibold ">
-              {`${user?.first_name || ""} ${user?.last_name || ""}`}
+              {currentWallet
+                ? `${currentWallet?.wallet_type.currency} Account`
+                : "Get Accounts"}
             </p>
             <p className="text-gray-600 text-xs xl:text-sm  font-normal">
-              {user?.email}
+              {currentWallet?.account_number ?? ""}
             </p>
           </div>
           <Image src={"/icons/arrow-down.svg"} alt="" width={20} height={20} />
