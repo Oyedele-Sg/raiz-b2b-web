@@ -18,15 +18,21 @@ import { PersonaVerificationApi } from "@/services/user";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
 import SetTransactionPin from "@/app/(dashboard)/_components/transaction-pin/SetTransactionPin";
-import { findWalletByCurrency } from "@/utils/helpers";
+import { findWalletByCurrency, truncateString } from "@/utils/helpers";
 import PaymentLinkModal from "../modals/PaymentLinkModal";
+import { CreateUSDWalletApi } from "@/services/business";
+import Spinner from "../ui/Spinner";
+import { useCurrencyStore } from "@/store/useCurrencyStore";
+import Avatar from "../ui/Avatar";
+import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 
 // Dynamically import PersonaReact with SSR disabled
 const PersonaReact = dynamic(() => import("persona-react"), { ssr: false });
 
 const Sidebar = () => {
-  const { user } = useUser();
+  const { user, refetch } = useUser();
   const pathName = usePathname();
+  const { setSelectedCurrency } = useCurrencyStore();
   const [showModal, setShowModal] = useState<
     "acctSetup" | "getNgn" | "set-pin" | null
   >(null);
@@ -36,6 +42,16 @@ const Sidebar = () => {
   const [showPaymentLinkModal, setShowPaymentLinkModal] = useState(false);
   const [isIframeLoading, setIsIframeLoading] = useState(true);
   const [canRenderPersona, setCanRenderPersona] = useState(false);
+  const [userPfp, setUserPfp] = useState(
+    user?.business_account?.business_image || "/images/default-pfp.svg"
+  );
+  const isXLarge = useMediaQuery("(min-width: 1280px)");
+
+  useEffect(() => {
+    if (user?.business_account?.business_image) {
+      setUserPfp(user.business_account.business_image);
+    }
+  }, [user]);
 
   // Extract environment variables and user data with fallbacks
   const templateId = process.env.NEXT_PUBLIC_PERSONA_TEMPLATE_ID || "";
@@ -61,6 +77,9 @@ const Sidebar = () => {
   const PersonaMutation = useMutation({
     mutationFn: (inquiry_id: string) => PersonaVerificationApi(inquiry_id),
     onSuccess: () => {
+      toast.success(
+        "Account setup complete! Stakeholders must verify to activate USD account."
+      );
       qc.invalidateQueries({ queryKey: ["user"] });
       handleCloseModal();
     },
@@ -85,15 +104,7 @@ const Sidebar = () => {
             setIsIframeLoading(false);
           }}
           onComplete={({ inquiryId }) => {
-            // const payload = {
-            //   ...fields,
-            //   inquiry_id: {
-            //     type: "string",
-            //     value: inquiryId,
-            //   },
-            // };
             PersonaMutation.mutate(inquiryId);
-            // console.log(`Payload`, payload);
           }}
           onCancel={() => {
             toast.warning("Your verification was cancelled");
@@ -158,6 +169,17 @@ const Sidebar = () => {
       </Link>
     );
   };
+
+  const USDWalletMutation = useMutation({
+    mutationFn: CreateUSDWalletApi,
+    onSuccess: (response) => {
+      toast.success(response?.message);
+      qc.invalidateQueries({ queryKey: ["user"] });
+      refetch();
+      setSelectedCurrency("USD", user);
+      handleCloseModal();
+    },
+  });
 
   const NGNAcct = findWalletByCurrency(user, "NGN");
   const USDAcct = findWalletByCurrency(user, "USD");
@@ -284,7 +306,56 @@ const Sidebar = () => {
     },
     {
       condition:
-        verificationStatus === "completed" && !NGNAcct && hasTransactionPin,
+        verificationStatus === "completed" && !USDAcct && hasTransactionPin,
+      icon: (
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <g clipPath="url(#clip0_23665_5245)">
+            <rect width="48" height="48" rx="24" fill="#FCFCFD" />
+            <path
+              d="M4 0.333008H44C46.025 0.333008 47.667 1.97496 47.667 4V44C47.667 46.025 46.025 47.667 44 47.667H4C1.97496 47.667 0.333008 46.025 0.333008 44V4C0.333008 1.97496 1.97496 0.333008 4 0.333008Z"
+              stroke="black"
+              strokeOpacity="0.08"
+              strokeWidth="0.666667"
+            />
+            <path
+              opacity="0.35"
+              d="M32 36H16C13.7907 36 12 34.2093 12 32V19.6867C12 18.2333 12.788 16.896 14.0573 16.1907L22.0573 11.7467C23.2653 11.076 24.7347 11.076 25.9427 11.7467L33.9427 16.1907C35.212 16.896 36 18.2347 36 19.6867V32C36 34.2093 34.2093 36 32 36Z"
+              fill="#53940D"
+            />
+            <path
+              d="M27.7867 27.3319C27.7867 23.2079 23.2347 23.7719 23.2347 21.6226C23.2347 20.3573 24.2307 20.2239 24.5733 20.2239C24.9133 20.2239 25.2133 20.3039 25.468 20.4199C26.0667 20.6906 26.776 20.4399 27.1547 19.9026C27.64 19.2159 27.3893 18.2493 26.6227 17.9026C26.2013 17.7133 25.6773 17.5599 25.0413 17.4999V16.9026C25.0413 16.3519 24.5947 15.9053 24.044 15.9053C23.4933 15.9053 23.0467 16.3519 23.0467 16.9026V17.7119C21.376 18.2693 20.2907 19.7973 20.2907 21.7533C20.2907 26.0813 24.7867 25.2986 24.7867 27.5479C24.7867 27.9813 24.5813 28.9239 23.4667 28.9239C22.9707 28.9239 22.5427 28.7839 22.1947 28.6026C21.604 28.2933 20.8693 28.5213 20.4933 29.0719L20.4533 29.1306C20.0173 29.7679 20.1933 30.6586 20.8653 31.0399C21.4293 31.3599 22.1187 31.6079 22.9507 31.6959V32.3973C22.9507 32.9479 23.3973 33.3946 23.948 33.3946C24.4987 33.3946 24.9453 32.9479 24.9453 32.3973V31.5173C26.7907 30.9519 27.7867 29.2666 27.7867 27.3319Z"
+              fill="#1D546F"
+            />
+          </g>
+          <defs>
+            <clipPath id="clip0_23665_5245">
+              <rect width="48" height="48" rx="24" fill="white" />
+            </clipPath>
+          </defs>
+        </svg>
+      ),
+      title: "Get Your USD Account Now",
+      description: "Enjoy Seamless Transactions and Exclusive Features Today!",
+      action: (
+        <button
+          onClick={() => USDWalletMutation.mutate()}
+          className="text-primary2 text-sm font-bold flex items-center gap-2"
+          disabled={USDWalletMutation.isPending}
+        >
+          {USDWalletMutation.isPending ? (
+            <Spinner className="!w-4 !h-4 !border-t-2 !border-b-2" />
+          ) : null}
+          {USDWalletMutation.isPending ? "Processing..." : "Get USD Account"}
+        </button>
+      ),
+      bg: "bg-[#EAECFF66]",
+    },
+    {
+      condition:
+        verificationStatus === "completed" &&
+        USDAcct &&
+        !NGNAcct &&
+        hasTransactionPin,
       icon: <Image src={"/icons/ngn.svg"} width={32} height={32} alt="NGN" />,
       title: "Get a Naira (NGN) Account",
       description:
@@ -294,7 +365,7 @@ const Sidebar = () => {
           onClick={() => setShowModal("getNgn")}
           className="text-primary2 text-sm font-bold"
         >
-          Get Naira Wallet
+          Get Naira Account
         </button>
       ),
       bg: "bg-[#eaecff]/40",
@@ -343,32 +414,40 @@ const Sidebar = () => {
             : statuses.map((status, index) =>
                 status.condition ? <StatusCard key={index} {...status} /> : null
               )}
-
-          <button
-            className="flex gap-[15px] items-center mt-6 w-full pb-5 pt-4 border-t border-[#eaecf0]"
-            onClick={() => setShowLogoutModal(true)}
-          >
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-              <rect width="36" height="36" rx="18" fill="#F3F1F6" />
-              <path
-                opacity="0.35"
-                d="M25.1998 11.7V24.3C25.1998 25.7913 23.9911 27 22.4998 27H13.4998C12.0085 27 10.7998 25.7913 10.7998 24.3V11.7C10.7998 10.2087 12.0085 9 13.4998 9H22.4998C23.9911 9 25.1998 10.2087 25.1998 11.7Z"
-                fill="#B3261E"
-              />
-              <path
-                d="M23.3998 16.2002H17.0998C16.1053 16.2002 15.2998 17.0057 15.2998 18.0002C15.2998 18.9947 16.1053 19.8002 17.0998 19.8002H23.3998V16.2002Z"
-                fill="#951F38"
-              />
-              <path
-                d="M22.1211 21.718C22.1211 22.4119 22.9581 22.7611 23.4513 22.2724L26.955 18.802C27.4005 18.3601 27.4005 17.6401 26.955 17.1982L23.4513 13.7278C22.9581 13.24 22.1211 13.5892 22.1211 14.2822V21.718Z"
-                fill="#951F38"
-              />
-            </svg>
-            <span className="text-[#db180d] text-[15px] font-semibold leading-snug">
-              Logout
-            </span>
-          </button>
-          {/* </div> */}
+          <div className="flex justify-between items-center gap-2 mt-6 w-full pb-5 pt-4 border-t border-[#eaecf0]">
+            <div className="flex items-center gap-1.5  ">
+              <Avatar src={userPfp} name="pfp" size={isXLarge ? 40 : 30} />
+              <div className="flex flex-col gap-0.5">
+                <span className="text-raiz-gray-700 font-semibold text-sm">
+                  {user?.business_account?.business_name}
+                </span>
+                <span className="text-raiz-gray-600 text-sm">
+                  {truncateString(user?.email || "", isXLarge ? 20 : 15)}
+                </span>
+              </div>
+            </div>
+            <button
+              className="flex gap-[15px] items-center "
+              onClick={() => setShowLogoutModal(true)}
+            >
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                <rect width="36" height="36" rx="18" fill="#F3F1F6" />
+                <path
+                  opacity="0.35"
+                  d="M25.1998 11.7001V24.3001C25.1998 25.7914 23.9911 27.0001 22.4998 27.0001H13.4998C12.0085 27.0001 10.7998 25.7914 10.7998 24.3001V11.7001C10.7998 10.2088 12.0085 9.00006 13.4998 9.00006H22.4998C23.9911 9.00006 25.1998 10.2088 25.1998 11.7001Z"
+                  fill="#B3261E"
+                />
+                <path
+                  d="M23.3998 16.2001H17.0998C16.1053 16.2001 15.2998 17.0056 15.2998 18.0001C15.2998 18.9946 16.1053 19.8001 17.0998 19.8001H23.3998V16.2001Z"
+                  fill="#951F38"
+                />
+                <path
+                  d="M22.1211 21.7179C22.1211 22.4118 22.9581 22.761 23.4513 22.2723L26.955 18.8019C27.4005 18.36 27.4005 17.64 26.955 17.1981L23.4513 13.7277C22.9581 13.2399 22.1211 13.5891 22.1211 14.2821V21.7179Z"
+                  fill="#951F38"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </section>
       <AnimatePresence>
@@ -424,7 +503,7 @@ const StatusCard = ({
     <h5 className="text-raiz-gray-900 text-sm font-bold leading-[16.80px]">
       {title}
     </h5>
-    <p className="text-gray-600 text-sm font-normal leading-tight">
+    <p className="text-gray-600 lg:text-xs xl:text-sm font-normal leading-tight">
       {description}
     </p>
     {action}

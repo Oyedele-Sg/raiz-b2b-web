@@ -35,7 +35,7 @@ const TopUp = ({ close }: Props) => {
     <AnimatePresence>
       <SideModalWrapper close={close}>
         <div className="pb-8 flex flex-col justify-between xl:h-[95vh]">
-          <div>
+          <div className="mb-3">
             <div className="flex justify-between items-center mb-4">
               <button onClick={close}>
                 <Image
