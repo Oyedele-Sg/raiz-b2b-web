@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import SalesReport from "./SalesReport";
+// import SalesReport from "./SalesReport";
 import SideModalWrapper from "./SideModalWrapper";
 import Image from "next/image";
 import { AnimatePresence } from "motion/react";
@@ -22,6 +22,10 @@ import SelectAccount from "./SelectAccount";
 import CreateNgnAcct from "./createNgnAcct/CreateNgnAcct";
 import CreateCryptoWallet from "./crypto/dashboard/CreateCryptoWallet";
 import TopUp from "./quick-links/topUp/TopUp";
+import Infos from "./Infos";
+import NGNAcctInfo from "./quick-links/acctInfo/NGNAcctInfo";
+import USDAcctInfo from "./quick-links/acctInfo/USDAcctInfo";
+import DashboardAnalytics from "./charts/DashboardAnalytics";
 // import NgnSuccessModal from "./createNgnAcct/NgnSuccessModal";
 
 const DashboardSummary = () => {
@@ -41,6 +45,7 @@ const DashboardSummary = () => {
     | "createCrypto"
     | null
   >(null);
+  const [showAcctInfo, setShowAcctInfo] = useState(false);
   const pathName = usePathname();
   const NGNAcct = findWalletByCurrency(user, "NGN");
   const USDAcct = findWalletByCurrency(user, "USD");
@@ -151,7 +156,7 @@ const DashboardSummary = () => {
       </div>
       {/* Balance & Send etc */}
       <div className="flex justify-between items-center gap-4 ">
-        <div className="">
+        <div className="gap-2 flex flex-col">
           <p className="text-text-terttiary-600   font-normal font-inter leading-normal">
             Total Balance
           </p>
@@ -176,6 +181,22 @@ const DashboardSummary = () => {
               />
             </button>
           </div>
+          {currentWallet && (
+            <div className="flex gap-2 items-center ">
+              <span>{currentWallet?.account_number}</span>
+              <button
+                title="Click to see account info"
+                onClick={() => setShowAcctInfo(true)}
+              >
+                <Image
+                  src={"/icons/info-circle.svg"}
+                  alt="account info"
+                  width={18}
+                  height={18}
+                />
+              </button>
+            </div>
+          )}
         </div>
         <div className="flex gap-4 items-center">
           <Button
@@ -262,7 +283,9 @@ const DashboardSummary = () => {
       </div>
 
       {/* <CustomersInfo /> */}
-      <SalesReport />
+      <Infos />
+      {/* <SalesReport /> */}
+      <DashboardAnalytics />
       <AnimatePresence>
         {openModal !== null && openModal !== "selectAcct" ? (
           <SideModalWrapper
@@ -288,6 +311,13 @@ const DashboardSummary = () => {
           openCryptoModal={openCryptoModal}
         />
       )}
+      {showAcctInfo && selectedCurrency ? (
+        selectedCurrency.name === "NGN" ? (
+          <NGNAcctInfo close={() => setShowAcctInfo(false)} />
+        ) : (
+          <USDAcctInfo close={() => setShowAcctInfo(false)} />
+        )
+      ) : null}
       {/* {successful && <NgnSuccessModal close={() => setSuccessful(false)} />} */}
     </div>
   );
