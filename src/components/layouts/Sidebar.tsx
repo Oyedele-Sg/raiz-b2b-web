@@ -418,16 +418,16 @@ const Sidebar = () => {
             <div className="flex items-center gap-1.5  ">
               <Avatar src={userPfp} name="pfp" size={isXLarge ? 40 : 30} />
               <div className="flex flex-col gap-0.5">
-                <span className="text-raiz-gray-700 font-semibold text-sm">
+                <span className="text-raiz-gray-700 font-semibold lg:text-xs xl:text-sm">
                   {user?.business_account?.business_name}
                 </span>
-                <span className="text-raiz-gray-600 text-sm">
+                <span className="text-raiz-gray-600 lg:text-xs xl:text-sm">
                   {truncateString(user?.email || "", isXLarge ? 20 : 15)}
                 </span>
               </div>
             </div>
             <button
-              className="flex gap-[15px] items-center "
+              className="flex gap-[15px] items-center w-9 h-9 absolute right-2"
               onClick={() => setShowLogoutModal(true)}
             >
               <svg width="36" height="36" viewBox="0 0 36 36" fill="none">

@@ -22,24 +22,14 @@ interface Props {
 const TxnReceiptDetail = ({ close, transaction, goNext }: Props) => {
   const status = transaction?.transaction_status?.transaction_status;
   return (
-    <SideModalWrapper
-      close={close}
-      wrapperStyle={`${
-        transaction?.currency === "USD" ? "!bg-raiz-usd-primary" : "!bg-primary"
-      }`}
-    >
+    <SideModalWrapper close={close} wrapperStyle={`bg-[#F3F1F6]`}>
       <div className={`  flex flex-col h-screen`}>
         <button onClick={close}>
-          <Image
-            src={"/icons/close-fff.svg"}
-            width={16}
-            height={16}
-            alt="close"
-          />
+          <Image src={"/icons/close.svg"} width={16} height={16} alt="close" />
         </button>
-        <div className="flex flex-col justify-between h-[90%]">
-          <div className="w-full">
-            <div className="w-full mt-[26px] bg-white  rounded-xl inline-flex flex-col justify-center items-center gap-5 ">
+        <div className="flex flex-col justify-between h-[90%] mt-2">
+          <div className="w-full bg-white">
+            <div className="w-full mt-[26px] shadow-[0px_7.342465877532959px_22.02739715576172px_0px_rgba(170,170,170,0.12)] rounded-xl inline-flex flex-col justify-center items-center gap-5 ">
               {/* ststus */}
               <div className="relative  px-6 py-5 flex w-full flex-col justify-center items-center gap-1 pb-5 border-b border-dashed">
                 <Image
@@ -61,8 +51,8 @@ const TxnReceiptDetail = ({ close, transaction, goNext }: Props) => {
                   {getCurrencySymbol(transaction.currency)}
                   {transaction?.transaction_amount?.toLocaleString()}
                 </p>
-                <div className="w-5 h-4 rounded-full bg-[#3C2875] absolute left-[-10px] top-1/2" />
-                <div className="w-5 h-4 rounded-full bg-[#3C2875] absolute right-[-10px] top-1/2" />
+                <div className="w-5 h-4 rounded-full bg-[#F3F1F6] absolute left-[-10px] top-1/2" />
+                <div className="w-5 h-4 rounded-full bg-[#F3F1F6] absolute right-[-10px] top-1/2" />
               </div>
 
               {/* Details */}

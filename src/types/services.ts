@@ -111,7 +111,7 @@ export interface ITransactionParams {
   transaction_class_id?: number | null;
   payment_method_id?: string | null;
   transaction_report_id?: string | null;
-  transaction_category_id?: string | null;
+  transaction_category_id?: number | null;
   start_date?: string | null;
   end_date?: string | null;
   transaction_reference?: string | null;

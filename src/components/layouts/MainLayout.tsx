@@ -11,7 +11,11 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
   const pathName = usePathname();
   useAutoLogout();
 
-  const shouldShowSideNav = pathName.includes("/settings") || pathName === "/";
+  const dashboardRoutes = ["/", "/settings", "/transactions"];
+
+  const shouldShowSideNav = dashboardRoutes.some(
+    (route) => pathName === route || pathName.startsWith(route + "/")
+  );
 
   useEffect(() => {
     if (typeof window !== "undefined") {
