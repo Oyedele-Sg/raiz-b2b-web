@@ -1,175 +1,33 @@
 "use client";
-import React, { ReactNode, useEffect, useState } from "react";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import { ISidebarMenuItem } from "@/types/misc";
-import { SidebarMenus } from "@/constants/SidebarMenuData";
-import SideModalWrapper from "@/app/(dashboard)/_components/SideModalWrapper";
-// import AccountSetup from "@/app/(dashboard)/_components/account-setup/AccountSetup";
-import { AnimatePresence } from "motion/react";
-import CreateNgnAcct from "@/app/(dashboard)/_components/createNgnAcct/CreateNgnAcct";
-import AddBvnModal from "@/app/(dashboard)/_components/createNgnAcct/AddBvnModal";
-import NgnSuccessModal from "@/app/(dashboard)/_components/createNgnAcct/NgnSuccessModal";
-import LogoutModal from "../modals/LogoutModal";
+import Spinner from "@/components/ui/Spinner";
 import { useUser } from "@/lib/hooks/useUser";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { PersonaVerificationApi } from "@/services/user";
-import { toast } from "sonner";
-import dynamic from "next/dynamic";
-import SetTransactionPin from "@/app/(dashboard)/_components/transaction-pin/SetTransactionPin";
-import { findWalletByCurrency, truncateString } from "@/utils/helpers";
-import PaymentLinkModal from "../modals/PaymentLinkModal";
 import { CreateUSDWalletApi } from "@/services/business";
-import Spinner from "../ui/Spinner";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
-import Avatar from "../ui/Avatar";
-import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
+import { findWalletByCurrency } from "@/utils/helpers";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import React, { ReactNode, useEffect, useState } from "react";
+import { toast } from "sonner";
+import Image from "next/image";
+import PersonaReact from "persona-react";
+import { PersonaVerificationApi } from "@/services/user";
+import CreateNgnAcct from "./createNgnAcct/CreateNgnAcct";
+import SetTransactionPin from "./transaction-pin/SetTransactionPin";
+import { AnimatePresence } from "motion/react";
+import SideModalWrapper from "./SideModalWrapper";
 
-// Dynamically import PersonaReact with SSR disabled
-const PersonaReact = dynamic(() => import("persona-react"), { ssr: false });
-
-const Sidebar = () => {
-  const { user, refetch } = useUser();
-  const pathName = usePathname();
-  const { setSelectedCurrency } = useCurrencyStore();
+const Infos = () => {
   const [showModal, setShowModal] = useState<
     "acctSetup" | "getNgn" | "set-pin" | null
   >(null);
-  const [showBvnModal, setShowBvnModal] = useState(false);
-  const [successful, setSuccessful] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [showPaymentLinkModal, setShowPaymentLinkModal] = useState(false);
   const [isIframeLoading, setIsIframeLoading] = useState(true);
   const [canRenderPersona, setCanRenderPersona] = useState(false);
-  const [userPfp, setUserPfp] = useState(
-    user?.business_account?.business_image || "/images/default-pfp.svg"
-  );
-  const isXLarge = useMediaQuery("(min-width: 1280px)");
-
-  useEffect(() => {
-    if (user?.business_account?.business_image) {
-      setUserPfp(user.business_account.business_image);
-    }
-  }, [user]);
-
-  // Extract environment variables and user data with fallbacks
-  const templateId = process.env.NEXT_PUBLIC_PERSONA_TEMPLATE_ID || "";
-  const environmentId = process.env.NEXT_PUBLIC_PERSONA_ENVIRONMENT_ID || "";
-  const referenceId = user?.business_account?.entity_id || "";
-  // Check if all required props are available
-  useEffect(() => {
-    if (!templateId || !environmentId) {
-      toast.error("Verification setup is incomplete. Please contact support.");
-      setIsIframeLoading(false);
-      setCanRenderPersona(false);
-    } else {
-      setCanRenderPersona(true);
-    }
-  }, [templateId, environmentId]);
+  const { user, refetch } = useUser();
+  const { setSelectedCurrency } = useCurrencyStore();
 
   const handleCloseModal = () => {
     setShowModal(null);
     setIsIframeLoading(true);
   };
-
-  const qc = useQueryClient();
-  const PersonaMutation = useMutation({
-    mutationFn: (inquiry_id: string) => PersonaVerificationApi(inquiry_id),
-    onSuccess: () => {
-      toast.success(
-        "Account setup complete! Stakeholders must verify to activate USD account."
-      );
-      qc.invalidateQueries({ queryKey: ["user"] });
-      handleCloseModal();
-    },
-  });
-
-  const InlineInquiry = () => {
-    return (
-      <div className="h-full relative">
-        {isIframeLoading && (
-          <div className="absolute inset-0 flex items-center justify-center ">
-            <div
-              aria-label="Loading verification"
-              className="loader animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-primary2"
-            />
-          </div>
-        )}
-        <PersonaReact
-          templateId={templateId}
-          environmentId={environmentId}
-          referenceId={referenceId}
-          onLoad={() => {
-            setIsIframeLoading(false);
-          }}
-          onComplete={({ inquiryId }) => {
-            PersonaMutation.mutate(inquiryId);
-          }}
-          onCancel={() => {
-            toast.warning("Your verification was cancelled");
-            handleCloseModal();
-          }}
-          onError={() => {
-            toast.error("Failed to load verification. Please try again.");
-            setIsIframeLoading(false);
-          }}
-        />
-      </div>
-    );
-  };
-
-  const displayModal = () => {
-    switch (showModal) {
-      case "acctSetup":
-        if (!canRenderPersona) {
-          return (
-            <div className="h-full flex justify-center items-center">
-              Verification is unavailable at this time.
-            </div>
-          );
-        } else {
-          return (
-            <div className="h-full">
-              <InlineInquiry />
-            </div>
-          );
-        }
-
-      case "getNgn":
-        return (
-          <CreateNgnAcct
-            close={handleCloseModal}
-            // openBvnModal={() => setShowBvnModal(true)}
-          />
-        );
-      case "set-pin":
-        return <SetTransactionPin close={handleCloseModal} />;
-      default:
-        break;
-    }
-  };
-
-  const renderMenuItem = (item: ISidebarMenuItem, index: number) => {
-    const isActive =
-      item.link === "/" ? pathName === item.link : pathName.includes(item.link);
-
-    return (
-      <Link
-        key={index}
-        href={item.link}
-        className={`flex items-center gap-3 py-2 px-2 xl:px-3 font-bold text-[15px] xl:text-base  leading-tight hover:bg-[#eaecff]/40 hover:rounded-md outline-none ${
-          isActive
-            ? "bg-[#eaecff]/40 rounded-[6px] text-primary2"
-            : "text-raiz-gray-600 "
-        }`}
-      >
-        {item.icon(isActive)}
-        {item.name}
-      </Link>
-    );
-  };
-
   const USDWalletMutation = useMutation({
     mutationFn: CreateUSDWalletApi,
     onSuccess: (response) => {
@@ -181,11 +39,12 @@ const Sidebar = () => {
     },
   });
 
-  const NGNAcct = findWalletByCurrency(user, "NGN");
-  const USDAcct = findWalletByCurrency(user, "USD");
   const verificationStatus =
     user?.business_account?.business_verifications?.[0]?.verification_status;
   const hasTransactionPin = user?.has_transaction_pin;
+
+  const NGNAcct = findWalletByCurrency(user, "NGN");
+  const USDAcct = findWalletByCurrency(user, "USD");
 
   const statuses = [
     {
@@ -207,7 +66,8 @@ const Sidebar = () => {
         </svg>
       ),
       title: "Complete account set up",
-      description: "Complete Account Set Up and Get unlimited access",
+      description:
+        "Complete your account setup and verification to unlock full, unlimited access to all available features and services.",
       action: (
         <div className="flex items-center gap-3">
           {/* <a
@@ -370,86 +230,126 @@ const Sidebar = () => {
       ),
       bg: "bg-[#eaecff]/40",
     },
-    {
-      condition:
-        verificationStatus === "completed" &&
-        NGNAcct &&
-        hasTransactionPin &&
-        USDAcct,
-      icon: <Image src={"/icons/paylink.svg"} width={32} height={32} alt="" />,
-      title: "Payment Link",
-      description: "Allows Guest Users to Securely Send you Money Seamlessly.",
-      action: (
-        <button
-          onClick={() => setShowPaymentLinkModal(true)}
-          className="text-primary2 text-sm font-bold"
-        >
-          Share Link
-        </button>
-      ),
-      bg: "bg-[#eaecff]/40",
-    },
+    //    {
+    //      condition:
+    //        verificationStatus === "completed" &&
+    //        NGNAcct &&
+    //        hasTransactionPin &&
+    //        USDAcct,
+    //      icon: <Image src={"/icons/paylink.svg"} width={32} height={32} alt="" />,
+    //      title: "Payment Link",
+    //      description: "Allows Guest Users to Securely Send you Money Seamlessly.",
+    //      action: (
+    //        <button
+    //          onClick={() => setShowPaymentLinkModal(true)}
+    //          className="text-primary2 text-sm font-bold"
+    //        >
+    //          Share Link
+    //        </button>
+    //      ),
+    //      bg: "bg-[#eaecff]/40",
+    //    },
   ];
 
-  return (
-    <aside className="w-[19.444%] pt-8 hidden lg:block  fixed top-0 bottom-0 left-0 z-20 bg-raiz-gray-50 border-r border-raiz-gray-200 h-[100vh] overflow-x-hidden overflow-y-scroll">
-      <div className="px-6">
-        <Image
-          className="w-12 h-12"
-          src={"/icons/Logo-2.svg"}
-          width={48}
-          height={48}
-          alt="Raiz logo"
+  // Extract environment variables and user data with fallbacks
+  const templateId = process.env.NEXT_PUBLIC_PERSONA_TEMPLATE_ID || "";
+  const environmentId = process.env.NEXT_PUBLIC_PERSONA_ENVIRONMENT_ID || "";
+  const referenceId = user?.business_account?.entity_id || "";
+
+  useEffect(() => {
+    if (!templateId || !environmentId) {
+      toast.error("Verification setup is incomplete. Please contact support.");
+      setIsIframeLoading(false);
+      setCanRenderPersona(false);
+    } else {
+      setCanRenderPersona(true);
+    }
+  }, [templateId, environmentId]);
+
+  const qc = useQueryClient();
+  const PersonaMutation = useMutation({
+    mutationFn: (inquiry_id: string) => PersonaVerificationApi(inquiry_id),
+    onSuccess: () => {
+      toast.success(
+        "Account setup complete! Stakeholders must verify to activate USD account."
+      );
+      qc.invalidateQueries({ queryKey: ["user"] });
+      handleCloseModal();
+    },
+  });
+
+  const InlineInquiry = () => {
+    return (
+      <div className="h-full relative">
+        {isIframeLoading && (
+          <div className="absolute inset-0 flex items-center justify-center ">
+            <div
+              aria-label="Loading verification"
+              className="loader animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-primary2"
+            />
+          </div>
+        )}
+        <PersonaReact
+          templateId={templateId}
+          environmentId={environmentId}
+          referenceId={referenceId}
+          onLoad={() => {
+            setIsIframeLoading(false);
+          }}
+          onComplete={({ inquiryId }) => {
+            PersonaMutation.mutate(inquiryId);
+          }}
+          onCancel={() => {
+            toast.warning("Your verification was cancelled");
+            handleCloseModal();
+          }}
+          onError={() => {
+            toast.error("Failed to load verification. Please try again.");
+            setIsIframeLoading(false);
+          }}
         />
       </div>
-      <section className="flex flex-col justify-between h-[85%] mt-8 px-4 gap-8">
-        <nav className="flex flex-col gap-5">
-          {SidebarMenus.map((item, index) => renderMenuItem(item, index))}
-        </nav>
+    );
+  };
 
-        {/* User status Info */}
-        <div>
-          {!verificationStatus
-            ? null
-            : statuses.map((status, index) =>
-                status.condition ? <StatusCard key={index} {...status} /> : null
-              )}
-          <div className="flex justify-between items-center gap-2 mt-6 w-full pb-5 pt-4 border-t border-[#eaecf0]">
-            <div className="flex items-center gap-1.5  ">
-              <Avatar src={userPfp} name="pfp" size={isXLarge ? 40 : 30} />
-              <div className="flex flex-col gap-0.5">
-                <span className="text-raiz-gray-700 font-semibold lg:text-xs xl:text-sm">
-                  {user?.business_account?.business_name}
-                </span>
-                <span className="text-raiz-gray-600 lg:text-xs xl:text-sm">
-                  {truncateString(user?.email || "", isXLarge ? 20 : 15)}
-                </span>
-              </div>
+  const displayModal = () => {
+    switch (showModal) {
+      case "acctSetup":
+        if (!canRenderPersona) {
+          return (
+            <div className="h-full flex justify-center items-center">
+              Verification is unavailable at this time.
             </div>
-            <button
-              className="flex gap-[15px] items-center w-9 h-9 absolute right-2"
-              onClick={() => setShowLogoutModal(true)}
-            >
-              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                <rect width="36" height="36" rx="18" fill="#F3F1F6" />
-                <path
-                  opacity="0.35"
-                  d="M25.1998 11.7001V24.3001C25.1998 25.7914 23.9911 27.0001 22.4998 27.0001H13.4998C12.0085 27.0001 10.7998 25.7914 10.7998 24.3001V11.7001C10.7998 10.2088 12.0085 9.00006 13.4998 9.00006H22.4998C23.9911 9.00006 25.1998 10.2088 25.1998 11.7001Z"
-                  fill="#B3261E"
-                />
-                <path
-                  d="M23.3998 16.2001H17.0998C16.1053 16.2001 15.2998 17.0056 15.2998 18.0001C15.2998 18.9946 16.1053 19.8001 17.0998 19.8001H23.3998V16.2001Z"
-                  fill="#951F38"
-                />
-                <path
-                  d="M22.1211 21.7179C22.1211 22.4118 22.9581 22.761 23.4513 22.2723L26.955 18.8019C27.4005 18.36 27.4005 17.64 26.955 17.1981L23.4513 13.7277C22.9581 13.2399 22.1211 13.5891 22.1211 14.2821V21.7179Z"
-                  fill="#951F38"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </section>
+          );
+        } else {
+          return (
+            <div className="h-full">
+              <InlineInquiry />
+            </div>
+          );
+        }
+
+      case "getNgn":
+        return (
+          <CreateNgnAcct
+            close={handleCloseModal}
+            // openBvnModal={() => setShowBvnModal(true)}
+          />
+        );
+      case "set-pin":
+        return <SetTransactionPin close={handleCloseModal} />;
+      default:
+        break;
+    }
+  };
+
+  return (
+    <div>
+      {!verificationStatus
+        ? null
+        : statuses.map((status, index) =>
+            status.condition ? <StatusCard key={index} {...status} /> : null
+          )}
       <AnimatePresence>
         {showModal ? (
           <SideModalWrapper
@@ -460,26 +360,11 @@ const Sidebar = () => {
           </SideModalWrapper>
         ) : null}
       </AnimatePresence>
-      <AnimatePresence>
-        {showBvnModal && (
-          <AddBvnModal
-            close={() => setShowBvnModal(false)}
-            openSuccessModal={() => setSuccessful(true)}
-          />
-        )}
-      </AnimatePresence>
-      {successful && <NgnSuccessModal close={() => setSuccessful(false)} />}
-      {showLogoutModal && (
-        <LogoutModal close={() => setShowLogoutModal(false)} />
-      )}
-      {showPaymentLinkModal && (
-        <PaymentLinkModal close={() => setShowPaymentLinkModal(false)} />
-      )}
-    </aside>
+    </div>
   );
 };
 
-export default Sidebar;
+export default Infos;
 
 const StatusCard = ({
   icon,
@@ -495,7 +380,7 @@ const StatusCard = ({
   bg: string;
 }) => (
   <div
-    className={`px-3 xl:px-4 py-5 ${bg}  rounded-lg flex-col justify-start items-start gap-3 inline-flex`}
+    className={`w-full my-6 px-3 xl:px-4 py-5 ${bg}  rounded-lg flex-col justify-start items-start gap-3 inline-flex`}
   >
     <div className="w-12 h-12 relative bg-[#fcfcfd] rounded-[66.67px] flex items-center justify-center">
       {icon}

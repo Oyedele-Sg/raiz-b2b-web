@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideModalWrapper from "../../app/(dashboard)/_components/SideModalWrapper";
 import Notifications from "../../app/(dashboard)/_components/notification/Notifications";
 import { AnimatePresence } from "motion/react";
@@ -11,13 +11,11 @@ import CreateNgnAcct from "../../app/(dashboard)/_components/createNgnAcct/Creat
 import AddBvnModal from "../../app/(dashboard)/_components/createNgnAcct/AddBvnModal";
 import NgnSuccessModal from "../../app/(dashboard)/_components/createNgnAcct/NgnSuccessModal";
 import { usePathname, useRouter } from "next/navigation";
-import { useUser } from "@/lib/hooks/useUser";
 import { useQuery } from "@tanstack/react-query";
 import { FetchUserRewardsApi } from "@/services/user";
 import { useNotifications } from "@/lib/hooks/useNotifications";
 import * as motion from "motion/react-client";
 import CreateCryptoWallet from "@/app/(dashboard)/_components/crypto/dashboard/CreateCryptoWallet";
-import { useCurrencyStore } from "@/store/useCurrencyStore";
 
 const searchItems = [
   { name: "Dashboard", type: "route", path: "/" },
@@ -39,20 +37,19 @@ const searchItems = [
 
 const Header = () => {
   const pathName = usePathname();
-  const { user } = useUser();
   const { data: pointsData } = useQuery({
     queryKey: ["reward-points"],
     queryFn: FetchUserRewardsApi,
   });
-  const [userPfp, setUserPfp] = useState(
-    user?.business_account?.business_image || "/images/default-pfp.svg"
-  );
+  // const [userPfp, setUserPfp] = useState(
+  //   user?.business_account?.business_image || "/images/default-pfp.svg"
+  // );
 
-  useEffect(() => {
-    if (user?.business_account?.business_image) {
-      setUserPfp(user.business_account.business_image);
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user?.business_account?.business_image) {
+  //     setUserPfp(user.business_account.business_image);
+  //   }
+  // }, [user]);
 
   const [showModal, setShowModal] = useState<
     | "notifications"
@@ -69,14 +66,14 @@ const Header = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const router = useRouter();
-  const { selectedCurrency } = useCurrencyStore();
-  const currentWallet = useMemo(() => {
-    if (!user || !user?.business_account?.wallets || !selectedCurrency?.name)
-      return null;
-    return user?.business_account?.wallets.find(
-      (wallet) => wallet.wallet_type.currency === selectedCurrency.name
-    );
-  }, [user, selectedCurrency]);
+  // const { selectedCurrency } = useCurrencyStore();
+  // const currentWallet = useMemo(() => {
+  //   if (!user || !user?.business_account?.wallets || !selectedCurrency?.name)
+  //     return null;
+  //   return user?.business_account?.wallets.find(
+  //     (wallet) => wallet.wallet_type.currency === selectedCurrency.name
+  //   );
+  // }, [user, selectedCurrency]);
 
   useEffect(() => {
     if (!searchTerm) {
@@ -270,7 +267,7 @@ const Header = () => {
         </AnimatePresence>
       </div>
       <div className="flex gap-4 items-center">
-        <button
+        {/* <button
           onClick={() => setShowModal("selectAcct")}
           className="flex gap-2 items-center "
         >
@@ -293,8 +290,8 @@ const Header = () => {
             </p>
           </div>
           <Image src={"/icons/arrow-down.svg"} alt="" width={20} height={20} />
-        </button>
-        <button
+        </button> */}
+        {/* <button
           onClick={() => setShowModal("rewards")}
           className="pl-2 pr-2.5 py-1.5 bg-[#f8eebb] rounded-3xl justify-center items-center gap-0.5 inline-flex"
         >
@@ -311,7 +308,7 @@ const Header = () => {
           <span className="text-raiz-gray-950 text-[13px] font-normal  leading-[18.20px]">
             {pointsData?.point || 0}
           </span>
-        </button>
+        </button> */}
         <div className="relative">
           <button onClick={() => setShowModal("notifications")}>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none">

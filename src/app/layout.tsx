@@ -48,7 +48,7 @@ const monzoSans = localFont({
       style: "normal",
     },
   ],
-  variable: "--",
+  variable: "--monzo",
 });
 
 const brSonoma = localFont({

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import SalesReport from "./SalesReport";
+// import SalesReport from "./SalesReport";
 import SideModalWrapper from "./SideModalWrapper";
 import Image from "next/image";
 import { AnimatePresence } from "motion/react";
@@ -18,6 +18,15 @@ import Swap from "./swap/Swap";
 import { useSwapStore } from "@/store/Swap";
 import { ACCOUNT_CURRENCIES } from "@/constants/misc";
 import { usePathname } from "next/navigation";
+import SelectAccount from "./SelectAccount";
+import CreateNgnAcct from "./createNgnAcct/CreateNgnAcct";
+import CreateCryptoWallet from "./crypto/dashboard/CreateCryptoWallet";
+import TopUp from "./quick-links/topUp/TopUp";
+import Infos from "./Infos";
+import NGNAcctInfo from "./quick-links/acctInfo/NGNAcctInfo";
+import USDAcctInfo from "./quick-links/acctInfo/USDAcctInfo";
+import DashboardAnalytics from "./charts/DashboardAnalytics";
+// import NgnSuccessModal from "./createNgnAcct/NgnSuccessModal";
 
 const DashboardSummary = () => {
   const { user, refetch } = useUser();
@@ -27,11 +36,27 @@ const DashboardSummary = () => {
   const { setShowBalance, showBalance } = useUserStore();
   const { selectedCurrency } = useCurrencyStore();
   const [openModal, setOpenModal] = useState<
-    "send" | "request" | "swap" | null
+    | "send"
+    | "request"
+    | "swap"
+    | "topUp"
+    | "selectAcct"
+    | "createNGN"
+    | "createCrypto"
+    | null
   >(null);
+  const [showAcctInfo, setShowAcctInfo] = useState(false);
   const pathName = usePathname();
   const NGNAcct = findWalletByCurrency(user, "NGN");
   const USDAcct = findWalletByCurrency(user, "USD");
+
+  // const currentWallet = useMemo(() => {
+  //   if (!user || !user?.business_account?.wallets || !selectedCurrency?.name)
+  //     return null;
+  //   return user?.business_account?.wallets.find(
+  //     (wallet) => wallet.wallet_type.currency === selectedCurrency.name
+  //   );
+  // }, [user, selectedCurrency]);
 
   const getCurrentWallet = () => {
     if (selectedCurrency.name === "NGN") {
@@ -53,7 +78,9 @@ const DashboardSummary = () => {
     actions.reset();
   };
 
-  const handleActionButton = (action: "send" | "request" | "swap") => {
+  const handleActionButton = (
+    action: "send" | "request" | "swap" | "topUp"
+  ) => {
     if (!currentWallet) {
       toast.warning(
         "You do not have a wallet for this currency. Create one first!"
@@ -61,6 +88,14 @@ const DashboardSummary = () => {
     } else {
       setOpenModal(action);
     }
+  };
+
+  const openNGNModal = () => {
+    setOpenModal("createNGN");
+  };
+
+  const openCryptoModal = () => {
+    setOpenModal("createCrypto");
   };
 
   const displayScreen = () => {
@@ -75,6 +110,17 @@ const DashboardSummary = () => {
         return <Request close={closeModal} />;
       case "swap":
         return <Swap close={closeSwapModal} />;
+      case "topUp":
+        return <TopUp close={closeModal} />;
+      case "createNGN":
+        return (
+          <CreateNgnAcct
+            close={closeModal}
+            // openBvnModal={() => setShowBvnModal(true)}
+          />
+        );
+      case "createCrypto":
+        return <CreateCryptoWallet close={closeModal} />;
       default:
         break;
     }
@@ -86,8 +132,31 @@ const DashboardSummary = () => {
 
   return (
     <div className="pt-5">
+      {/* Accts */}
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-raiz-gray-950 text-2xl  font-bold leading-7">
+          {currentWallet
+            ? `${currentWallet?.wallet_type.currency} Account`
+            : "Account"}
+        </h2>
+        <button
+          onClick={() => setOpenModal("selectAcct")}
+          className="px-3 py-1 bg-violet-100/60 rounded-3xl inline-flex justify-center items-center gap-2"
+        >
+          <span className=" text-zinc-700 text-xs font-medium font-brSonoma leading-tight">
+            Switch Account
+          </span>
+          <Image
+            src={"/icons/arrow-down.svg"}
+            width={18}
+            height={18}
+            alt="arrow down"
+          />
+        </button>
+      </div>
+      {/* Balance & Send etc */}
       <div className="flex justify-between items-center gap-4 ">
-        <div className="">
+        <div className="gap-2 flex flex-col">
           <p className="text-text-terttiary-600   font-normal font-inter leading-normal">
             Total Balance
           </p>
@@ -112,11 +181,41 @@ const DashboardSummary = () => {
               />
             </button>
           </div>
+          {currentWallet && (
+            <div className="flex gap-2 items-center ">
+              <span>{currentWallet?.account_number}</span>
+              <button
+                title="Click to see account info"
+                onClick={() => setShowAcctInfo(true)}
+              >
+                <Image
+                  src={"/icons/info-circle.svg"}
+                  alt="account info"
+                  width={18}
+                  height={18}
+                />
+              </button>
+            </div>
+          )}
         </div>
         <div className="flex gap-4 items-center">
           <Button
+            onClick={() => handleActionButton("topUp")}
+            className="h-10 w-[115px] xl:w-[138px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
+          >
+            <svg width="21" height="20" viewBox="0 0 21 20" fill="none">
+              <path
+                d="M10.4998 1.6665C5.90817 1.6665 2.1665 5.40817 2.1665 9.99984C2.1665 14.5915 5.90817 18.3332 10.4998 18.3332C15.0915 18.3332 18.8332 14.5915 18.8332 9.99984C18.8332 5.40817 15.0915 1.6665 10.4998 1.6665ZM13.8332 10.6248H11.1248V13.3332C11.1248 13.6748 10.8415 13.9582 10.4998 13.9582C10.1582 13.9582 9.87484 13.6748 9.87484 13.3332V10.6248H7.1665C6.82484 10.6248 6.5415 10.3415 6.5415 9.99984C6.5415 9.65817 6.82484 9.37484 7.1665 9.37484H9.87484V6.6665C9.87484 6.32484 10.1582 6.0415 10.4998 6.0415C10.8415 6.0415 11.1248 6.32484 11.1248 6.6665V9.37484H13.8332C14.1748 9.37484 14.4582 9.65817 14.4582 9.99984C14.4582 10.3415 14.1748 10.6248 13.8332 10.6248Z"
+                fill="#FDFDFD"
+              />
+            </svg>
+            <span className="text-[#fcfcfc] text-sm xl:text-base font-medium font-brSonoma leading-tight tracking-tight">
+              Top Up
+            </span>
+          </Button>
+          <Button
             onClick={() => handleActionButton("send")}
-            className="h-10 w-[138px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
+            className="h-10 w-[115px] xl:w-[138px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
           >
             <svg width="21" height="20" viewBox="0 0 21 20" fill="none">
               <path
@@ -124,13 +223,13 @@ const DashboardSummary = () => {
                 fill="#FDFDFD"
               />
             </svg>
-            <span className="text-[#fcfcfc] text-base font-medium font-brSonoma leading-tight tracking-tight">
+            <span className="text-[#fcfcfc] lg:text-sm xl:text-base font-medium font-brSonoma leading-tight tracking-tight">
               Send
             </span>
           </Button>
           <Button
             onClick={() => handleActionButton("request")}
-            className="h-10 w-[138px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
+            className="h-10 w-[115px] xl:w-[138px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
           >
             <svg width="21" height="20" viewBox="0 0 21 20" fill="none">
               <path
@@ -142,7 +241,7 @@ const DashboardSummary = () => {
                 fill="#FDFDFD"
               />
             </svg>
-            <span className="text-[#fcfcfc] text-base font-medium font-brSonoma leading-tight tracking-tight">
+            <span className="text-[#fcfcfc] lg:text-sm xl:text-base font-medium font-brSonoma leading-tight tracking-tight">
               Request
             </span>
           </Button>
@@ -167,7 +266,7 @@ const DashboardSummary = () => {
                 }
               }
             }}
-            className="h-10 w-[138px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
+            className="h-10 w-[115px] xl:w-[138px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
           >
             <svg width="21" height="20" viewBox="0 0 21 20" fill="none">
               <path
@@ -176,7 +275,7 @@ const DashboardSummary = () => {
               />
             </svg>
 
-            <span className="text-[#fcfcfc] text-base font-medium font-brSonoma leading-tight tracking-tight">
+            <span className="text-[#fcfcfc] lg:text-sm xl:text-base font-medium font-brSonoma leading-tight tracking-tight">
               Swap
             </span>
           </Button>
@@ -184,17 +283,42 @@ const DashboardSummary = () => {
       </div>
 
       {/* <CustomersInfo /> */}
-      <SalesReport />
+      <Infos />
+      {/* <SalesReport /> */}
+      <DashboardAnalytics />
       <AnimatePresence>
-        {openModal ? (
+        {openModal !== null && openModal !== "selectAcct" ? (
           <SideModalWrapper
             close={closeModal}
-            wrapperStyle={openModal === "request" ? "!p-0" : ""}
+            wrapperStyle={
+              openModal === "request"
+                ? "!p-0"
+                : openModal === "createNGN"
+                ? "!bg-primary2"
+                : openModal === "createCrypto"
+                ? "!bg-raiz-crypto-primary"
+                : ""
+            }
           >
             {displayScreen()}
           </SideModalWrapper>
         ) : null}
       </AnimatePresence>
+      {openModal === "selectAcct" && (
+        <SelectAccount
+          close={() => setOpenModal(null)}
+          openNgnModal={openNGNModal}
+          openCryptoModal={openCryptoModal}
+        />
+      )}
+      {showAcctInfo && selectedCurrency ? (
+        selectedCurrency.name === "NGN" ? (
+          <NGNAcctInfo close={() => setShowAcctInfo(false)} />
+        ) : (
+          <USDAcctInfo close={() => setShowAcctInfo(false)} />
+        )
+      ) : null}
+      {/* {successful && <NgnSuccessModal close={() => setSuccessful(false)} />} */}
     </div>
   );
 };
