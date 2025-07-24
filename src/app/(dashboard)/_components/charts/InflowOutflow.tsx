@@ -189,9 +189,11 @@ const InflowOutflow = () => {
   };
 
   return (
-    <div className="w-1/2 h-[300px] p-4 bg-white rounded-2xl border border-[#F3F1F6]">
+    <div
+      className={`${"w-1/2 h-[300px]"}  p-4 bg-white rounded-2xl border border-[#F3F1F6]`}
+    >
       {isLoading ? (
-        <Skeleton height={300} />
+        <Skeleton height={250} />
       ) : (
         <Line data={chartData} options={options} />
       )}

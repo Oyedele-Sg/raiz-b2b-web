@@ -11,7 +11,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
   const pathName = usePathname();
   useAutoLogout();
 
-  const dashboardRoutes = ["/", "/settings", "/transactions"];
+  const dashboardRoutes = ["/", "/settings", "/transactions", "/analytics"];
 
   const shouldShowSideNav = dashboardRoutes.some(
     (route) => pathName === route || pathName.startsWith(route + "/")

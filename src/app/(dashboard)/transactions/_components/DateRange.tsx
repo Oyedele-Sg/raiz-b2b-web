@@ -5,6 +5,7 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import "@/styles/date-range.css";
 import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
+import Button from "@/components/ui/Button";
 
 interface DateRangeProps {
   onApply: (range: { startDate?: Date; endDate?: Date }) => void;
@@ -56,12 +57,9 @@ const DateRange: React.FC<DateRangeProps> = ({ onApply, onClose }) => {
         >
           Cancel
         </button>
-        <button
-          onClick={handleApply}
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
-        >
+        <Button onClick={handleApply} className=" rounded-md ">
           Apply
-        </button>
+        </Button>
       </div>
     </div>
   );

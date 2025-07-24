@@ -1,5 +1,5 @@
 import React from "react";
-import TransactionStats from "./components/TransactionStats";
+import TransactionStats from "./_components/TransactionStats";
 import TransactionTable from "../_components/TransactionTable";
 
 const TransactionsPage = () => {
