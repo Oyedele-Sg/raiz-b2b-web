@@ -18,7 +18,7 @@ import {
   FetchTransactionReportApi,
 } from "@/services/transactions";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
-import { findWalletByCurrency } from "@/utils/helpers";
+import { findWalletByCurrency, getCurrencySymbol } from "@/utils/helpers";
 import { useUser } from "@/lib/hooks/useUser";
 import { ITransaction } from "@/types/transactions";
 import Skeleton from "react-loading-skeleton";
@@ -31,10 +31,10 @@ import { AnimatePresence } from "motion/react";
 import SideModalWrapper from "./SideModalWrapper";
 import Pagination from "@/components/ui/Pagination";
 import Image from "next/image";
-import DateRange from "../transactions/components/DateRange";
+import DateRange from "../transactions/_components/DateRange";
 import { format } from "date-fns";
 import { LiaTimesSolid } from "react-icons/lia";
-import TransactionMoreOptions from "../transactions/components/TransactionMoreOptions";
+import TransactionMoreOptions from "../transactions/_components/TransactionMoreOptions";
 import TxnReceipt from "./transaction-history/TxnReceipt";
 import FilterHistory from "./transaction-history/FilterHistory";
 import { GetTransactionClasses } from "@/services/transactions";
@@ -143,7 +143,9 @@ const TransactionTable = ({ pagination, topRightOpts }: Props) => {
               isDebit ? " text-raiz-gray-700" : "text-[#079455]"
             }`}
           >
-            {isDebit ? "-" : "+"}${Math.abs(info?.getValue()).toLocaleString()}
+            {`${isDebit ? "-" : "+"} ${getCurrencySymbol(
+              info.row.original?.currency
+            )}${Math.abs(info?.getValue()).toLocaleString()}`}
           </span>
         );
       },
