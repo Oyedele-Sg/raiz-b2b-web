@@ -501,3 +501,18 @@ export const confirmStripePaymentIntent = async (
 
   return res.data;
 };
+
+export const GetTransactionsAnalyticsStatusApi = async (
+  wallet_id: string
+): Promise<{
+  pending: number;
+  completed: number;
+  failed: number;
+  percentage_pending_difference_since_last_month: number;
+  percentage_completed_difference_since_last_month: number;
+}> => {
+  const response = await AuthAxios.get(
+    `/business/transactions/transaction-reports/analytics/status/?wallet_id=${wallet_id}`
+  );
+  return response?.data;
+};

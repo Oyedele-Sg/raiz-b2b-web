@@ -13,18 +13,23 @@ import AddBvnModal from "@/app/(dashboard)/_components/createNgnAcct/AddBvnModal
 import NgnSuccessModal from "@/app/(dashboard)/_components/createNgnAcct/NgnSuccessModal";
 import LogoutModal from "../modals/LogoutModal";
 import { useUser } from "@/lib/hooks/useUser";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { PersonaVerificationApi } from "@/services/user";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { FetchUserRewardsApi, PersonaVerificationApi } from "@/services/user";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
 import SetTransactionPin from "@/app/(dashboard)/_components/transaction-pin/SetTransactionPin";
-import { findWalletByCurrency, truncateString } from "@/utils/helpers";
+import {
+  findWalletByCurrency,
+  getTierInfo,
+  truncateString,
+} from "@/utils/helpers";
 import PaymentLinkModal from "../modals/PaymentLinkModal";
 import { CreateUSDWalletApi } from "@/services/business";
 import Spinner from "../ui/Spinner";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
 import Avatar from "../ui/Avatar";
 import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
+import Rewards from "@/app/(dashboard)/_components/rewards/Rewards";
 
 // Dynamically import PersonaReact with SSR disabled
 const PersonaReact = dynamic(() => import("persona-react"), { ssr: false });
@@ -34,7 +39,7 @@ const Sidebar = () => {
   const pathName = usePathname();
   const { setSelectedCurrency } = useCurrencyStore();
   const [showModal, setShowModal] = useState<
-    "acctSetup" | "getNgn" | "set-pin" | null
+    "acctSetup" | "getNgn" | "set-pin" | "rewards" | null
   >(null);
   const [showBvnModal, setShowBvnModal] = useState(false);
   const [successful, setSuccessful] = useState(false);
@@ -145,6 +150,8 @@ const Sidebar = () => {
         );
       case "set-pin":
         return <SetTransactionPin close={handleCloseModal} />;
+      case "rewards":
+        return <Rewards close={handleCloseModal} data={pointsData} />;
       default:
         break;
     }
@@ -153,19 +160,45 @@ const Sidebar = () => {
   const renderMenuItem = (item: ISidebarMenuItem, index: number) => {
     const isActive =
       item.link === "/" ? pathName === item.link : pathName.includes(item.link);
-
+    const isLocked = item?.locked;
     return (
       <Link
         key={index}
-        href={item.link}
-        className={`flex items-center gap-3 py-2 px-2 xl:px-3 font-bold text-[15px] xl:text-base  leading-tight hover:bg-[#eaecff]/40 hover:rounded-md outline-none ${
-          isActive
+        href={isLocked ? "#" : item.link}
+        tabIndex={isLocked ? -1 : 0}
+        className={`flex items-center justify-between gap-3 py-2 px-2 xl:px-3 font-bold text-[15px] xl:text-base leading-tight outline-none
+        ${
+          isLocked
+            ? "cursor-not-allowed pointer-events-none opacity-60"
+            : "hover:bg-[#eaecff]/40 hover:rounded-md"
+        }
+        ${
+          isActive && !isLocked
             ? "bg-[#eaecff]/40 rounded-[6px] text-primary2"
-            : "text-raiz-gray-600 "
+            : "text-raiz-gray-600"
         }`}
       >
-        {item.icon(isActive)}
-        {item.name}
+        <div className="flex gap-3 items-center">
+          {item.icon(isActive)}
+          {item.name}
+        </div>
+        {isLocked && (
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path
+              opacity="0.35"
+              d="M15 17.5002H5C3.61917 17.5002 2.5 16.381 2.5 15.0002V8.3335C2.5 6.95266 3.61917 5.8335 5 5.8335H15C16.3808 5.8335 17.5 6.95266 17.5 8.3335V15.0002C17.5 16.381 16.3808 17.5002 15 17.5002Z"
+              fill="black"
+            />
+            <path
+              d="M6.66667 5.8335C6.66667 3.99266 8.15917 2.50016 10 2.50016C11.8408 2.50016 13.3333 3.99266 13.3333 5.8335H15C15 3.07183 12.7617 0.833496 10 0.833496C7.23833 0.833496 5 3.07183 5 5.8335H6.66667Z"
+              fill="black"
+            />
+            <path
+              d="M9.99992 10C9.07909 10 8.33325 10.7458 8.33325 11.6667C8.33325 12.5875 9.07909 13.3333 9.99992 13.3333C10.9208 13.3333 11.6666 12.5875 11.6666 11.6667C11.6666 10.7458 10.9208 10 9.99992 10Z"
+              fill="black"
+            />
+          </svg>
+        )}
       </Link>
     );
   };
@@ -181,6 +214,11 @@ const Sidebar = () => {
     },
   });
 
+  const { data: pointsData } = useQuery({
+    queryKey: ["reward-points"],
+    queryFn: FetchUserRewardsApi,
+  });
+  const { currentTier } = getTierInfo(pointsData?.point || 0);
   const NGNAcct = findWalletByCurrency(user, "NGN");
   const USDAcct = findWalletByCurrency(user, "USD");
   const verificationStatus =
@@ -414,6 +452,34 @@ const Sidebar = () => {
             : statuses.map((status, index) =>
                 status.condition ? <StatusCard key={index} {...status} /> : null
               )}
+          <div className="flex gap-2 items-center mt-6">
+            <button
+              onClick={() => setShowModal("rewards")}
+              className="pl-2 pr-2.5 py-1.5 bg-amber-100 rounded-3xl inline-flex justify-center items-center gap-0.5 overflow-hidden"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M7.99967 1.33333C4.31767 1.33333 1.33301 4.31799 1.33301 7.99999C1.33301 11.682 4.31767 14.6667 7.99967 14.6667C11.6817 14.6667 14.6663 11.682 14.6663 7.99999C14.6663 4.31799 11.6817 1.33333 7.99967 1.33333ZM11.441 7.52466L10.3977 8.53866C10.2403 8.69133 10.1683 8.91199 10.205 9.12866L10.4483 10.5633C10.541 11.108 9.96834 11.5227 9.47967 11.2647L8.19301 10.5853C7.99901 10.4827 7.76701 10.4827 7.57234 10.584L6.28367 11.2587C5.79434 11.5147 5.22301 11.0987 5.31767 10.554L5.56634 9.12066C5.60367 8.90466 5.53234 8.68333 5.37567 8.52999L4.33567 7.51266C3.93967 7.12599 4.15967 6.45399 4.70634 6.37599L6.14634 6.16933C6.36367 6.13799 6.55167 6.00199 6.64901 5.80533L7.29501 4.50199C7.54034 4.00666 8.24701 4.00799 8.49101 4.50399L9.13234 5.80999C9.22901 6.00666 9.41634 6.14333 9.63367 6.17533L11.073 6.38666C11.6197 6.46733 11.837 7.13933 11.441 7.52466Z"
+                  fill="#FBB756"
+                />
+                <path
+                  d="M9.6338 6.17534L11.0731 6.38667C11.6198 6.46734 11.8371 7.13934 11.4405 7.52467L10.3971 8.53867C10.2398 8.69134 10.1678 8.91201 10.2045 9.12867L10.4478 10.5633C10.5405 11.108 9.9678 11.5227 9.47913 11.2647L8.19246 10.5853C7.99846 10.4827 7.76646 10.4827 7.5718 10.584L6.28313 11.2587C5.7938 11.5147 5.22246 11.0987 5.31713 10.554L5.5658 9.12067C5.60313 8.90467 5.5318 8.68401 5.37513 8.53001L4.33513 7.51267C3.9398 7.12601 4.1598 6.45401 4.70646 6.37601L6.14646 6.16934C6.3638 6.13801 6.5518 6.00201 6.64913 5.80534L7.29513 4.50201C7.54046 4.00667 8.24713 4.00801 8.49046 4.50401L9.1318 5.81001C9.22913 6.00667 9.41713 6.14334 9.6338 6.17534Z"
+                  fill="#FCF2E3"
+                />
+              </svg>
+              <span className="justify-start text-zinc-900 text-xs font-normal  leading-tight">
+                {pointsData?.point || 0}
+              </span>
+            </button>
+            <button
+              onClick={() => setShowModal("rewards")}
+              className="pl-2 pr-2.5 py-1.5 bg-amber-100 rounded-3xl inline-flex justify-center items-center gap-0.5 overflow-hidden"
+            >
+              <div className="justify-start text-zinc-900 text-xs font-normal leading-tight">
+                {currentTier?.level || ""}
+              </div>
+            </button>
+          </div>
           <div className="flex justify-between items-center gap-2 mt-6 w-full pb-5 pt-4 border-t border-[#eaecf0]">
             <div className="flex items-center gap-1.5  ">
               <Avatar src={userPfp} name="pfp" size={isXLarge ? 40 : 30} />

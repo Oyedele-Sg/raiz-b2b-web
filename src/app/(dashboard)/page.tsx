@@ -10,6 +10,7 @@ import CryptoDashboard from "./_components/crypto/dashboard/CryptoDashboard";
 // import { useUser } from "@/lib/hooks/useUser";
 // import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
 import TransactionTable from "./_components/TransactionTable";
+import BillRequests from "./_components/BillRequests";
 
 export default function Home() {
   const { selectedCurrency } = useCurrencyStore();
@@ -21,6 +22,7 @@ export default function Home() {
   return (
     <section>
       <DashboardSummary />
+      <BillRequests />
       <TransactionTable topRightOpts="link" />
       {/* <section className="grid grid-cols-12 mt-8 gap-6 xl:gap-12">
         <div className="col-span-8 flex flex-col gap-[2rem]">

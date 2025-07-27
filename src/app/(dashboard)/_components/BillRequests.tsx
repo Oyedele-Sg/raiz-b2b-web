@@ -52,7 +52,7 @@ const BillRow = ({
     setOpenModal("reject");
   };
   return (
-    <div className="w-full px-[15px] py-[18px] bg-[#f3eee9] rounded-[20px] flex-col justify-center items-start gap-4 inline-flex">
+    <div className="w-full max-w-[335px] px-[15px] py-[18px] bg-[#f3eee9] rounded-[20px] flex-col justify-center items-start gap-4 inline-flex">
       <div className=" flex items-center justify-between w-full">
         <div className="flex gap-2 ">
           <Avatar
@@ -200,7 +200,7 @@ const BillRequests = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full my-8">
       <div className="flex items-center justify-between w-full mb-5">
         <h6 className="text-raiz-gray-900 text-base font-semibold  leading-snug">
           Bill Request
@@ -214,7 +214,7 @@ const BillRequests = () => {
           </svg>
         </button>
       </div>
-      <section className="flex flex-col gap-4 w-full max-h-[568px] overflow-y-scroll">
+      <section className="flex gap-4 w-full max-h-[568px] overflow-x-scroll">
         {isLoading ? (
           <div className="w-full px-[15px] py-[18px] rounded-[20px] flex-col justify-center items-start gap-4 inline-flex">
             <div className="flex items-center justify-between w-full">
