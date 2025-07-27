@@ -1,29 +1,42 @@
+"use client";
+import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
+import { useUser } from "@/lib/hooks/useUser";
+import { GetTransactionsAnalyticsStatusApi } from "@/services/transactions";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import React from "react";
 import { GoArrowUp } from "react-icons/go";
 
-const customersData = [
-  {
-    title: "Completed Transactions",
-    value: 2420,
-    change: 40,
-  },
-  {
-    title: "Pending Transactions",
-    value: 316,
-    change: -10,
-  },
-  {
-    title: "Failed Transactions",
-    value: 1216,
-    change: -20,
-  },
-];
-
 const TransactionStats = () => {
+  const { user } = useUser();
+  const currentWallet = useCurrentWallet(user);
+  const { data } = useQuery({
+    queryFn: () =>
+      GetTransactionsAnalyticsStatusApi(currentWallet?.wallet_id || ""),
+    queryKey: ["txn-analytics-status", currentWallet?.wallet_id],
+  });
+  const txnData = data
+    ? [
+        {
+          title: "Completed Transactions",
+          value: data.completed,
+          change: data.percentage_completed_difference_since_last_month,
+        },
+        {
+          title: "Pending Transactions",
+          value: data.pending,
+          change: data.percentage_pending_difference_since_last_month,
+        },
+        {
+          title: "Failed Transactions",
+          value: data.failed,
+          change: 0, // API doesn't return % diff for failed transactions
+        },
+      ]
+    : [];
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-[2rem] ">
-      {customersData.map((each, index) => {
+      {txnData.map((each, index) => {
         const value =
           each.change > 0 ? "positive" : each.change < 0 ? "negative" : "zero";
 
@@ -34,22 +47,22 @@ const TransactionStats = () => {
           >
             <div className="flex justify-between w-full">
               <span className="text-zinc-900  font-semibold">{each.title}</span>
-              <button>
+              {/* <button>
                 <Image
                   src={"/icons/more.svg"}
                   alt="options"
                   width={20}
                   height={20}
                 />
-              </button>
+              </button> */}
             </div>
             <div className="flex flex-col w-full justify-between  ">
               <span className="text-gray-950 text-[1.2rem] xl:text-[2rem] font-semibold font-monzo  leading-[38.40px]">
                 {each.value.toLocaleString()}
               </span>
-              <div className="flex w-full justify-between items-end gap-2 xl:gap-4">
-                {value !== "zero" && (
-                  <div className="flex items-center gap-0.5 whitespace-nowrap">
+              <div className="flex w-full justify-between items-end gap-2 xl:gap-3">
+                <div className="flex items-center gap-0.5 whitespace-nowrap">
+                  {each.change !== 0 && (
                     <GoArrowUp
                       size={20}
                       className={
@@ -60,24 +73,25 @@ const TransactionStats = () => {
                           : ""
                       }
                     />
-                    <span
-                      className={`${
-                        value === "positive"
-                          ? "text-raiz-success-500"
-                          : value === "negative"
-                          ? "text-raiz-error"
-                          : "text-raiz-gray-950"
-                      }  text-center text-[11px]  xl:text-sm font-bold  leading-[16.80px]`}
-                    >
-                      {`${each.change}%`}{" "}
-                      <span className="text-raiz-gray-700 font-normal">
-                        vs last month
-                      </span>
+                  )}
+                  <span
+                    className={`${
+                      value === "positive"
+                        ? "text-raiz-success-500"
+                        : value === "negative"
+                        ? "text-raiz-error"
+                        : "text-raiz-gray-700"
+                    } text-center text-[10px] xl:text-sm font-bold leading-[16.80px]`}
+                  >
+                    {each.change !== 0 ? `${each.change}%` : "No change"}{" "}
+                    <span className="text-raiz-gray-700 font-normal">
+                      vs last month
                     </span>
-                  </div>
-                )}
+                  </span>
+                </div>
+
                 <Image
-                  className="w-[100px] xl:w-[128px]"
+                  className="w-[100px]"
                   src={
                     value === "positive"
                       ? "/icons/positiveChart2.svg"

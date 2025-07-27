@@ -143,8 +143,6 @@ const AnalyticsPage = () => {
     setShowCustomCalendar(false);
   };
 
-  console.log("custcatrange", selectedCategoryRange);
-  console.log("custtRange", selectedRange);
   return (
     <section className="mt-10">
       <h2 className="text-zinc-900 text-2xl font-bold  leading-7 mb-8">
