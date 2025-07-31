@@ -1,5 +1,6 @@
 import { AuthAxios, CustomAxiosRequestConfig } from "@/lib/authAxios";
 import {
+  FeedbackPayload,
   IFetchRewardsParams,
   IRewardActivityResponse,
   IRewardPoint,
@@ -63,7 +64,6 @@ export const updateUsernameApi = async (username: string) => {
   return response?.data;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const PersonaVerificationApi = async (inquiry_id: string) => {
   const response = await AuthAxios.post(
     `/business/account_user/verifications/persona/?inquiry_id=${inquiry_id}`,
@@ -84,5 +84,13 @@ export const SearchAllUsersApi = async (
   const response = await AuthAxios.get(`/business/account_user/search/all/`, {
     params: queryParams,
   });
+  return response?.data;
+};
+
+export const FeedbacksApi = async (data: FeedbackPayload) => {
+  const response = await AuthAxios.post(
+    "/business/account_user/features/requests/",
+    data
+  );
   return response?.data;
 };

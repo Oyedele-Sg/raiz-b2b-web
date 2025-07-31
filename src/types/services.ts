@@ -592,3 +592,9 @@ export interface FinalizeAfricaPayinResponse
   collection_bank_name: string;
   collection_account_name: string;
 }
+
+export interface FeedbackPayload {
+  email: string;
+  feedback: string;
+  feature: string;
+}

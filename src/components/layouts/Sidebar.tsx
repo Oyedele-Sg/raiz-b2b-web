@@ -30,6 +30,7 @@ import { useCurrencyStore } from "@/store/useCurrencyStore";
 import Avatar from "../ui/Avatar";
 import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 import Rewards from "@/app/(dashboard)/_components/rewards/Rewards";
+import FeedbacksModal from "../modals/FeedbacksModal";
 
 // Dynamically import PersonaReact with SSR disabled
 const PersonaReact = dynamic(() => import("persona-react"), { ssr: false });
@@ -47,6 +48,7 @@ const Sidebar = () => {
   const [showPaymentLinkModal, setShowPaymentLinkModal] = useState(false);
   const [isIframeLoading, setIsIframeLoading] = useState(true);
   const [canRenderPersona, setCanRenderPersona] = useState(false);
+  const [showFeedbacks, setShowFeedbacks] = useState(false);
   const [userPfp, setUserPfp] = useState(
     user?.business_account?.business_image || "/images/default-pfp.svg"
   );
@@ -443,6 +445,43 @@ const Sidebar = () => {
       <section className="flex flex-col justify-between h-[85%] mt-8 px-4 gap-8">
         <nav className="flex flex-col gap-5">
           {SidebarMenus.map((item, index) => renderMenuItem(item, index))}
+          <button
+            onClick={() => setShowFeedbacks(true)}
+            className={`flex items-center justify-between gap-3 py-2 px-2 xl:px-3 font-bold text-[15px] xl:text-base leading-tight outline-none hover:bg-[#eaecff]/40 hover:rounded-md  }
+        ${
+          showFeedbacks
+            ? "bg-[#eaecff]/40 rounded-[6px] text-primary2"
+            : "text-raiz-gray-600"
+        }`}
+          >
+            <div className="flex gap-3 items-center">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M17 18.43H13L8.54999 21.39C7.88999 21.83 7 21.36 7 20.56V18.43C4 18.43 2 16.43 2 13.43V7.42993C2 4.42993 4 2.42993 7 2.42993H17C20 2.42993 22 4.42993 22 7.42993V13.43C22 16.43 20 18.43 17 18.43Z"
+                  stroke="#A89AB9"
+                  strokeWidth="1.5"
+                  strokeMiterlimit="10"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M11.9998 11.3599V11.1499C11.9998 10.4699 12.4198 10.1099 12.8398 9.81989C13.2498 9.53989 13.6598 9.1799 13.6598 8.5199C13.6598 7.5999 12.9198 6.85986 11.9998 6.85986C11.0798 6.85986 10.3398 7.5999 10.3398 8.5199"
+                  stroke="#A89AB9"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M11.9955 13.75H12.0045"
+                  stroke="#A89AB9"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span className=" text-left"> Feedback & Requests</span>
+            </div>
+          </button>
         </nav>
 
         {/* User status Info */}
@@ -540,6 +579,9 @@ const Sidebar = () => {
       )}
       {showPaymentLinkModal && (
         <PaymentLinkModal close={() => setShowPaymentLinkModal(false)} />
+      )}
+      {showFeedbacks && (
+        <FeedbacksModal close={() => setShowFeedbacks(false)} />
       )}
     </aside>
   );
