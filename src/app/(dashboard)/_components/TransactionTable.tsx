@@ -18,7 +18,11 @@ import {
   FetchTransactionReportApi,
 } from "@/services/transactions";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
-import { findWalletByCurrency, getCurrencySymbol } from "@/utils/helpers";
+import {
+  convertTime,
+  findWalletByCurrency,
+  getCurrencySymbol,
+} from "@/utils/helpers";
 import { useUser } from "@/lib/hooks/useUser";
 import { ITransaction } from "@/types/transactions";
 import Skeleton from "react-loading-skeleton";
@@ -169,7 +173,7 @@ const TransactionTable = ({ pagination, topRightOpts }: Props) => {
       header: "Date",
       cell: (info) => (
         <span className="text-sm font-brSonoma text-raiz-gray-700">
-          {dayjs(info.getValue()).format("DD MMM YYYY @ h:mm A")}
+          {dayjs(convertTime(info.getValue())).format("DD MMM YYYY @ h:mm A")}
         </span>
       ),
     }),
