@@ -85,7 +85,7 @@ const Sidebar = () => {
     mutationFn: (inquiry_id: string) => PersonaVerificationApi(inquiry_id),
     onSuccess: () => {
       toast.success(
-        "Account setup complete! Stakeholders must verify to activate USD account."
+        "Account registration successful. You'll receive an email from our banking partner regarding the next step for your onboarding"
       );
       qc.invalidateQueries({ queryKey: ["user"] });
       handleCloseModal();
