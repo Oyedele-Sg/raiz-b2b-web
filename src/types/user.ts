@@ -7,8 +7,21 @@ export interface IEntityType {
   entity_type_id: number;
 }
 
+interface Country {
+  country_name: string;
+  country_code: string;
+  currency: string;
+  is_supported: boolean;
+  country_flag: string;
+  area_code: string;
+  country_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface IEntity {
   entity_type_id: number;
+  country: Country;
   country_id: string;
   is_entity_blocked: boolean;
   is_entity_frozen: boolean;

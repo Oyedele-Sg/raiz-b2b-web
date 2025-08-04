@@ -306,8 +306,19 @@ export interface FormField {
 export interface IUsBeneficiaryPayload {
   optionType: IUsBeneficiaryOptionType;
   label: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
+  data: {
+    bank_name: string;
+    account_number: string;
+    routing_number: string;
+    account_type: "checking" | "savings";
+    account_owner_name: string;
+    street_line_1: string;
+    street_line_2: string;
+    city: string;
+    state: string;
+    postal_code: string;
+    payment_rail: "ach" | "wire";
+  };
 }
 
 export interface IUsBeneficiariesParams {

@@ -45,6 +45,9 @@ const Infos = () => {
 
   const NGNAcct = findWalletByCurrency(user, "NGN");
   const USDAcct = findWalletByCurrency(user, "USD");
+  const isNigerian =
+    user?.business_account?.entity?.country?.country_name?.toLowerCase() ===
+    "nigeria";
 
   const statuses = [
     {
@@ -80,7 +83,7 @@ const Infos = () => {
             onClick={() => setShowModal("acctSetup")}
             className="text-primary2 text-xs xl:text-sm font-bold"
           >
-            Upgrade
+            Verify Now
           </button>
         </div>
       ),
@@ -214,7 +217,8 @@ const Infos = () => {
       condition:
         verificationStatus === "completed" &&
         USDAcct &&
-        !NGNAcct &&
+        isNigerian &&
+        (isNigerian ? !NGNAcct : true) &&
         hasTransactionPin,
       icon: <Image src={"/icons/ngn.svg"} width={32} height={32} alt="NGN" />,
       title: "Get a Naira (NGN) Account",

@@ -224,6 +224,9 @@ const Sidebar = () => {
   const { currentTier } = getTierInfo(pointsData?.point || 0);
   const NGNAcct = findWalletByCurrency(user, "NGN");
   const USDAcct = findWalletByCurrency(user, "USD");
+  const isNigerian =
+    user?.business_account?.entity?.country?.country_name?.toLowerCase() ===
+    "nigeria";
   const verificationStatus =
     user?.business_account?.business_verifications?.[0]?.verification_status;
   const hasTransactionPin = user?.has_transaction_pin;
@@ -261,7 +264,7 @@ const Sidebar = () => {
             onClick={() => setShowModal("acctSetup")}
             className="text-primary2 text-xs xl:text-sm font-bold"
           >
-            Upgrade
+            Verify Now
           </button>
         </div>
       ),
@@ -395,7 +398,8 @@ const Sidebar = () => {
       condition:
         verificationStatus === "completed" &&
         USDAcct &&
-        !NGNAcct &&
+        isNigerian &&
+        (isNigerian ? !NGNAcct : true) &&
         hasTransactionPin,
       icon: <Image src={"/icons/ngn.svg"} width={32} height={32} alt="NGN" />,
       title: "Get a Naira (NGN) Account",
@@ -414,7 +418,7 @@ const Sidebar = () => {
     {
       condition:
         verificationStatus === "completed" &&
-        NGNAcct &&
+        (isNigerian ? NGNAcct : true) &&
         hasTransactionPin &&
         USDAcct,
       icon: <Image src={"/icons/paylink.svg"} width={32} height={32} alt="" />,
