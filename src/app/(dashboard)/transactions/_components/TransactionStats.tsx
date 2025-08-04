@@ -83,7 +83,7 @@ const TransactionStats = () => {
                         : "text-raiz-gray-700"
                     } text-center text-[10px] xl:text-sm font-bold leading-[16.80px]`}
                   >
-                    {each.change !== 0 ? `${each.change}%` : "No change"}{" "}
+                    {each.change !== 0 ? `${each.change}%` : "0%"}{" "}
                     <span className="text-raiz-gray-700 font-normal">
                       vs last month
                     </span>

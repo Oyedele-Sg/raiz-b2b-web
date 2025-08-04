@@ -112,6 +112,7 @@ const Sidebar = () => {
           }}
           onComplete={({ inquiryId }) => {
             PersonaMutation.mutate(inquiryId);
+            // console.log("inq", inquiryId);
           }}
           onCancel={() => {
             toast.warning("Your verification was cancelled");

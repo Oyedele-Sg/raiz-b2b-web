@@ -512,7 +512,10 @@ export const GetTransactionsAnalyticsStatusApi = async (
   percentage_completed_difference_since_last_month: number;
 }> => {
   const response = await AuthAxios.get(
-    `/business/transactions/transaction-reports/analytics/status/?wallet_id=${wallet_id}`
+    `/business/transactions/transaction-reports/analytics/status/?wallet_id=${wallet_id}`,
+    {
+      silent: true,
+    } as CustomAxiosRequestConfig
   );
   return response?.data;
 };

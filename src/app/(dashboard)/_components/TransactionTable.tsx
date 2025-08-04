@@ -18,7 +18,11 @@ import {
   FetchTransactionReportApi,
 } from "@/services/transactions";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
-import { findWalletByCurrency, getCurrencySymbol } from "@/utils/helpers";
+import {
+  convertTime,
+  findWalletByCurrency,
+  getCurrencySymbol,
+} from "@/utils/helpers";
 import { useUser } from "@/lib/hooks/useUser";
 import { ITransaction } from "@/types/transactions";
 import Skeleton from "react-loading-skeleton";
@@ -38,6 +42,7 @@ import TransactionMoreOptions from "../transactions/_components/TransactionMoreO
 import TxnReceipt from "./transaction-history/TxnReceipt";
 import FilterHistory from "./transaction-history/FilterHistory";
 import { GetTransactionClasses } from "@/services/transactions";
+import { toast } from "sonner";
 
 type customDateType = {
   day: string;
@@ -168,7 +173,7 @@ const TransactionTable = ({ pagination, topRightOpts }: Props) => {
       header: "Date",
       cell: (info) => (
         <span className="text-sm font-brSonoma text-raiz-gray-700">
-          {dayjs(info.getValue()).format("DD MMM YYYY @ h:mm A")}
+          {dayjs(convertTime(info.getValue())).format("DD MMM YYYY @ h:mm A")}
         </span>
       ),
     }),
@@ -287,6 +292,15 @@ const TransactionTable = ({ pagination, topRightOpts }: Props) => {
     filterParams?.transaction_class_id ||
     filterParams.transaction_status_id;
 
+  const handleSendButton = () => {
+    if (!currentWallet) {
+      toast.warning(
+        "You do not have a wallet for this currency. Create one first!"
+      );
+    } else {
+      setShowSend(true);
+    }
+  };
   return (
     <section className="w-full mt-8">
       <div className="flex justify-between items-center mb-6">
@@ -470,7 +484,7 @@ const TransactionTable = ({ pagination, topRightOpts }: Props) => {
             in real time.
           </p>
           <Button
-            onClick={() => setShowSend(true)}
+            onClick={() => handleSendButton()}
             className="h-10 w-[191px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
           >
             <svg width="21" height="20" viewBox="0 0 21 20" fill="none">

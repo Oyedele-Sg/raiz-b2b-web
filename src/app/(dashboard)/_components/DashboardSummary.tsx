@@ -143,7 +143,7 @@ const DashboardSummary = () => {
           onClick={() => setOpenModal("selectAcct")}
           className="px-3 py-1 bg-violet-100/60 rounded-3xl inline-flex justify-center items-center gap-2"
         >
-          <span className=" text-zinc-700 text-xs font-medium font-brSonoma leading-tight">
+          <span className=" text-zinc-700 text-sm font-semibold font-brSonoma leading-tight">
             Switch Account
           </span>
           <Image
