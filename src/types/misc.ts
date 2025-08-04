@@ -46,7 +46,8 @@ export interface AccountSetupProps {
 
 export type IUSDSendOptions =
   | "to Raizer"
-  | "bank transfer"
+  | "usBank"
+  | "internationalRemittance"
   | "to debit card"
   | "to paypal"
   | "to canada"

@@ -278,7 +278,12 @@ const USBankBeneficiary = ({ close }: Props) => {
                 </label>
                 <div className="flex flex-col gap-3">
                   {["checking", "savings"].map((option) => (
-                    <div key={option} className="flex items-center gap-2">
+                    <div
+                      onClick={() => setFieldValue("account_type", option)}
+                      role="button"
+                      key={option}
+                      className="flex items-center gap-2"
+                    >
                       <Radio
                         checked={values.account_type === option}
                         onChange={() => setFieldValue("account_type", option)}

@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 // import BankTypeModal from "./BankTypeModal";
 // import SendOptions from "../SendOptions";
 import AddBeneficiary from "./AddBeneficiary";
@@ -25,7 +25,6 @@ export type ToUsdBanksStepsType =
 interface Props {
   close: () => void;
   bankType: bankTypeProp;
-  setBankType: Dispatch<SetStateAction<bankTypeProp | undefined>>;
 }
 
 const ToUsdBanks = ({ close, bankType }: Props) => {
