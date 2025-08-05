@@ -609,3 +609,20 @@ export interface FeedbackPayload {
   feedback: string;
   feature: string;
 }
+
+interface MonthlyVolume {
+  month: string; // e.g., "Sep 2024"
+  value: number;
+}
+
+interface MonthlyActivity {
+  month: string;
+  transfer: number;
+  swap: number;
+  top_up: number;
+}
+
+export interface VolumeAndActivityData {
+  volume: MonthlyVolume[];
+  activity: MonthlyActivity[];
+}

@@ -6,8 +6,10 @@ import { z } from "zod";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
 import SelectCurrencyModal from "./SelectCurrencyModal";
-import { getCurrencySymbol } from "@/utils/helpers";
+import { findWalletByCurrency, getCurrencySymbol } from "@/utils/helpers";
 import ErrorMessage from "@/components/ui/ErrorMessage";
+import { useUser } from "@/lib/hooks/useUser";
+import { toast } from "sonner";
 
 interface Props {
   close: () => void;
@@ -26,6 +28,7 @@ const SwapDetail = ({
   timeLeft,
   loading,
 }: Props) => {
+  const { user } = useUser();
   const { selectedCurrency } = useCurrencyStore();
   const [error, setError] = useState<string | null>(null);
   const {
@@ -80,6 +83,7 @@ const SwapDetail = ({
     }
   };
 
+  const NGNAcct = findWalletByCurrency(user, "NGN");
   const displayValue = () => {
     if (isFocused || !amount)
       return amount ? `${getCurrencySymbol(swapFromCurrency)}${rawAmount}` : "";
@@ -95,7 +99,14 @@ const SwapDetail = ({
     return `${minutes}:${secs < 10 ? "0" + secs : secs}`;
   };
 
-  // console.log("sswaFrom", swapFromWallet);
+  const handleNext = () => {
+    if (!NGNAcct) {
+      toast.warning("You have to have both an NGN and a USD account to swap");
+      return;
+    } else {
+      goNext();
+    }
+  };
   return (
     <div>
       <SideWrapperHeader
@@ -196,7 +207,7 @@ const SwapDetail = ({
               <span className=" font-semibold"> {formatTime(timeLeft)}</span>
             </p>
           </div>
-          <Button disabled={loading || !!error || !amount} onClick={goNext}>
+          <Button disabled={loading || !!error || !amount} onClick={handleNext}>
             {loading ? "Fetching rates..." : "Continue"}
           </Button>
         </div>
