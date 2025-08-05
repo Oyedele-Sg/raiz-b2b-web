@@ -21,8 +21,8 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FetchTransactionReportChartApi } from "@/services/business";
 import { useUser } from "@/lib/hooks/useUser";
-import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
 import { ITxnReportPayload } from "@/types/services";
+import { findWalletByCurrency } from "@/utils/helpers";
 
 ChartJS.register(
   LineElement,
@@ -36,9 +36,19 @@ ChartJS.register(
 );
 
 const InflowOutflow = () => {
-  const { selectedCurrency } = useCurrencyStore();
   const { user } = useUser();
-  const currentWallet = useCurrentWallet(user);
+  const NGNAcct = findWalletByCurrency(user, "NGN");
+  const USDAcct = findWalletByCurrency(user, "USD");
+  const { selectedCurrency } = useCurrencyStore();
+  const getCurrentWallet = () => {
+    if (selectedCurrency.name === "NGN") {
+      return NGNAcct;
+    } else if (selectedCurrency.name === "USD") {
+      return USDAcct;
+    }
+  };
+
+  const currentWallet = getCurrentWallet();
 
   // Default to 12 months (365 days)
   const numberOfDays = 365;

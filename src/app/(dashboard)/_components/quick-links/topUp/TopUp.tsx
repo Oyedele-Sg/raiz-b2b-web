@@ -4,7 +4,7 @@ import SideModalWrapper from "../../SideModalWrapper";
 import { AnimatePresence } from "motion/react";
 import Image from "next/image";
 import { copyToClipboard, findWalletByCurrency } from "@/utils/helpers";
-import Button from "@/components/ui/Button";
+// import Button from "@/components/ui/Button";
 import { useUser } from "@/lib/hooks/useUser";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
 
@@ -93,13 +93,31 @@ const TopUp = ({ close }: Props) => {
                   <span className="text-center justify-start text-gray-500 text-base font-normal leading-normal">
                     Routing Number (ACH)
                   </span>
-                  <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
-                    {
-                      currentWallet?.routing?.find(
-                        (route) => route.routing_type_name === "ACH"
-                      )?.routing
-                    }
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
+                      {
+                        currentWallet?.routing?.find(
+                          (route) => route.routing_type_name === "ACH"
+                        )?.routing
+                      }
+                    </p>
+                    <button
+                      onClick={() =>
+                        copyToClipboard(
+                          currentWallet?.routing?.find(
+                            (route) => route.routing_type_name === "ACH"
+                          )?.routing || ""
+                        )
+                      }
+                    >
+                      <Image
+                        src={"/icons/copy.svg"}
+                        alt={"copy"}
+                        width={16}
+                        height={16}
+                      />
+                    </button>
+                  </div>
                 </div>
               )}
               {/* Routing Number (WIRE) */}
@@ -108,13 +126,31 @@ const TopUp = ({ close }: Props) => {
                   <span className="text-center justify-start text-gray-500 text-base font-normal leading-normal">
                     Routing Number (WIRE)
                   </span>
-                  <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
-                    {
-                      currentWallet?.routing?.find(
-                        (route) => route.routing_type_name === "WIRE"
-                      )?.routing
-                    }
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
+                      {
+                        currentWallet?.routing?.find(
+                          (route) => route.routing_type_name === "WIRE"
+                        )?.routing
+                      }
+                    </p>
+                    <button
+                      onClick={() =>
+                        copyToClipboard(
+                          currentWallet?.routing?.find(
+                            (route) => route.routing_type_name === "WIRE"
+                          )?.routing || ""
+                        )
+                      }
+                    >
+                      <Image
+                        src={"/icons/copy.svg"}
+                        alt={"copy"}
+                        width={16}
+                        height={16}
+                      />
+                    </button>
+                  </div>
                 </div>
               )}
               {/* Currency */}
@@ -129,13 +165,29 @@ const TopUp = ({ close }: Props) => {
               {/*  Address */}
               {selectedCurrency.name === "USD" && (
                 <div className="w-full flex flex-col justify-center items-center">
-                  <span className="text-center justify-start text-gray-500 text-base font-normal leading-normal">
-                    Address
-                  </span>
+                  <div className="flex gap-2 items-center">
+                    <span className="text-center justify-start text-gray-500 text-base font-normal leading-normal">
+                      Address
+                    </span>
+                    <button
+                      onClick={() =>
+                        copyToClipboard("1801 Main St., Kansas City, MO 64108")
+                      }
+                    >
+                      <Image
+                        src={"/icons/copy.svg"}
+                        alt={"copy"}
+                        width={16}
+                        height={16}
+                      />
+                    </button>
+                  </div>
                   {/* Fix this */}
-                  <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
-                    270 Park Avenue, NY 10017
-                  </p>
+                  <div className="flex items-start gap-2">
+                    <p className="text-center justify-start  text-zinc-900 text-lg font-semibold  leading-normal">
+                      1801 Main St., Kansas City, MO 64108
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
@@ -146,11 +198,11 @@ const TopUp = ({ close }: Props) => {
               Your Raiz account balance will be funded immediately
             </p>
           </div>
-          <Button
+          {/* <Button
             onClick={() => copyToClipboard(currentWallet?.account_number || "")}
           >
             Copy Account Details
-          </Button>
+          </Button> */}
         </div>
       </SideModalWrapper>
     </AnimatePresence>

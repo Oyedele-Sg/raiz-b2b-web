@@ -347,7 +347,7 @@ export const helpSupportData = [
         </defs>
       </svg>
     ),
-    link: "https://www.raiz.app",
+    link: "https://www.raiz.app/blog",
   },
   {
     name: "App rating",

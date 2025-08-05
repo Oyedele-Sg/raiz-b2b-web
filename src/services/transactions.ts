@@ -29,6 +29,7 @@ import {
   IUsBeneficiariesParams,
   IUsBeneficiariesResponse,
   IUsBeneficiaryPayload,
+  VolumeAndActivityData,
 } from "@/types/services";
 import { ITransactionClass } from "@/types/transactions";
 
@@ -513,6 +514,18 @@ export const GetTransactionsAnalyticsStatusApi = async (
 }> => {
   const response = await AuthAxios.get(
     `/business/transactions/transaction-reports/analytics/status/?wallet_id=${wallet_id}`,
+    {
+      silent: true,
+    } as CustomAxiosRequestConfig
+  );
+  return response?.data;
+};
+
+export const GetActivityStats = async (
+  wallet_id: string
+): Promise<VolumeAndActivityData> => {
+  const response = await AuthAxios.get(
+    `/business/transactions/transaction-reports/analytics/activities/?wallet_id=${wallet_id}`,
     {
       silent: true,
     } as CustomAxiosRequestConfig

@@ -150,7 +150,10 @@ const TransactionTable = ({ pagination, topRightOpts }: Props) => {
           >
             {`${isDebit ? "-" : "+"} ${getCurrencySymbol(
               info.row.original?.currency
-            )}${Math.abs(info?.getValue())?.toFixed(2).toLocaleString()}`}
+            )}${Math.abs(info?.getValue())?.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}`}
           </span>
         );
       },

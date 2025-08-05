@@ -13,7 +13,12 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import React from "react";
-// import Skeleton from "react-loading-skeleton";
+import { useQuery } from "@tanstack/react-query";
+import { GetActivityStats } from "@/services/transactions";
+import { useUser } from "@/lib/hooks/useUser";
+import Skeleton from "react-loading-skeleton";
+import { findWalletByCurrency } from "@/utils/helpers";
+import { useCurrencyStore } from "@/store/useCurrencyStore";
 
 ChartJS.register(
   CategoryScale,
@@ -25,7 +30,41 @@ ChartJS.register(
 );
 
 const ActivityTypesChart = () => {
-  const labels = [
+  const { user } = useUser();
+  const NGNAcct = findWalletByCurrency(user, "NGN");
+  const USDAcct = findWalletByCurrency(user, "USD");
+  const { selectedCurrency } = useCurrencyStore();
+  const getCurrentWallet = () => {
+    if (selectedCurrency.name === "NGN") {
+      return NGNAcct;
+    } else if (selectedCurrency.name === "USD") {
+      return USDAcct;
+    }
+  };
+
+  const currentWallet = getCurrentWallet();
+  // const currentWallet = useCurrentWallet(user);
+  const { data, isLoading } = useQuery({
+    queryKey: ["activity-stats", currentWallet?.wallet_id],
+    queryFn: () => GetActivityStats(currentWallet?.wallet_id || ""),
+    enabled: !!currentWallet?.wallet_id,
+  });
+
+  // Show skeleton while loading
+  if (isLoading) {
+    return (
+      <div className="w-1/2 h-[300px] p-4 bg-white rounded-2xl border-[#F3F1F6] border">
+        <Skeleton height={250} />
+      </div>
+    );
+  }
+
+  // Extract month labels from activity data
+  const labels = data?.activity?.map((item) => {
+    // Convert "Sep 2024" format to "Sep"
+    const month = item.month.split(" ")[0];
+    return month;
+  }) || [
     "Jan",
     "Feb",
     "Mar",
@@ -45,29 +84,17 @@ const ActivityTypesChart = () => {
     datasets: [
       {
         label: "Swap",
-        // data: [
-        //   300000, 350000, 200000, 220000, 250000, 240000, 260000, 270000,
-        //   280000, 290000, 310000, 260000,
-        // ],
-        data: [],
+        data: data?.activity?.map((item) => item.swap) || [],
         backgroundColor: "#0D6494",
       },
       {
         label: "Send",
-        // data: [
-        //   200000, 250000, 200000, 180000, 230000, 210000, 240000, 230000,
-        //   260000, 250000, 270000, 240000,
-        // ],
-        data: [],
+        data: data?.activity?.map((item) => item.transfer) || [],
         backgroundColor: "#4693BE",
       },
       {
         label: "Top Up",
-        // data: [
-        //   300000, 350000, 180000, 200000, 300000, 250000, 280000, 270000,
-        //   250000, 240000, 260000, 220000,
-        // ],
-        data: [],
+        data: data?.activity?.map((item) => item.top_up) || [],
         backgroundColor: "#E0EEF5",
       },
     ],
