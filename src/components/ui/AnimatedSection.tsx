@@ -8,10 +8,10 @@ const defaultAnimationProps = {
   // exit: { opacity: 0, x: "100%" },
   transition: {
     duration: 2,
-    type: "spring",
+    // type: "spring",
     stiffness: 80, // Softer spring effect
     damping: 25, // More bounce and slower settle
-    ease: "easeInOut",
+    easing: "ease-in-out",
   },
 };
 

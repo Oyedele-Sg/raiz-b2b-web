@@ -5,6 +5,7 @@ export interface ISidebarMenuItem {
   name: string;
   link: string;
   icon: (isActive: boolean) => React.ReactNode;
+  locked?: boolean;
 }
 
 export interface IRegisterFormValues {
@@ -45,7 +46,8 @@ export interface AccountSetupProps {
 
 export type IUSDSendOptions =
   | "to Raizer"
-  | "bank transfer"
+  | "usBank"
+  | "internationalRemittance"
   | "to debit card"
   | "to paypal"
   | "to canada"

@@ -29,6 +29,7 @@ interface SelectFieldProps {
   isSearchable?: boolean;
   height?: string;
   isLoading?: boolean;
+  controlPadding?: string;
 }
 
 const SelectField: React.FC<SelectFieldProps> = ({
@@ -47,6 +48,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   style,
   height,
   isLoading,
+  controlPadding,
 }) => {
   const [optionsIsShown, setOptionsIsShown] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<Option | null>(value);
@@ -54,7 +56,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   const customStyles: StylesConfig<Option, boolean> = {
     control: (provided: any, state: any) => ({
       ...provided,
-      padding: "0 15px",
+      padding: controlPadding || "0 15px",
       fontSize: "14px",
       outline: "none",
       boxShadow: state.isFocused ? "" : "",

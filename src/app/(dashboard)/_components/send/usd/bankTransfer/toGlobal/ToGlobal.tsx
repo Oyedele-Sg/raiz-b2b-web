@@ -1,5 +1,5 @@
 "use client";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ToUsdBanksStepsType } from "../toBanks/ToUsdBanks";
 import { bankTypeProp } from "../BankTransfer";
 import { useSendStore } from "@/store/Send";
@@ -21,7 +21,6 @@ import { toast } from "sonner";
 interface Props {
   close: () => void;
   bankType: bankTypeProp;
-  setBankType: Dispatch<SetStateAction<bankTypeProp | undefined>>;
 }
 
 const ToGlobal = ({ close, bankType }: Props) => {

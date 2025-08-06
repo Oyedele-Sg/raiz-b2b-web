@@ -111,7 +111,7 @@ export interface ITransactionParams {
   transaction_class_id?: number | null;
   payment_method_id?: string | null;
   transaction_report_id?: string | null;
-  transaction_category_id?: string | null;
+  transaction_category_id?: number | null;
   start_date?: string | null;
   end_date?: string | null;
   transaction_reference?: string | null;
@@ -306,8 +306,19 @@ export interface FormField {
 export interface IUsBeneficiaryPayload {
   optionType: IUsBeneficiaryOptionType;
   label: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
+  data: {
+    bank_name: string;
+    account_number: string;
+    routing_number: string;
+    account_type: "checking" | "savings";
+    account_owner_name: string;
+    street_line_1: string;
+    street_line_2: string;
+    city: string;
+    state: string;
+    postal_code: string;
+    payment_rail: "ach" | "wire";
+  };
 }
 
 export interface IUsBeneficiariesParams {
@@ -591,4 +602,27 @@ export interface FinalizeAfricaPayinResponse
   collection_account_number: string;
   collection_bank_name: string;
   collection_account_name: string;
+}
+
+export interface FeedbackPayload {
+  email: string;
+  feedback: string;
+  feature: string;
+}
+
+interface MonthlyVolume {
+  month: string; // e.g., "Sep 2024"
+  value: number;
+}
+
+interface MonthlyActivity {
+  month: string;
+  transfer: number;
+  swap: number;
+  top_up: number;
+}
+
+export interface VolumeAndActivityData {
+  volume: MonthlyVolume[];
+  activity: MonthlyActivity[];
 }

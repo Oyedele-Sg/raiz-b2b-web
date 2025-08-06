@@ -15,7 +15,7 @@
 }
 
 body {
-  font-family: var(--font-monzo);
+  font-family: var(--monzo);
 }
 
 .persona-widget__iframe {

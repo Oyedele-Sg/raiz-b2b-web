@@ -41,6 +41,8 @@ const Payout = ({ close, goNext, setPaymentError }: Props) => {
       qc.invalidateQueries({ queryKey: ["user"] });
       qc.invalidateQueries({ queryKey: ["transactions-report"] });
       qc.invalidateQueries({ queryKey: ["p2p-beneficiaries-recents"] });
+      qc.invalidateQueries({ queryKey: ["income-expense-chart"] });
+      qc.invalidateQueries({ queryKey: ["transaction-report-categories"] });
       if (response?.transaction_status?.transaction_status === "completed") {
         actions.setStatus("success");
       } else if (
