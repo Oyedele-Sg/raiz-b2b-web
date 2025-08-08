@@ -40,7 +40,7 @@ const guestPayAmountSchema = z.object({
       /^\+?\d+$/,
       "Account number must contain only digits and may start with '+'"
     ),
-  network: z.string().min(1, "Network is required"),
+  network: z.string().optional(),
   reason: z
     .string({ required_error: "Reason for sending is required" })
     .min(3, "At least 3 characters"),

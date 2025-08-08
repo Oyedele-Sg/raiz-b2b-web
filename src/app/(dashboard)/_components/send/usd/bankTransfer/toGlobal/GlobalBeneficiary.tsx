@@ -275,7 +275,7 @@ const GlobalBeneficiary = ({ close }: Props) => {
   return (
     <div className="flex flex-col h-full">
       <SideWrapperHeader
-        title="Global Remittance"
+        title="International Remittance"
         close={close}
         titleColor="text-zincc-900"
       />
