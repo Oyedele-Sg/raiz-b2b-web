@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useGuestSendStore } from "@/store/GuestSend";
 import { useQuery } from "@tanstack/react-query";
 import { GetAfricaPayinChannelsApi } from "@/services/business";
+import { getCurrencySymbol } from "@/utils/helpers";
 
 interface Props {
   data: IBusinessPaymentData;
@@ -82,25 +83,25 @@ const PayLocalAmount = ({
       {
         message: "Amount must be at least 1",
       }
-    )
-    .refine(
-      (val) => {
-        const parsedInCents = Math.round(parseFloat(val) * 100);
-        return min === undefined || parsedInCents >= min;
-      },
-      {
-        message: `Amount must not be less than $${(min / 100).toFixed(2)}`,
-      }
-    )
-    .refine(
-      (val) => {
-        const parsedInCents = Math.round(parseFloat(val) * 100);
-        return max === undefined || max === 0 || parsedInCents <= max;
-      },
-      {
-        message: `Amount must not exceed $${(max / 100).toFixed(2)}`,
-      }
     );
+  // .refine(
+  //   (val) => {
+  //     const parsedInCents = Math.round(parseFloat(val) * 100);
+  //     return min === undefined || parsedInCents >= min;
+  //   },
+  //   {
+  //     message: `Amount must not be less than $${(min / 100).toFixed(2)}`,
+  //   }
+  // )
+  // .refine(
+  //   (val) => {
+  //     const parsedInCents = Math.round(parseFloat(val) * 100);
+  //     return max === undefined || max === 0 || parsedInCents <= max;
+  //   },
+  //   {
+  //     message: `Amount must not exceed $${(max / 100).toFixed(2)}`,
+  //   }
+  // );
 
   // Revalidate amount when min or max changes
   useEffect(() => {
@@ -272,6 +273,20 @@ const PayLocalAmount = ({
                 placeholder="$0.00"
                 className="w-full h-16 bg-transparent text-center text-4xl font-bold focus:outline-none"
               />
+            </div>
+            <div className="py-2 px-4 rounded-2xl flex items-center gap-3 text-zinc-900 text-xs bg-indigo-100/60">
+              <div className="flex items-center gap-1">
+                <span>Min</span>
+                <span className="font-bold">{`${getCurrencySymbol(
+                  guestLocalCurrency?.currency || ""
+                )}${min?.toLocaleString()}`}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span>Max</span>
+                <span className="font-bold">{`${getCurrencySymbol(
+                  guestLocalCurrency?.currency || ""
+                )}${max?.toLocaleString()}`}</span>
+              </div>
             </div>
 
             {error && <ErrorMessage message={error} />}
