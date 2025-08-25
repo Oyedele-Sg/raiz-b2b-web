@@ -57,7 +57,8 @@ export const FetchNotificationsApi = async (
 ): Promise<INotificationResponse> => {
   const response = await AuthAxios.get(`/business/entities/notifications/`, {
     params,
-  });
+    silent: true,
+  } as CustomAxiosRequestConfig);
   return response?.data;
 };
 
