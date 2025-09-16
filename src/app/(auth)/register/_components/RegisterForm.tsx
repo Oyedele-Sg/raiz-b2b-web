@@ -201,7 +201,7 @@ const RegisterForm = () => {
                 By continuing, you agree to Raiz&#39;s{" "}
                 <Link
                   className="text-raiz-gray-800 font-bold leading-[18.20px] hover:underline"
-                  href={"https://www.raiz.app/terms-of-use.php"}
+                  href={"https://www.raiz.app/terms"}
                   target="_blank"
                 >
                   Term of Service
@@ -209,7 +209,7 @@ const RegisterForm = () => {
                 and acknowledge our{" "}
                 <Link
                   className="text-raiz-gray-800 font-bold leading-[18.20px] hover:underline"
-                  href={"https://www.raiz.app/privacy-policy.php"}
+                  href={"https://www.raiz.app/privacy-policy"}
                   target="_blank"
                 >
                   Privacy Policy
