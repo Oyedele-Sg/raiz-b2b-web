@@ -70,6 +70,7 @@ const TransactionTable = ({ pagination, topRightOpts }: Props) => {
   const { selectedCurrency } = useCurrencyStore();
   const NGNAcct = findWalletByCurrency(user, "NGN");
   const USDAcct = findWalletByCurrency(user, "USD");
+  const SBCAcct = findWalletByCurrency(user, "SBC");
   const { currency } = useSendStore();
   const [showSend, setShowSend] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -220,6 +221,8 @@ const TransactionTable = ({ pagination, topRightOpts }: Props) => {
       return NGNAcct;
     } else if (selectedCurrency.name === "USD") {
       return USDAcct;
+    } else if (selectedCurrency.name === "SBC") {
+      return SBCAcct;
     }
   };
 
