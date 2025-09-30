@@ -169,7 +169,7 @@ const Sidebar = () => {
         key={index}
         href={isLocked ? "#" : item.link}
         tabIndex={isLocked ? -1 : 0}
-        className={`flex items-center justify-between gap-3 py-2 px-2 xl:px-3 font-bold text-[15px] xl:text-base leading-tight outline-none
+        className={`flex items-center justify-between gap-3 py-2 px-2 xl:px-3  text-sm leading-tight outline-none
         ${
           isLocked
             ? "cursor-not-allowed pointer-events-none opacity-60"
@@ -177,8 +177,8 @@ const Sidebar = () => {
         }
         ${
           isActive && !isLocked
-            ? "bg-[#eaecff]/40 rounded-[6px] text-primary2"
-            : "text-raiz-gray-600"
+            ? "bg-[#eaecff]/40 rounded-[6px] text-primary2 font-bold"
+            : "text-raiz-gray-600 font-medium"
         }`}
       >
         <div className="flex gap-3 items-center">
@@ -452,11 +452,11 @@ const Sidebar = () => {
           {SidebarMenus.map((item, index) => renderMenuItem(item, index))}
           <button
             onClick={() => setShowFeedbacks(true)}
-            className={`flex items-center justify-between gap-3 py-2 px-2 xl:px-3 font-bold text-[15px] xl:text-base leading-tight outline-none hover:bg-[#eaecff]/40 hover:rounded-md  }
+            className={`flex items-center justify-between gap-2 py-2 px-2 xl:px-3 text-sm leading-tight outline-none hover:bg-[#eaecff]/40 hover:rounded-md  }
         ${
           showFeedbacks
-            ? "bg-[#eaecff]/40 rounded-[6px] text-primary2"
-            : "text-raiz-gray-600"
+            ? "bg-[#eaecff]/40 rounded-[6px] text-primary2 font-bold"
+            : "text-raiz-gray-600 font-medium"
         }`}
           >
             <div className="flex gap-3 items-center">
