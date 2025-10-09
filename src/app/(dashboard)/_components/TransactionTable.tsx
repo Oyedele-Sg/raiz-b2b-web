@@ -22,6 +22,7 @@ import {
   convertTime,
   findWalletByCurrency,
   getCurrencySymbol,
+  truncateString,
 } from "@/utils/helpers";
 import { useUser } from "@/lib/hooks/useUser";
 import { ITransaction } from "@/types/transactions";
@@ -132,7 +133,7 @@ const TransactionTable = ({ pagination, topRightOpts }: Props) => {
             src={info?.row?.original?.third_party_profile_image_url}
           />
           <span className="text-sm font-medium text-raiz-gray-950">
-            {info.getValue()}
+            {truncateString(info.getValue(), 18)}
           </span>
         </div>
       ),
