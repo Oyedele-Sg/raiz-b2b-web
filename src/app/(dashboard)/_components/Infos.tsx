@@ -4,23 +4,20 @@ import { useUser } from "@/lib/hooks/useUser";
 import { CreateUSDWalletApi } from "@/services/business";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
 import { findWalletByCurrency } from "@/utils/helpers";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { ReactNode, useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import React, { ReactNode, useState } from "react";
 import { toast } from "sonner";
 import Image from "next/image";
-import PersonaReact from "persona-react";
-import { PersonaVerificationApi } from "@/services/user";
 import CreateNgnAcct from "./createNgnAcct/CreateNgnAcct";
 import SetTransactionPin from "./transaction-pin/SetTransactionPin";
 import { AnimatePresence } from "motion/react";
 import SideModalWrapper from "./SideModalWrapper";
+import BusinessVerificationModal from "@/app/(dashboard)/_components/BusinessVerificationModal";
 
 const Infos = () => {
   const [showModal, setShowModal] = useState<
     "acctSetup" | "getNgn" | "set-pin" | null
   >(null);
-  const [isIframeLoading, setIsIframeLoading] = useState(true);
-  const [canRenderPersona, setCanRenderPersona] = useState(false);
   const { user, refetch } = useUser();
   const { setSelectedCurrency } = useCurrencyStore();
 
@@ -255,83 +252,10 @@ const Infos = () => {
     //    },
   ];
 
-  // Extract environment variables and user data with fallbacks
-  const templateId = process.env.NEXT_PUBLIC_PERSONA_TEMPLATE_ID || "";
-  const environmentId = process.env.NEXT_PUBLIC_PERSONA_ENVIRONMENT_ID || "";
-  const referenceId = user?.business_account?.entity_id || "";
-
-  useEffect(() => {
-    if (!templateId || !environmentId) {
-      toast.error("Verification setup is incomplete. Please contact support.");
-      setIsIframeLoading(false);
-      setCanRenderPersona(false);
-    } else {
-      setCanRenderPersona(true);
-    }
-  }, [templateId, environmentId]);
-
-  const qc = useQueryClient();
-  const PersonaMutation = useMutation({
-    mutationFn: (inquiry_id: string) => PersonaVerificationApi(inquiry_id),
-    onSuccess: () => {
-      toast.success(
-        "Account registration successful. You'll receive an email from our banking partner regarding the next step for your onboarding"
-      );
-      qc.invalidateQueries({ queryKey: ["user"] });
-      handleCloseModal();
-    },
-  });
-
-  const InlineInquiry = () => {
-    return (
-      <div className="h-full relative">
-        {isIframeLoading && (
-          <div className="absolute inset-0 flex items-center justify-center ">
-            <div
-              aria-label="Loading verification"
-              className="loader animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-primary2"
-            />
-          </div>
-        )}
-        <PersonaReact
-          templateId={templateId}
-          environmentId={environmentId}
-          referenceId={referenceId}
-          onLoad={() => {
-            setIsIframeLoading(false);
-          }}
-          onComplete={({ inquiryId }) => {
-            PersonaMutation.mutate(inquiryId);
-          }}
-          onCancel={() => {
-            toast.warning("Your verification was cancelled");
-            handleCloseModal();
-          }}
-          onError={() => {
-            toast.error("Failed to load verification. Please try again.");
-            setIsIframeLoading(false);
-          }}
-        />
-      </div>
-    );
-  };
-
   const displayModal = () => {
     switch (showModal) {
       case "acctSetup":
-        if (!canRenderPersona) {
-          return (
-            <div className="h-full flex justify-center items-center">
-              Verification is unavailable at this time.
-            </div>
-          );
-        } else {
-          return (
-            <div className="h-full">
-              <InlineInquiry />
-            </div>
-          );
-        }
+        return <BusinessVerificationModal close={handleCloseModal} />;
 
       case "getNgn":
         return (
