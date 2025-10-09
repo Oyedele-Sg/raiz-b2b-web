@@ -12,6 +12,7 @@ import { useMutation } from "@tanstack/react-query";
 import { ILoginPayload, LoginApi } from "@/services/auth";
 import AnimatedSection from "@/components/ui/AnimatedSection";
 import { passwordHash } from "@/utils/helpers";
+import { useRouter } from "next/navigation";
 
 const LoginForm = ({
   setStep,
@@ -19,9 +20,18 @@ const LoginForm = ({
   setStep: Dispatch<SetStateAction<number>>;
 }) => {
   const [showPassword, setShowPassword] = useState(false);
-
+  const router = useRouter();
   const loginMutation = useMutation({
     mutationFn: (data: ILoginPayload) => LoginApi(data),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      if (
+        error?.data?.message &&
+        error?.data?.message?.includes("please verify your email")
+      ) {
+        router.push("/verify");
+      }
+    },
     onSuccess: () => {
       setStep(2);
     },

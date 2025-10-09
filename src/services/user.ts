@@ -1,6 +1,7 @@
 import { AuthAxios, CustomAxiosRequestConfig } from "@/lib/authAxios";
 import {
   FeedbackPayload,
+  IBusinessVerificationPayload,
   IFetchRewardsParams,
   IRewardActivityResponse,
   IRewardPoint,
@@ -64,10 +65,12 @@ export const updateUsernameApi = async (username: string) => {
   return response?.data;
 };
 
-export const PersonaVerificationApi = async (inquiry_id: string) => {
+export const BusinessVerificationApi = async (
+  payload: IBusinessVerificationPayload
+) => {
   const response = await AuthAxios.post(
-    `/business/account_user/verifications/persona/?inquiry_id=${inquiry_id}`,
-    null
+    `/business/account_user/verifications/persona/`,
+    payload
   );
   return response?.data;
 };

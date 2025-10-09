@@ -98,6 +98,12 @@ const TxnReceiptDetail = ({ close, transaction, goNext }: Props) => {
                   title="Transaction Type"
                   value={transaction?.transaction_type.transaction_type}
                 />
+
+                <ListDetailItem
+                  title="Beneficiary"
+                  value={transaction?.third_party_name}
+                />
+
                 <ListDetailItem
                   title="Date"
                   value={dayjs(
