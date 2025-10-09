@@ -9,6 +9,7 @@ import InputField from "@/components/ui/InputField";
 import { useMutation } from "@tanstack/react-query";
 import { IResetPasswordPayload, ResetPasswordApi } from "@/services/auth";
 import { passwordHash } from "@/utils/helpers";
+import { encryptData } from "@/lib/headerEncryption";
 
 interface Props {
   setPage: Dispatch<SetStateAction<number>>;
@@ -61,7 +62,7 @@ const CreateNewPassword = ({ setPage, otp, setUser }: Props) => {
     ),
     onSubmit: (val) => {
       resetPasswordMutation.mutate({
-        otp,
+        otp: encryptData(otp),
         password: passwordHash(val.password),
       });
     },

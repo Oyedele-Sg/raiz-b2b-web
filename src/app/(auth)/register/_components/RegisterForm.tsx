@@ -24,6 +24,7 @@ import {
 import { AnimatePresence } from "motion/react";
 import Checkbox from "@/components/ui/Checkbox";
 import { passwordHash } from "@/utils/helpers";
+import { encryptData } from "@/lib/headerEncryption";
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -151,7 +152,7 @@ const RegisterForm = () => {
         };
         signupMutation.mutate(payload);
       } else if (currentStep === 4) {
-        verifyOtpMutation.mutate({ otp: formik.values.otp });
+        verifyOtpMutation.mutate({ otp: encryptData(formik.values.otp) });
       } else if (currentStep === steps.length) {
         router.push("/login");
       }
