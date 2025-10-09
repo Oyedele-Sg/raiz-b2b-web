@@ -4,7 +4,7 @@ import { useUser } from "@/lib/hooks/useUser";
 import { CreateUSDWalletApi } from "@/services/business";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
 import { findWalletByCurrency } from "@/utils/helpers";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { ReactNode, useState } from "react";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -23,8 +23,9 @@ const Infos = () => {
 
   const handleCloseModal = () => {
     setShowModal(null);
-    setIsIframeLoading(true);
   };
+
+  const qc = useQueryClient();
   const USDWalletMutation = useMutation({
     mutationFn: CreateUSDWalletApi,
     onSuccess: (response) => {
