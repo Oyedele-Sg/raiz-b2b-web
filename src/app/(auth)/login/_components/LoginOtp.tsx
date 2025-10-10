@@ -14,13 +14,14 @@ import { encryptData } from "@/lib/headerEncryption";
 interface Props {
   setStep: Dispatch<SetStateAction<number>>;
   from: "login" | "welcome-back";
+  email: string;
 }
 
-const LoginOtp = ({ setStep, from }: Props) => {
+const LoginOtp = ({ setStep, from, email }: Props) => {
   const router = useRouter();
   const qc = useQueryClient();
   const loginMutation = useMutation({
-    mutationFn: (data: { otp: string }) => LoginOtpApi(data),
+    mutationFn: (data: { email: string; otp: string }) => LoginOtpApi(data),
     onSuccess: (response) => {
       SetItemToCookie("access_token", response?.access_token);
       qc.invalidateQueries({ queryKey: ["user"] });
@@ -32,7 +33,7 @@ const LoginOtp = ({ setStep, from }: Props) => {
       otp: "",
     },
     onSubmit: () => {
-      loginMutation.mutate({ otp: encryptData(formik.values.otp) });
+      loginMutation.mutate({ otp: encryptData(formik.values.otp), email });
     },
   });
 

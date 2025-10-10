@@ -15,9 +15,10 @@ interface Props {
   setPage: Dispatch<SetStateAction<number>>;
   otp: string;
   setUser: Dispatch<SetStateAction<{ first_name: string; last_name: string }>>;
+  email: string;
 }
 
-const CreateNewPassword = ({ setPage, otp, setUser }: Props) => {
+const CreateNewPassword = ({ setPage, otp, setUser, email }: Props) => {
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
 
@@ -64,6 +65,7 @@ const CreateNewPassword = ({ setPage, otp, setUser }: Props) => {
       resetPasswordMutation.mutate({
         otp: encryptData(otp),
         password: passwordHash(val.password),
+        email,
       });
     },
   });
