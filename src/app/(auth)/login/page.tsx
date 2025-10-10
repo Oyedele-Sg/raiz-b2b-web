@@ -7,6 +7,7 @@ import { AnimatePresence } from "motion/react";
 
 const LoginPage = () => {
   const [step, setStep] = useState(1);
+  const [email, setEmail] = useState("");
 
   return (
     <section className="p-6 md:p-12 h-[calc(100vh-2rem)] md:h-[100vh]">
@@ -14,9 +15,9 @@ const LoginPage = () => {
         <Slider />
         <AnimatePresence>
           {step === 1 ? (
-            <LoginForm setStep={setStep} />
+            <LoginForm setStep={setStep} setEmail={setEmail} />
           ) : (
-            <LoginOtp setStep={setStep} from="login" />
+            <LoginOtp setStep={setStep} from="login" email={email} />
           )}
         </AnimatePresence>
       </div>

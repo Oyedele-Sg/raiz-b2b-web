@@ -8,7 +8,7 @@ import { useFormik } from "formik";
 import AnimatedSection from "@/components/ui/AnimatedSection";
 import { encryptData } from "@/lib/headerEncryption";
 import { SignupVerifyOtpApi } from "@/services/auth";
-import { useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 // import { toast } from 'sonner';
@@ -17,8 +17,12 @@ import Button from "@/components/ui/Button";
 
 const VerifyPage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const email = searchParams.get("email") || "";
   const verifyOtpMutation = useMutation({
-    mutationFn: (data: { otp: string }) => SignupVerifyOtpApi(data),
+    mutationFn: (data: { otp: string; email: string }) =>
+      SignupVerifyOtpApi(data),
     onSuccess: (response) => {
       router.push("/login");
       toast.success(response?.message || "Email verified successfully!");
@@ -29,7 +33,7 @@ const VerifyPage = () => {
       otp: "",
     },
     onSubmit: (values) => {
-      verifyOtpMutation.mutate({ otp: encryptData(values.otp) });
+      verifyOtpMutation.mutate({ otp: encryptData(values.otp), email });
     },
   });
   // const resendOtpMutation = useMutation({

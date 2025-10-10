@@ -79,7 +79,8 @@ const RegisterForm = () => {
   });
 
   const verifyOtpMutation = useMutation({
-    mutationFn: (data: { otp: string }) => SignupVerifyOtpApi(data),
+    mutationFn: (data: { otp: string; email: string }) =>
+      SignupVerifyOtpApi(data),
     onSuccess: (response) => {
       console.log("Signup successful:", response);
       handleNavigate("next");
@@ -152,7 +153,10 @@ const RegisterForm = () => {
         };
         signupMutation.mutate(payload);
       } else if (currentStep === 4) {
-        verifyOtpMutation.mutate({ otp: encryptData(formik.values.otp) });
+        verifyOtpMutation.mutate({
+          otp: encryptData(formik.values.otp),
+          email: formik.values.email,
+        });
       } else if (currentStep === steps.length) {
         router.push("/login");
       }

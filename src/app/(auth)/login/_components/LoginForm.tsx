@@ -16,8 +16,10 @@ import { useRouter } from "next/navigation";
 
 const LoginForm = ({
   setStep,
+  setEmail,
 }: {
   setStep: Dispatch<SetStateAction<number>>;
+  setEmail: Dispatch<SetStateAction<string>>;
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
@@ -29,11 +31,12 @@ const LoginForm = ({
         error?.data?.message &&
         error?.data?.message?.includes("please verify your email")
       ) {
-        router.push("/verify");
+        router.push(`/verify?email=${formik.values.email}`);
       }
     },
     onSuccess: () => {
       setStep(2);
+      setEmail(formik.values.email);
     },
   });
 
