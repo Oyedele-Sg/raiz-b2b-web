@@ -208,7 +208,7 @@ const BusinessVerificationModal = ({ close }: { close: () => void }) => {
         />
       </div>
       <Button
-        disabled={!formik.isValid || BusinessVerificationMutation.isPending}
+        disabled={!formik.dirty || BusinessVerificationMutation.isPending}
         loading={BusinessVerificationMutation.isPending}
         type="submit"
       >
