@@ -34,7 +34,7 @@ type BusinessFormValues = z.infer<typeof BusinessSchema>;
 const BusinessVerificationModal = ({ close }: { close: () => void }) => {
   // Load Google Maps script
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API || "",
     libraries,
   });
 
