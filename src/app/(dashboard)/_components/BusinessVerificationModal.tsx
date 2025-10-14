@@ -126,6 +126,8 @@ const BusinessVerificationModal = ({ close }: { close: () => void }) => {
 
   if (!isLoaded) return <div>Loading...</div>;
 
+  console.log("errrr", formik.errors);
+
   return (
     <form
       onSubmit={formik.handleSubmit}
