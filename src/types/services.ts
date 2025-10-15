@@ -626,3 +626,16 @@ export interface VolumeAndActivityData {
   volume: MonthlyVolume[];
   activity: MonthlyActivity[];
 }
+
+export interface IBusinessVerificationPayload {
+  business_registration_number: string;
+  business_name: string;
+  business_email: string;
+  country_code: string;
+  state: string;
+  zip_code: string;
+  street: string;
+  building_number: string;
+  city: string;
+  length_of_stay_months: number;
+}

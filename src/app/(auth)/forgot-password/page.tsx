@@ -31,12 +31,17 @@ const ForgotPasswordPage = () => {
         return <ResetOtp email={email} setPage={setPage} setOtp={setOtp} />;
       case 3:
         return (
-          <CreateNewPassword setPage={setPage} otp={otp} setUser={setUser} />
+          <CreateNewPassword
+            setPage={setPage}
+            otp={otp}
+            setUser={setUser}
+            email={email}
+          />
         );
       case 4:
         return <WelcomeBack setPage={setPage} email={email} user={user} />;
       case 5:
-        return <LoginOtp from="welcome-back" setStep={setPage} />;
+        return <LoginOtp from="welcome-back" setStep={setPage} email={email} />;
       default:
         break;
     }
