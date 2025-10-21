@@ -206,6 +206,36 @@ const Header = () => {
           </Link> */}
         </div>
       )}
+      {pathName.includes("invoice") && (
+        <div className="flex items-center gap-1 xl:gap-2.5 ">
+          <Link
+            className={`px-2 py-1 ${
+              pathName.endsWith("invoice")
+                ? "text-raiz-gray-900 font-semibold"
+                : "text-raiz-gray-700 font-medium"
+            }  text-sm  font-brSonoma leading-tight `}
+            href={"/invoice"}
+          >
+            Invoices
+          </Link>
+          <Image
+            src={"/icons/forward.svg"}
+            alt="forward"
+            width={16}
+            height={16}
+          />
+          <Link
+            className={`px-2 py-1 ${
+              pathName.endsWith("create-new")
+                ? "text-raiz-gray-900 font-semibold"
+                : "text-raiz-gray-700 font-medium"
+            }  text-sm font-medium font-brSonoma leading-tight `}
+            href={"/invoice/create-new"}
+          >
+            New Invoice
+          </Link>
+        </div>
+      )}
       <div className="relative h-12 w-[285px] xl:w-[312px] ">
         <Image
           className="absolute top-3.5 left-3"

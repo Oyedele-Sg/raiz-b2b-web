@@ -30,6 +30,9 @@ interface SelectFieldProps {
   height?: string;
   isLoading?: boolean;
   controlPadding?: string;
+  bgColor?: string;
+  minHeight?: string;
+  placeholderStyle?: React.CSSProperties;
 }
 
 const SelectField: React.FC<SelectFieldProps> = ({
@@ -49,6 +52,9 @@ const SelectField: React.FC<SelectFieldProps> = ({
   height,
   isLoading,
   controlPadding,
+  bgColor = "#F3F1F6",
+  minHeight = "50px",
+  placeholderStyle,
 }) => {
   const [optionsIsShown, setOptionsIsShown] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<Option | null>(value);
@@ -62,10 +68,10 @@ const SelectField: React.FC<SelectFieldProps> = ({
       boxShadow: state.isFocused ? "" : "",
       borderColor: state.isFocused ? "#6F5B86" : "#F3F1F6",
       borderWidth: "1px",
-      backgroundColor: state.isFocused ? "#fff" : "#F3F1F6",
+      backgroundColor: state.isFocused ? "#fff" : bgColor,
       borderRadius: "8px",
       height: height ? height : "44px",
-      minHeight: "50px",
+      minHeight: minHeight,
       "&:hover": {
         cursor: "pointer",
         borderColor: "none",
@@ -81,6 +87,11 @@ const SelectField: React.FC<SelectFieldProps> = ({
       ...provided,
       //   paddingLeft: "14px",
       //   paddingRight: "14px",
+    }),
+
+    placeholder: (provided: any) => ({
+      ...provided,
+      ...placeholderStyle,
     }),
 
     option: (provided: any, state: any) => ({
@@ -133,6 +144,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
       style={{
         ...style,
         width: width || "100%",
+        height: height || "44px",
       }}
       className=""
     >

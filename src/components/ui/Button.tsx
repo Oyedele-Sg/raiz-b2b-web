@@ -90,6 +90,7 @@ const Button: React.FC<ButtonProps> = ({
           className={`${
             iconPosition === "right" ? "absolute right-4" : "absolute left-4"
           }`}
+          onClick={onClick}
         >
           {typeof icon === "string" ? (
             <Image
@@ -98,7 +99,6 @@ const Button: React.FC<ButtonProps> = ({
               height={20}
               src={icon || ""}
               alt={iconLabel || ""}
-              onClick={onClick}
             />
           ) : (
             icon
