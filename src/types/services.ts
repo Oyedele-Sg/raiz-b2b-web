@@ -57,6 +57,7 @@ export interface IFetchRewardsParams {
 export interface IResetPinPayload {
   otp: string;
   password: string;
+  email: string;
 }
 
 export interface IChangePasswordPayload {
