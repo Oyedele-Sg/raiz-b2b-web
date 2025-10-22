@@ -1,6 +1,7 @@
 "use client";
-import { useCurrencyStore } from "@/store/useCurrencyStore";
-import React, { useState } from "react";
+import { useOutsideClick } from "@/lib/hooks/useOutsideClick";
+import Image from "next/image";
+import React, { useRef, useState } from "react";
 
 interface DiscountInputProps {
   value: number;
@@ -8,6 +9,7 @@ interface DiscountInputProps {
   onChange: (val: number) => void;
   onModeChange?: (mode: "percent" | "value") => void;
   className?: string;
+  currency: "NGN" | "USD" | "SBC";
 }
 
 const DiscountInput: React.FC<DiscountInputProps> = ({
@@ -16,15 +18,17 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
   onChange,
   onModeChange,
   className = "",
+  currency,
 }) => {
   const [mode, setMode] = useState<"percent" | "value">(initialMode);
   const [open, setOpen] = useState(false);
-  const { selectedCurrency } = useCurrencyStore();
   const handleModeChange = (newMode: "percent" | "value") => {
     setMode(newMode);
     setOpen(false);
     if (onModeChange) onModeChange(newMode);
   };
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useOutsideClick(() => setOpen(false), btnRef);
 
   return (
     <div className={`relative flex ${className}`}>
@@ -38,38 +42,30 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
       />
 
       {/* Dropdown */}
-      <div className="relative">
+      <div ref={dropdownRef} className="relative">
         <button
+          ref={btnRef}
           type="button"
           onClick={() => setOpen(!open)}
           className="w-12 border-l-0 border rounded-r-lg h-[50px] font-brSonoma text-xs flex items-center justify-center text-zinc-700 bg-gray-100"
         >
-          {mode === "percent" ? "%" : selectedCurrency?.name}
-          <svg
+          {mode === "percent" ? "%" : currency}
+          <Image
             className="ml-1"
-            width="10"
-            height="6"
-            viewBox="0 0 10 6"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M1 1L5 5L9 1"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+            src="/icons/s-arrow-down.svg"
+            alt="arrow-down"
+            width={12}
+            height={12}
+          />
         </button>
 
         {open && (
-          <div className="absolute right-0 mt-1 w-16 bg-white border rounded-lg shadow-md z-10">
+          <div className="absolute right-0 mt-1 w-16 text-zinc-700  bg-white border rounded-lg shadow-md z-10">
             <button
               type="button"
               onClick={() => handleModeChange("percent")}
-              className={`block w-full text-center py-2 text-sm hover:bg-gray-100 ${
-                mode === "percent" ? "bg-gray-50 font-medium" : ""
+              className={`block w-full text-center py-2 text-xs hover:bg-violet-100/60 ${
+                mode === "percent" ? "bg-gray-50 font-semibold" : ""
               }`}
             >
               %
@@ -77,11 +73,11 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
             <button
               type="button"
               onClick={() => handleModeChange("value")}
-              className={`block w-full text-center py-2 text-sm hover:bg-gray-100 ${
-                mode === "value" ? "bg-gray-50 font-medium" : ""
+              className={`block w-full text-center py-2 text-xs hover:bg-violet-100/60 ${
+                mode === "value" ? "bg-gray-50 font-semibold" : ""
               }`}
             >
-              {selectedCurrency?.name}
+              {currency}
             </button>
           </div>
         )}

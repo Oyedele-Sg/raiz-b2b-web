@@ -23,92 +23,339 @@ import Skeleton from "react-loading-skeleton";
 import InvoiceTableMoreOpts from "./InvoiceTableMoreOpts";
 import EmptyInvoiceTable from "./EmptyInvoiceTable";
 import { CustomerSearchBox } from "./CustomerSearchbox";
+import { useRouter } from "next/navigation";
+import { IInvoice } from "./InvoiceFile";
 
-export interface IInvoice {
-  customer: string;
-  dateIssued: string;
-  dueDate: string;
-  contactPerson: string;
-  status: string;
-  amount: number;
-  email: string;
-  phone: string;
-  dueDays: string;
-  invoiceNo: string;
-  currency: "USD" | "NGN";
-  id: number;
-}
-
-const sampleInvoices: IInvoice[] = [
+export const sampleInvoices: IInvoice[] = [
   {
-    customer: "John Doe Enterprises",
-    dateIssued: "2025-10-01T10:30:00Z",
-    dueDate: "2025-10-10T23:59:59Z",
+    companyName: "Stripe Technologies Inc.",
+    companyAddress: "123 Innovation Drive, San Francisco, CA 94107",
+    id: 2049,
+    invoiceNo: "INV-2049",
+    status: "Pending",
+    currency: "USD",
+    billTo: "Acme Corporation",
     contactPerson: "John Doe",
-    status: "completed",
-    amount: 250000,
-    email: "john.doe@enterprise.com",
-    phone: "+2348012345678",
-    dueDays: "5",
-    invoiceNo: "INV-20251001-001",
-    currency: "NGN",
-    id: 1,
+    customer: "Acme Corporation Ltd.",
+    issueDate: "2025-10-08",
+    dueDate: "2025-11-08",
+    dueDays: "30 Days",
+    items: [
+      {
+        id: 1,
+        description: "Website Design and Development",
+        qty: 1,
+        unitPrice: 3000.99,
+        amount: 3000.99,
+      },
+      {
+        id: 2,
+        description: "Maintenance & Hosting",
+        qty: 6,
+        unitPrice: 200.5,
+        amount: 1203,
+      },
+    ],
+    subTotal: "$4,203.99",
+    discount: "$70.00",
+    tax: "$42.00",
+    total: "$4,175.99",
+    amount: 4175.99,
+    note: "Thank you for your business!",
+    terms: "Payment is due within 30 days.",
+    contact: {
+      phone: "+1 (800) 555-9020",
+      email: "billing@stripe.com",
+      website: "https://stripe.com",
+    },
   },
   {
-    customer: "Acme Corp",
-    dateIssued: "2025-09-25T08:00:00Z",
-    dueDate: "2025-10-05T18:00:00Z",
-    contactPerson: "Jane Smith",
-    status: "pending",
-    amount: 1200,
-    email: "jane.smith@acmecorp.com",
-    phone: "+1 202-555-0183",
-    dueDays: "1",
-    invoiceNo: "INV-20250925-002",
+    companyName: "Flutterwave Ltd.",
+    companyAddress: "19 Olubunmi Owa Street, Lekki, Lagos",
+    id: 3051,
+    invoiceNo: "INV-3051",
+    status: "Paid",
+    currency: "NGN",
+    billTo: "Tech Innovations NG",
+    contactPerson: "Aisha Bello",
+    customer: "Tech Innovations NG",
+    issueDate: "2025-09-02",
+    dueDate: "2025-09-30",
+    dueDays: "28 Days",
+    items: [
+      {
+        id: 1,
+        description: "API Integration Service",
+        qty: 1,
+        unitPrice: 250000,
+        amount: 250000,
+      },
+      {
+        id: 2,
+        description: "Technical Support",
+        qty: 3,
+        unitPrice: 40000,
+        amount: 120000,
+      },
+    ],
+    subTotal: "₦370,000.00",
+    discount: "₦20,000.00",
+    tax: "₦15,000.00",
+    total: "₦365,000.00",
+    amount: 365000,
+    note: "Thanks for trusting Flutterwave!",
+    terms: "Payment received in full.",
+    contact: {
+      phone: "0800-FLUTTER",
+      email: "support@flutterwave.com",
+      website: "https://flutterwave.com",
+    },
+  },
+  {
+    companyName: "Paystack Nigeria",
+    companyAddress: "126 Joel Ogunnaike St, Ikeja GRA, Lagos",
+    id: 1843,
+    invoiceNo: "INV-1843",
+    status: "Overdue",
+    currency: "NGN",
+    billTo: "Bright Systems",
+    contactPerson: "Emeka Chukwu",
+    customer: "Bright Systems Ltd.",
+    issueDate: "2025-08-01",
+    dueDate: "2025-08-31",
+    dueDays: "30 Days",
+    items: [
+      {
+        id: 1,
+        description: "Payment Gateway Setup",
+        qty: 1,
+        unitPrice: 150000,
+        amount: 150000,
+      },
+      {
+        id: 2,
+        description: "Custom Integration",
+        qty: 2,
+        unitPrice: 60000,
+        amount: 120000,
+      },
+    ],
+    subTotal: "₦270,000.00",
+    discount: "₦10,000.00",
+    tax: "₦5,000.00",
+    total: "₦265,000.00",
+    amount: 265000,
+    note: "Please settle your invoice promptly.",
+    terms: "Late payment fee applies after 7 days overdue.",
+    contact: {
+      phone: "+234 1 631 6160",
+      email: "accounts@paystack.com",
+      website: "https://paystack.com",
+    },
+  },
+  {
+    companyName: "Google Cloud",
+    companyAddress: "1600 Amphitheatre Pkwy, Mountain View, CA",
+    id: 4098,
+    invoiceNo: "INV-4098",
+    status: "Paid",
     currency: "USD",
-    id: 2,
-  },
-  {
-    customer: "Beta Solutions Ltd.",
-    dateIssued: "2025-09-10T15:00:00Z",
-    dueDate: "2025-09-20T12:00:00Z",
-    contactPerson: "Michael Johnson",
-    status: "overdue",
-    amount: 78000,
-    email: "m.johnson@betasolutions.com",
-    phone: "+2348098765432",
-    dueDays: "15",
-    invoiceNo: "INV-20250910-003",
-    currency: "NGN",
-    id: 3,
-  },
-  {
-    customer: "Skyline Interiors",
-    dateIssued: "2025-10-05T09:45:00Z",
-    dueDate: "2025-10-15T23:00:00Z",
+    billTo: "DataSoft Analytics",
     contactPerson: "Sarah Lee",
-    status: "pending",
-    amount: 3500,
-    email: "sarah@skylineinteriors.com",
-    phone: "+44 7450 123456",
-    dueDays: "0",
-    invoiceNo: "INV-20251005-004",
-    currency: "USD",
-    id: 4,
+    customer: "DataSoft Analytics Inc.",
+    issueDate: "2025-09-10",
+    dueDate: "2025-10-10",
+    dueDays: "30 Days",
+    items: [
+      {
+        id: 1,
+        description: "Cloud Hosting Services",
+        qty: 3,
+        unitPrice: 120.0,
+        amount: 360.0,
+      },
+      {
+        id: 2,
+        description: "Storage Add-on",
+        qty: 1,
+        unitPrice: 50.0,
+        amount: 50.0,
+      },
+    ],
+    subTotal: "$410.00",
+    discount: "$10.00",
+    tax: "$15.00",
+    total: "$415.00",
+    amount: 415.0,
+    note: "Thank you for using Google Cloud.",
+    terms: "Auto-renewal applies every month.",
+    contact: {
+      phone: "+1 800 355 5787",
+      email: "support@googlecloud.com",
+      website: "https://cloud.google.com",
+    },
   },
   {
-    customer: "Prime Digital Agency",
-    dateIssued: "2025-09-28T11:20:00Z",
-    dueDate: "2025-10-12T23:59:00Z",
-    contactPerson: "David Brown",
-    status: "completed",
-    amount: 156000,
-    email: "contact@primedigital.com",
-    phone: "+2348022233344",
-    dueDays: "3",
-    invoiceNo: "INV-20250928-005",
+    companyName: "Amazon Web Services",
+    companyAddress: "410 Terry Ave N, Seattle, WA 98109",
+    id: 5023,
+    invoiceNo: "INV-5023",
+    status: "Pending",
+    currency: "USD",
+    billTo: "NextGen Solutions",
+    contactPerson: "Carlos Jimenez",
+    customer: "NextGen Solutions LLC",
+    issueDate: "2025-10-05",
+    dueDate: "2025-11-05",
+    dueDays: "30 Days",
+    items: [
+      {
+        id: 1,
+        description: "EC2 Compute Instances",
+        qty: 5,
+        unitPrice: 80,
+        amount: 400,
+      },
+      { id: 2, description: "S3 Storage", qty: 10, unitPrice: 10, amount: 100 },
+    ],
+    subTotal: "$500.00",
+    discount: "$0.00",
+    tax: "$25.00",
+    total: "$525.00",
+    amount: 525,
+    note: "Auto-payment enabled.",
+    terms: "No manual invoice settlement required.",
+    contact: {
+      phone: "+1 888 280 4331",
+      email: "aws-billing@amazon.com",
+      website: "https://aws.amazon.com",
+    },
+  },
+  {
+    companyName: "InterSwitch",
+    companyAddress: "1648C Oko Awo St, Victoria Island, Lagos",
+    id: 6010,
+    invoiceNo: "INV-6010",
+    status: "Paid",
     currency: "NGN",
-    id: 5,
+    billTo: "QuickBuy Retailers",
+    contactPerson: "Ngozi Eze",
+    customer: "QuickBuy Retailers Ltd.",
+    issueDate: "2025-07-20",
+    dueDate: "2025-08-19",
+    dueDays: "30 Days",
+    items: [
+      {
+        id: 1,
+        description: "POS Device Rental",
+        qty: 4,
+        unitPrice: 30000,
+        amount: 120000,
+      },
+      {
+        id: 2,
+        description: "Transaction Fees",
+        qty: 1,
+        unitPrice: 10000,
+        amount: 10000,
+      },
+    ],
+    subTotal: "₦130,000.00",
+    discount: "₦0.00",
+    tax: "₦6,500.00",
+    total: "₦136,500.00",
+    amount: 136500,
+    note: "POS units successfully delivered.",
+    terms: "Fees cover monthly usage and support.",
+    contact: {
+      phone: "0700-INTERSWITCH",
+      email: "support@interswitch.com",
+      website: "https://interswitchgroup.com",
+    },
+  },
+  {
+    companyName: "Meta Platforms Inc.",
+    companyAddress: "1 Hacker Way, Menlo Park, CA 94025",
+    id: 7027,
+    invoiceNo: "INV-7027",
+    status: "Pending",
+    currency: "USD",
+    billTo: "Visionary Media Group",
+    contactPerson: "Elena Costa",
+    customer: "Visionary Media Group",
+    issueDate: "2025-10-01",
+    dueDate: "2025-10-31",
+    dueDays: "30 Days",
+    items: [
+      {
+        id: 1,
+        description: "Ad Campaign Management",
+        qty: 2,
+        unitPrice: 750,
+        amount: 1500,
+      },
+      {
+        id: 2,
+        description: "Audience Analytics",
+        qty: 1,
+        unitPrice: 250,
+        amount: 250,
+      },
+    ],
+    subTotal: "$1,750.00",
+    discount: "$0.00",
+    tax: "$70.00",
+    total: "$1,820.00",
+    amount: 1820,
+    note: "Pending confirmation of next campaign.",
+    terms: "Due before next billing cycle.",
+    contact: {
+      phone: "+1 650 543 4800",
+      email: "finance@meta.com",
+      website: "https://meta.com",
+    },
+  },
+  {
+    companyName: "Microsoft Corporation",
+    companyAddress: "One Microsoft Way, Redmond, WA 98052",
+    id: 8092,
+    invoiceNo: "INV-8092",
+    status: "Overdue",
+    currency: "USD",
+    billTo: "CloudTek Enterprises",
+    contactPerson: "Jason Miller",
+    customer: "CloudTek Enterprises Inc.",
+    issueDate: "2025-07-15",
+    dueDate: "2025-08-15",
+    dueDays: "30 Days",
+    items: [
+      {
+        id: 1,
+        description: "Microsoft 365 Business License",
+        qty: 25,
+        unitPrice: 15,
+        amount: 375,
+      },
+      {
+        id: 2,
+        description: "Azure Storage",
+        qty: 3,
+        unitPrice: 60,
+        amount: 180,
+      },
+    ],
+    subTotal: "$555.00",
+    discount: "$20.00",
+    tax: "$15.00",
+    total: "$550.00",
+    amount: 550,
+    note: "License renewal pending payment.",
+    terms: "Overdue — please make payment to avoid suspension.",
+    contact: {
+      phone: "+1 425 882 8080",
+      email: "accounts@microsoft.com",
+      website: "https://microsoft.com",
+    },
   },
 ];
 
@@ -121,7 +368,7 @@ const InvoicesTable = () => {
     startDate?: Date;
     endDate?: Date;
   }>({});
-
+  const router = useRouter();
   const isLoading = false;
   const statusOptions = [
     { value: "completed", label: "Completed" },
@@ -150,7 +397,7 @@ const InvoicesTable = () => {
         </span>
       ),
     }),
-    columnHelper.accessor("dateIssued", {
+    columnHelper.accessor("issueDate", {
       header: "Date Issued",
       cell: (info) => (
         <span className="text-sm font-brSonoma text-raiz-gray-700">
@@ -177,9 +424,9 @@ const InvoicesTable = () => {
     columnHelper.accessor("status", {
       header: "Status",
       cell: (info) => {
-        const status = info.getValue();
+        const status = info.getValue()?.toLowerCase();
         const dotColor =
-          status === "completed"
+          status === "paid"
             ? "bg-green-500"
             : status === "pending"
             ? "bg-yellow-500"
@@ -210,7 +457,7 @@ const InvoicesTable = () => {
         );
       },
     }),
-    columnHelper.accessor("email", {
+    columnHelper.accessor("contact.email", {
       header: "Email Address",
       cell: (info) => (
         <span className="text-sm font-brSonoma text-raiz-gray-700">
@@ -218,7 +465,7 @@ const InvoicesTable = () => {
         </span>
       ),
     }),
-    columnHelper.accessor("phone", {
+    columnHelper.accessor("contact.phone", {
       header: "Phone Number",
       cell: (info) => (
         <span className="text-sm font-brSonoma text-raiz-gray-700">
@@ -243,10 +490,13 @@ const InvoicesTable = () => {
           <InvoiceTableMoreOpts
             invoice={info.row.original}
             isLast={isLast}
-            onEdit={() => {}}
+            onEdit={() =>
+              router.push(`/invoice/${info?.row?.original?.invoiceNo}`)
+            }
             onCopyLink={() => {}}
             onDownloadPDF={() => {}}
             onSendEmail={() => {}}
+            from="table"
           />
         );
       },

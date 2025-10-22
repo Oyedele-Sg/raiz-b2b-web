@@ -1,14 +1,14 @@
 "use client";
 import React, { useRef, useState } from "react";
-import { Formik } from "formik";
+import { Formik, FormikProps } from "formik";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import InputField from "@/components/ui/InputField";
 import TextareaField from "@/components/ui/TextareaField";
-import SelectField, { Option } from "@/components/ui/SelectField";
+import { Option } from "@/components/ui/SelectField";
 import Button from "@/components/ui/Button";
 import Image from "next/image";
-import { truncateString } from "@/utils/helpers";
+import { getCurrencySymbol, truncateString } from "@/utils/helpers";
 import { useOutsideClick } from "@/lib/hooks/useOutsideClick";
 import { CustomerSearchBox } from "../_components/CustomerSearchbox";
 import InputLabel from "@/components/ui/InputLabel";
@@ -16,6 +16,11 @@ import Link from "next/link";
 import TaxSelect from "../_components/TaxSelect";
 import DiscountInput from "../_components/DiscountInput";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
+import AddNewTax from "../_components/AddNewTax";
+import { useUser } from "@/lib/hooks/useUser";
+import InvoiceSettings from "../_components/InvoiceSettings";
+import { AnimatePresence } from "motion/react";
+import SideModalWrapper from "../../_components/SideModalWrapper";
 
 export type ItemDiscountType = "percent" | "value";
 
@@ -48,11 +53,11 @@ const invoiceSchema = z.object({
 
 type InvoiceFormValues = z.infer<typeof invoiceSchema>;
 
-const currencyOptions: Option[] = [
-  { value: "USD", label: "USD" },
-  { value: "EUR", label: "EUR" },
-  { value: "GBP", label: "GBP" },
-];
+// const currencyOptions: Option[] = [
+//   { value: "USD", label: "USD" },
+//   { value: "EUR", label: "EUR" },
+//   { value: "GBP", label: "GBP" },
+// ];
 
 const taxOptions: Option[] = [
   { value: "", label: "Select Tax" },
@@ -61,17 +66,37 @@ const taxOptions: Option[] = [
 ];
 
 const CreateInvoicePage = () => {
+  const { selectedCurrency } = useCurrencyStore();
+  const { user } = useUser();
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const fileListBtnRef = useRef<HTMLButtonElement>(null);
+  const formikRef = useRef<FormikProps<InvoiceFormValues>>(null);
+  const customerBtnRef = useRef<HTMLButtonElement>(null);
+  const currencyBtnRef = useRef<HTMLButtonElement>(null);
+
   const [files, setFiles] = useState<File[]>([]);
   const [showUploadedFiles, setShowUploadedFiles] = useState(false);
   const [showSearchBox, setShowSearchBox] = useState(false);
+  const [showAddTaxModal, setShowAddTaxModal] = useState(false);
+  const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
+  const [currency, setCurrency] = useState(selectedCurrency?.name);
+  const [showSettings, setShowSettings] = useState(false);
+
   const dropDownRef = useOutsideClick(
     () => setShowUploadedFiles(false),
     fileListBtnRef
   );
-  const { selectedCurrency } = useCurrencyStore();
-  const customerBtnRef = useRef<HTMLButtonElement>(null);
+  const currencyDropdownRef = useOutsideClick(
+    () => setShowCurrencyDropdown(false),
+    currencyBtnRef
+  );
+
+  const currencyOpts =
+    user?.business_account?.wallets?.map((each) => ({
+      value: each?.wallet_type?.currency || "",
+      label: each?.wallet_type?.currency || "",
+    })) || [];
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files ? Array.from(e.target.files) : [];
@@ -88,7 +113,7 @@ const CreateInvoicePage = () => {
   };
 
   const initialValues: InvoiceFormValues = {
-    customerName: "yyy", //fix this guy
+    customerName: "yyyyy", //fix this guy
     invoiceNumber: `INV-${Math.floor(Math.random() * 1000)}`,
     dateIssued: new Date().toISOString().split("T")[0],
     dueDate: new Date().toISOString().split("T")[0],
@@ -136,6 +161,10 @@ const CreateInvoicePage = () => {
     return { subtotal, totalDiscount, totalTax, total };
   };
 
+  const handleAddTax = () => {
+    setShowAddTaxModal(true);
+  };
+
   const handleSubmit = (values: InvoiceFormValues) => {
     const { subtotal, totalDiscount, totalTax, total } = calculateTotals(
       values.items
@@ -158,11 +187,68 @@ const CreateInvoicePage = () => {
 
   return (
     <section className="mt-10 h-full p-6 bg-white ">
-      <h2 className="text-zinc-900 text-2xl font-bold leading-7 mb-8">
-        New Invoice
-      </h2>
-
+      <div className="flex justify-between items-center">
+        <h2 className="text-zinc-900 text-2xl font-bold leading-7 mb-8">
+          New Invoice
+        </h2>
+        <div className="relative">
+          <button
+            ref={currencyBtnRef}
+            onClick={() => setShowCurrencyDropdown(!showCurrencyDropdown)}
+            type="button"
+            className="px-3 py-1.5 bg-violet-100/60 rounded-3xl flex gap-2 items-center hover:bg-violet-200/60 transition-colors"
+          >
+            <span className="text-zinc-700 text-sm font-medium leading-tight font-brSonoma">
+              {`Select Currency (${currency})`}
+            </span>
+            <Image
+              src="/icons/arrow-down.svg"
+              alt="arrow-down"
+              width={16}
+              height={16}
+              className="transition-transform duration-200"
+              style={{
+                transform: showCurrencyDropdown
+                  ? "rotate(180deg)"
+                  : "rotate(0deg)",
+              }}
+            />
+          </button>
+          {showCurrencyDropdown && (
+            <div
+              ref={currencyDropdownRef}
+              className="absolute right-0 top-full mt-2 w-32 bg-white rounded-lg shadow-lg border border-gray-100 z-20"
+            >
+              <ul className="py-1">
+                {currencyOpts.length > 0 ? (
+                  currencyOpts.map((option, i) => (
+                    <li
+                      key={i}
+                      onClick={() => {
+                        formikRef.current?.setFieldValue(
+                          "currency",
+                          option.value
+                        );
+                        setCurrency(option.value);
+                        setShowCurrencyDropdown(false);
+                      }}
+                      className="px-4 py-2 text-sm text-zinc-700 hover:bg-violet-100/60 cursor-pointer transition-colors"
+                    >
+                      {option.label}
+                    </li>
+                  ))
+                ) : (
+                  <li className="px-4 py-2 text-sm text-zinc-500">
+                    No currencies available
+                  </li>
+                )}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
       <Formik
+        innerRef={formikRef}
         initialValues={initialValues}
         validationSchema={toFormikValidationSchema(invoiceSchema)}
         onSubmit={handleSubmit}
@@ -237,43 +323,6 @@ const CreateInvoicePage = () => {
                   errorMessage={formik.touched.dueDate && formik.errors.dueDate}
                 />
               </div>
-
-              {/* Currency & Notes */}
-              <div className="grid grid-cols-2 gap-x-10 ">
-                <SelectField
-                  disabled
-                  label="Currency"
-                  name="currency"
-                  options={currencyOptions}
-                  value={currencyOptions.find(
-                    (opt) => opt.value === formik.values.currency
-                  )}
-                  onChange={(option) =>
-                    formik.setFieldValue("currency", option?.value || "")
-                  }
-                  status={
-                    formik.touched.currency && formik.errors.currency
-                      ? "error"
-                      : null
-                  }
-                  helper={
-                    formik.touched.currency && formik.errors.currency
-                      ? String(formik.errors.currency)
-                      : null
-                  }
-                />
-
-                <TextareaField
-                  label="Notes"
-                  placeholder="Add notes about this invoice"
-                  {...formik.getFieldProps("notes")}
-                  status={
-                    formik.touched.notes && formik.errors.notes ? "error" : null
-                  }
-                  errorMessage={formik.touched.notes && formik.errors.notes}
-                />
-              </div>
-
               {/* Items */}
               <div className="border-t pt-4">
                 <div className="flex w-full gap-4 mt-4 bg-violet-100/60 h-11 items-center">
@@ -349,6 +398,7 @@ const CreateInvoicePage = () => {
                             mode
                           )
                         }
+                        currency={currency}
                       />
                     </div>
                     <div className="w-[15%]">
@@ -358,6 +408,7 @@ const CreateInvoicePage = () => {
                           formik.setFieldValue(`items[${index}].tax`, val)
                         }
                         options={taxOptions}
+                        displayNewTax={handleAddTax}
                       />
                     </div>
                     <div className="w-[15%]">
@@ -452,42 +503,42 @@ const CreateInvoicePage = () => {
                 </Button>
               </div>
 
-              {/* Terms & Totals */}
+              {/* Note & Totals */}
               <div className="flex justify-between gap-12 items-end -mt-[36px] border-b border-gray-100 pb-8">
                 {/* Terms */}
                 <TextareaField
-                  label="Terms and Conditions"
-                  placeholder="Enter the terms and conditions of your business"
-                  {...formik.getFieldProps("terms")}
+                  label="Notes"
+                  placeholder="Add notes about this invoice"
+                  {...formik.getFieldProps("notes")}
                   status={
-                    formik.touched.terms && formik.errors.terms ? "error" : null
+                    formik.touched.notes && formik.errors.notes ? "error" : null
                   }
-                  errorMessage={formik.touched.terms && formik.errors.terms}
-                  className="!w-[65%] !min-h-[91px]"
+                  errorMessage={formik.touched.notes && formik.errors.notes}
+                  className="!w-[85%] !min-h-[91px]"
                 />
                 {/* Totals */}
                 <div className="border-t pt-4 w-1/2 flex flex-col gap-5 text-zinc-700 font-brSonoma text-sm  border border-gray-100  max-w-96 p-6 bg-white/60 rounded-lg">
                   <div className="flex items-center justify-between">
                     <span> Subtotal: </span>
-                    <span>{`${selectedCurrency?.sign}${subtotal.toFixed(
+                    <span>{`${getCurrencySymbol(currency)}${subtotal.toFixed(
                       2
                     )}`}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span> Discount: </span>
-                    <span>{`${selectedCurrency?.sign}${totalDiscount.toFixed(
-                      2
-                    )}`}</span>
+                    <span>{`${getCurrencySymbol(
+                      currency
+                    )}${totalDiscount.toFixed(2)}`}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Tax: </span>
-                    <span>{`${selectedCurrency?.sign}${totalTax.toFixed(
+                    <span>{`${getCurrencySymbol(currency)}${totalTax.toFixed(
                       2
                     )}`}</span>
                   </div>
                   <div className="font-semibold text-base mt-9 flex items-center justify-between">
                     <span>Total: </span>
-                    <span>{`${selectedCurrency?.sign}${total.toFixed(
+                    <span>{`${getCurrencySymbol(currency)}${total.toFixed(
                       2
                     )}`}</span>
                   </div>
@@ -714,7 +765,7 @@ const CreateInvoicePage = () => {
                 <div className="flex gap-[15px] items-center">
                   <button
                     type="button"
-                    onClick={() => {}}
+                    onClick={() => setShowSettings(true)}
                     className="w-10 h-10 relative flex justify-center items-center bg-white rounded-2xl border border-gray-100 hover:border-gray-300"
                   >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -737,7 +788,7 @@ const CreateInvoicePage = () => {
                   <div className="flex gap-3 font-brSonoma text-zinc-700 flex-col">
                     <p className=" font-bold text-xl ">
                       Total Amount:{" "}
-                      {`${selectedCurrency?.sign}${total.toFixed(2)}`}
+                      {`${getCurrencySymbol(currency)}${total.toFixed(2)}`}
                     </p>
                     <p>
                       Total Quantity:{" "}
@@ -770,6 +821,14 @@ const CreateInvoicePage = () => {
           );
         }}
       </Formik>
+      {showAddTaxModal && <AddNewTax close={() => setShowAddTaxModal(false)} />}
+      <AnimatePresence>
+        {showSettings ? (
+          <SideModalWrapper close={() => setShowSettings(false)}>
+            <InvoiceSettings close={() => setShowSettings(false)} />
+          </SideModalWrapper>
+        ) : null}
+      </AnimatePresence>
     </section>
   );
 };

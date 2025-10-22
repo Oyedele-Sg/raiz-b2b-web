@@ -3,15 +3,16 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useOutsideClick } from "@/lib/hooks/useOutsideClick";
-import { IInvoice } from "./InvoicesTable";
+import { IInvoice } from "./InvoiceFile";
 
 interface Props {
   invoice: IInvoice;
   isLast: boolean;
   onEdit: (invoice: IInvoice) => void;
   onDownloadPDF: (invoice: IInvoice) => void;
-  onSendEmail: (invoice: IInvoice) => void;
+  onSendEmail?: (invoice: IInvoice) => void;
   onCopyLink: (invoice: IInvoice) => void;
+  from: "table" | "preview";
 }
 
 const InvoiceTableMoreOpts = ({
@@ -21,19 +22,25 @@ const InvoiceTableMoreOpts = ({
   onDownloadPDF,
   onSendEmail,
   onCopyLink,
+  from,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useOutsideClick(() => setIsOpen(false));
 
   const handleToggle = () => setIsOpen(!isOpen);
-
+  const isFromTable = from === "table";
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={handleToggle}
-        className="flex items-center justify-center w-6 h-6 rounded hover:bg-gray-100 transition"
+        className={`flex items-center justify-center  rounded hover:bg-gray-100 transition ${
+          isFromTable
+            ? "w-6 h-6"
+            : "rounded-2xl border border-gray-100 p-2 w-10 h-10"
+        }`}
       >
         <Image
+          className={`${isFromTable ? "" : "rotate-90"}`}
           src="/icons/more.svg"
           alt="more options"
           width={18}
@@ -43,7 +50,7 @@ const InvoiceTableMoreOpts = ({
 
       {isOpen && (
         <div
-          className={`absolute right-0 w-[200px] bg-white border border-gray-100 rounded-lg shadow-md z-10 ${
+          className={`absolute right-0 w-[200px] bg-white border border-gray-100 rounded-lg shadow-md z-50 ${
             isLast ? "bottom-full mb-2" : "mt-2"
           }`}
         >
@@ -109,43 +116,45 @@ const InvoiceTableMoreOpts = ({
                     strokeWidth="1.5"
                     strokeMiterlimit="10"
                     strokeLinecap="round"
-                    stroke-linejoin="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
 
                 <span>Download the PDF</span>
               </button>
             </li>
-            <li>
-              <button
-                onClick={() => {
-                  onSendEmail(invoice);
-                  setIsOpen(false);
-                }}
-                className="flex items-center gap-2 w-full px-4 py-2 hover:bg-[#EAECFF99] transition"
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path
-                    d="M11.3333 13.6667H4.66659C2.66659 13.6667 1.33325 12.6667 1.33325 10.3333V5.66668C1.33325 3.33334 2.66659 2.33334 4.66659 2.33334H11.3333C13.3333 2.33334 14.6666 3.33334 14.6666 5.66668V10.3333C14.6666 12.6667 13.3333 13.6667 11.3333 13.6667Z"
-                    stroke="#6F5B86"
-                    strokeWidth="1.5"
-                    strokeMiterlimit="10"
-                    strokeLinecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M11.3334 6L9.24674 7.66667C8.56008 8.21333 7.43341 8.21333 6.74674 7.66667L4.66675 6"
-                    stroke="#6F5B86"
-                    strokeWidth="1.5"
-                    strokeMiterlimit="10"
-                    strokeLinecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+            {isFromTable && (
+              <li>
+                <button
+                  onClick={() => {
+                    onSendEmail?.(invoice);
+                    setIsOpen(false);
+                  }}
+                  className="flex items-center gap-2 w-full px-4 py-2 hover:bg-[#EAECFF99] transition"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M11.3333 13.6667H4.66659C2.66659 13.6667 1.33325 12.6667 1.33325 10.3333V5.66668C1.33325 3.33334 2.66659 2.33334 4.66659 2.33334H11.3333C13.3333 2.33334 14.6666 3.33334 14.6666 5.66668V10.3333C14.6666 12.6667 13.3333 13.6667 11.3333 13.6667Z"
+                      stroke="#6F5B86"
+                      strokeWidth="1.5"
+                      strokeMiterlimit="10"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M11.3334 6L9.24674 7.66667C8.56008 8.21333 7.43341 8.21333 6.74674 7.66667L4.66675 6"
+                      stroke="#6F5B86"
+                      strokeWidth="1.5"
+                      strokeMiterlimit="10"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
 
-                <span>Send Email</span>
-              </button>
-            </li>
+                  <span>Send Email</span>
+                </button>
+              </li>
+            )}
             <li>
               <button
                 onClick={() => {

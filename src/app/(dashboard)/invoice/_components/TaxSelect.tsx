@@ -9,11 +9,18 @@ interface TaxSelectProps {
   value?: string;
   onChange: (value: string) => void;
   options: Option[];
+  displayNewTax: () => void;
 }
 
-const TaxSelect: React.FC<TaxSelectProps> = ({ value, onChange, options }) => {
+const TaxSelect: React.FC<TaxSelectProps> = ({
+  value,
+  onChange,
+  options,
+  displayNewTax,
+}) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [taxOptions, setTaxOptions] = useState(options);
   const dropdownRef = useOutsideClick(() => setOpen(false));
 
@@ -22,14 +29,15 @@ const TaxSelect: React.FC<TaxSelectProps> = ({ value, onChange, options }) => {
   );
 
   const handleAddNewTax = () => {
-    const newTaxLabel = prompt("Enter new tax percentage (e.g., 15%)");
-    if (newTaxLabel) {
-      const newValue = newTaxLabel.replace("%", "").trim();
-      const newOption = { value: newValue, label: `${newValue}%` };
-      setTaxOptions((prev) => [...prev, newOption]);
-      onChange(newValue);
-      setOpen(false);
-    }
+    displayNewTax();
+    // const newTaxLabel = prompt("Enter new tax percentage (e.g., 15%)");
+    // if (newTaxLabel) {
+    //   const newValue = newTaxLabel.replace("%", "").trim();
+    //   const newOption = { value: newValue, label: `${newValue}%` };
+    //   setTaxOptions((prev) => [...prev, newOption]);
+    //   onChange(newValue);
+    //   setOpen(false);
+    // }
   };
 
   const selectedOption = taxOptions.find((opt) => opt.value === value);
