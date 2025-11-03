@@ -10,7 +10,7 @@ import SelectAccount from "../../app/(dashboard)/_components/SelectAccount";
 import CreateNgnAcct from "../../app/(dashboard)/_components/createNgnAcct/CreateNgnAcct";
 import AddBvnModal from "../../app/(dashboard)/_components/createNgnAcct/AddBvnModal";
 import NgnSuccessModal from "../../app/(dashboard)/_components/createNgnAcct/NgnSuccessModal";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { FetchUserRewardsApi } from "@/services/user";
 import { useNotifications } from "@/lib/hooks/useNotifications";
@@ -66,6 +66,8 @@ const Header = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const router = useRouter();
+  const params = useParams();
+  const invoiceNo = params?.invoiceNo as string | undefined;
   // const { selectedCurrency } = useCurrencyStore();
   // const currentWallet = useMemo(() => {
   //   if (!user || !user?.business_account?.wallets || !selectedCurrency?.name)
@@ -151,6 +153,7 @@ const Header = () => {
   useEffect(() => {
     refetch();
   }, [pathName, refetch]);
+
   const displayModal = () => {
     switch (showModal) {
       case "notifications":
@@ -204,6 +207,49 @@ const Header = () => {
           >
             Send
           </Link> */}
+        </div>
+      )}
+      {pathName.includes("invoice") && (
+        <div className="flex items-center gap-1 xl:gap-2.5 ">
+          <Link
+            className={`px-2 py-1 ${
+              pathName.endsWith("invoice")
+                ? "text-raiz-gray-900 font-semibold"
+                : "text-raiz-gray-700 font-medium"
+            }  text-sm  font-brSonoma leading-tight `}
+            href={"/invoice"}
+          >
+            Invoices
+          </Link>
+          <Image
+            src={"/icons/forward.svg"}
+            alt="forward"
+            width={16}
+            height={16}
+          />
+          {invoiceNo ? (
+            <Link
+              className={`px-2 py-1 ${
+                pathName.endsWith(invoiceNo)
+                  ? "text-raiz-gray-900 font-semibold"
+                  : "text-raiz-gray-700 font-medium"
+              }  text-sm font-medium font-brSonoma leading-tight `}
+              href={`/invoice/${invoiceNo}`}
+            >
+              {invoiceNo}
+            </Link>
+          ) : (
+            <Link
+              className={`px-2 py-1 ${
+                pathName.endsWith("create-new")
+                  ? "text-raiz-gray-900 font-semibold"
+                  : "text-raiz-gray-700 font-medium"
+              }  text-sm font-medium font-brSonoma leading-tight `}
+              href={"/invoice/create-new"}
+            >
+              New Invoice
+            </Link>
+          )}
         </div>
       )}
       <div className="relative h-12 w-[285px] xl:w-[312px] ">

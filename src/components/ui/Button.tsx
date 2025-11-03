@@ -14,6 +14,7 @@ interface ButtonProps {
   icon?: string | ReactNode;
   iconPosition?: "left" | "right";
   iconLabel?: string;
+  iconClassName?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -28,6 +29,7 @@ const Button: React.FC<ButtonProps> = ({
   icon,
   iconPosition,
   iconLabel,
+  iconClassName,
 }) => {
   const { selectedCurrency } = useCurrencyStore();
   const baseStyles = `relative px-6 py-3.5 rounded-[100px] focus:outline-none transition ease-in-out duration-300 text-[15px]`;
@@ -89,7 +91,8 @@ const Button: React.FC<ButtonProps> = ({
         <div
           className={`${
             iconPosition === "right" ? "absolute right-4" : "absolute left-4"
-          }`}
+          } ${iconClassName}`}
+          onClick={onClick}
         >
           {typeof icon === "string" ? (
             <Image
@@ -98,7 +101,6 @@ const Button: React.FC<ButtonProps> = ({
               height={20}
               src={icon || ""}
               alt={iconLabel || ""}
-              onClick={onClick}
             />
           ) : (
             icon
