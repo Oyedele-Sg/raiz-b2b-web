@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useOutsideClick } from "@/lib/hooks/useOutsideClick";
-import { IInvoice } from "./InvoiceFile";
+import { IInvoice } from "@/types/invoice";
+import { SlEye } from "react-icons/sl";
 
 interface Props {
   invoice: IInvoice;
@@ -12,6 +13,8 @@ interface Props {
   onDownloadPDF: (invoice: IInvoice) => void;
   onSendEmail?: (invoice: IInvoice) => void;
   onCopyLink: (invoice: IInvoice) => void;
+  onView?: (invoice: IInvoice) => void;
+  onMarkAsPaid?: (invoice: IInvoice) => void;
   from: "table" | "preview";
 }
 
@@ -21,17 +24,37 @@ const InvoiceTableMoreOpts = ({
   onEdit,
   onDownloadPDF,
   onSendEmail,
-  onCopyLink,
+  // onCopyLink,
+  onMarkAsPaid,
+  onView,
   from,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showUpward, setShowUpward] = useState(isLast);
   const dropdownRef = useOutsideClick(() => setIsOpen(false));
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const isFromTable = from === "table";
+
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      const buttonRect = buttonRef.current.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const dropdownHeight = isFromTable ? 180 : 130; // More accurate height based on menu items
+
+      // Check if there's enough space below (with 40px buffer)
+      const spaceBelow = viewportHeight - buttonRect.bottom;
+      const shouldShowUp = spaceBelow < dropdownHeight + 40;
+
+      setShowUpward(shouldShowUp);
+    }
+  }, [isOpen, isFromTable]);
 
   const handleToggle = () => setIsOpen(!isOpen);
-  const isFromTable = from === "table";
+
   return (
     <div className="relative" ref={dropdownRef}>
       <button
+        ref={buttonRef}
         onClick={handleToggle}
         className={`flex items-center justify-center  rounded hover:bg-gray-100 transition ${
           isFromTable
@@ -51,48 +74,63 @@ const InvoiceTableMoreOpts = ({
       {isOpen && (
         <div
           className={`absolute right-0 w-[200px] bg-white border border-gray-100 rounded-lg shadow-md z-50 ${
-            isLast ? "bottom-full mb-2" : "mt-2"
+            showUpward ? "bottom-full mb-2" : "mt-2"
           }`}
         >
           <ul className="py-1 text-sm text-[#443852] font-semibold">
-            <li>
-              <button
-                onClick={() => {
-                  onEdit(invoice);
-                  setIsOpen(false);
-                }}
-                className="flex items-center gap-2 w-full px-4 py-2 hover:bg-[#EAECFF99] transition"
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path
-                    d="M8.84006 2.4L3.36673 8.19333C3.16006 8.41333 2.96006 8.84667 2.92006 9.14667L2.6734 11.3067C2.58673 12.0867 3.14673 12.62 3.92006 12.4867L6.06673 12.12C6.36673 12.0667 6.78673 11.8467 6.9934 11.62L12.4667 5.82667C13.4134 4.82667 13.8401 3.68667 12.3667 2.29334C10.9001 0.913336 9.78673 1.4 8.84006 2.4Z"
-                    stroke="#6F5B86"
-                    strokeWidth="1.5"
-                    strokeMiterlimit="10"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M7.92676 3.36664C8.21342 5.20664 9.70676 6.6133 11.5601 6.79997"
-                    stroke="#6F5B86"
-                    strokeWidth="1.5"
-                    strokeMiterlimit="10"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M2 14.6667H14"
-                    stroke="#6F5B86"
-                    strokeWidth="1.5"
-                    strokeMiterlimit="10"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-
-                <span>Edit</span>
-              </button>
-            </li>
+            {isFromTable && (
+              <li>
+                <button
+                  onClick={() => {
+                    onView?.(invoice);
+                    setIsOpen(false);
+                  }}
+                  className="flex items-center gap-2 w-full px-4 py-2 hover:bg-[#EAECFF99] transition"
+                >
+                  <SlEye size={16} className="text-[#6F5B86]" />
+                  <span>View details</span>
+                </button>
+              </li>
+            )}
+            {invoice?.status === "draft" && (
+              <li>
+                <button
+                  onClick={() => {
+                    onEdit(invoice);
+                    setIsOpen(false);
+                  }}
+                  className="flex items-center gap-2 w-full px-4 py-2 hover:bg-[#EAECFF99] transition"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M8.84006 2.4L3.36673 8.19333C3.16006 8.41333 2.96006 8.84667 2.92006 9.14667L2.6734 11.3067C2.58673 12.0867 3.14673 12.62 3.92006 12.4867L6.06673 12.12C6.36673 12.0667 6.78673 11.8467 6.9934 11.62L12.4667 5.82667C13.4134 4.82667 13.8401 3.68667 12.3667 2.29334C10.9001 0.913336 9.78673 1.4 8.84006 2.4Z"
+                      stroke="#6F5B86"
+                      strokeWidth="1.5"
+                      strokeMiterlimit="10"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M7.92676 3.36664C8.21342 5.20664 9.70676 6.6133 11.5601 6.79997"
+                      stroke="#6F5B86"
+                      strokeWidth="1.5"
+                      strokeMiterlimit="10"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M2 14.6667H14"
+                      stroke="#6F5B86"
+                      strokeWidth="1.5"
+                      strokeMiterlimit="10"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span>Edit</span>
+                </button>
+              </li>
+            )}
             <li>
               <button
                 onClick={() => {
@@ -119,11 +157,10 @@ const InvoiceTableMoreOpts = ({
                     strokeLinejoin="round"
                   />
                 </svg>
-
                 <span>Download the PDF</span>
               </button>
             </li>
-            {isFromTable && (
+            {isFromTable && invoice?.status === "pending" && (
               <li>
                 <button
                   onClick={() => {
@@ -150,12 +187,30 @@ const InvoiceTableMoreOpts = ({
                       strokeLinejoin="round"
                     />
                   </svg>
-
                   <span>Send Email</span>
                 </button>
               </li>
             )}
-            <li>
+            {isFromTable && invoice?.status === "awaiting_payment" && (
+              <li>
+                <button
+                  onClick={() => {
+                    onMarkAsPaid?.(invoice);
+                    setIsOpen(false);
+                  }}
+                  className="flex items-center gap-2 w-full px-4 py-2 hover:bg-[#EAECFF99] transition"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M8 1.3335C4.32667 1.3335 1.33333 4.32683 1.33333 8.00016C1.33333 11.6735 4.32667 14.6668 8 14.6668C11.6733 14.6668 14.6667 11.6735 14.6667 8.00016C14.6667 4.32683 11.6733 1.3335 8 1.3335ZM11.1867 6.46683L7.40667 10.2468C7.31333 10.3402 7.18667 10.3935 7.05333 10.3935C6.92 10.3935 6.79333 10.3402 6.7 10.2468L4.81333 8.36016C4.62 8.16683 4.62 7.84683 4.81333 7.6535C5.00667 7.46016 5.32667 7.46016 5.52 7.6535L7.05333 9.18683L10.48 5.76016C10.6733 5.56683 10.9933 5.56683 11.1867 5.76016C11.38 5.9535 11.38 6.26683 11.1867 6.46683Z"
+                      fill="#6F5B86"
+                    />
+                  </svg>
+                  <span>Mark as Paid</span>
+                </button>
+              </li>
+            )}
+            {/* <li>
               <button
                 onClick={() => {
                   onCopyLink(invoice);
@@ -188,7 +243,7 @@ const InvoiceTableMoreOpts = ({
                 </svg>
                 <span>Copy Invoice Link</span>
               </button>
-            </li>
+            </li> */}
           </ul>
         </div>
       )}

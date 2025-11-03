@@ -1,100 +1,113 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useOutsideClick } from "@/lib/hooks/useOutsideClick";
-import { Option } from "@/components/ui/SelectField";
 import SearchBox from "@/components/ui/SearchBox";
 import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
+import { FetchTaxesApi } from "@/services/invoice";
+import { IInvoiceTax } from "@/types/services";
 
 interface TaxSelectProps {
   value?: string;
-  onChange: (value: string) => void;
-  options: Option[];
+  onChange: (value: IInvoiceTax) => void;
   displayNewTax: () => void;
 }
 
 const TaxSelect: React.FC<TaxSelectProps> = ({
   value,
   onChange,
-  options,
   displayNewTax,
 }) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [taxOptions, setTaxOptions] = useState(options);
   const dropdownRef = useOutsideClick(() => setOpen(false));
 
+  const { data, isLoading } = useQuery({
+    queryKey: ["invoice-tax"],
+    queryFn: FetchTaxesApi,
+  });
+
+  const taxOptions: IInvoiceTax[] = useMemo(() => {
+    if (!data) return [];
+    return data.map((tax: IInvoiceTax) => ({
+      tax_name: tax.tax_name,
+      tax_percentage: tax.tax_percentage,
+      business_account_id: tax.business_account_id,
+      tax_rate_id: tax.tax_rate_id,
+    }));
+  }, [data]);
+
   const filtered = taxOptions.filter((opt) =>
-    opt.label.toLowerCase().includes(search.toLowerCase())
+    opt.tax_name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleAddNewTax = () => {
-    displayNewTax();
-    // const newTaxLabel = prompt("Enter new tax percentage (e.g., 15%)");
-    // if (newTaxLabel) {
-    //   const newValue = newTaxLabel.replace("%", "").trim();
-    //   const newOption = { value: newValue, label: `${newValue}%` };
-    //   setTaxOptions((prev) => [...prev, newOption]);
-    //   onChange(newValue);
-    //   setOpen(false);
-    // }
-  };
-
-  const selectedOption = taxOptions.find((opt) => opt.value === value);
+  const selectedOption = taxOptions.find((opt) => opt.tax_rate_id === value);
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
+      {/* Toggle Button */}
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full border border-gray-200 rounded-md bg-white h-[44px] text-left px-3 text-sm flex items-center justify-between"
+        className="w-full rounded-md bg-[#F3F1F6] h-[44px] text-left px-3 text-sm flex items-center justify-between"
       >
         <span className={selectedOption ? "text-zinc-900" : "text-gray-400"}>
-          {selectedOption ? selectedOption.label : "Select a Tax"}
+          {selectedOption
+            ? `${selectedOption.tax_name} (${selectedOption.tax_percentage}%)`
+            : "Select a Tax"}
         </span>
         <Image
           className={`w-3 h-3 transition-transform ${
             open ? "rotate-180" : "rotate-0"
           }`}
-          src={"/icons/s-arrow-down.svg"}
+          src="/icons/s-arrow-down.svg"
           alt=""
           width={12}
           height={12}
         />
       </button>
 
+      {/* Dropdown */}
       {open && (
-        <div className="absolute w-[236px] z-20 p-2  mt-1 bg-white border border-gray-100 rounded-lg shadow-md">
+        <div className="absolute w-[236px] z-20 p-2 mt-1 bg-white border border-gray-100 rounded-lg shadow-md">
           <SearchBox
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+
           <div className="max-h-48 overflow-auto">
-            {[].length === 0 ? (
+            {isLoading ? (
+              <p className="py-2 text-sm text-gray-500">Loading...</p>
+            ) : filtered.length === 0 ? (
               <p className="py-2 text-zinc-700 text-sm">No Results Found</p>
             ) : (
               filtered.map((opt) => (
                 <button
-                  key={opt.value}
+                  key={opt.tax_rate_id}
                   type="button"
                   onClick={() => {
-                    onChange(String(opt.value));
+                    onChange(opt);
                     setOpen(false);
                   }}
-                  className="w-full text-left px-4 py-2 text-sm hover:bg-violet-50"
+                  className={`w-full text-left px-4 py-2 text-sm rounded-md ${
+                    value === opt.tax_rate_id
+                      ? "bg-violet-50 text-violet-800 font-medium"
+                      : "hover:bg-violet-50"
+                  }`}
                 >
-                  {opt.label}
+                  {opt.tax_name} ({opt.tax_percentage}%)
                 </button>
               ))
             )}
           </div>
 
+          {/* Add new tax */}
           <div className="w-full">
-            <div className="self-stretch h-0 outline outline-1 outline-offset-[-0.50px] outline-gray-100"></div>
+            <div className="h-px bg-gray-100 mt-2 mb-1" />
             <button
               type="button"
-              onClick={handleAddNewTax}
-              className="flex gap-4 items-center  hover:bg-[#EAECFF99] pl-3.5 pr-2.5 py-2  mt-2 w-full"
+              onClick={displayNewTax}
+              className="flex gap-4 items-center hover:bg-[#EAECFF99] pl-3.5 pr-2.5 py-2 mt-2 w-full rounded-md transition-colors"
             >
               <svg width="16" height="17" viewBox="0 0 16 17" fill="none">
                 <path

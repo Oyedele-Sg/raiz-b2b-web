@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Formik, FormikProps } from "formik";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
@@ -7,31 +7,25 @@ import InputField from "@/components/ui/InputField";
 import TextareaField from "@/components/ui/TextareaField";
 import Button from "@/components/ui/Button";
 import Image from "next/image";
-import {
-  formatAmount,
-  getCurrencySymbol,
-  // truncateString,
-} from "@/utils/helpers";
+import { formatAmount, getCurrencySymbol } from "@/utils/helpers";
 import { useOutsideClick } from "@/lib/hooks/useOutsideClick";
-import { CustomerSearchBox } from "../_components/CustomerSearchbox";
 import InputLabel from "@/components/ui/InputLabel";
-import Link from "next/link";
-import TaxSelect from "../_components/TaxSelect";
-// import DiscountInput from "../_components/DiscountInput";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
-import AddNewTax from "../_components/AddNewTax";
 import { useUser } from "@/lib/hooks/useUser";
-import InvoiceSettings from "../_components/InvoiceSettings";
 import { AnimatePresence } from "motion/react";
-import SideModalWrapper from "../../_components/SideModalWrapper";
-import AddNewCustomer from "../../customers/AddNewCustomer";
 import { ICreateInvoicePayload, ICustomer } from "@/types/invoice";
 import SelectField from "@/components/ui/SelectField";
-import DiscountInput from "../_components/DiscountInput";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CreateInvoiceApi, FetchInvoiceIndexApi } from "@/services/invoice";
-import { useRouter } from "next/navigation";
+import { UpdateInvoiceApi, FetchInvoiceDetailApi } from "@/services/invoice";
+import { useRouter, useParams } from "next/navigation";
+import AddNewCustomer from "@/app/(dashboard)/customers/AddNewCustomer";
+import { CustomerSearchBox } from "../../_components/CustomerSearchbox";
+import TaxSelect from "../../_components/TaxSelect";
+import DiscountInput from "../../_components/DiscountInput";
+import AddNewTax from "../../_components/AddNewTax";
+import SideModalWrapper from "@/app/(dashboard)/_components/SideModalWrapper";
+import { ACCOUNT_CURRENCIES } from "@/constants/misc";
 
 const invoiceSchema = z.object({
   customerName: z.string().min(1, "Customer name is required"),
@@ -58,22 +52,22 @@ const invoiceSchema = z.object({
 
 type InvoiceFormValues = z.infer<typeof invoiceSchema>;
 
-const CreateInvoicePage = () => {
+const EditInvoicePage = () => {
   const { selectedCurrency } = useCurrencyStore();
   const { user } = useUser();
   const router = useRouter();
-  // const fileInputRef = useRef<HTMLInputElement | null>(null);
-  // const fileListBtnRef = useRef<HTMLButtonElement>(null);
+  const { invoiceNo } = useParams<{ invoiceNo: string }>();
+
   const formikRef = useRef<FormikProps<InvoiceFormValues>>(null);
   const customerBtnRef = useRef<HTMLButtonElement>(null);
   const currencyBtnRef = useRef<HTMLButtonElement>(null);
 
-  // const [files, setFiles] = useState<File[]>([]);
-  // const [showUploadedFiles, setShowUploadedFiles] = useState(false);
   const [showSearchBox, setShowSearchBox] = useState(false);
   const [showAddTaxModal, setShowAddTaxModal] = useState(false);
   const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
-  const [currency, setCurrency] = useState(selectedCurrency?.name || "");
+  const [currency, setCurrency] = useState<keyof typeof ACCOUNT_CURRENCIES>(
+    selectedCurrency?.name || ""
+  );
   const [selectedCustomer, setSelectedCustomer] = useState<ICustomer | null>(
     null
   );
@@ -88,12 +82,6 @@ const CreateInvoicePage = () => {
     null
   );
 
-  const today = new Date().toISOString().split("T")[0];
-
-  // const dropDownRef = useOutsideClick(
-  //   () => setShowUploadedFiles(false),
-  //   fileListBtnRef
-  // );
   const currencyDropdownRef = useOutsideClick(
     () => setShowCurrencyDropdown(false),
     currencyBtnRef
@@ -105,29 +93,73 @@ const CreateInvoicePage = () => {
       label: each?.wallet_type?.currency || "",
     })) || [];
 
-  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const selectedFiles = e.target.files ? Array.from(e.target.files) : [];
-  //   setFiles((prev) => [...prev, ...selectedFiles]);
-  //   e.target.value = "";
-  // };
+  const {
+    data: invoiceData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["invoice-detail", invoiceNo],
+    queryFn: () => FetchInvoiceDetailApi(invoiceNo),
+    enabled: !!invoiceNo,
+  });
 
-  // const handleRemoveFile = (index: number) => {
-  //   setFiles((prev) => prev.filter((_, i) => i !== index));
-  // };
-
-  // const handleFileUploadClick = () => {
-  //   fileInputRef.current?.click();
-  // };
+  useEffect(() => {
+    if (invoiceData && formikRef.current) {
+      if (invoiceData.customer) {
+        setSelectedCustomer(invoiceData.customer);
+      }
+      if (invoiceData.currency) {
+        setCurrency(invoiceData.currency as keyof typeof ACCOUNT_CURRENCIES);
+      }
+      if (invoiceData.discount_amount && invoiceData.discount_amount > 0) {
+        setDiscountType("discount");
+      }
+      if (invoiceData.tax_amount && invoiceData.tax_amount > 0) {
+        setTaxType("tax");
+      }
+      const discountValue =
+        invoiceData.total_discount || invoiceData.discount_amount || 0;
+      formikRef.current.setValues({
+        customerName: invoiceData.customer_id || "",
+        invoiceNumber: invoiceData.invoice_number || "",
+        dateIssued:
+          invoiceData.issue_date?.split("T")[0] ||
+          new Date().toISOString().split("T")[0],
+        dueDate:
+          invoiceData.due_date?.split("T")[0] ||
+          new Date().toISOString().split("T")[0],
+        currency: invoiceData.currency || selectedCurrency?.name || "",
+        notes: invoiceData.note || "",
+        items:
+          invoiceData.invoice_items && invoiceData.invoice_items.length > 0
+            ? invoiceData.invoice_items.map((item) => ({
+                description: item.description || "",
+                quantity: item.quantity || 1,
+                unitPrice: item.unit_price || 0,
+              }))
+            : [
+                {
+                  description: "",
+                  quantity: 1,
+                  unitPrice: 0,
+                },
+              ],
+        terms: invoiceData.terms_and_conditions || "",
+        discount: discountValue,
+        discountType: "value",
+        tax_amount: invoiceData.tax_amount || 0,
+        tax_rate_id: invoiceData.tax_rate_id || "",
+      });
+    }
+  }, [invoiceData, selectedCurrency]);
 
   const calculateTotals = (values: InvoiceFormValues) => {
     let subtotal = 0;
 
-    // Calculate subtotal from items
     for (const item of values.items) {
       subtotal += item.unitPrice * item.quantity;
     }
 
-    // Calculate discount (only if discount type is enabled)
     let totalDiscount = 0;
     if (discountType === "discount" && values.discount) {
       totalDiscount =
@@ -136,7 +168,6 @@ const CreateInvoicePage = () => {
           : values.discount;
     }
 
-    // Calculate tax (only if tax type is enabled)
     let totalTax = 0;
     if (taxType === "tax" && values.tax_amount) {
       const taxableBase = subtotal - totalDiscount;
@@ -163,16 +194,10 @@ const CreateInvoicePage = () => {
   ];
 
   const qc = useQueryClient();
-  const { data: indexNo, isLoading: indexLoading } = useQuery({
-    queryKey: ["invoice-index"],
-    queryFn: FetchInvoiceIndexApi,
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnMount: true,
-  });
+
   const initialValues: InvoiceFormValues = {
     customerName: "",
-    invoiceNumber: indexNo || "",
+    invoiceNumber: "",
     dateIssued: new Date().toISOString().split("T")[0],
     dueDate: new Date().toISOString().split("T")[0],
     currency: selectedCurrency?.name || "",
@@ -190,17 +215,19 @@ const CreateInvoicePage = () => {
     tax_amount: 0,
     tax_rate_id: "",
   };
-  const CreateMutation = useMutation({
+
+  const UpdateMutation = useMutation({
     mutationFn: ({
       payload,
       isDraft,
     }: {
       payload: ICreateInvoicePayload;
       isDraft: boolean;
-    }) => CreateInvoiceApi(payload, isDraft),
+    }) => UpdateInvoiceApi(invoiceNo, payload, isDraft),
     onSuccess: (response) => {
-      const id = response?.invoice_id || "";
+      const id = response?.invoice_id || invoiceNo;
       qc.invalidateQueries({ queryKey: ["invoices-list"] });
+      qc.invalidateQueries({ queryKey: ["invoice-detail", invoiceNo] });
       router.push(`/invoice/${id}`);
     },
   });
@@ -233,7 +260,7 @@ const CreateInvoicePage = () => {
 
     console.log("Submitting payload:", payload);
     const isDraft = submitType === "draft";
-    CreateMutation.mutate({ payload, isDraft });
+    UpdateMutation.mutate({ payload, isDraft });
   };
 
   const closeSideModal = () => setShowSideModal(null);
@@ -242,18 +269,40 @@ const CreateInvoicePage = () => {
     switch (showSideModal) {
       case "customer":
         return <AddNewCustomer close={closeSideModal} />;
-      case "settings":
-        return <InvoiceSettings close={closeSideModal} />;
+      //   case "settings":
+      //     return <InvoiceSettings close={closeSideModal} />;
       default:
         break;
     }
   };
 
+  if (isLoading) {
+    return (
+      <section className="mt-10 h-full p-6 bg-white">
+        <div className="flex justify-center items-center h-64">
+          <p className="text-zinc-700">Loading invoice...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (isError) {
+    return (
+      <section className="mt-10 h-full p-6 bg-white">
+        <div className="flex justify-center items-center h-64">
+          <p className="text-red-600">
+            Error loading invoice. Please try again.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="mt-10 h-full p-6 bg-white">
       <div className="flex justify-between items-center">
         <h2 className="text-zinc-900 text-2xl font-bold leading-7 mb-8">
-          New Invoice
+          Edit Invoice
         </h2>
         <div className="relative">
           <button
@@ -380,7 +429,6 @@ const CreateInvoicePage = () => {
                 <InputField
                   label="Date Issued*"
                   type="date"
-                  min={today}
                   {...formik.getFieldProps("dateIssued")}
                   status={
                     formik.touched.dateIssued && formik.errors.dateIssued
@@ -395,7 +443,6 @@ const CreateInvoicePage = () => {
                 <InputField
                   label="Due Date*"
                   type="date"
-                  min={today}
                   {...formik.getFieldProps("dueDate")}
                   status={
                     formik.touched.dueDate && formik.errors.dueDate
@@ -410,11 +457,7 @@ const CreateInvoicePage = () => {
               <div className="grid grid-cols-2 gap-x-10 !mb-8">
                 <div className="flex flex-col gap-2.5">
                   <InputLabel content="Discount" />
-                  <div
-                    className={`flex gap-2 items-center ${
-                      discountType === "discount"
-                    } ? "": "`}
-                  >
+                  <div className="flex gap-2 items-center">
                     <SelectField
                       height="44px"
                       minHeight="44px"
@@ -434,7 +477,7 @@ const CreateInvoicePage = () => {
                 </div>
                 <div className="flex flex-col gap-2.5">
                   <InputLabel content="Tax" />
-                  <div className={`flex gap-3 items-center `}>
+                  <div className="flex gap-3 items-center">
                     <SelectField
                       height="44px"
                       minHeight="44px"
@@ -534,7 +577,7 @@ const CreateInvoicePage = () => {
                           {...formik.getFieldProps(`items[${index}].unitPrice`)}
                         />
                       </div>
-                      <div className={`w-[20%]`}>
+                      <div className="w-[20%]">
                         <InputField
                           className="!bg-white"
                           disabled
@@ -543,7 +586,6 @@ const CreateInvoicePage = () => {
                           name={`items[${index}].amount`}
                         />
                       </div>
-                      {/* {index > 0 && ( */}
                       <button
                         type="button"
                         onClick={() =>
@@ -552,7 +594,6 @@ const CreateInvoicePage = () => {
                             formik.values.items.filter((_, i) => i !== index)
                           )
                         }
-                        className=""
                       >
                         <svg
                           width="12"
@@ -567,7 +608,6 @@ const CreateInvoicePage = () => {
                           />
                         </svg>
                       </button>
-                      {/* )} */}
                     </div>
                   );
                 })}
@@ -616,7 +656,7 @@ const CreateInvoicePage = () => {
               </div>
 
               {/* Note, terms & Totals */}
-              <div className="flex justify-between gap-8 items-end -mt-[36px]  pb-8">
+              <div className="flex justify-between gap-8 items-end -mt-[36px] pb-8">
                 <div className="flex gap-4 items-center w-1/2">
                   <TextareaField
                     label="Terms and Conditions"
@@ -628,7 +668,7 @@ const CreateInvoicePage = () => {
                         : null
                     }
                     errorMessage={formik.touched.terms && formik.errors.terms}
-                    className=" !min-h-[91px]"
+                    className="!min-h-[91px]"
                   />
                   <TextareaField
                     label="Notes"
@@ -640,11 +680,11 @@ const CreateInvoicePage = () => {
                         : null
                     }
                     errorMessage={formik.touched.notes && formik.errors.notes}
-                    className=" !min-h-[91px]"
+                    className="!min-h-[91px]"
                   />
                 </div>
                 {/* Totals */}
-                <div className="border-t pt-4 font-medium w-1/2 flex flex-col gap-5 text-zinc-700 font-brSonoma text-sm border  border-gray-100 max-w-96 p-6 bg-white/60 rounded-lg">
+                <div className="border-t pt-4 font-medium w-1/2 flex flex-col gap-5 text-zinc-700 font-brSonoma text-sm border border-gray-100 max-w-96 p-6 bg-white/60 rounded-lg">
                   <div className="flex items-center justify-between">
                     <span>Subtotal:</span>
                     <span>{`${getCurrencySymbol(currency)}${formatAmount(
@@ -654,10 +694,6 @@ const CreateInvoicePage = () => {
                   {discountType === "discount" && (
                     <div className="flex items-center justify-between gap-5">
                       <span>Discount:</span>
-                      {/* <span>{`${getCurrencySymbol(currency)}${formatAmount(
-                        totalDiscount
-                      )}`}</span> */}
-
                       <div className="mt-2">
                         <DiscountInput
                           value={formik.values.discount || 0}
@@ -690,248 +726,12 @@ const CreateInvoicePage = () => {
                 </div>
               </div>
 
-              {/* File attachment */}
-              {/* <div className="relative w-64">
-                <h6 className="text-zinc-900 text-sm font-medium font-brSonoma mb-3">
-                  Attach File(s) to your Invoice
-                </h6>
-
-                <div className="h-[50px] flex justify-between bg-gray-100 rounded-tl-lg rounded-bl-lg w-[219px]">
-                  <button
-                    type="button"
-                    onClick={handleFileUploadClick}
-                    className="flex justify-between items-center h-full p-3.5 w-full"
-                  >
-                    <div className="flex gap-1">
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M6.00002 11.3334V7.33337L4.66669 8.66671"
-                          stroke="#292D32"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M6 7.33337L7.33333 8.66671"
-                          stroke="#292D32"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M14.6666 6.66671V10C14.6666 13.3334 13.3333 14.6667 9.99998 14.6667H5.99998C2.66665 14.6667 1.33331 13.3334 1.33331 10V6.00004C1.33331 2.66671 2.66665 1.33337 5.99998 1.33337H9.33331"
-                          stroke="#292D32"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M14.6666 6.66671H12C9.99998 6.66671 9.33331 6.00004 9.33331 4.00004V1.33337L14.6666 6.66671Z"
-                          stroke="#292D32"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      <span className="text-zinc-900 text-sm font-normal leading-tight">
-                        Upload files
-                      </span>
-                    </div>
-                    <Image
-                      src={"/icons/arrow-down.svg"}
-                      alt=""
-                      width={16}
-                      height={16}
-                    />
-                  </button>
-
-                  <input
-                    type="file"
-                    multiple
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    className="sr-only"
-                  />
-
-                  <div className="relative">
-                    <button
-                      ref={fileListBtnRef}
-                      type="button"
-                      onClick={() => setShowUploadedFiles(!showUploadedFiles)}
-                      className="h-[50px] flex items-center justify-center gap-1 w-12 p-3.5 bg-raiz-usd-primary rounded-tr-lg rounded-br-lg relative z-10"
-                    >
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 12 12"
-                        fill="none"
-                      >
-                        <path
-                          d="M6.52998 5.46997C7.65498 6.59497 7.65498 8.41497 6.52998 9.53497C5.40498 10.655 3.58498 10.66 2.46498 9.53497C1.34498 8.40997 1.33998 6.58997 2.46498 5.46997"
-                          stroke="#FCFCFD"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M5.29498 6.70494C4.12498 5.53494 4.12498 3.63494 5.29498 2.45994C6.46498 1.28494 8.36498 1.28994 9.53998 2.45994C10.715 3.62994 10.71 5.52994 9.53998 6.70494"
-                          stroke="#FCFCFD"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      <span className="font-brSonoma text-sm text-gray-50">
-                        {files.length}
-                      </span>
-                    </button>
-
-                    {showUploadedFiles && files.length > 0 && (
-                      <div
-                        ref={dropDownRef}
-                        className="absolute bottom-[70%] right-0 left-[45%] w-72 bg-neutral-50 rounded-lg shadow-lg border border-gray-100 z-20"
-                      >
-                        <ul className="max-h-56 overflow-auto p-2 space-y-2">
-                          {files.map((file, index) => (
-                            <li
-                              key={index}
-                              className="flex justify-between items-center hover:bg-violet-100/60 p-2 rounded-md text-sm text-gray-700"
-                            >
-                              <div className="flex gap-3 items-center">
-                                <svg
-                                  width="20"
-                                  height="20"
-                                  viewBox="0 0 20 20"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M18.3334 8.33329V12.5C18.3334 16.6666 16.6667 18.3333 12.5001 18.3333H7.50008C3.33341 18.3333 1.66675 16.6666 1.66675 12.5V7.49996C1.66675 3.33329 3.33341 1.66663 7.50008 1.66663H11.6667"
-                                    stroke="#0D6494"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                  <path
-                                    d="M18.3334 8.33329H15.0001C12.5001 8.33329 11.6667 7.49996 11.6667 4.99996V1.66663L18.3334 8.33329Z"
-                                    stroke="#0D6494"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                  <path
-                                    d="M5.83325 10.8334H10.8333"
-                                    stroke="#0D6494"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                  <path
-                                    d="M5.83325 14.1666H9.16659"
-                                    stroke="#0D6494"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
-                                <div className="flex flex-col gap-1">
-                                  <span>{truncateString(file.name, 20)}</span>
-                                  <span className="text-xs text-gray-500">
-                                    {(file.size / 1024).toFixed(1)} KB
-                                  </span>
-                                </div>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveFile(index)}
-                                className="group"
-                              >
-                                <svg
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 16 16"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M14 3.98665C11.78 3.76665 9.54667 3.65332 7.32 3.65332C6 3.65332 4.68 3.71999 3.36 3.85332L2 3.98665"
-                                    stroke="#6F5B86"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                  <path
-                                    d="M5.66675 3.31337L5.81341 2.44004C5.92008 1.80671 6.00008 1.33337 7.12675 1.33337H8.87341C10.0001 1.33337 10.0867 1.83337 10.1867 2.44671L10.3334 3.31337"
-                                    stroke="#6F5B86"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                  <path
-                                    d="M12.5667 6.09338L12.1334 12.8067C12.06 13.8534 12 14.6667 10.14 14.6667H5.86002C4.00002 14.6667 3.94002 13.8534 3.86668 12.8067L3.43335 6.09338"
-                                    stroke="#6F5B86"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                  <path
-                                    d="M6.88672 11H9.10672"
-                                    stroke="#6F5B86"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                  <path
-                                    d="M6.33325 8.33337H9.66659"
-                                    stroke="#6F5B86"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div> */}
-
               {/* Buttons */}
               <div className="flex justify-between border-t border-gray-100 py-[30px] gap-8 items-center">
-                {/* <div className="flex gap-[15px] items-center"> */}
-                {/* <button
-                    type="button"
-                    onClick={() => setShowSideModal("settings")}
-                    className="w-10 h-10 relative flex justify-center items-center bg-white rounded-2xl border border-gray-100 hover:border-gray-300"
-                  >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M3 9.10998V14.88C3 17 3 17 5 18.35L10.5 21.53C11.33 22.01 12.68 22.01 13.5 21.53L19 18.35C21 17 21 17 21 14.89V9.10998C21 6.99998 21 6.99999 19 5.64999L13.5 2.46999C12.68 1.98999 11.33 1.98999 10.5 2.46999L5 5.64999C3 6.99999 3 6.99998 3 9.10998Z"
-                        stroke="#0D6494"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
-                        stroke="#0D6494"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button> */}
                 <div className="flex gap-3 font-brSonoma text-zinc-700 flex-col">
                   <p className="font-bold text-xl">
                     Total Amount:{" "}
-                    {`${getCurrencySymbol(currency)}${total.toFixed(2)}`}
+                    {`${getCurrencySymbol(currency)}${formatAmount(total)}`}
                   </p>
                   <p>
                     Total Quantity:{" "}
@@ -941,18 +741,19 @@ const CreateInvoicePage = () => {
                     )}
                   </p>
                 </div>
-                {/* </div> */}
                 <div className="flex items-center gap-[15px]">
-                  <Link href={"/invoice"}>
-                    <Button type="button" variant="secondary">
-                      Cancel
-                    </Button>
-                  </Link>
+                  <Button
+                    onClick={() => router.back()}
+                    type="button"
+                    variant="secondary"
+                  >
+                    Cancel
+                  </Button>
                   <Button
                     className="whitespace-nowrap"
                     type="button"
-                    loading={submitType === "draft" && CreateMutation.isPending}
-                    disabled={CreateMutation.isPending || indexLoading}
+                    loading={submitType === "draft" && UpdateMutation.isPending}
+                    disabled={UpdateMutation.isPending}
                     onClick={() => {
                       setSubmitType("draft");
                       formik.handleSubmit();
@@ -968,12 +769,12 @@ const CreateInvoicePage = () => {
                       formik.handleSubmit();
                     }}
                     loading={
-                      submitType === "preview" && CreateMutation.isPending
+                      submitType === "preview" && UpdateMutation.isPending
                     }
-                    disabled={CreateMutation.isPending || indexLoading}
+                    disabled={UpdateMutation.isPending}
                     className="whitespace-nowrap"
                   >
-                    Preview & Save
+                    Update Invoice
                   </Button>
                 </div>
               </div>
@@ -993,4 +794,4 @@ const CreateInvoicePage = () => {
   );
 };
 
-export default CreateInvoicePage;
+export default EditInvoicePage;

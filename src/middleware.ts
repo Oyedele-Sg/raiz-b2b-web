@@ -27,5 +27,6 @@ export const config = {
     "/transactions/:path*",
     "/analytics/:path*",
     "/invoice/:path*",
+    "/customers/:path*",
   ],
 };

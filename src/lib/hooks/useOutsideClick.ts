@@ -10,17 +10,20 @@ export const useOutsideClick = (
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
 
-      if (
-        ref.current &&
-        !ref.current.contains(target) &&
-        (!exceptionRef?.current || !exceptionRef.current.contains(target))
-      ) {
+      const isOutsideDropdown = ref.current && !ref.current.contains(target);
+      const isOnException =
+        exceptionRef?.current && exceptionRef.current.contains(target);
+
+      if (isOutsideDropdown && !isOnException) {
         callback();
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
   }, [callback, exceptionRef]);
 
   return ref;

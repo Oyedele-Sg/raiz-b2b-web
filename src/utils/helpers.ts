@@ -6,6 +6,8 @@ import { IUser } from "@/types/user";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import axios from "axios";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 dayjs.extend(utc);
 
@@ -28,7 +30,7 @@ export const formatTime = (seconds: number) => {
 };
 
 export const truncateString = (str: string, length: number): string => {
-  return str.length > length ? `${str.substring(0, length - 2)}...` : str;
+  return str?.length > length ? `${str?.substring(0, length - 2)}...` : str;
 };
 
 export const copyToClipboard = (value: string) => {
@@ -318,4 +320,164 @@ export const fetchPublicIP = async (): Promise<string | null> => {
   } catch {
     return null;
   }
+};
+
+export const formatAmount = (
+  value: number,
+  options?: {
+    currency?: string;
+  } & Intl.NumberFormatOptions
+): string => {
+  const { currency, ...restOptions } = options ?? {};
+
+  const formatterOptions: Intl.NumberFormatOptions = {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    ...restOptions,
+  };
+
+  // Only add currency-related options if currency is provided
+  if (currency) {
+    formatterOptions.style = "currency";
+    formatterOptions.currency = currency.toUpperCase();
+  }
+
+  return value.toLocaleString("en-US", formatterOptions);
+};
+
+export const downloadInvoice = async (
+  elementRef: React.RefObject<HTMLDivElement | null>,
+  invoiceNumber: string,
+  format: "png" | "pdf" = "pdf"
+) => {
+  if (!elementRef.current) return;
+
+  try {
+    const canvas = await html2canvas(elementRef.current, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+
+    if (format === "png") {
+      const link = document.createElement("a");
+      link.href = imgData;
+      link.download = `${invoiceNumber}.png`;
+      link.click();
+      link.remove();
+    } else {
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgWidth = 210; // A4 width
+      const pageHeight = 297; // A4 height
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(`${invoiceNumber}.pdf`);
+    }
+  } catch (err) {
+    console.error("Failed to download invoice:", err);
+    alert("Failed to download invoice. Please try again.");
+  }
+};
+
+export const generateInvoicePDFBlob = async (
+  elementRef: React.RefObject<HTMLDivElement | null>
+): Promise<Blob | null> => {
+  if (!elementRef.current) return null;
+
+  const canvas = await html2canvas(elementRef.current, {
+    scale: 1.5, // Reduced from 2 to 1.5 for smaller file size (still good quality)
+    useCORS: true,
+    backgroundColor: "#ffffff",
+    logging: false,
+    imageTimeout: 0,
+  });
+  const imgData = canvas.toDataURL("image/jpeg", 0.85); // 85% quality JPEG
+
+  const pdf = new jsPDF("p", "mm", "a4", true);
+  const imgWidth = 210;
+  const pageHeight = 297;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  let heightLeft = imgHeight;
+  let position = 0;
+
+  // Use JPEG instead of PNG for smaller file size
+  pdf.addImage(
+    imgData,
+    "JPEG",
+    0,
+    position,
+    imgWidth,
+    imgHeight,
+    undefined,
+    "FAST"
+  );
+  heightLeft -= pageHeight;
+
+  while (heightLeft > 0) {
+    position = heightLeft - imgHeight;
+    pdf.addPage();
+    pdf.addImage(
+      imgData,
+      "JPEG",
+      0,
+      position,
+      imgWidth,
+      imgHeight,
+      undefined,
+      "FAST"
+    );
+    heightLeft -= pageHeight;
+  }
+
+  const blob = pdf.output("blob");
+  return blob;
+};
+
+export const uploadPDF = async (file: Blob, fileName: string) => {
+  const formData = new FormData();
+  formData.append("file", file, fileName);
+
+  const response = await fetch("/api/upload", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Upload failed: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.url as string;
+};
+
+export const blobToBase64 = (blob: Blob): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (typeof reader.result === "string") {
+        const base64 = reader.result.split(",")[1];
+        resolve(base64);
+      } else {
+        reject(new Error("Failed to convert blob to base64"));
+      }
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
 };

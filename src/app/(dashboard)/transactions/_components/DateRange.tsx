@@ -46,9 +46,9 @@ const DateRange: React.FC<DateRangeProps> = ({ onApply, onClose }) => {
       <DateRangePicker
         onChange={handleSelect}
         moveRangeOnFirstSelection={false}
-        months={isDesktop ? 2 : 1}
+        months={1}
         ranges={state}
-        direction={isDesktop ? "horizontal" : "vertical"}
+        direction={!isDesktop ? "horizontal" : "vertical"}
       />
       <div className="flex justify-end p-4">
         <button

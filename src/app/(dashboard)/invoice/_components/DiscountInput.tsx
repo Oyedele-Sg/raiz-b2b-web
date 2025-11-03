@@ -31,12 +31,12 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
   const dropdownRef = useOutsideClick(() => setOpen(false), btnRef);
 
   return (
-    <div className={`relative flex ${className}`}>
+    <div className={`relative flex justify-end ${className}`}>
       {/* Input */}
       <input
         type="number"
         min={0}
-        className="w-full border text-right rounded-l-lg p-2 h-[50px] text-sm text-gray-900 bg-white focus:outline-none"
+        className="w-[134px] border text-right rounded-l-lg p-2 h-9 text-sm text-gray-900 bg-white focus:outline-none"
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
       />
@@ -47,7 +47,7 @@ const DiscountInput: React.FC<DiscountInputProps> = ({
           ref={btnRef}
           type="button"
           onClick={() => setOpen(!open)}
-          className="w-12 border-l-0 border rounded-r-lg h-[50px] font-brSonoma text-xs flex items-center justify-center text-zinc-700 bg-gray-100"
+          className="w-12 border-l-0 border rounded-r-lg h-9 font-brSonoma text-xs flex items-center justify-center text-zinc-700 bg-gray-100"
         >
           {mode === "percent" ? "%" : currency}
           <Image

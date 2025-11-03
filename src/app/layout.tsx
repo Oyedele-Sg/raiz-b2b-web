@@ -141,6 +141,7 @@ export default function RootLayout({
                   success: "bg-[#5ca512] ",
                   warning: "bg-yellow-400",
                   info: "bg-[#488ee8]",
+                  loading: "bg-[#475467]",
                 },
               }}
               icons={{

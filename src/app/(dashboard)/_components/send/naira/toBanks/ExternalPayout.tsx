@@ -1,10 +1,10 @@
 import EnterPin from "@/components/transactions/EnterPin";
-import { useCurrentWallet } from "@/lib/hooks/useCurrentWallet";
 import { useUser } from "@/lib/hooks/useUser";
 import { ExternalNGNDebitApi } from "@/services/transactions";
 import { useSendStore } from "@/store/Send";
+import { useCurrencyStore } from "@/store/useCurrencyStore";
 import { IExternalTransferPayload } from "@/types/services";
-import { passwordHash } from "@/utils/helpers";
+import { findWalletByCurrency, passwordHash } from "@/utils/helpers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 
@@ -20,7 +20,19 @@ const ExternalPayout = ({ close, goNext, setPaymentError }: Props) => {
   const { externalUser, purpose, category, amount, actions } = useSendStore();
   const qc = useQueryClient();
   const { user } = useUser();
-  const currentWallet = useCurrentWallet(user);
+  const { selectedCurrency } = useCurrencyStore();
+  const NGNAcct = findWalletByCurrency(user, "NGN");
+  const USDAcct = findWalletByCurrency(user, "USD");
+
+  const getCurrentWallet = () => {
+    if (selectedCurrency.name === "NGN") {
+      return NGNAcct;
+    } else if (selectedCurrency.name === "USD") {
+      return USDAcct;
+    }
+  };
+
+  const currentWallet = getCurrentWallet();
 
   const SendMoneyMutation = useMutation({
     mutationFn: (data: IExternalTransferPayload) =>

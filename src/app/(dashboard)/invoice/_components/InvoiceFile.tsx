@@ -1,63 +1,19 @@
 "use client";
 import Avatar from "@/components/ui/Avatar";
-import React from "react";
-
-interface IInvoiceItem {
-  id: number;
-  description: string;
-  qty: number;
-  unitPrice: number;
-  amount: number;
-}
-
-export interface IInvoice {
-  // Company Details
-  companyName: string;
-  companyAddress: string;
-
-  // Invoice Info
-  id: number;
-  invoiceNo: string;
-  status: string;
-  currency: "USD" | "NGN";
-
-  // Billing Details
-  billTo: string;
-  contactPerson: string;
-  customer: string;
-
-  // Dates
-  issueDate: string; // ISO string or formatted date
-  dueDate: string; // ISO string or formatted date
-  dueDays: string;
-
-  // Financial Details
-  items: IInvoiceItem[];
-  subTotal: string;
-  discount: string;
-  tax: string;
-  total: string;
-  amount: number;
-
-  // Extra Info
-  note: string;
-  terms: string;
-
-  // Contact
-  contact: {
-    phone: string;
-    email: string;
-    website: string;
-  };
-}
+import { IInvoice } from "@/types/invoice";
+import { formatAmount, getCurrencySymbol } from "@/utils/helpers";
+import React, { forwardRef } from "react";
 
 interface Props {
   data: IInvoice;
 }
 
-const InvoiceFile = ({ data }: Props) => {
+const InvoiceFile = forwardRef<HTMLDivElement, Props>(({ data }, ref) => {
   return (
-    <section className="max-w-[1200px] px-14  w-full bg-white rounded-3xl border border-gray-200 inline-flex flex-col justify-start items-start overflow-hidden">
+    <section
+      ref={ref}
+      className="max-w-[1200px] px-14  w-full bg-white rounded-3xl border border-gray-200 inline-flex flex-col justify-start items-start overflow-hidden"
+    >
       {/* Header Section */}
       <div className="w-full">
         <div className="w-full  pt-14 pb-5 flex justify-between items-end">
@@ -65,10 +21,10 @@ const InvoiceFile = ({ data }: Props) => {
             <Avatar className="size-6" src={""} name={""} />
             <div>
               <h1 className="text-zinc-900 text-lg font-bold  leading-snug">
-                {data.companyName}
+                {data?.customer?.full_name}
               </h1>
               <p className="text-zinc-700  text-sm mt-2">
-                {data.companyAddress}
+                {`${data?.customer?.city} ${data?.customer?.state}, ${data?.customer?.country}`}
               </p>
             </div>
           </div>
@@ -79,7 +35,7 @@ const InvoiceFile = ({ data }: Props) => {
           </div>
         </div>
         <p className=" text-zinc-900 text-sm font-bold  mb-12 text-right">
-          {data.invoiceNo}
+          {data?.invoice_number}
         </p>
       </div>
 
@@ -87,7 +43,9 @@ const InvoiceFile = ({ data }: Props) => {
       <div className="w-full pb-12 flex justify-between items-start">
         <div>
           <p className="text-zinc-700 text-sm mb-2">Bill To:</p>
-          <p className="text-zinc-900 text-base font-semibold">{data.billTo}</p>
+          <p className="text-zinc-900 text-base font-semibold">
+            {data?.customer?.full_name}
+          </p>
         </div>
         <div className="flex flex-col gap-3 items-end">
           <div className="flex gap-20">
@@ -95,7 +53,7 @@ const InvoiceFile = ({ data }: Props) => {
               Issue Date:
             </span>
             <span className="text-zinc-700 text-sm leading-tight">
-              {data.issueDate}
+              {data?.issue_date}
             </span>
           </div>
           <div className="flex gap-20">
@@ -103,7 +61,7 @@ const InvoiceFile = ({ data }: Props) => {
               Due Date:
             </span>
             <span className="text-zinc-700 text-sm leading-tight">
-              {data.dueDate}
+              {data?.due_date}
             </span>
           </div>
         </div>
@@ -132,18 +90,27 @@ const InvoiceFile = ({ data }: Props) => {
             </tr>
           </thead>
           <tbody className="font-brSonoma ">
-            {data.items.map((item, i) => (
-              <tr key={item.id} className="border-b border-gray-100">
+            {data?.invoice_items?.map((item, i) => (
+              <tr
+                key={item.invoice_item_id}
+                className="border-b border-gray-100"
+              >
                 <td className="py-6 px-4 text-zinc-700 text-sm">{i + 1}</td>
                 <td className="py-6 px-4 text-zinc-900 font-medium text-sm">
                   {item.description}
                 </td>
-                <td className="py-6 px-4 text-zinc-700 text-sm">{item.qty}</td>
                 <td className="py-6 px-4 text-zinc-700 text-sm">
-                  {item.unitPrice}
+                  {item.quantity}
+                </td>
+                <td className="py-6 px-4 text-zinc-700 text-sm">
+                  {`${getCurrencySymbol(data?.currency)}${formatAmount(
+                    item.unit_price
+                  )}`}
                 </td>
                 <td className="py-6 px-4 text-zinc-700 text-sm text-right">
-                  {item.amount}
+                  {`${getCurrencySymbol(data?.currency)}${formatAmount(
+                    item.total_price
+                  )}`}
                 </td>
               </tr>
             ))}
@@ -160,44 +127,51 @@ const InvoiceFile = ({ data }: Props) => {
               Terms & Conditions
             </h3>
             <p className="text-zinc-700 text-xs leading-relaxed max-w-sm">
-              {data.terms}
+              {data?.terms_and_conditions}
             </p>
           </div>
         </div>
-        <div className="flex flex-col gap-5 min-w-80 border border-gray-100 rounded-lg">
+        <div className="flex flex-col gap-5 min-w-80 font-medium text-sm  text-zinc-700 font-brSonoma border border-b-0 rounded-t-lg border-gray-100 rounded-b-lg  ">
           <div className="flex justify-between pt-6 px-6">
-            <span className="text-gray-700 text-sm">Sub Total:</span>
-            <span className="text-zinc-900 text-sm font-medium">
-              {data.subTotal}
-            </span>
+            <span className="">Sub Total:</span>
+            <span className="">{`${getCurrencySymbol(
+              data?.currency
+            )}${formatAmount(data?.total_amount)}`}</span>
           </div>
-          <div className="flex justify-between  px-6">
-            <span className="text-gray-700 text-sm">Discount:</span>
-            <span className="text-zinc-900 text-sm font-medium">
-              {data.discount}
-            </span>
-          </div>
-          <div className="flex justify-between  px-6">
-            <span className="text-gray-700 text-sm">Tax:</span>
-            <span className="text-zinc-900 text-sm font-medium">
-              {data.tax}
-            </span>
-          </div>
-          <div className="flex justify-between text-zinc-700 text-base font-semibold  py-4 px-4 bg-gray-100 ">
+          {data?.discount_amount ? (
+            <div className="flex justify-between  px-6">
+              <span className="">Discount:</span>
+              <span className="">{`${getCurrencySymbol(
+                data?.currency
+              )}${formatAmount(data?.discount_amount)}`}</span>
+            </div>
+          ) : null}
+          {data?.tax_amount ? (
+            <div className="flex justify-between  px-6">
+              <span className="">Tax:</span>
+              <span className="">{`${getCurrencySymbol(
+                data?.currency
+              )}${formatAmount(data?.tax_amount)}`}</span>
+            </div>
+          ) : null}
+          <div className="flex justify-between text-zinc-700 text-base font-semibold  py-4 px-6 bg-zinc-200  rounded-bl-lg rounded-br-lg">
             <span className="">Total:</span>
-            <span className="">{data.total}</span>
+            <span className="">{`${getCurrencySymbol(
+              data?.currency
+            )}${formatAmount(data?.total_amount)}`}</span>
           </div>
         </div>
       </div>
 
       {/* Contact Footer */}
-      <div className="w-full  py-8 flex gap-8 text-zinc-800 font-semibold text-sm border-t border-gray-100">
-        <span>{data.contact.phone}</span>
-        <span>{data.contact.email}</span>
-        <span>{data.contact.website}</span>
+      <div className="w-full  py-8 flex gap-8 text-zinc-800 font-semibold text-sm border-t border-gray-100 ">
+        <span>{data?.customer?.phone_number}</span>
+        <span>{data?.customer?.email}</span>
+        {/* <span>{data?.customer?.website}</span> */}
       </div>
     </section>
   );
-};
+});
 
+InvoiceFile.displayName = "InvoiceFile";
 export default InvoiceFile;

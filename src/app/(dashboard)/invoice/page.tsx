@@ -1,14 +1,14 @@
 "use client";
 import Button from "@/components/ui/Button";
-import React, { useState } from "react";
+import React from "react";
 import InvoicesTable from "./_components/InvoicesTable";
-import { AnimatePresence } from "motion/react";
-import SideModalWrapper from "../_components/SideModalWrapper";
-import InvoiceSettings from "./_components/InvoiceSettings";
+// import { AnimatePresence } from "motion/react";
+// import SideModalWrapper from "../_components/SideModalWrapper";
+// import InvoiceSettings from "./_components/InvoiceSettings";
 import Link from "next/link";
 
 const InvoicePage = () => {
-  const [showSettings, setShowSettings] = useState(false);
+  // const [showSettings, setShowSettings] = useState(false);
   return (
     <section className="mt-10 h-full">
       <div className="flex justify-between gap-7 items-center ">
@@ -32,7 +32,7 @@ const InvoicePage = () => {
               <span className="ml-2">New Invoice</span>
             </Button>
           </Link>
-          <button
+          {/* <button
             onClick={() => setShowSettings(true)}
             className="w-10 h-10 relative flex justify-center items-center bg-white rounded-2xl border border-gray-100 hover:border-gray-300"
           >
@@ -52,17 +52,17 @@ const InvoicePage = () => {
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
+          </button> */}
         </div>
       </div>
       <InvoicesTable />
-      <AnimatePresence>
+      {/* <AnimatePresence>
         {showSettings ? (
           <SideModalWrapper close={() => setShowSettings(false)}>
             <InvoiceSettings close={() => setShowSettings(false)} />
           </SideModalWrapper>
         ) : null}
-      </AnimatePresence>
+      </AnimatePresence> */}
     </section>
   );
 };

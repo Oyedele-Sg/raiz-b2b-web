@@ -640,3 +640,63 @@ export interface IBusinessVerificationPayload {
   city: string;
   length_of_stay_months: number;
 }
+
+export interface IInvoiceSettingsPayload {
+  default_currency?: string;
+  invoice_prefix?: string;
+  terms_and_conditions: string;
+  discount_level: "line" | "total" | null;
+  tax_level: "line" | "total" | null;
+  logo_url?: string;
+}
+
+export interface IAddCustomerPayload {
+  full_name: string;
+  email: string;
+  phone_number: string;
+  street_address: string;
+  city: string;
+  state: string;
+  country: string;
+  business_name: string;
+}
+
+export interface IUpdateCustomerPayload {
+  full_name: string;
+  email: string;
+  phone_number: string;
+  street_address: string;
+  city: string;
+  state: string;
+  country: string;
+  business_name: string;
+  business_account_id: string;
+}
+
+export interface IInvoiceTax {
+  tax_name: string;
+  tax_percentage: number;
+  business_account_id: string;
+  tax_rate_id: string;
+}
+
+export interface ICreateTaxPayload {
+  tax_name: string;
+  tax_percentage: number;
+}
+
+export interface IFectchInvoiceParams {
+  search?: string;
+  status?: string;
+  issued_date_from?: string;
+  issued_date_to?: string;
+  due_date_from?: string;
+  due_date_to?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface SendInvoicemailPayload {
+  payment_link: string;
+  invoice_pdf_url: string;
+}
