@@ -89,7 +89,7 @@ const InvoicesTable = () => {
 
         await downloadInvoice(invoiceRef, invoice.invoice_number, "pdf");
         setInvoiceToDownload(null);
-        toast.success("Pdf downloaded successful ");
+        toast.success("Pdf downloaded successfully ");
       }, 200);
     } catch (error) {
       console.error("Failed to download invoice:", error);

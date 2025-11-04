@@ -67,7 +67,7 @@ const InvoiceDetail = () => {
   const handleDownload = async () => {
     try {
       await downloadInvoice(invoiceRef, data.invoice_number, "pdf");
-      toast.success("Pdf downloaded successful ");
+      toast.success("Pdf downloaded successfully ");
     } catch (error) {
       toast.error("Error downloading pdf");
       console.log(error);
