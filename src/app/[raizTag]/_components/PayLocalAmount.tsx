@@ -340,6 +340,7 @@ const PayLocalAmount = ({
                   ) || null
                 : null
             }
+            height="auto"
           />
         </div>
         <div className="w-full py-5">
