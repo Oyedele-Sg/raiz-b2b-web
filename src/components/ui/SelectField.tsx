@@ -144,7 +144,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
       style={{
         ...style,
         width: width || "100%",
-        height: height || "44px",
+        // height: height || "44px",
       }}
       className=""
     >
