@@ -27,28 +27,40 @@ import AddNewTax from "../../_components/AddNewTax";
 import SideModalWrapper from "@/app/(dashboard)/_components/SideModalWrapper";
 import { ACCOUNT_CURRENCIES } from "@/constants/misc";
 
-const invoiceSchema = z.object({
-  customerName: z.string().min(1, "Customer name is required"),
-  invoiceNumber: z.string().min(1, "Invoice number is required"),
-  dateIssued: z.string().min(1, "Date issued is required"),
-  dueDate: z.string().min(1, "Due date is required"),
-  currency: z.string().min(1, "Currency is required"),
-  notes: z.string().optional(),
-  items: z
-    .array(
-      z.object({
-        description: z.string().min(1, "Item description is required"),
-        quantity: z.number().min(1, "Quantity must be at least 1"),
-        unitPrice: z.number().min(0, "Unit price cannot be negative"),
-      })
-    )
-    .min(1, "At least one item is required"),
-  terms: z.string().min(2, "Enter your terms and condition"),
-  discount: z.number().min(0, "Discount cannot be negative").optional(),
-  discountType: z.enum(["percent", "value"]).optional(),
-  tax_amount: z.number().optional(),
-  tax_rate_id: z.string().optional(),
-});
+const invoiceSchema = z
+  .object({
+    customerName: z.string().min(1, "Customer name is required"),
+    invoiceNumber: z.string().min(1, "Invoice number is required"),
+    dateIssued: z.string().min(1, "Date issued is required"),
+    dueDate: z.string().min(1, "Due date is required"),
+    currency: z.string().min(1, "Currency is required"),
+    notes: z.string().optional(),
+    items: z
+      .array(
+        z.object({
+          description: z.string().min(1, "Item description is required"),
+          quantity: z.number().min(1, "Quantity must be at least 1"),
+          unitPrice: z.number().min(0, "Unit price cannot be negative"),
+        })
+      )
+      .min(1, "At least one item is required"),
+    terms: z.string().min(2, "Enter your terms and condition"),
+    discount: z.number().min(0, "Discount cannot be negative").optional(),
+    discountType: z.enum(["percent", "value"]).optional(),
+    tax_amount: z.number().optional(),
+    tax_rate_id: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      const issueDate = new Date(data.dateIssued);
+      const dueDate = new Date(data.dueDate);
+      return dueDate >= issueDate;
+    },
+    {
+      message: "Due date cannot be before the issue date",
+      path: ["dueDate"],
+    }
+  );
 
 type InvoiceFormValues = z.infer<typeof invoiceSchema>;
 
@@ -262,7 +274,7 @@ const EditInvoicePage = () => {
     const isDraft = submitType === "draft";
     UpdateMutation.mutate({ payload, isDraft });
   };
-
+  const today = new Date().toISOString().split("T")[0];
   const closeSideModal = () => setShowSideModal(null);
 
   const displayModal = () => {
@@ -443,6 +455,7 @@ const EditInvoicePage = () => {
                 <InputField
                   label="Due Date*"
                   type="date"
+                  min={formik.values.dateIssued || today}
                   {...formik.getFieldProps("dueDate")}
                   status={
                     formik.touched.dueDate && formik.errors.dueDate
