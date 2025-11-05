@@ -131,7 +131,7 @@ const AddNewCustomer = ({ close }: Props) => {
             loading={AddMutation.isPending}
             type="submit"
           >
-            Save and Contiue
+            Save and Continue
           </Button>
           <Button type="button" onClick={close} variant="secondary">
             Cancel
