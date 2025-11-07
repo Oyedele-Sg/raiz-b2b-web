@@ -18,7 +18,7 @@ interface Props {
 }
 
 const AddCustomerSchema = z.object({
-  fullname: z.string().min(2, "Full name is required"),
+  fullname: z.string().optional(),
   companyName: z.string().min(2, "Business name is required"),
   email: z.string().email("Invalid email address").min(1, "Email is required"),
   phone: z
@@ -52,7 +52,7 @@ const AddNewCustomer = ({ close }: Props) => {
     validationSchema: toFormikValidationSchema(AddCustomerSchema),
     onSubmit: (values) => {
       const payload: IAddCustomerPayload = {
-        full_name: values.fullname,
+        ...(values.fullname && { full_name: values.fullname }),
         email: values.email,
         phone_number: values.phone,
         street_address: values.address,
@@ -74,7 +74,7 @@ const AddNewCustomer = ({ close }: Props) => {
       <div className="flex-1 overflow-y-auto flex flex-col justify-between">
         <div className="flex flex-col gap-4">
           <InputField
-            label="Full Name"
+            label="Full Name (optional)"
             {...formik.getFieldProps("fullname")}
             status={
               formik.touched.fullname && formik.errors.fullname ? "error" : null
