@@ -787,7 +787,7 @@ const EditInvoicePage = () => {
                     disabled={UpdateMutation.isPending}
                     className="whitespace-nowrap"
                   >
-                    Update Invoice
+                    Preview & Save
                   </Button>
                 </div>
               </div>
