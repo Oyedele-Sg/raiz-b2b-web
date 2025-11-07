@@ -11,6 +11,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import StripePayment from "./StripePayment";
 import TopupSuccess from "./TopupSuccess";
+import { toast } from "sonner";
 
 interface Props {
   close: () => void;
@@ -63,7 +64,12 @@ const UsdTopUp = ({ close }: Props) => {
             {paymentOption === "zelle" && (
               <ZelleTopupInfo
                 goBack={() => setStep("type")}
-                goNext={() => handleDone()}
+                goNext={() => {
+                  handleDone();
+                  toast.success(
+                    "Zelle top-up submitted — funds will reflect once verified."
+                  );
+                }}
               />
             )}
             {paymentOption === "debit-card" && (

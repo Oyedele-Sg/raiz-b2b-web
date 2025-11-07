@@ -24,6 +24,8 @@ const StripePayment = ({ goBack, goNext }: Props) => {
   const { stripeDetail } = useTopupStore();
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
+  const [paymentElementReady, setPaymentElementReady] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -71,7 +73,7 @@ const StripePayment = ({ goBack, goNext }: Props) => {
     return (
       <div className="flex flex-col gap-5 mt-10 justify-center items-center">
         <Spinner />
-        <p> Loading stripe...</p>
+        <p>Loading stripe...</p>
       </div>
     );
   }
@@ -87,18 +89,27 @@ const StripePayment = ({ goBack, goNext }: Props) => {
         onSubmit={handleSubmit}
         className="flex flex-col h-full justify-between items-center w-full"
       >
-        {stripeDetail?.client_secret && <PaymentElement />}
+        {!paymentElementReady && (
+          <div className="flex flex-col gap-5 mt-10 justify-center items-center w-full">
+            <Spinner />
+            <p>Loading payment form...</p>
+          </div>
+        )}
+        <div className={!paymentElementReady ? "hidden" : "w-full"}>
+          {stripeDetail?.client_secret && (
+            <PaymentElement onReady={() => setPaymentElementReady(true)} />
+          )}
+        </div>
         {errMsg && <ErrorMessage message={errMsg} />}
         <div className="flex flex-col gap-4 w-full my-3">
           <Button
             type="submit"
-            // onClick={handleSubmit}
             loading={loading}
-            disabled={loading || !stripe}
+            disabled={loading || !stripe || !paymentElementReady}
           >
             Proceed to pay
           </Button>
-          <Button type="button" variant="secondary" onClick={close}>
+          <Button type="button" variant="secondary" onClick={goBack}>
             Cancel
           </Button>
         </div>
