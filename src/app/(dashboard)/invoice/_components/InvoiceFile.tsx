@@ -1,5 +1,6 @@
 "use client";
 import Avatar from "@/components/ui/Avatar";
+import { useUser } from "@/lib/hooks/useUser";
 import { IInvoice } from "@/types/invoice";
 import { formatAmount, getCurrencySymbol } from "@/utils/helpers";
 import React, { forwardRef } from "react";
@@ -9,6 +10,7 @@ interface Props {
 }
 
 const InvoiceFile = forwardRef<HTMLDivElement, Props>(({ data }, ref) => {
+  const { user } = useUser();
   return (
     <section
       ref={ref}
@@ -18,13 +20,30 @@ const InvoiceFile = forwardRef<HTMLDivElement, Props>(({ data }, ref) => {
       <div className="w-full">
         <div className="w-full  pt-14 pb-5 flex justify-between items-end">
           <div className="flex flex-col gap-3">
-            <Avatar className="size-6" src={""} name={""} />
+            <Avatar
+              className="size-6"
+              src={
+                user?.selfie_image ||
+                user?.business_account?.business_image ||
+                ""
+              }
+              name={user?.business_account?.business_name || ""}
+            />
             <div>
               <h1 className="text-zinc-900 text-lg font-bold  leading-snug">
-                {data?.customer?.full_name}
+                {user?.business_account?.business_name || ""}
               </h1>
               <p className="text-zinc-700  text-sm mt-2">
-                {`${data?.customer?.city} ${data?.customer?.state}, ${data?.customer?.country}`}
+                {`${
+                  user?.business_account?.entity?.entity_address?.[0]?.city ||
+                  ""
+                }, ${
+                  user?.business_account?.entity?.entity_address?.[0]?.state ||
+                  ""
+                } ${
+                  user?.business_account?.entity?.entity_address?.[0]?.country
+                    ?.country_name || ""
+                }`}
               </p>
             </div>
           </div>
@@ -44,7 +63,7 @@ const InvoiceFile = forwardRef<HTMLDivElement, Props>(({ data }, ref) => {
         <div>
           <p className="text-zinc-700 text-sm mb-2">Bill To:</p>
           <p className="text-zinc-900 text-base font-semibold">
-            {data?.customer?.full_name}
+            {data?.customer?.full_name || data?.customer?.business_name || ""}
           </p>
         </div>
         <div className="flex flex-col gap-3 items-end">
@@ -165,8 +184,8 @@ const InvoiceFile = forwardRef<HTMLDivElement, Props>(({ data }, ref) => {
 
       {/* Contact Footer */}
       <div className="w-full  py-8 flex gap-8 text-zinc-800 font-semibold text-sm border-t border-gray-100 ">
-        <span>{data?.customer?.phone_number}</span>
-        <span>{data?.customer?.email}</span>
+        <span>{user?.business_account?.business_phone_number}</span>
+        <span>{user?.email}</span>
         {/* <span>{data?.customer?.website}</span> */}
       </div>
     </section>

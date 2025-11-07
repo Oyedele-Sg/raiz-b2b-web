@@ -651,7 +651,7 @@ export interface IInvoiceSettingsPayload {
 }
 
 export interface IAddCustomerPayload {
-  full_name: string;
+  full_name?: string;
   email: string;
   phone_number: string;
   street_address: string;
