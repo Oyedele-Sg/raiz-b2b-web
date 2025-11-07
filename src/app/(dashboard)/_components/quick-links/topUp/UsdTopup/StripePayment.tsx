@@ -1,0 +1,110 @@
+"use client";
+import SideWrapperHeader from "@/components/SideWrapperHeader";
+import Button from "@/components/ui/Button";
+import ErrorMessage from "@/components/ui/ErrorMessage";
+import Spinner from "@/components/ui/Spinner";
+import { confirmStripeTopPaymentIntent } from "@/services/transactions";
+import { useTopupStore } from "@/store/TopUp";
+import {
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
+import React, { useState } from "react";
+import { toast } from "sonner";
+
+interface Props {
+  goBack: () => void;
+  goNext: () => void;
+}
+
+const StripePayment = ({ goBack, goNext }: Props) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const { stripeDetail } = useTopupStore();
+  const [loading, setLoading] = useState(false);
+  const [errMsg, setErrMsg] = useState("");
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    if (!stripe || !elements) {
+      toast.error("Stripe or elements not initialized");
+      return;
+    }
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+      setErrMsg(submitError.message || "");
+      setLoading(false);
+      return;
+    }
+
+    const { error: stripeError, paymentIntent } = await stripe.confirmPayment({
+      elements,
+      clientSecret: stripeDetail?.client_secret || "",
+      redirect: "if_required",
+    });
+    if (stripeError) {
+      setErrMsg(stripeError?.message || "");
+    }
+    if (paymentIntent?.status === "succeeded") {
+      try {
+        await confirmStripeTopPaymentIntent(paymentIntent.id);
+        toast.success("Payment confirmed successfully!");
+        goNext();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        console.error(error);
+        setErrMsg(
+          error?.response?.data?.message || "Failed to confirm payment"
+        );
+        toast.error(
+          error?.response?.data?.message || "Payment confirmation failed"
+        );
+      }
+    } else {
+      toast.info(`Payment status: ${paymentIntent?.status}`);
+    }
+    setLoading(false);
+  };
+
+  if (!stripeDetail?.client_secret || !stripe || !elements) {
+    return (
+      <div className="flex flex-col gap-5 mt-10 justify-center items-center">
+        <Spinner />
+        <p> Loading stripe...</p>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <SideWrapperHeader
+        close={goBack}
+        title="Enter your card detail"
+        titleColor="text-zinc-900"
+      />
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col h-full justify-between items-center w-full"
+      >
+        {stripeDetail?.client_secret && <PaymentElement />}
+        {errMsg && <ErrorMessage message={errMsg} />}
+        <div className="flex flex-col gap-4 w-full my-3">
+          <Button
+            type="submit"
+            // onClick={handleSubmit}
+            loading={loading}
+            disabled={loading || !stripe}
+          >
+            Proceed to pay
+          </Button>
+          <Button type="button" variant="secondary" onClick={close}>
+            Cancel
+          </Button>
+        </div>
+      </form>
+    </>
+  );
+};
+
+export default StripePayment;
