@@ -392,7 +392,7 @@ const CreateInvoicePage = () => {
                 <InputField
                   label="Date Issued*"
                   type="date"
-                  min={today}
+                  // min={today}
                   {...formik.getFieldProps("dateIssued")}
                   status={
                     formik.touched.dateIssued && formik.errors.dateIssued
