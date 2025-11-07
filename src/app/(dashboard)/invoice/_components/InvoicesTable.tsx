@@ -167,7 +167,7 @@ const InvoicesTable = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const columns: ColumnDef<IInvoice, any>[] = [
-    columnHelper.accessor("customer.full_name", {
+    columnHelper.accessor("customer.business_name", {
       header: "Customer",
       cell: (info) => (
         <div className="flex items-center gap-2 font-brSonoma">
@@ -186,6 +186,14 @@ const InvoicesTable = () => {
         </span>
       ),
     }),
+    columnHelper.accessor("created_at", {
+      header: "Date Created",
+      cell: (info) => (
+        <span className="text-sm font-brSonoma text-raiz-gray-700">
+          {dayjs(convertTime(info.getValue())).format("DD MMM YYYY")}
+        </span>
+      ),
+    }),
     columnHelper.accessor("issue_date", {
       header: "Date Issued",
       cell: (info) => (
@@ -194,14 +202,14 @@ const InvoicesTable = () => {
         </span>
       ),
     }),
-    // columnHelper.accessor("contactPerson", {
-    //   header: "Contact Person",
-    //   cell: (info) => (
-    //     <span className="text-sm font-brSonoma text-raiz-gray-700">
-    //       {info.getValue()}
-    //     </span>
-    //   ),
-    // }),
+    columnHelper.accessor("customer.full_name", {
+      header: "Contact Person",
+      cell: (info) => (
+        <span className="text-sm font-brSonoma text-raiz-gray-700">
+          {info.getValue()}
+        </span>
+      ),
+    }),
     columnHelper.accessor("due_date", {
       header: "Due Date",
       cell: (info) => (

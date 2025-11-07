@@ -31,6 +31,7 @@ export interface IInvoice {
   invoice_items: IInvoiceItem[];
   customer: ICustomer;
   note: string;
+  created_at?: string;
 }
 
 export interface IInvoiceItem {
