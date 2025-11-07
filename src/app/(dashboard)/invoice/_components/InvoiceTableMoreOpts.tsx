@@ -59,7 +59,7 @@ const InvoiceTableMoreOpts = ({
         className={`flex items-center justify-center  rounded hover:bg-gray-100 transition ${
           isFromTable
             ? "w-6 h-6"
-            : "rounded-2xl border border-gray-100 p-2 w-10 h-10"
+            : "rounded-2xl border border-gray-300 p-2 w-10 h-10"
         }`}
       >
         <Image
