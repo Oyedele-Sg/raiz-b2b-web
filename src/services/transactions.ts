@@ -532,3 +532,36 @@ export const GetActivityStats = async (
   );
   return response?.data;
 };
+
+export async function InitiateZelleTopApi(
+  wallet_id: string,
+  payload: { expected_amount: number }
+) {
+  const response = await AuthAxios.post(
+    `/business/transactions/topup/usd/zelle/initiate/?wallet_id=${wallet_id}`,
+    payload
+  );
+  return response.data;
+}
+
+export const createStripeTopPaymentIntent = async (amountInCents: number) => {
+  const res = await AuthAxios.post(
+    `/business/transactions/topup/usd/create-intent/`,
+    {
+      transaction_amount: amountInCents,
+      curreny: "USD",
+    }
+  );
+  return res?.data;
+};
+
+export const confirmStripeTopPaymentIntent = async (payment_intent: string) => {
+  const res = await AuthAxios.post(
+    `/business/transactions/topup/usd/confirm-intent/`,
+    {
+      payment_intent,
+      curreny: "USD",
+    }
+  );
+  return res?.data;
+};
