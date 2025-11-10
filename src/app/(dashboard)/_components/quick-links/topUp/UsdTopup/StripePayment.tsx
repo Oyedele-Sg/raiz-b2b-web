@@ -97,7 +97,12 @@ const StripePayment = ({ goBack, goNext }: Props) => {
         )}
         <div className={!paymentElementReady ? "hidden" : "w-full"}>
           {stripeDetail?.client_secret && (
-            <PaymentElement onReady={() => setPaymentElementReady(true)} />
+            <PaymentElement
+              onReady={() => setPaymentElementReady(true)}
+              onChange={() => {
+                if (errMsg) setErrMsg("");
+              }}
+            />
           )}
         </div>
         {errMsg && <ErrorMessage message={errMsg} />}
