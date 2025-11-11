@@ -55,15 +55,15 @@ const EditCustomer = ({ close, customer }: Props) => {
     validationSchema: toFormikValidationSchema(EditCustomerSchema),
     onSubmit: (values) => {
       const payload: IUpdateCustomerPayload = {
-        full_name: values.fullname,
-        email: values.email,
-        phone_number: values.phone,
-        street_address: values.address,
-        city: values?.city,
-        state: values?.state,
-        country: values?.country_code,
-        business_name: values?.companyName,
-        business_account_id: customer.business_account_id,
+        full_name: values.fullname || null,
+        email: values.email || null,
+        phone_number: values.phone || null,
+        street_address: values.address || null,
+        city: values?.city || null,
+        state: values?.state || null,
+        country: values?.country_code || null,
+        business_name: values?.companyName || null,
+        business_account_id: customer.business_account_id || null,
       };
       UpdateMutation.mutate(payload);
     },

@@ -74,12 +74,12 @@ const ExternalPayout = ({ close, goNext, setPaymentError }: Props) => {
     const payload: IExternalTransferPayload = {
       wallet_id: currentWallet?.wallet_id || "",
       data: {
-        beneficiary_account_name: externalUser?.bank_account_name || "",
-        beneficiary_account_number: externalUser?.bank_account_number || "",
+        beneficiary_account_name: externalUser?.bank_account_name || null,
+        beneficiary_account_number: externalUser?.bank_account_number || null,
         transaction_amount: Number(amount),
         narration: purpose,
-        beneficiary_bank_code: externalUser?.bank_short_code || "",
-        beneficiary_bank_name: externalUser?.bank_name || "",
+        beneficiary_bank_code: externalUser?.bank_short_code || null,
+        beneficiary_bank_name: externalUser?.bank_name || null,
         transaction_category_id: category?.transaction_category_id || 0,
       },
       pin: {

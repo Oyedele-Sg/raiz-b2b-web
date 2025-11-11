@@ -149,7 +149,7 @@ const RegisterForm = () => {
           first_name: formik.values.firstName,
           last_name: formik.values.lastName,
           country_id: formik.values.country_id,
-          referral_code: formik.values.referral_code || "",
+          referral_code: formik.values.referral_code || null,
         };
         signupMutation.mutate(payload);
       } else if (currentStep === 4) {

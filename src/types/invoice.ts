@@ -56,18 +56,18 @@ export interface ITaxRate {
 }
 
 export interface ICreateInvoicePayload {
-  invoice_number: string;
-  issue_date: string; // ISO date string
-  due_date: string; // ISO date string
-  total_amount: number;
-  tax_amount: number;
-  tax_rate_id?: string;
-  discount_amount?: number;
-  currency: string;
-  customer_id: string;
-  attachment_url?: string;
-  terms_and_conditions: string;
-  note: string;
+  invoice_number: string | null;
+  issue_date: string | null; // ISO date string
+  due_date: string | null; // ISO date string
+  total_amount: number | null;
+  tax_amount: number | null;
+  tax_rate_id?: string | null;
+  discount_amount?: number | null;
+  currency: string | null;
+  customer_id: string | null;
+  attachment_url?: string | null;
+  terms_and_conditions: string | null;
+  note: string | null;
   invoice_items: {
     description: string;
     quantity: number;

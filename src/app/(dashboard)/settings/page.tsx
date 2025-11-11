@@ -40,7 +40,9 @@ const Settingspage = () => {
   } = useQuery({
     queryKey: ["country", user?.business_account?.entity?.country_id],
     queryFn: () =>
-      FetchCountriesWithIdApi(user?.business_account?.entity?.country_id || ""),
+      FetchCountriesWithIdApi(
+        user?.business_account?.entity?.country_id || null
+      ),
     enabled: !!user?.business_account?.entity?.country_id,
   });
 

@@ -102,7 +102,7 @@ export const RejectRequestApi = async (request_id: string, reason?: string) => {
 };
 
 export const RequestFundsApi = async (
-  wallet_id: string,
+  wallet_id: string | null,
   data: IRequestFundsPayload
 ) => {
   const response = await AuthAxios.post(
@@ -402,7 +402,7 @@ export const CreateIntBeneficiary = async (payload: IIntBeneficiaryPayload) => {
 };
 
 export async function SendInternationalInitialPayout(data: {
-  foreign_payout_beneficiary_id: string;
+  foreign_payout_beneficiary_id: string | null;
   amount: number;
 }): Promise<IInitialPayoutResponse> {
   const response = await AuthAxios.post(
@@ -504,7 +504,7 @@ export const confirmStripePaymentIntent = async (
 };
 
 export const GetTransactionsAnalyticsStatusApi = async (
-  wallet_id: string
+  wallet_id: string | null
 ): Promise<{
   pending: number;
   completed: number;
@@ -534,7 +534,7 @@ export const GetActivityStats = async (
 };
 
 export async function InitiateZelleTopApi(
-  wallet_id: string,
+  wallet_id: string | null,
   payload: { expected_amount: number }
 ) {
   const response = await AuthAxios.post(

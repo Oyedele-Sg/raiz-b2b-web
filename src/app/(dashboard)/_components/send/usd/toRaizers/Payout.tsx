@@ -78,9 +78,9 @@ const Payout = ({ close, goNext, setPaymentError }: Props) => {
 
   const handleSend = () => {
     const payload: IP2PTransferPayload = {
-      wallet_id: currentWallet?.wallet_id || "",
+      wallet_id: currentWallet?.wallet_id || null,
       payload: {
-        receiver_entity_id: selectedUser?.entity_id || "",
+        receiver_entity_id: selectedUser?.entity_id || null,
         transaction_amount: Number(amount),
         transaction_remarks: purpose,
         transaction_pin: passwordHash(pin),

@@ -84,7 +84,7 @@ const ToGlobal = ({ close, bankType }: Props) => {
     mutationFn: () =>
       SendInternationalInitialPayout({
         foreign_payout_beneficiary_id:
-          intBeneficiary?.foreign_payout_beneficiary_id || "",
+          intBeneficiary?.foreign_payout_beneficiary_id || null,
         amount: parseFloat(amount),
       }),
     onSuccess: (response) => {

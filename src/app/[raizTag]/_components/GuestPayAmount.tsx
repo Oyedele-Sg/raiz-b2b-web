@@ -63,7 +63,7 @@ const GuestPayAmount = ({ close, goNext }: Props) => {
   const { data: networks } = useQuery({
     queryKey: ["afican-payin-networks", guestLocalCurrency?.value, channel_id],
     queryFn: () =>
-      GetAfricaPayinNetworksApi(guestLocalCurrency?.value || "", channel_id),
+      GetAfricaPayinNetworksApi(guestLocalCurrency?.value || null, channel_id),
     enabled: !!guestLocalCurrency?.value,
   });
 

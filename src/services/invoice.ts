@@ -146,7 +146,7 @@ export const SendInvoiceMailApi = async (
 };
 
 export const UpdateInvoiceStatusApi = async (
-  invoice_id: string,
+  invoice_id: string | null,
   status: IInvoiceStatus
 ) => {
   const response = await AuthAxios.patch(

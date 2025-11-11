@@ -13,7 +13,7 @@ export interface IRegisterPayload {
   first_name: string;
   last_name: string;
   country_id: string;
-  referral_code: string;
+  referral_code: string | null;
 }
 
 export interface IResetPasswordPayload {
