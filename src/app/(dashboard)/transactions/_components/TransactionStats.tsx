@@ -13,7 +13,7 @@ const TransactionStats = () => {
   const currentWallet = useCurrentWallet(user);
   const { data, isLoading } = useQuery({
     queryFn: () =>
-      GetTransactionsAnalyticsStatusApi(currentWallet?.wallet_id || ""),
+      GetTransactionsAnalyticsStatusApi(currentWallet?.wallet_id || null),
     queryKey: ["txn-analytics-status", currentWallet?.wallet_id],
   });
   const txnData = data

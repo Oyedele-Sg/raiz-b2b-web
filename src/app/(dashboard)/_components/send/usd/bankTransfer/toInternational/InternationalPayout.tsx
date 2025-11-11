@@ -69,7 +69,7 @@ const InternationPayout = ({
   const handleSend = () => {
     const payload: IIntSendPayload = {
       payout_initiation_id: paymentInitiationId,
-      wallet_id: currentWallet?.wallet_id || "",
+      wallet_id: currentWallet?.wallet_id || null,
       transaction_category_id: category?.transaction_category_id || 0,
       transaction_description: purpose,
       data: {

@@ -221,17 +221,17 @@ const CreateInvoicePage = () => {
     const { totalDiscount, totalTax, total } = calculateTotals(values);
 
     const payload: ICreateInvoicePayload = {
-      invoice_number: values.invoiceNumber,
-      issue_date: values.dateIssued,
-      due_date: values.dueDate,
-      total_amount: total,
-      tax_amount: totalTax,
-      ...(values.tax_rate_id && { tax_rate_id: values.tax_rate_id || "" }),
-      discount_amount: totalDiscount,
-      currency: values.currency,
-      customer_id: values.customerName,
-      terms_and_conditions: values.terms || "",
-      note: values.notes || "",
+      invoice_number: values.invoiceNumber || null,
+      issue_date: values.dateIssued || null,
+      due_date: values.dueDate || null,
+      total_amount: total || null,
+      tax_amount: totalTax || null,
+      ...(values.tax_rate_id && { tax_rate_id: values.tax_rate_id || null }),
+      discount_amount: totalDiscount || null,
+      currency: values.currency || null,
+      customer_id: values.customerName || null,
+      terms_and_conditions: values.terms || null,
+      note: values.notes || null,
       invoice_items: values.items.map((item) => {
         const itemTotalPrice = item.unitPrice * item.quantity;
         return {

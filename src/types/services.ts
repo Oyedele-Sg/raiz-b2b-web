@@ -55,9 +55,9 @@ export interface IFetchRewardsParams {
 }
 
 export interface IResetPinPayload {
-  otp: string;
-  password: string;
-  email: string;
+  otp: string | null;
+  password: string | null;
+  email: string | null;
 }
 
 export interface IChangePasswordPayload {
@@ -170,19 +170,19 @@ export interface IAcceptRequestPayload {
 }
 
 export interface IRequestFundsPayload {
-  requestee_entity_id: string;
+  requestee_entity_id: string | null;
   transaction_amount: number;
   narration: string;
   transaction_category_id: number;
 }
 
 export interface IP2PTransferPayload {
-  wallet_id: string;
+  wallet_id: string | null;
   payload: {
-    receiver_entity_id: string;
+    receiver_entity_id: string | null;
     transaction_amount: number;
-    transaction_remarks: string;
-    transaction_pin: string;
+    transaction_remarks: string | null;
+    transaction_pin: string | null;
     transaction_category_id: number;
   };
 }
@@ -237,13 +237,13 @@ export interface IBeneficiariestResponse {
 }
 
 export interface IExternalAccount {
-  bank_short_code: string;
-  bank_account_number: string;
-  bank_account_name: string;
-  bank_name: string;
-  external_account_id?: string;
-  created_at?: string;
-  updated_at?: string;
+  bank_short_code: string | null;
+  bank_account_number: string | null;
+  bank_account_name: string | null;
+  bank_name: string | null;
+  external_account_id?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
 }
 
 export interface IExternalBeneficiaryEntity {
@@ -266,21 +266,21 @@ export interface IExternalTransferPayload {
   wallet_id?: string;
   pin: ITransactionPinPayload;
   data: {
-    beneficiary_account_name: string;
-    beneficiary_account_number: string;
+    beneficiary_account_name: string | null;
+    beneficiary_account_number: string | null;
     transaction_amount: number;
-    narration: string;
-    beneficiary_bank_code: string;
-    beneficiary_bank_name: string;
-    transaction_category_id: number;
+    narration: string | null;
+    beneficiary_bank_code: string | null;
+    beneficiary_bank_name: string | null;
+    transaction_category_id: number | null;
   };
 }
 
 export interface IExternalBeneficiaryPayload {
-  bank_short_code: string;
-  bank_account_number: string;
-  bank_account_name: string;
-  bank_name: string;
+  bank_short_code: string | null;
+  bank_account_number: string | null;
+  bank_account_name: string | null;
+  bank_name: string | null;
 }
 
 export interface ISwapPayload {
@@ -366,7 +366,7 @@ export interface IUsBeneficiariesResponse {
 export interface ISendMoneyUsBankPayload {
   amount: number;
   transaction_pin: string;
-  usd_beneficiary_id: string;
+  usd_beneficiary_id: string | null;
   transaction_reason: string;
   transaction_category_id: number;
 }
@@ -503,7 +503,7 @@ export type IntCurrrencyCode =
   | "CDF"; // Democratic Republic of Congo (CFA Franc, Central African)
 
 export interface IIntBeneficiaryPayload {
-  customer_email: string;
+  customer_email: string | null;
   country: IntCountryType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
@@ -530,8 +530,8 @@ export interface IInitialPayoutResponse {
 }
 
 export interface IIntSendPayload {
-  payout_initiation_id: string;
-  wallet_id: string;
+  payout_initiation_id: string | null;
+  wallet_id: string | null;
   transaction_category_id: number;
   transaction_description: string;
   data: ITransactionPinPayload;
@@ -629,16 +629,16 @@ export interface VolumeAndActivityData {
 }
 
 export interface IBusinessVerificationPayload {
-  business_registration_number: string;
-  business_name: string;
-  business_email: string;
-  country_code: string;
-  state: string;
-  zip_code: string;
-  street: string;
-  building_number: string;
-  city: string;
-  length_of_stay_months: number;
+  business_registration_number: string | null;
+  business_name: string | null;
+  business_email: string | null;
+  country_code: string | null;
+  state: string | null;
+  zip_code: string | null;
+  street: string | null;
+  building_number: string | null;
+  city: string | null;
+  length_of_stay_months: number | null;
 }
 
 export interface IInvoiceSettingsPayload {
@@ -651,26 +651,26 @@ export interface IInvoiceSettingsPayload {
 }
 
 export interface IAddCustomerPayload {
-  full_name?: string;
-  email: string;
-  phone_number: string;
-  street_address: string;
-  city: string;
-  state: string;
-  country: string;
-  business_name: string;
+  full_name?: string | null;
+  email: string | null;
+  phone_number: string | null;
+  street_address: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  business_name: string | null;
 }
 
 export interface IUpdateCustomerPayload {
-  full_name: string;
-  email: string;
-  phone_number: string;
-  street_address: string;
-  city: string;
-  state: string;
-  country: string;
-  business_name: string;
-  business_account_id: string;
+  full_name: string | null;
+  email: string | null;
+  phone_number: string | null;
+  street_address: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  business_name: string | null;
+  business_account_id: string | null;
 }
 
 export interface IInvoiceTax {

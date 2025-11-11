@@ -117,7 +117,7 @@ export const GetAfricaPayinCountriesApi = async (): Promise<
 };
 
 export const GetAfricaPayinChannelsApi = async (
-  country_code: string
+  country_code: string | null
 ): Promise<IPaymentChannel[]> => {
   const response = await PublicAxios.get(
     `business/transactions/payins/africa/channels/?country_code=${country_code}`
@@ -126,8 +126,8 @@ export const GetAfricaPayinChannelsApi = async (
 };
 
 export const GetAfricaPayinNetworksApi = async (
-  country_code: string,
-  channel_id: string
+  country_code: string | null,
+  channel_id: string | null
 ): Promise<IPaymentNetwork[]> => {
   const response = await PublicAxios.get(
     `business/transactions/payins/africa/networks/?country_code=${country_code}&channel_id=${channel_id}`

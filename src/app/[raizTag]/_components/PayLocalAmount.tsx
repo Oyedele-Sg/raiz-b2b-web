@@ -147,7 +147,7 @@ const PayLocalAmount = ({
 
   const { data: channels, isLoading: isLoadingChannels } = useQuery({
     queryKey: ["afican-payin-channels", guestLocalCurrency?.value],
-    queryFn: () => GetAfricaPayinChannelsApi(guestLocalCurrency?.value || ""),
+    queryFn: () => GetAfricaPayinChannelsApi(guestLocalCurrency?.value || null),
     enabled: !!guestLocalCurrency?.value,
   });
 

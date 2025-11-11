@@ -41,7 +41,7 @@ const InvoiceDetail = () => {
 
   const StatusMutation = useMutation({
     mutationFn: (status: IInvoiceStatus) =>
-      UpdateInvoiceStatusApi(data?.invoice_id || "", status),
+      UpdateInvoiceStatusApi(data?.invoice_id || null, status),
     onSuccess: () => {
       toast.success("Invoice status updated successfully!");
       qc.invalidateQueries({ queryKey: ["invoice-detail", invoiceNo] });

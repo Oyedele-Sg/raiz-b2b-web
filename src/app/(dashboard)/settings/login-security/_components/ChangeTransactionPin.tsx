@@ -41,7 +41,7 @@ const ChangeTransactionPin = ({ setPart }: PartChildProps) => {
       ChangePinMutation.mutate({
         password: passwordHash(values.pin),
         otp: encryptData(otpFormik.values.otp),
-        email: user?.email || "",
+        email: user?.email || null,
       });
     },
   });

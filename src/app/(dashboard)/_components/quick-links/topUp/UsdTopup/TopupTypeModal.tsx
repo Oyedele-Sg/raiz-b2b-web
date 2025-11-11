@@ -33,7 +33,7 @@ const TopupTypeModal = ({ goBack, goNext }: Props) => {
 
   const zelleMutation = useMutation({
     mutationFn: (payload: { expected_amount: number }) =>
-      InitiateZelleTopApi(currentWallet?.wallet_id || "", payload),
+      InitiateZelleTopApi(currentWallet?.wallet_id || null, payload),
     onSuccess: (res) => {
       actions.setZelleInfo(res);
       goNext();
@@ -99,7 +99,7 @@ const TopupTypeModal = ({ goBack, goNext }: Props) => {
                 ? "border-indigo-900"
                 : "border-zinc-200"
             } rounded-[20px] cursor-pointer flex flex-col justify-center items-center w-full pt-[19px] pb-[21px] transition-all ${
-              isLoading
+              isLoading && isCardLoading
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:border-indigo-900 hover:bg-indigo-50"
             }`}
@@ -143,7 +143,7 @@ const TopupTypeModal = ({ goBack, goNext }: Props) => {
                 ? "border-indigo-900"
                 : "border-zinc-200"
             } rounded-[20px] flex flex-col cursor-pointer justify-center items-center w-full pt-[19px] pb-[21px] transition-all ${
-              isCardLoading
+              isLoading && isCardLoading
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:border-indigo-900 hover:bg-indigo-50"
             }`}
