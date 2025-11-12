@@ -1,10 +1,10 @@
 "use client";
 import Button from "@/components/ui/Button";
 import React, { useState } from "react";
-import CustomersTable from "./CustomersTable";
+import CustomersTable from "./_components/CustomersTable";
 import { AnimatePresence } from "motion/react";
 import SideModalWrapper from "../_components/SideModalWrapper";
-import AddNewCustomer from "./AddNewCustomer";
+import AddNewCustomer from "./_components/AddNewCustomer";
 
 const CustomerPage = () => {
   const [showAddCustomer, setShowAddCustomer] = useState(false);

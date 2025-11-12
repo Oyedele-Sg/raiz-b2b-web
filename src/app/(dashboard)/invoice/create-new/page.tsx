@@ -24,7 +24,7 @@ import { useUser } from "@/lib/hooks/useUser";
 import InvoiceSettings from "../_components/InvoiceSettings";
 import { AnimatePresence } from "motion/react";
 import SideModalWrapper from "../../_components/SideModalWrapper";
-import AddNewCustomer from "../../customers/AddNewCustomer";
+import AddNewCustomer from "../../customers/_components/AddNewCustomer";
 import { ICreateInvoicePayload, ICustomer } from "@/types/invoice";
 import SelectField from "@/components/ui/SelectField";
 import DiscountInput from "../_components/DiscountInput";

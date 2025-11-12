@@ -23,7 +23,7 @@ import Pagination from "@/components/ui/Pagination";
 import { ICustomer } from "@/types/invoice";
 import EmptyList from "@/components/ui/EmptyList";
 import { AnimatePresence } from "motion/react";
-import SideModalWrapper from "../_components/SideModalWrapper";
+import SideModalWrapper from "../../_components/SideModalWrapper";
 import EditCustomer from "./EditCustomer";
 
 const columnHelper = createColumnHelper<ICustomer>();

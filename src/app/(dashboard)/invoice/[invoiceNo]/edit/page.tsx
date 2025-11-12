@@ -19,7 +19,7 @@ import ErrorMessage from "@/components/ui/ErrorMessage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UpdateInvoiceApi, FetchInvoiceDetailApi } from "@/services/invoice";
 import { useRouter, useParams } from "next/navigation";
-import AddNewCustomer from "@/app/(dashboard)/customers/AddNewCustomer";
+import AddNewCustomer from "@/app/(dashboard)/customers/_components/AddNewCustomer";
 import { CustomerSearchBox } from "../../_components/CustomerSearchbox";
 import TaxSelect from "../../_components/TaxSelect";
 import DiscountInput from "../../_components/DiscountInput";

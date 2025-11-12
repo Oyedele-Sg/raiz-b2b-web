@@ -32,7 +32,7 @@ import { CustomerSearchBox } from "./CustomerSearchbox";
 import { useRouter } from "next/navigation";
 import { AnimatePresence } from "motion/react";
 import SideModalWrapper from "../../_components/SideModalWrapper";
-import AddNewCustomer from "../../customers/AddNewCustomer";
+import AddNewCustomer from "../../customers/_components/AddNewCustomer";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IFectchInvoiceParams } from "@/types/services";
 import {
