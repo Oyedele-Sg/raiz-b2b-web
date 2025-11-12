@@ -651,6 +651,7 @@ export interface IInvoiceSettingsPayload {
 }
 
 export interface IAddCustomerPayload {
+  customer_type: "individual" | "business"
   full_name?: string | null;
   email: string | null;
   phone_number: string | null;
@@ -658,7 +659,7 @@ export interface IAddCustomerPayload {
   city: string | null;
   state: string | null;
   country: string | null;
-  business_name: string | null;
+  business_name?: string | null;
 }
 
 export interface IUpdateCustomerPayload {
@@ -670,7 +671,8 @@ export interface IUpdateCustomerPayload {
   state: string | null;
   country: string | null;
   business_name: string | null;
-  business_account_id: string | null;
+  business_account_id: string | null
+  customer_type: "individual" | "business"
 }
 
 export interface IInvoiceTax {

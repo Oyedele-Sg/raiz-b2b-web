@@ -27,12 +27,10 @@ import {
 import dayjs from "dayjs";
 import Skeleton from "react-loading-skeleton";
 import InvoiceTableMoreOpts from "./InvoiceTableMoreOpts";
-import EmptyInvoiceTable from "./EmptyInvoiceTable";
-import { CustomerSearchBox } from "./CustomerSearchbox";
 import { useRouter } from "next/navigation";
 import { AnimatePresence } from "motion/react";
 import SideModalWrapper from "../../_components/SideModalWrapper";
-import AddNewCustomer from "../../customers/AddNewCustomer";
+import AddNewCustomer from "../../customers/_components/AddNewCustomer";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IFectchInvoiceParams } from "@/types/services";
 import {
@@ -41,23 +39,26 @@ import {
   UpdateInvoiceStatusApi,
 } from "@/services/invoice";
 import Pagination from "@/components/ui/Pagination";
-import { ICustomer, IInvoice } from "@/types/invoice";
+import { IInvoice } from "@/types/invoice";
 import InvoiceFile from "./InvoiceFile";
 import { toast } from "sonner";
 import { useUser } from "@/lib/hooks/useUser";
+import SearchBox from "@/components/ui/SearchBox";
+import { useDebounce } from "@/lib/hooks/useDebounce";
+import EmptyInvoiceTable from "./EmptyInvoiceTable";
 
 const columnHelper = createColumnHelper<IInvoice>();
 
 const InvoicesTable = () => {
-  const [showDateRange, setShowDateRange] = useState(false);
-  const [showSearchBox, setShowSearchBox] = useState(false);
+  const [showDateRange, setShowDateRange] = useState(false)
   const [dateRange, setDateRange] = useState<{
     startDate?: Date;
     endDate?: Date;
   }>({});
-  const [selectedCustomer, setSelectedCustomer] = useState<ICustomer | null>(
-    null
-  );
+  // const [selectedCustomer, setSelectedCustomer] = useState<ICustomer | null>(
+  //   null
+  // );
+    const [searchTerm, setSearchTerm] = useState("");
   const [status, setStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showAddCustomer, setShowAddCustomer] = useState(false);
@@ -329,10 +330,12 @@ const InvoicesTable = () => {
     }),
   ];
 
+  const debouncedSearch = useDebounce(searchTerm, 500)
+
   const pageSize = 10;
   const params: IFectchInvoiceParams = {
     status: status ? status : undefined,
-    search: selectedCustomer ? selectedCustomer?.full_name : undefined,
+    search: debouncedSearch ? debouncedSearch : undefined,
     issued_date_from: dateRange.startDate
       ? dayjs(dateRange.startDate).format("YYYY-MM-DD")
       : undefined,
@@ -363,14 +366,14 @@ const InvoicesTable = () => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const customerBtnRef = useRef<HTMLButtonElement>(null);
+  // const customerBtnRef = useRef<HTMLButtonElement>(null);
 
   return (
     <section className="w-full h-full">
       {/* {InvoiceList?.length > 0 && ( */}
       <div className="flex gap-3 items-center mb-6">
         {/* Customer search */}
-        <div className="relative">
+        {/* <div className="relative">
           <button
             ref={customerBtnRef}
             onClick={() => setShowSearchBox(!showSearchBox)}
@@ -398,7 +401,14 @@ const InvoicesTable = () => {
               onUnselectCustomer={() => setSelectedCustomer(null)}
             />
           )}
-        </div>
+        </div> */}
+        <SearchBox
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="!w-[285px] !h-10 rounded-lg shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] outline outline-1 outline-offset-[-1px] outline-zinc-200 "
+          inputClassName="rounded-lg bg-white"
+          iconClassName="top-[9.5px]"
+        />
         {/* Status */}
         <SelectField
           placeholder="Status"
@@ -411,9 +421,12 @@ const InvoicesTable = () => {
           }
           onChange={(i) => setStatus(i?.value as string)}
           bgColor="#fff"
-          width={"160px"}
-          minHeight="44px"
-          height="44px"
+         width="160px"
+          style={{
+            height: "40px"
+          }}
+          minHeight="40px"
+          height="40px"
           placeholderStyle={{
             fontWeight: "bold",
             color: "#2C2435",
@@ -423,7 +436,7 @@ const InvoicesTable = () => {
         <div className="relative ">
           <button
             onClick={() => setShowDateRange(!showDateRange)}
-            className="flex h-11 gap-1.5 items-center px-3.5 py-2.5 rounded-lg shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] outline outline-1 outline-offset-[-1px] outline-zinc-200 "
+            className="flex h-10 gap-1.5 items-center px-3.5 py-2.5 rounded-lg shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] outline outline-1 outline-offset-[-1px] outline-zinc-200 "
           >
             <Image
               src={"/icons/calendar.svg"}
