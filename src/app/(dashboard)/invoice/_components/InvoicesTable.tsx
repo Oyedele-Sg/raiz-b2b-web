@@ -27,8 +27,6 @@ import {
 import dayjs from "dayjs";
 import Skeleton from "react-loading-skeleton";
 import InvoiceTableMoreOpts from "./InvoiceTableMoreOpts";
-import EmptyInvoiceTable from "./EmptyInvoiceTable";
-import { CustomerSearchBox } from "./CustomerSearchbox";
 import { useRouter } from "next/navigation";
 import { AnimatePresence } from "motion/react";
 import SideModalWrapper from "../../_components/SideModalWrapper";
@@ -41,18 +39,18 @@ import {
   UpdateInvoiceStatusApi,
 } from "@/services/invoice";
 import Pagination from "@/components/ui/Pagination";
-import { ICustomer, IInvoice } from "@/types/invoice";
+import { IInvoice } from "@/types/invoice";
 import InvoiceFile from "./InvoiceFile";
 import { toast } from "sonner";
 import { useUser } from "@/lib/hooks/useUser";
 import SearchBox from "@/components/ui/SearchBox";
 import { useDebounce } from "@/lib/hooks/useDebounce";
+import EmptyInvoiceTable from "./EmptyInvoiceTable";
 
 const columnHelper = createColumnHelper<IInvoice>();
 
 const InvoicesTable = () => {
-  const [showDateRange, setShowDateRange] = useState(false);
-  const [showSearchBox, setShowSearchBox] = useState(false);
+  const [showDateRange, setShowDateRange] = useState(false)
   const [dateRange, setDateRange] = useState<{
     startDate?: Date;
     endDate?: Date;
