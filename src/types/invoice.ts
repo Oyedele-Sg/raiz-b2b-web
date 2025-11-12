@@ -9,6 +9,7 @@ export interface ICustomer {
   business_account_id: string;
   customer_id: string;
   business_name?: string;
+  customer_type: "individual" | "business"
 }
 
 export interface IInvoice {

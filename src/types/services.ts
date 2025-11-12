@@ -671,7 +671,8 @@ export interface IUpdateCustomerPayload {
   state: string | null;
   country: string | null;
   business_name: string | null;
-  business_account_id: string | null;
+  business_account_id: string | null
+  customer_type: "individual" | "business"
 }
 
 export interface IInvoiceTax {

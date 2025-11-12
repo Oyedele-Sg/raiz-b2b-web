@@ -59,17 +59,22 @@ const CustomersTable = () => {
   const columns: ColumnDef<ICustomer, any>[] = [
     columnHelper.accessor("business_name", {
       header: "Customer",
-      cell: (info) => (
-        <div className="flex items-center gap-2 font-brSonoma">
-          <Avatar name="" src={""} />
-          <span className="text-sm font-medium text-raiz-gray-950">
-            {truncateString(info.getValue(), 28)}
-          </span>
-        </div>
-      ),
+      cell: (info) => {
+        const customer = info.row.original;
+        const displayName = customer.business_name || customer.full_name;
+
+        return (
+          <div className="flex items-center gap-2 font-brSonoma">
+            <Avatar name="" src={""} />
+            <span className="text-sm font-medium text-raiz-gray-950">
+              {truncateString(displayName, 28)}
+            </span>
+          </div>
+        );
+      },
     }),
-    columnHelper.accessor("full_name", {
-      header: "Contact Person",
+    columnHelper.accessor("customer_type", {
+      header: "Customer Type",
       cell: (info) => (
         <span className="text-sm font-brSonoma text-raiz-gray-700">
           {info.getValue()}
