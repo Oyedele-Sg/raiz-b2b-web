@@ -51,14 +51,15 @@ const SelectPayType = ({
 
     setRawAmount(formattedValue);
     actions.setField("amount", value);
+    if (paymentType === "transfer") {
+      setError(null);
+      return;
+    }
 
     const result = amountSchema.safeParse(value);
-    if (!result.success) {
-      setError(result.error.errors[0].message);
-    } else {
-      setError(null);
-    }
+    setError(!result.success ? result.error.errors[0].message : null);
   };
+
   const displayValue = () => {
     if (isFocused || !amount) return amount ? `$${rawAmount}` : "";
     const num = parseFloat(rawAmount);
@@ -68,6 +69,7 @@ const SelectPayType = ({
   const paymentTypes = [
     { label: "Pay Locally", value: "local" },
     // { label: "Pay with USD Card", value: "usd" },
+    { label: "Transfer", value: "transfer" },
   ];
   return (
     <section className="flex flex-col  h-full">
@@ -162,13 +164,17 @@ const SelectPayType = ({
               <input
                 ref={inputRef}
                 autoFocus
-                className="outline-none h-[91px] bg-transparent w-fit xl:mx-auto text-center text-zinc-900 placeholder:text-zinc-900 text-3xl font-semibold leading-10"
+                className={`outline-none h-[91px] bg-transparent w-fit xl:mx-auto text-center 
+    text-zinc-900 placeholder:text-zinc-900 text-3xl font-semibold leading-10
+    ${paymentType === "transfer" ? "opacity-40 cursor-not-allowed" : ""}
+  `}
                 placeholder="0.00"
                 value={displayValue()}
                 onChange={handleAmountChange}
                 onFocus={() => setIsFocused(true)}
-                disabled={!!amountFromLink}
+                disabled={paymentType === "transfer" || !!amountFromLink}
               />
+
             </div>
             {error && <ErrorMessage message={error} />}
           </div>
@@ -190,7 +196,11 @@ const SelectPayType = ({
         </div>
         <div className="w-full py-5">
           <Button
-            disabled={!!error || !amount || !paymentType}
+            disabled={
+              !!error ||
+              (paymentType !== "transfer" && !amount) ||
+              !paymentType
+            }
             // loading={loading}
             onClick={goNext}
           >

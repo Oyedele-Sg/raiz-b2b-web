@@ -133,7 +133,7 @@ const InvoicesTable = () => {
         const pdfBase64 = await blobToBase64(pdfBlob);
 
         const payload = {
-          payment_link: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/${user?.business_account?.username}`,
+          payment_link: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/pay/${user?.business_account?.username}`,
           invoice_pdf_url: pdfBase64,
         };
 

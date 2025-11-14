@@ -1,16 +1,16 @@
 "use client";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import Image from "next/image";
-// import { useUser } from "@/lib/hooks/useUser";
 import Tabs from "@/components/ui/Tabs";
-import { copyToClipboard } from "@/utils/helpers";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
-// import { useCurrencyStore } from "@/store/useCurrencyStore";
 import { IBusinessPaymentData } from "@/types/services";
+import { GuestPaymentType } from "../page";
+import { toast } from "sonner";
+import CopyButton from "@/components/ui/CopyButton";
 
 interface Props {
-  setScreen: Dispatch<SetStateAction<"details" | "card">>;
+  setScreen: Dispatch<SetStateAction<GuestPaymentType | "detail" | null>>;
   data: IBusinessPaymentData;
 }
 
@@ -31,6 +31,11 @@ const PayDetails = ({ setScreen, data }: Props) => {
     (acct: { wallet_type: { currency: string } }) =>
       acct.wallet_type.currency === "USD"
   );
+
+  const handlePaid = () => {
+    setScreen(null)
+    toast.success(`${data?.account_user?.username} will be notified once the payment is successful.`)
+  }
   return (
     <>
       <Image
@@ -77,16 +82,7 @@ const PayDetails = ({ setScreen, data }: Props) => {
                 <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
                   {USDAcct?.account_number || ""}
                 </p>
-                <button
-                  onClick={() => copyToClipboard(USDAcct?.account_number || "")}
-                >
-                  <Image
-                    src={"/icons/copy.svg"}
-                    alt={"copy"}
-                    width={16}
-                    height={16}
-                  />
-                </button>
+                <CopyButton value={USDAcct?.account_number || ""} />
               </div>
             </div>
             {/* Routing Number (ACH) */}
@@ -95,6 +91,7 @@ const PayDetails = ({ setScreen, data }: Props) => {
               <span className="text-center justify-start text-gray-500 text-base font-normal leading-normal">
                 Routing Number (ACH)
               </span>
+              <div className="flex items-center gap-2">
               <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
                 {
                   USDAcct?.routing?.find(
@@ -102,12 +99,17 @@ const PayDetails = ({ setScreen, data }: Props) => {
                   )?.routing
                 }
               </p>
+              <CopyButton value={USDAcct?.routing?.find(
+                    (route) => route.routing_type_name === "ACH"
+                  )?.routing || ""} />
+              </div>
             </div>
             {/* Routing Number (WIRE) */}
             <div className="w-full flex flex-col justify-center items-center">
               <span className="text-center justify-start text-gray-500 text-base font-normal leading-normal">
                 Routing Number (WIRE)
               </span>
+              <div className="flex items-center gap-2">
               <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
                 {
                   USDAcct?.routing?.find(
@@ -115,6 +117,10 @@ const PayDetails = ({ setScreen, data }: Props) => {
                   )?.routing
                 }
               </p>
+                <CopyButton value={USDAcct?.routing?.find(
+                  (route) => route.routing_type_name === "WIRE"
+                )?.routing || ""} />
+              </div>
             </div>
             {/* Currency */}
             <div className="w-full flex flex-col justify-center items-center">
@@ -130,10 +136,13 @@ const PayDetails = ({ setScreen, data }: Props) => {
               <span className="text-center justify-start text-gray-500 text-base font-normal leading-normal">
                 Address
               </span>
+              <div className="flex text-left gap-2">
               <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
-                270 Park Avenue, NY 10017
+                1801 Main St., Kansas City, MO 64108
                 {/* {USDAcct?.} */}
-              </p>
+                </p>
+                <CopyButton value="1801 Main St., Kansas City, MO 64108" />
+                </div>
             </div>
           </div>
         )}
@@ -157,16 +166,8 @@ const PayDetails = ({ setScreen, data }: Props) => {
                 <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
                   {NGNAcct?.account_number || ""}
                 </p>
-                <button
-                  onClick={() => copyToClipboard(NGNAcct?.account_number || "")}
-                >
-                  <Image
-                    src={"/icons/copy.svg"}
-                    alt={"copy"}
-                    width={16}
-                    height={16}
-                  />
-                </button>
+                <CopyButton value={NGNAcct?.account_number || ""} />
+                
               </div>
             </div>
 
@@ -182,11 +183,18 @@ const PayDetails = ({ setScreen, data }: Props) => {
           </div>
         )}
         <div>
-          <Button onClick={() => setScreen("card")} className="mt-5 mb-4">
+          {/* <Button
+            onClick={() => setScreen("card")}
+            className="mt-5 mb-4">
             Pay with Card
+          </Button> */}
+          <Button
+            onClick={handlePaid}
+            className="mt-5 mb-4">
+           I&apos;ve made payment
           </Button>
           <p className="text-[13px] text-raiz-gray-900  text-center mt-2">
-            Don&#39;t have Raiz App?{" "}
+            Don&apos;t have Raiz App?{" "}
             <Link
               target="_blank"
               className="font-bold"
