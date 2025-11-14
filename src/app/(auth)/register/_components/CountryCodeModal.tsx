@@ -2,7 +2,6 @@ import Overlay from "@/components/ui/Overlay";
 import React, { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import useCountryStore from "@/store/useCountryStore";
-import { debounce } from "lodash";
 import { ICountry } from "@/types/misc";
 import { FormikProps } from "formik";
 
@@ -94,7 +93,7 @@ const CountryCodeModal = ({ close, formik }: Props) => {
             ))
           ) : (
             <p className="text-center text-sm text-raiz-gray-600">
-              No countries found matching "{search}"
+                  No countries found matching &quot;{search}&quot;
             </p>
           )}
         </div>

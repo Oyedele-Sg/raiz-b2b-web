@@ -76,6 +76,7 @@ const AnimatedSection = ({
       initial={customProps.initial}
       animate={customProps.animate}
       exit={customProps.exit}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transition={customProps.transition as any}
       {...props}
     >

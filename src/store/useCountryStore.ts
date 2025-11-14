@@ -40,7 +40,8 @@ const useCountryStore = create<CountryStore>((set, get) => ({
           }
         }
       } catch (err) {
-        // Invalid cache, continue to fetch
+        // Invalid cache, continue to fetch; log and clear
+        console.warn("Invalid cached countries, clearing cache", err);
         localStorage.removeItem(CACHE_KEY);
       }
     }
