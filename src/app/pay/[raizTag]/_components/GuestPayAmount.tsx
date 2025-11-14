@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import SideModalWrapper from "../../(dashboard)/_components/SideModalWrapper";
+import SideModalWrapper from "../../../(dashboard)/_components/SideModalWrapper";
 import SideWrapperHeader from "@/components/SideWrapperHeader";
 import { useFormik } from "formik";
 import InputField from "@/components/ui/InputField";

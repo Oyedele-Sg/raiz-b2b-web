@@ -12,9 +12,11 @@ import GuestPayDetail from "./_components/GuestPayDetail";
 import PayLocalAmount from "./_components/PayLocalAmount";
 import { decryptData } from "@/lib/headerEncryption";
 import { useGuestSendStore } from "@/store/GuestSend";
+import PayDetails from "./_components/PayDetails";
+import { AnimatePresence } from "motion/react";
 
 export type LocalPaymentMethod = "bankTransfer" | "mobileMoney";
-export type GuestPaymentType = "local" | "usd";
+export type GuestPaymentType = "local" | "card" | "transfer";
 export type GuestPayDetailsSteps = "details" | "summary" | "status" | "receipt";
 
 const PayBusinessPage = () => {
@@ -59,8 +61,10 @@ const PayBusinessPage = () => {
     if (!paymentType) return;
     if (paymentType === "local") {
       setScreen("local");
+    } else if (paymentType === "transfer") {
+      setScreen("transfer");
     } else {
-      setScreen("usd");
+      setScreen("card")
     }
   };
 
@@ -103,8 +107,8 @@ const PayBusinessPage = () => {
 
   return (
     <section className="p-6 md:p-12 h-[calc(100vh-2rem)] md:h-[100vh]">
-      <div className="flex flex-col  md:flex-row  h-full gap-4">
-        <Slider />
+      <div className="flex flex-col  lg:flex-row  h-full gap-4">
+        <Slider className="md:hidden lg:block"/>
         <div className="py-4 px-0 xl:px-8 lg:w-[50%] xl:w-[46%] h-full flex flex-col  ">
           <Image src={"/icons/Logo.svg"} width={91.78} height={32} alt="Logo" />
           {isLoading ? (
@@ -112,6 +116,7 @@ const PayBusinessPage = () => {
               <Spinner />
             </div>
           ) : (
+              <AnimatePresence>
             <div className="flex flex-col h-full">
               {data && !screen && (
                 <SelectPayType
@@ -132,7 +137,10 @@ const PayBusinessPage = () => {
                   amountFromLink={amount}
                 />
               )}
-              {data && screen === "usd" && (
+              {data && screen === "transfer" && (
+                <PayDetails data={data} setScreen={setScreen} />
+              )}
+              {data && screen === "card" && (
                 <PayWithCard
                   setScreen={setScreen}
                   data={data}
@@ -161,6 +169,7 @@ const PayBusinessPage = () => {
                 </>
               )}
             </div>
+            </AnimatePresence>
           )}
         </div>
       </div>

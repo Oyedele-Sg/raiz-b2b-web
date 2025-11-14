@@ -3,7 +3,7 @@ import Button from "@/components/ui/Button";
 import { getCurrencySymbol } from "@/utils/helpers";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import SideModalWrapper from "../../(dashboard)/_components/SideModalWrapper";
+import SideModalWrapper from "../../../(dashboard)/_components/SideModalWrapper";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
 import { useSendStore } from "@/store/Send";
 import { IBusinessPaymentData } from "@/types/services";
