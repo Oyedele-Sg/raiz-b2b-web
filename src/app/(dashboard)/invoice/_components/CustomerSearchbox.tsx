@@ -71,6 +71,7 @@ export const CustomerSearchBox = ({
           ) : customers?.length ? (
             customers.map((each, i) => {
               const isSelected = selectedCustomerId === each.customer_id;
+              const name = each?.business_name || each?.full_name
               return (
                 <li key={i}>
                   <button
@@ -82,8 +83,8 @@ export const CustomerSearchBox = ({
                     }`}
                   >
                     <div className="flex gap-3 items-center">
-                      <Avatar src={""} name={each?.full_name} />
-                      <span>{each?.full_name}</span>
+                      <Avatar src={""} name={name} />
+                      <span>{name}</span>
                     </div>
                     {isSelected && (
                       <div className="w-5 h-5  ">

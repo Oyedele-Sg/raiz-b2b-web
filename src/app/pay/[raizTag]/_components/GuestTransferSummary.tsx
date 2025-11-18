@@ -1,5 +1,6 @@
 "use client";
 import Button from "@/components/ui/Button";
+import CopyButton from "@/components/ui/CopyButton";
 import { useGuestSendStore } from "@/store/GuestSend";
 import {
   convertTime,
@@ -61,6 +62,7 @@ const GuestTransferSummary = ({ goBack, goNext }: Props) => {
       <div className="mt-10">
         <button onClick={goBack}>
           <Image
+            className="w-4 h-4 md:w-[18px] md:h-[18px]"
             src={"/icons/arrow-left.svg"}
             width={18.48}
             height={18.48}
@@ -98,10 +100,10 @@ const GuestTransferSummary = ({ goBack, goNext }: Props) => {
       <div className="flex flex-col h-full justify-between items-center w-full mt-5">
         <div className="p-7 bg-[#EAECFF99] rounded-[20px] w-full grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="w-full flex flex-col items-start text-left">
-            <span className="text-left  justify-start text-gray-500 text-base font-normal leading-normal">
+            <span className="text-left text-sm md:text-base justify-start text-gray-500 text-base font-normal leading-normal">
               Amount
             </span>
-            <p className="text-left justify-start text-zinc-900 text-lg font-semibold  leading-normal">
+            <p className="text-left justify-start text-zinc-900 text-base md:text-lg font-semibold  leading-normal">
               {`${getCurrencySymbol(payout_currency)}${Number(
                 payout_amount
               ).toLocaleString()}`}
@@ -110,52 +112,44 @@ const GuestTransferSummary = ({ goBack, goNext }: Props) => {
           {/* Merchant name */}
           {notMomo && (
             <div className="w-full flex flex-col items-start text-left">
-              <span className="text-left  justify-start text-gray-500 text-base font-normal leading-normal">
+              <span className="text-left text-sm md:text-base justify-start text-gray-500 text-base font-normal leading-normal">
                 Merchant&apos;s Account Name
               </span>
-              <p className="text-left justify-start text-zinc-900 text-lg font-semibold  leading-normal">
+              <p className="text-left justify-start text-zinc-900 text-base md:text-lg font-semibold  leading-normal">
                 {collection_account_name || "N/A"}
               </p>
             </div>
           )}
           {/* Merchant gets */}
           <div className="w-full flex flex-col items-start text-left">
-            <span className="text-left  justify-start text-gray-500 text-base font-normal leading-normal">
+            <span className="text-left text-sm md:text-base justify-start text-gray-500 text-base font-normal leading-normal">
               Merchant Gets
             </span>
-            <p className="text-left justify-start text-zinc-900 text-lg font-semibold  leading-normal">
+            <p className="text-left justify-start text-zinc-900 text-base md:text-lg font-semibold  leading-normal">
               {`$${Number(amount).toLocaleString()}`}
             </p>
           </div>
           {/* Merchant acct no */}
           {notMomo && (
             <div className="w-full flex flex-col items-start text-left">
-              <span className="text-left  justify-start text-gray-500 text-base font-normal leading-normal">
+              <span className="text-left text-sm md:text-base justify-start text-gray-500 text-base font-normal leading-normal">
                 Merchant&apos;s Account Number
               </span>
-              <p className="text-left justify-start text-zinc-900 text-lg font-semibold leading-normal flex items-center gap-2">
+              <p className="text-left justify-start text-zinc-900 text-base md:text-lg font-semibold leading-normal flex items-center gap-2">
                 {collection_account_number || "N/A"}
                 {collection_account_number && (
-                  <button
-                    onClick={() => copyToClipboard(collection_account_number)}
-                  >
-                    <Image
-                      src="/icons/copy.svg"
-                      width={16}
-                      height={16}
-                      alt="copy"
-                    />
-                  </button>
+                  <CopyButton value={collection_account_number} />
+                
                 )}
               </p>
             </div>
           )}
           {/*Exchange Rate*/}
           <div className="w-full flex flex-col items-start text-left">
-            <span className="text-left  justify-start text-gray-500 text-base font-normal leading-normal">
+            <span className="text-left text-sm md:text-base justify-start text-gray-500 text-base font-normal leading-normal">
               Exchange Rate
             </span>
-            <p className="text-left justify-start text-zinc-900 text-lg font-semibold  leading-normal">
+            <p className="text-left justify-start text-zinc-900 text-base md:text-lg font-semibold  leading-normal">
               {`$1(USD)  =  ${getCurrencySymbol(payout_currency)}${Number(
                 rate
               ).toLocaleString()}`}
@@ -164,10 +158,10 @@ const GuestTransferSummary = ({ goBack, goNext }: Props) => {
           {/* Merchant bank name */}
           {notMomo && (
             <div className="w-full flex flex-col items-start text-left">
-              <span className="text-left  justify-start text-gray-500 text-base font-normal leading-normal">
+              <span className="text-left text-sm md:text-base  justify-start text-gray-500 text-base font-normal leading-normal">
                 Merchant&apos;s Bank Name
               </span>
-              <p className="text-left justify-start text-zinc-900 text-lg font-semibold  leading-normal">
+              <p className="text-left justify-start text-zinc-900 text-base md:text-lg font-semibold  leading-normal">
                 {collection_bank_name || "N/A"}
               </p>
             </div>

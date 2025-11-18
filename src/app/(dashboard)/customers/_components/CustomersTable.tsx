@@ -76,7 +76,7 @@ const CustomersTable = () => {
     columnHelper.accessor("customer_type", {
       header: "Customer Type",
       cell: (info) => (
-        <span className="text-sm font-brSonoma text-raiz-gray-700">
+        <span className="text-sm font-brSonoma text-raiz-gray-700 capitalize">
           {info.getValue()}
         </span>
       ),

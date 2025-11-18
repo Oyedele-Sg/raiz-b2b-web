@@ -197,7 +197,7 @@ const AddNewCustomer = ({ close }: Props) => {
         </div>
         <div className="space-y-[15px]">
           <Button
-            disabled={!formik.dirty || AddMutation.isPending}
+            disabled={!formik.dirty || AddMutation.isPending || !formik.values.city || !formik.values.state}
             loading={AddMutation.isPending}
             type="submit"
           >

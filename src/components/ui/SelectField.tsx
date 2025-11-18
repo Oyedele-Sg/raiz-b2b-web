@@ -33,6 +33,7 @@ interface SelectFieldProps {
   bgColor?: string;
   minHeight?: string;
   placeholderStyle?: React.CSSProperties;
+  labelClass?: string;
 }
 
 const SelectField: React.FC<SelectFieldProps> = ({
@@ -55,6 +56,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   bgColor = "#F3F1F6",
   minHeight = "50px",
   placeholderStyle,
+  labelClass
 }) => {
   const [optionsIsShown, setOptionsIsShown] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<Option | null>(value);
@@ -148,7 +150,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
       }}
       className=""
     >
-      {label && <InputLabel content={label} />}
+      {label && <InputLabel content={label} labelClass={labelClass} />}
       <Select
         className={`${
           status === "success"

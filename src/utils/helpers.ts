@@ -317,7 +317,8 @@ export const fetchPublicIP = async (): Promise<string | null> => {
   try {
     const response = await axios.get("https://api.ipify.org?format=json");
     return response.data.ip;
-  } catch {
+  } catch (err) {
+    console.log("ip ERRRROR IP",err)
     return null;
   }
 };

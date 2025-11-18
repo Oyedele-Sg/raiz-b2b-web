@@ -169,6 +169,7 @@ const PayLocalAmount = ({
       <div className="mt-10">
         <button onClick={goBack}>
           <Image
+            className="w-4 h-4 md:w-[18px] md:h-[18px]"
             src={"/icons/arrow-left.svg"}
             width={18.48}
             height={18.48}
@@ -176,7 +177,7 @@ const PayLocalAmount = ({
           />
         </button>
         <header className="flex items-center justify-between mt-2">
-          <h2 className="text-raiz-gray-950 text-[23px] font-semibold  leading-10">
+          <h2 className="text-raiz-gray-950 text-xl md:text-[23px] font-semibold  leading-10">
             Pay {data?.wallets[0]?.wallet_name || ""} $
             {Number(amount).toLocaleString()}
           </h2>
@@ -259,7 +260,7 @@ const PayLocalAmount = ({
             <p className="text-center mt-4 justify-start text-zinc-900 text-sm font-bold  leading-none capitalize">
               {data?.account_user?.username}
             </p>
-            <p className="text-center mt-10 justify-start text-zinc-900 text-base mb-3">
+            <p className="text-center mt-10 justify-start text-zinc-900 text-sm md:text-base mb-3">
               How much do you want to send?
             </p>
             <div className="relative w-full mt-3">
