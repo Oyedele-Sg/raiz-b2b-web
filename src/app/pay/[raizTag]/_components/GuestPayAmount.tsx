@@ -37,7 +37,6 @@ const GuestPayAmount = ({ close, goNext }: Props) => {
     channel_id,
     actions,
     amount,
-    account_type,
     channel_name
   } = useGuestSendStore();
   const params = useParams();

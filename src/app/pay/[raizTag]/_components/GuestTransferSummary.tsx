@@ -4,7 +4,6 @@ import CopyButton from "@/components/ui/CopyButton";
 import { useGuestSendStore } from "@/store/GuestSend";
 import {
   convertTime,
-  copyToClipboard,
   formatTime,
   getCurrencySymbol,
 } from "@/utils/helpers";
