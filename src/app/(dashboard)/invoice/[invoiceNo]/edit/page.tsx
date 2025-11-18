@@ -34,7 +34,13 @@ const invoiceSchema = z
     dateIssued: z.string().min(1, "Date issued is required"),
     dueDate: z.string().min(1, "Due date is required"),
     currency: z.string().min(1, "Currency is required"),
-    notes: z.string().optional(),
+    notes: z
+      .string()
+      .regex(
+        /^[a-zA-Z0-9\s.,!?()-]*$/,
+        "Notes can only contain letters, numbers, spaces, and basic punctuation (.,!?()-)"
+      )
+      .optional(),
     items: z
       .array(
         z.object({
@@ -44,7 +50,13 @@ const invoiceSchema = z
         })
       )
       .min(1, "At least one item is required"),
-    terms: z.string().min(2, "Enter your terms and condition"),
+    terms: z
+      .string()
+      .min(2, "Enter your terms and condition")
+      .regex(
+        /^[a-zA-Z0-9\s.,!?()-]+$/,
+        "Terms can only contain letters, numbers, spaces, and basic punctuation (.,!?()-)"
+      ),
     discount: z.number().min(0, "Discount cannot be negative").optional(),
     discountType: z.enum(["percent", "value"]).optional(),
     tax_amount: z.number().optional(),

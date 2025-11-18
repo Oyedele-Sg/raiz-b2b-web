@@ -26,25 +26,6 @@ interface Props {
   goNext: () => void;
 }
 
-const guestPayAmountSchema = z.object({
-  fullName: z
-    .string()
-    .min(3, "Full name must be at least 3 characters")
-    .regex(
-      /^[A-Za-z\- ]+$/,
-      "Full name can only contain letters, spaces, and hyphens"
-    ),
-  accountNo: z
-    .string()
-    .regex(
-      /^\+?\d+$/,
-      "Account number must contain only digits and may start with '+'"
-    ),
-  network: z.string().optional(),
-  reason: z
-    .string({ required_error: "Reason for sending is required" })
-    .min(3, "At least 3 characters"),
-});
 
 const GuestPayAmount = ({ close, goNext }: Props) => {
   const {
@@ -56,7 +37,7 @@ const GuestPayAmount = ({ close, goNext }: Props) => {
     channel_id,
     actions,
     amount,
-    account_type,
+    channel_name
   } = useGuestSendStore();
   const params = useParams();
   const username = Array.isArray(params) ? params[0].raizTag : params.raizTag;
@@ -65,6 +46,30 @@ const GuestPayAmount = ({ close, goNext }: Props) => {
     queryFn: () =>
       GetAfricaPayinNetworksApi(guestLocalCurrency?.value || null, channel_id),
     enabled: !!guestLocalCurrency?.value,
+  });
+
+  const isMomo = channel_name === "momo";
+
+  const guestPayAmountSchema = z.object({
+    fullName: z
+      .string()
+      .min(3, "Full name must be at least 3 characters")
+      .regex(
+        /^[A-Za-z\- ]+$/,
+        "Full name can only contain letters, spaces, and hyphens"
+      ),
+    accountNo: isMomo
+      ? z.string().regex(
+        /^\+?\d+$/,
+        "Account number must contain only digits and may start with '+'"
+      )
+      : z.string().optional(),
+    network: isMomo
+      ? z.string().min(1, "Network is required")
+      : z.string().optional(),
+    reason: z
+      .string({ required_error: "Reason for sending is required" })
+      .min(3, "At least 3 characters"),
   });
 
   const formik = useFormik({
@@ -119,9 +124,9 @@ const GuestPayAmount = ({ close, goNext }: Props) => {
     initiateMutation.mutate({
       data: {
         channel_id,
-        network_id,
-        account_type,
-        account_number: formik.values.accountNo,
+        ...(isMomo && { network_id }),
+         account_type : isMomo ? "momo" : "bank",
+        ...(isMomo && { account_number: formik.values.accountNo }),
         amount: Number(amount),
         sender_name: formik.values.fullName,
         transaction_description: formik.values.reason,
@@ -153,41 +158,45 @@ const GuestPayAmount = ({ close, goNext }: Props) => {
               }
               errorMessage={formik.touched.fullName && formik.errors.fullName}
             />
-            <InputField
-              placeholder="Enter your account number"
-              label="Account Number"
-              {...formik.getFieldProps("accountNo")}
-              status={
-                formik.touched.accountNo && formik.errors.accountNo
-                  ? "error"
-                  : null
-              }
-              errorMessage={formik.touched.accountNo && formik.errors.accountNo}
-            />
-            <SelectField
-              placeholder="Select  your network"
-              name="network"
-              label="Network"
-              options={networksArr}
-              value={
-                formik.values.network
-                  ? networksArr.find(
+            {isMomo && (
+              <InputField
+                placeholder="Enter your account number"
+                label="Account Number"
+                {...formik.getFieldProps("accountNo")}
+                status={
+                  formik.touched.accountNo && formik.errors.accountNo
+                    ? "error"
+                    : null
+                }
+                errorMessage={formik.touched.accountNo && formik.errors.accountNo}
+              />
+            )}
+            {isMomo && (
+              <SelectField
+                placeholder="Select your network"
+                name="network"
+                label="Network"
+                options={networksArr}
+                value={
+                  formik.values.network
+                    ? networksArr.find(
                       (option) => option.value === formik.values.network
                     ) || null
-                  : null
-              }
-              onChange={(i) => {
-                const selected = networks?.find(
-                  (j) => j.network_id === i?.value
-                );
-                formik.setFieldValue("network", i?.value);
-                actions.setFields({
-                  network_id: selected?.network_id,
-                  network_name: selected?.network_name,
-                  account_type: selected?.account_type,
-                });
-              }}
-            />
+                    : null
+                }
+                onChange={(i) => {
+                  const selected = networks?.find(
+                    (j) => j.network_id === i?.value
+                  );
+                  formik.setFieldValue("network", i?.value);
+                  actions.setFields({
+                    network_id: selected?.network_id,
+                    network_name: selected?.network_name,
+                    account_type: selected?.account_type,
+                  });
+                }}
+              />
+            )}
             <InputField
               placeholder="Enter reason for sending"
               label="Reason for Sending"

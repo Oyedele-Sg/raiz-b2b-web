@@ -46,6 +46,7 @@ import { useUser } from "@/lib/hooks/useUser";
 import SearchBox from "@/components/ui/SearchBox";
 import { useDebounce } from "@/lib/hooks/useDebounce";
 import EmptyInvoiceTable from "./EmptyInvoiceTable";
+import { useOutsideClick } from "@/lib/hooks/useOutsideClick";
 
 const columnHelper = createColumnHelper<IInvoice>();
 
@@ -170,14 +171,16 @@ const InvoicesTable = () => {
   const columns: ColumnDef<IInvoice, any>[] = [
     columnHelper.accessor("customer.business_name", {
       header: "Customer",
-      cell: (info) => (
-        <div className="flex items-center gap-2 font-brSonoma">
+      cell: (info) => {
+        const val = info?.row?.original.customer.business_name || info?.row?.original.customer.full_name
+
+       return <div className="flex items-center gap-2 font-brSonoma">
           <Avatar name="" src={""} />
           <span className="text-sm font-medium text-raiz-gray-950">
-            {truncateString(info.getValue(), 28)}
+            {truncateString(val, 28)}
           </span>
         </div>
-      ),
+      },
     }),
     columnHelper.accessor("invoice_number", {
       header: "Invoice #",
@@ -203,14 +206,14 @@ const InvoicesTable = () => {
         </span>
       ),
     }),
-    columnHelper.accessor("customer.full_name", {
-      header: "Contact Person",
-      cell: (info) => (
-        <span className="text-sm font-brSonoma text-raiz-gray-700">
-          {info.getValue()}
-        </span>
-      ),
-    }),
+    // columnHelper.accessor("customer.full_name", {
+    //   header: "Contact Person",
+    //   cell: (info) => (
+    //     <span className="text-sm font-brSonoma text-raiz-gray-700">
+    //       {info.getValue()}
+    //     </span>
+    //   ),
+    // }),
     columnHelper.accessor("due_date", {
       header: "Due Date",
       cell: (info) => (
@@ -367,7 +370,7 @@ const InvoicesTable = () => {
   });
 
   // const customerBtnRef = useRef<HTMLButtonElement>(null);
-
+  const dropdownRef = useOutsideClick(() => setShowDateRange(false));
   return (
     <section className="w-full h-full">
       {/* {InvoiceList?.length > 0 && ( */}
@@ -433,7 +436,7 @@ const InvoicesTable = () => {
           }}
         />
         {/* dates */}
-        <div className="relative ">
+        <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setShowDateRange(!showDateRange)}
             className="flex h-10 gap-1.5 items-center px-3.5 py-2.5 rounded-lg shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] outline outline-1 outline-offset-[-1px] outline-zinc-200 "

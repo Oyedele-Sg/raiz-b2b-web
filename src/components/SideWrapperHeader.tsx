@@ -21,7 +21,7 @@ const SideWrapperHeader = ({
   return (
     <div className=" flex justify-between items-center mb-[30px] w-full">
       {backArrow && (
-        <button onClick={close}>
+        <button type="button" onClick={close}>
           {titleColor ? (
             <svg
               width="19"
