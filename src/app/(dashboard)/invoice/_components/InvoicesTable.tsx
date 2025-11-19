@@ -49,23 +49,23 @@ import EmptyInvoiceTable from "./EmptyInvoiceTable";
 import { useOutsideClick } from "@/lib/hooks/useOutsideClick";
 
 const columnHelper = createColumnHelper<IInvoice>();
+type DateFilterType = "date_created" | "date_issued" | "due_date";
 
 const InvoicesTable = () => {
   const [showDateRange, setShowDateRange] = useState(false)
+  const [showDateOpts, setShowDateOpts] = useState(false);
   const [dateRange, setDateRange] = useState<{
     startDate?: Date;
     endDate?: Date;
   }>({});
-  // const [selectedCustomer, setSelectedCustomer] = useState<ICustomer | null>(
-  //   null
-  // );
-    const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [status, setStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showAddCustomer, setShowAddCustomer] = useState(false);
   const [invoiceToDownload, setInvoiceToDownload] = useState<IInvoice | null>(
     null
   );
+  const [dateFilterType, setDateFilterType] = useState<DateFilterType | null>(null);
   const [invoiceToEmail, setInvoiceToEmail] = useState<IInvoice | null>(null);
   const [sendingMail, setSendingmail] = useState(false);
   const router = useRouter();
@@ -336,17 +336,37 @@ const InvoicesTable = () => {
   const debouncedSearch = useDebounce(searchTerm, 500)
 
   const pageSize = 10;
+
+  const dateFromKey =
+    dateFilterType === "date_created"
+      ? "created_at_from"
+      : dateFilterType === "date_issued"
+        ? "issued_date_from"
+        : dateFilterType === "due_date"
+          ? "due_date_from"
+          : undefined;
+
+  const dateToKey =
+    dateFilterType === "date_created"
+      ? "created_at_to"
+      : dateFilterType === "date_issued"
+        ? "issued_date_to"
+        : dateFilterType === "due_date"
+          ? "due_date_to"
+          : undefined;
+
   const params: IFectchInvoiceParams = {
     status: status ? status : undefined,
     search: debouncedSearch ? debouncedSearch : undefined,
-    issued_date_from: dateRange.startDate
-      ? dayjs(dateRange.startDate).format("YYYY-MM-DD")
-      : undefined,
-    issued_date_to: dateRange.endDate
-      ? dayjs(dateRange.endDate).format("YYYY-MM-DD")
-      : undefined,
     page: currentPage,
     limit: pageSize,
+    ...(dateFromKey && dateRange.startDate
+      ? { [dateFromKey]: dayjs(dateRange.startDate).format("YYYY-MM-DD") }
+      : {}),
+    ...(dateToKey && dateRange.endDate
+      ? { [dateToKey]: dayjs(dateRange.endDate).format("YYYY-MM-DD") }
+      : {}),
+   
   };
 
   const { data, isLoading } = useQuery({
@@ -369,8 +389,21 @@ const InvoicesTable = () => {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const dateFilterArr = [
+    "date_created",
+    "date_issued",
+    "due_date",
+  ].map((item) => ({
+    label: convertField(item),
+    value: item,
+  }));
+const closeCalendar = () => {
+  setShowDateRange(false);
+  // setDateFilterType(null)
+  setShowDateOpts(false)
+}
   // const customerBtnRef = useRef<HTMLButtonElement>(null);
-  const dropdownRef = useOutsideClick(() => setShowDateRange(false));
+  const dropdownRef = useOutsideClick(() => closeCalendar());
   return (
     <section className="w-full h-full">
       {/* {InvoiceList?.length > 0 && ( */}
@@ -438,7 +471,7 @@ const InvoicesTable = () => {
         {/* dates */}
         <div className="relative" ref={dropdownRef}>
           <button
-            onClick={() => setShowDateRange(!showDateRange)}
+            onClick={() => setShowDateOpts(!showDateOpts)}
             className="flex h-10 gap-1.5 items-center px-3.5 py-2.5 rounded-lg shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] outline outline-1 outline-offset-[-1px] outline-zinc-200 "
           >
             <Image
@@ -455,8 +488,36 @@ const InvoicesTable = () => {
                   )}`
                 : "Select dates"}
             </span>
+            {dateFilterType ? (<svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path opacity="0.4" d="M13.7333 3.73336V5.20002C13.7333 5.73336 13.4 6.40002 13.0667 6.73336L10.2 9.26669C9.8 9.60002 9.53334 10.2667 9.53334 10.8V13.6667C9.53334 14.0667 9.26667 14.6 8.93334 14.8L8 15.4C7.13334 15.9334 5.93334 15.3334 5.93334 14.2667V10.7334C5.93334 10.2667 5.66667 9.66669 5.4 9.33336L4.73334 8.63336L8.61334 2.40002H12.4C13.1333 2.40002 13.7333 3.00002 13.7333 3.73336Z" fill="#6F5B86" />
+              <path d="M7.53333 2.40002L4.08 7.94002L2.86666 6.66669C2.53333 6.33336 2.26666 5.73336 2.26666 5.33336V3.80002C2.26666 3.00002 2.86666 2.40002 3.6 2.40002H7.53333Z" fill="#6F5B86" />
+              <circle cx="12.5" cy="2.5" r="2.5" fill="#DC180D" />
+            </svg>
+) : <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path opacity="0.4" d="M13.7333 3.73336V5.20002C13.7333 5.73336 13.4 6.40002 13.0667 6.73336L10.2 9.26669C9.8 9.60002 9.53334 10.2667 9.53334 10.8V13.6667C9.53334 14.0667 9.26667 14.6 8.93334 14.8L8 15.4C7.13334 15.9334 5.93334 15.3334 5.93334 14.2667V10.7334C5.93334 10.2667 5.66667 9.66669 5.4 9.33336L4.73334 8.63336L8.61334 2.40002H12.4C13.1333 2.40002 13.7333 3.00002 13.7333 3.73336Z" fill="#6F5B86" />
+              <path d="M7.53333 2.40002L4.08 7.94002L2.86666 6.66669C2.53333 6.33336 2.26666 5.73336 2.26666 5.33336V3.80002C2.26666 3.00002 2.86666 2.40002 3.6 2.40002H7.53333Z" fill="#6F5B86" />          
+            </svg>}
+
           </button>
-          {showDateRange && (
+          {showDateOpts && <div className="bg-[#FCFCFD] py-2 w-[220px] border border-[#F3F1F6] rounded-md shadow-md absolute top-12 right-0 z-50">
+            {dateFilterArr?.map((item) => (
+              <div
+                key={item.value}
+                onClick={() => {
+                  setDateFilterType(item.value as DateFilterType);
+                  setShowDateOpts(false);
+                  setShowDateRange(true);
+                }}
+                className={`px-4 py-2 text-sm text-raiz-gray-700 flex justify-between items-center cursor-pointer hover:bg-[#EAECFF99] ${dateFilterType === item.value && "bg-[#EAECFF99]"}`}
+              >
+                <span>{item.label}</span> 
+               {dateFilterType === item.value && <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2C6.49 2 2 6.49 2 12C2 17.51 6.49 22 12 22C17.51 22 22 17.51 22 12C22 6.49 17.51 2 12 2ZM16.78 9.7L11.11 15.37C10.97 15.51 10.78 15.59 10.58 15.59C10.38 15.59 10.19 15.51 10.05 15.37L7.22 12.54C6.93 12.25 6.93 11.77 7.22 11.48C7.51 11.19 7.99 11.19 8.28 11.48L10.58 13.78L15.72 8.64C16.01 8.35 16.49 8.35 16.78 8.64C17.07 8.93 17.07 9.4 16.78 9.7Z" fill="#443852" />
+                </svg>}
+              </div>
+            ))}
+          </div>}
+          {dateFilterType && showDateRange && (
             <DateRange
               onApply={setDateRange}
               onClose={() => setShowDateRange(false)}
@@ -465,7 +526,7 @@ const InvoicesTable = () => {
         </div>
         {dateRange.startDate && (
           <button
-            onClick={() => setDateRange({})}
+            onClick={() => {setDateRange({}); setDateFilterType(null)}}
             className="flex items-center justify-center w-10 h-10 rounded-lg shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] outline outline-1 outline-offset-[-1px] outline-zinc-200"
           >
             <LiaTimesSolid />
