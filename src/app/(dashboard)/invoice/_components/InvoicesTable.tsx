@@ -339,7 +339,7 @@ const InvoicesTable = () => {
 
   const dateFromKey =
     dateFilterType === "date_created"
-      ? "created_date_from"
+      ? "created_at_from"
       : dateFilterType === "date_issued"
         ? "issued_date_from"
         : dateFilterType === "due_date"
@@ -348,7 +348,7 @@ const InvoicesTable = () => {
 
   const dateToKey =
     dateFilterType === "date_created"
-      ? "created_date_to"
+      ? "created_at_to"
       : dateFilterType === "date_issued"
         ? "issued_date_to"
         : dateFilterType === "due_date"
