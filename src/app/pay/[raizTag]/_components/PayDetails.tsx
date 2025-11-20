@@ -10,6 +10,7 @@ import CopyButton from "@/components/ui/CopyButton";
 import QRCode from "react-qr-code";
 import * as motion from "motion/react-client";
 import { AnimatePresence } from "motion/react";
+import { WALLET_TYPES } from "@/constants/misc";
 
 interface Props {
   setScreen: Dispatch<SetStateAction<GuestPaymentType | "detail" | null>>;
@@ -31,17 +32,34 @@ const PayDetails = ({ setScreen, data }: Props) => {
     (acct: { wallet_type: { currency: string } }) =>
       acct.wallet_type.currency === "SBC"
   );
-  const availablepaymentOptsArr = data?.wallets?.map((acct) => ({
-    label: `${acct.wallet_type.currency !== "SBC" ? acct.wallet_type.currency : "Crypto"} Transfer`,
-    value: acct.wallet_type.currency,
-  }))
+ const allowedWalletTypeCodes = Object.keys(WALLET_TYPES)
+    .map(Number)
+    .filter((code) => [1, 2, 3].includes(code));
+
+  const isEmail = (value: string) => /\S+@\S+\.\S+/.test(value);
+
+  const availablepaymentOptsArr = data?.wallets
+    ?.filter((acct) => {
+      const allowedType = allowedWalletTypeCodes.includes(acct?.wallet_type?.wallet_type_code);
+      const notEmail = !isEmail(acct.account_number || "");
+      return allowedType && notEmail;
+    })
+    .map((acct) => ({
+      label: `${acct.wallet_type.currency !== "SBC"
+          ? acct.wallet_type.currency
+          : "Crypto"
+        } Transfer`,
+      value: acct.wallet_type.currency,
+    })) ?? [];
+
+
   const secondarySBCAccts = SBCAcct?.secondary_crypto_details?.map((acct) => ({
     label: acct?.chain,
     value: acct.crypto_id,
   }))
 
-  const [type, setType] = useState<CurrencyType>("USD");
-  const [sbcType, setSbcType] = useState(secondarySBCAccts?.[0].value)
+  const [type, setType] = useState<CurrencyType>(availablepaymentOptsArr?.[0].value || "");
+  const [sbcType, setSbcType] = useState(secondarySBCAccts?.[0].value || "")
   const handleType = (value: CurrencyType) => {
     // actions.selectCurrency(value === "ngn" ? "NGN" : "USD");
     setType(value);
@@ -76,7 +94,7 @@ const PayDetails = ({ setScreen, data }: Props) => {
           />
         </button>
         <h2 className="text-raiz-gray-950 font-semibold text-lg md:text-[23px] leading-normal md:leading-[40px]">
-          Pay {NGNAcct?.wallet_name || USDAcct?.wallet_name || SBCAcct?.wallet_name || ""}
+          Pay {data?.account_user?.username || ""}
           </h2>
         </div>
         <p className="text-raiz-gray-700 text-sm md:text-base mt-1 font-[15px] ">
@@ -346,23 +364,20 @@ const PayDetails = ({ setScreen, data }: Props) => {
            I&apos;ve made payment
           </Button>
           <p className="text-[13px] text-raiz-gray-900  text-center mt-2">
-            Don&apos;t have Raiz App?{" "}
-            <Link
+            Don&#39;t have Raiz? <Link
               target="_blank"
               className="font-bold"
               href={"https://raizapp.onelink.me/RiOx/webdirect"}
             >
               Download
-            </Link>{" "}
-            | {"  "}
-            <Link
+            </Link> Raiz app |  <Link
               target="_blank"
               className="font-bold"
               href={"https://business.raiz.app/register"}
             >
               Sign up{" "}
-            </Link>{" "}
-            for Raiz Business
+            </Link>{" "} on Raiz Business
+
           </p>
         </div>
       </div>

@@ -17,6 +17,7 @@ import { InitiateAfricaPayinPayload } from "@/types/services";
 import { useParams } from "next/navigation";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
+import PhoneNumberInput from "@/components/ui/PhoneNumberInput";
 
 interface Props {
   close: () => void;
@@ -37,7 +38,7 @@ const GuestPayAmount = ({ close, goNext }: Props) => {
     channel_id,
     actions,
     amount,
-    channel_name
+    channel_name,
   } = useGuestSendStore();
   const params = useParams();
   const username = Array.isArray(params) ? params[0].raizTag : params.raizTag;
@@ -134,6 +135,7 @@ const GuestPayAmount = ({ close, goNext }: Props) => {
       username,
     });
   };
+
   return (
     <SideModalWrapper close={close}>
       <div className="w-full h-full flex flex-col">
@@ -159,17 +161,25 @@ const GuestPayAmount = ({ close, goNext }: Props) => {
               errorMessage={formik.touched.fullName && formik.errors.fullName}
             />
             {isMomo && (
-              <InputField
-                placeholder="Enter your account number"
-                label="Account Number"
-                {...formik.getFieldProps("accountNo")}
-                status={
-                  formik.touched.accountNo && formik.errors.accountNo
-                    ? "error"
-                    : null
-                }
-                errorMessage={formik.touched.accountNo && formik.errors.accountNo}
-              />
+              <PhoneNumberInput
+                defaultCountry={guestLocalCurrency?.value || "NG"}
+                                label="Phone Number"
+                                value={formik.values.accountNo}
+                                onChange={(value) => formik.setFieldValue("accountNo", value)}
+                                error={formik.errors.accountNo}
+                                touched={formik.touched.accountNo}
+                              />
+              // <InputField
+              //   placeholder="Enter your account number"
+              //   label="Account Number"
+              //   {...formik.getFieldProps("accountNo")}
+              //   status={
+              //     formik.touched.accountNo && formik.errors.accountNo
+              //       ? "error"
+              //       : null
+              //   }
+              //   errorMessage={formik.touched.accountNo && formik.errors.accountNo}
+              // />
             )}
             {isMomo && (
               <SelectField

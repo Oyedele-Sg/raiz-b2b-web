@@ -178,7 +178,7 @@ const PayLocalAmount = ({
         </button>
         <header className="flex items-center justify-between mt-2">
           <h2 className="text-raiz-gray-950 text-xl md:text-[23px] font-semibold  leading-10">
-            Pay {data?.wallets[0]?.wallet_name || ""} $
+            Pay {data?.account_user?.username || ""} $
             {Number(amount).toLocaleString()}
           </h2>
           <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
@@ -353,23 +353,20 @@ const PayLocalAmount = ({
             Continue
           </Button>
           <p className="text-[13px] text-raiz-gray-900  text-center mt-2">
-            Don&#39;t have Raiz App?{" "}
-            <Link
+            Don&#39;t have Raiz? <Link
               target="_blank"
               className="font-bold"
               href={"https://raizapp.onelink.me/RiOx/webdirect"}
             >
               Download
-            </Link>{" "}
-            | {"  "}
-            <Link
+            </Link> Raiz app |  <Link
               target="_blank"
               className="font-bold"
               href={"https://business.raiz.app/register"}
             >
               Sign up{" "}
-            </Link>{" "}
-            for Raiz Business
+            </Link>{" "} on Raiz Business
+            
           </p>
         </div>
       </div>
