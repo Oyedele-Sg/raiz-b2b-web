@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import PhoneInput, { Value as PhoneValue } from "react-phone-number-input";
+import PhoneInput, { Country, Value as PhoneValue } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import InputLabel from "./InputLabel";
 
@@ -11,6 +11,7 @@ interface Props {
   error?: string;
   touched?: boolean;
   label?: string;
+  defaultCountry?: Country
 }
 
 const PhoneNumberInput = ({
@@ -19,14 +20,15 @@ const PhoneNumberInput = ({
   error,
   touched,
   label = "Phone Number",
+  defaultCountry = "NG",
 }: Props) => {
   return (
     <div className="w-full">
-      {label && <InputLabel content="Phone Number" />}
+      {label && <InputLabel content={label} />}
 
       <PhoneInput
         international
-        defaultCountry="NG"
+        defaultCountry={defaultCountry}
         value={value}
         onChange={onChange}
         className="phone-input-wrapper"

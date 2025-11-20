@@ -118,3 +118,11 @@ export const CHAINS: { name: string; value: IChain; icon: string }[] = [
     icon: "/icons/eth.svg",
   },
 ];
+
+export const WALLET_TYPES = {
+  1: "USD Holding Account",
+  2: "NGN Holding Account",
+  3: "Crypto Holding Wallet",
+  4: "Naira virtual wallet",
+  5: "USD Holding Wallet",
+}
