@@ -359,7 +359,7 @@ const CreateInvoicePage = () => {
                       className="w-full mt-2 h-[50px] text-sm text-raiz-gray-950 border bg-raiz-gray-100 p-[15px] rounded-md flex"
                     >
                       {selectedCustomer
-                        ? selectedCustomer?.full_name
+                        ? selectedCustomer?.business_name || selectedCustomer?.full_name
                         : "Select or add a customer"}
                     </button>
                     {showSearchBox && (
