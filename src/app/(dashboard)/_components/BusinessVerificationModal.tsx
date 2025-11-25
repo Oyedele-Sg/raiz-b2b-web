@@ -8,7 +8,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { BusinessVerificationApi } from "@/services/user";
 import { IBusinessVerificationPayload } from "@/types/services";
 import { toast } from "sonner";
+import { useUser } from "@/lib/hooks/useUser";
+import { sanitizeAddressField } from "@/utils/helpers";
 
+
+const nigerianRegNumberRegex = /^(RC|BN|IT|LP)?[\s-]*\d{4,9}$/i;
 const libraries: Libraries = ["places"];
 const BusinessSchema = z.object({
   business_name: z.string().min(1, "Business name is required"),
@@ -37,7 +41,10 @@ const BusinessVerificationModal = ({ close }: { close: () => void }) => {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API || "",
     libraries,
   });
-
+  const {user} = useUser()
+  const isNigerian =
+    user?.business_account?.entity?.country?.country_name?.toLowerCase() ===
+    "nigeria";
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const qc = useQueryClient();
   const BusinessVerificationMutation = useMutation({
@@ -51,6 +58,24 @@ const BusinessVerificationModal = ({ close }: { close: () => void }) => {
       close();
     },
   });
+
+
+  const getEffectiveSchema = () =>
+    BusinessSchema.refine(
+      (data) => {
+        if (!isNigerian) return true;
+
+        return nigerianRegNumberRegex.test(
+          data.business_registration_number?.toUpperCase()
+        );
+      },
+      {
+        message:
+          "Invalid Nigerian business registration number. Must start with RC, BN, IT, or LP and contain 4–9 digits.",
+        path: ["business_registration_number"],
+      }
+    );
+
 
   const formik = useFormik<BusinessFormValues>({
     initialValues: {
@@ -67,7 +92,8 @@ const BusinessVerificationModal = ({ close }: { close: () => void }) => {
       address: "",
     },
     validate: (values) => {
-      const result = BusinessSchema.safeParse(values);
+      const result = getEffectiveSchema().safeParse(values);
+
       if (!result.success) {
         return result.error.flatten().fieldErrors;
       }
@@ -78,11 +104,11 @@ const BusinessVerificationModal = ({ close }: { close: () => void }) => {
         business_registration_number: values.business_registration_number,
         business_email: values.business_email,
         country_code: values.country_code || null,
-        state: values.state || null,
+        state: sanitizeAddressField(values.state || "") || null,
         zip_code: values.zip_code || null,
-        street: values.street || null,
+        street: sanitizeAddressField(values.street || "") || null,
         building_number: values.building_number || null,
-        city: values.city || null,
+        city: sanitizeAddressField(values.city || "") || null,
         length_of_stay_months: values.length_of_stay_months || 0,
       });
     },
@@ -209,7 +235,7 @@ const BusinessVerificationModal = ({ close }: { close: () => void }) => {
         />
       </div>
       <Button
-        disabled={!formik.dirty || BusinessVerificationMutation.isPending}
+        disabled={!formik.dirty || !formik.values.city || !formik.values.state || BusinessVerificationMutation.isPending}
         loading={BusinessVerificationMutation.isPending}
         type="submit"
       >

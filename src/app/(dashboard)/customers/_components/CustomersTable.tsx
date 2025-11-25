@@ -25,6 +25,8 @@ import EmptyList from "@/components/ui/EmptyList";
 import { AnimatePresence } from "motion/react";
 import SideModalWrapper from "../../_components/SideModalWrapper";
 import EditCustomer from "./EditCustomer";
+import DeleteCustomer from "./DeleteCustomer";
+import Overlay from "@/components/ui/Overlay";
 
 const columnHelper = createColumnHelper<ICustomer>();
 
@@ -40,14 +42,24 @@ const CustomersTable = () => {
     null
   );
   const [showEdit, setShowEdit] = useState(false);
-
+  const [showDelete, setShowDelete] = useState(false);
   const handleEditCustomer = (customer: ICustomer) => {
     setSelectedCustomer(customer);
     setShowEdit(true);
   };
 
+  const handleDeleteCustomer = (customer: ICustomer) => {
+    setSelectedCustomer(customer);
+    setShowDelete(true);
+  };
+
   const handleCloseEdit = () => {
     setShowEdit(false);
+    setSelectedCustomer(null);
+  };
+
+  const handleCloseDelete = () => {
+    setShowDelete(false);
     setSelectedCustomer(null);
   };
 
@@ -57,6 +69,18 @@ const CustomersTable = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const columns: ColumnDef<ICustomer, any>[] = [
+    columnHelper.display({
+      id: "S/N",
+      header: "",
+      cell: (info) => {
+        const rowIndex = (currentPage - 1) * pageSize + info.row.index + 1;
+        return (
+          <span className="text-sm font-brSonoma text-raiz-gray-700">
+            {rowIndex}
+          </span>
+        );
+      },
+    }),
     columnHelper.accessor("business_name", {
       header: "Customer",
       cell: (info) => {
@@ -116,6 +140,7 @@ const CustomersTable = () => {
             isLast={isLast}
             onViewDetails={() => {}}
             onEdit={handleEditCustomer}
+            onDelete={handleDeleteCustomer}
           />
         );
       },
@@ -302,6 +327,14 @@ const CustomersTable = () => {
           </SideModalWrapper>
         ) : null}
       </AnimatePresence>
+      {showDelete && selectedCustomer ? (
+        <Overlay close={handleCloseDelete}>
+          <DeleteCustomer
+            close={handleCloseDelete}
+            customer={selectedCustomer}
+          />
+        </Overlay>
+      ) : null}
     </section>
   );
 };

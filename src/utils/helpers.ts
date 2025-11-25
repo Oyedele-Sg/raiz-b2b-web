@@ -482,3 +482,13 @@ export const blobToBase64 = (blob: Blob): Promise<string> => {
     reader.readAsDataURL(blob);
   });
 };
+
+export const sanitizeAddressField = (value: string): string => {
+  if (!value) return value;
+  // Normalize accented characters (é → e, à → a, etc.)
+  const normalized = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  // Keep only allowed characters: a-zA-Z0-9\s\-'&.,#/
+  const sanitized = normalized.replace(/[^a-zA-Z0-9\s\-'&.,#/]/g, '');
+  // Clean up multiple spaces
+  return sanitized.replace(/\s+/g, ' ').trim();
+};

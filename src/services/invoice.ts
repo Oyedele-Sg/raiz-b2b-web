@@ -154,3 +154,10 @@ export const UpdateInvoiceStatusApi = async (
   );
   return response?.data;
 };
+
+export const DeleteCustomerApi = async (customer_id: string) => {
+  const response = await AuthAxios.delete(
+    `/business/invoice/customers/${customer_id}/`
+  );
+  return response?.data;
+};
