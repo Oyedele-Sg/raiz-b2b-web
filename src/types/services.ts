@@ -579,9 +579,9 @@ export interface IPaymentNetwork {
 export interface InitiateAfricaPayinPayload {
   data: {
     channel_id: string;
-    network_id?: string;
+    network_id?: string | null;
     account_type: string;
-    account_number?: string;
+    account_number?: string | null;
     amount: number;
     sender_name: string;
     transaction_description: string;

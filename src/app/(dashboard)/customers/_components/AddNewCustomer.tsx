@@ -13,10 +13,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { IAddCustomerPayload } from "@/types/services";
 import { AddCustomerApi } from "@/services/invoice";
 import SelectField from "@/components/ui/SelectField";
+import { sanitizeAddressField } from "@/utils/helpers";
 
 interface Props {
   close: () => void;
 }
+
 
 // Base schema with conditional validation
 const AddCustomerSchema = z
@@ -85,9 +87,9 @@ const AddNewCustomer = ({ close }: Props) => {
         customer_type: values.customerType as "individual" | "business",
         email: values.email,
         phone_number: values.phone,
-        street_address: values.address,
-        city: values?.city,
-        state: values?.state,
+        street_address: sanitizeAddressField(values.address), 
+        city: sanitizeAddressField(values?.city),            
+        state: sanitizeAddressField(values?.state), 
         country: values?.country_code,
         ...(values.companyName && { business_name: values?.companyName }),
       };

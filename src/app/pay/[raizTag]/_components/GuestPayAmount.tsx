@@ -125,9 +125,9 @@ const GuestPayAmount = ({ close, goNext }: Props) => {
     initiateMutation.mutate({
       data: {
         channel_id,
-        ...(isMomo && { network_id }),
+        ...(isMomo && { network_id : network_id || null }),
          account_type : isMomo ? "momo" : "bank",
-        ...(isMomo && { account_number: formik.values.accountNo }),
+        ...(isMomo && { account_number: formik.values.accountNo || null }),
         amount: Number(amount),
         sender_name: formik.values.fullName,
         transaction_description: formik.values.reason,

@@ -9,12 +9,14 @@ interface Props {
   isLast: boolean;
   onViewDetails: (customer: ICustomer) => void;
   onEdit: (customer: ICustomer) => void;
+  onDelete: (customer: ICustomer) => void;
 }
 
 const CustomerTableMoreOpt = ({
   isLast,
   customer,
   // onViewDetails,
+  onDelete,
   onEdit,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,17 +42,17 @@ const CustomerTableMoreOpt = ({
           }`}
         >
           <ul className="py-1">
-            {/* <li>
+            <li>
               <button
                 onClick={() => {
-                  onViewDetails(customer);
+                  onDelete(customer);
                   setIsOpen(false);
                 }}
                 className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
-                View Details
+                Delete
               </button>
-            </li> */}
+            </li>
             <li>
               <button
                 onClick={() => {
