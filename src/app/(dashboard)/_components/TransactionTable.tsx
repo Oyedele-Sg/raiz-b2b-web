@@ -425,7 +425,7 @@ const TransactionTable = ({ pagination, topRightOpts }: Props) => {
         </div>
       ) : transactions.length > 0 ? (
         <>
-          <div className="w-full overflow-x-auto ">
+          <div className="w-full overflow-x-auto h-full ">
             <table className="min-w-full text-left text-sm">
               <thead className="border-b ">
                 {table.getHeaderGroups().map((headerGroup) => (

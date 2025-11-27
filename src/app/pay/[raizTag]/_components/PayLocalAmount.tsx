@@ -147,7 +147,7 @@ const PayLocalAmount = ({
 
   const { data: channels, isLoading: isLoadingChannels } = useQuery({
     queryKey: ["afican-payin-channels", guestLocalCurrency?.value],
-    queryFn: () => GetAfricaPayinChannelsApi(guestLocalCurrency?.value || ""),
+    queryFn: () => GetAfricaPayinChannelsApi(guestLocalCurrency?.value || null),
     enabled: !!guestLocalCurrency?.value,
   });
 
@@ -169,6 +169,7 @@ const PayLocalAmount = ({
       <div className="mt-10">
         <button onClick={goBack}>
           <Image
+            className="w-4 h-4 md:w-[18px] md:h-[18px]"
             src={"/icons/arrow-left.svg"}
             width={18.48}
             height={18.48}
@@ -176,8 +177,8 @@ const PayLocalAmount = ({
           />
         </button>
         <header className="flex items-center justify-between mt-2">
-          <h2 className="text-raiz-gray-950 text-[23px] font-semibold  leading-10">
-            Pay {data?.wallets[0]?.wallet_name || ""} $
+          <h2 className="text-raiz-gray-950 text-xl md:text-[23px] font-semibold  leading-10">
+            Pay {data?.account_user?.username || ""} $
             {Number(amount).toLocaleString()}
           </h2>
           <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
@@ -259,7 +260,7 @@ const PayLocalAmount = ({
             <p className="text-center mt-4 justify-start text-zinc-900 text-sm font-bold  leading-none capitalize">
               {data?.account_user?.username}
             </p>
-            <p className="text-center mt-10 justify-start text-zinc-900 text-base mb-3">
+            <p className="text-center mt-10 justify-start text-zinc-900 text-sm md:text-base mb-3">
               How much do you want to send?
             </p>
             <div className="relative w-full mt-3">
@@ -340,6 +341,7 @@ const PayLocalAmount = ({
                   ) || null
                 : null
             }
+            height="auto"
           />
         </div>
         <div className="w-full py-5">
@@ -351,23 +353,20 @@ const PayLocalAmount = ({
             Continue
           </Button>
           <p className="text-[13px] text-raiz-gray-900  text-center mt-2">
-            Don&#39;t have Raiz App?{" "}
-            <Link
+            Don&#39;t have Raiz? <Link
               target="_blank"
               className="font-bold"
               href={"https://raizapp.onelink.me/RiOx/webdirect"}
             >
               Download
-            </Link>{" "}
-            | {"  "}
-            <Link
+            </Link> Raiz app |  <Link
               target="_blank"
               className="font-bold"
               href={"https://business.raiz.app/register"}
             >
               Sign up{" "}
-            </Link>{" "}
-            for Raiz Business
+            </Link>{" "} on Raiz Business
+            
           </p>
         </div>
       </div>

@@ -11,7 +11,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import SideModalWrapper from "../../_components/SideModalWrapper";
+import SideModalWrapper from "../../../(dashboard)/_components/SideModalWrapper";
 import InputLabel from "@/components/ui/InputLabel";
 import Image from "next/image";
 import { toast } from "sonner";

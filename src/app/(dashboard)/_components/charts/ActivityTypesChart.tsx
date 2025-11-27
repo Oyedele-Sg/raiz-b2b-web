@@ -17,7 +17,7 @@ import { useQuery } from "@tanstack/react-query";
 import { GetActivityStats } from "@/services/transactions";
 import { useUser } from "@/lib/hooks/useUser";
 import Skeleton from "react-loading-skeleton";
-import { findWalletByCurrency } from "@/utils/helpers";
+import { findWalletByCurrency, getCurrencySymbol } from "@/utils/helpers";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
 
 ChartJS.register(
@@ -135,7 +135,9 @@ const ActivityTypesChart = () => {
       tooltip: {
         callbacks: {
           label: (ctx: TooltipItem<"bar">) =>
-            `${ctx.dataset.label}: $${Number(ctx.raw).toLocaleString()}`,
+            `${ctx.dataset.label}: ${getCurrencySymbol(
+              currentWallet?.wallet_type?.currency || ""
+            )}${Number(ctx.raw).toLocaleString()}`,
         },
       },
     },

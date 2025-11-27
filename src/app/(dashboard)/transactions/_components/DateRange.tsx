@@ -42,13 +42,13 @@ const DateRange: React.FC<DateRangeProps> = ({ onApply, onClose }) => {
   };
 
   return (
-    <div className="absolute top-12 right-0 z-10 bg-white border rounded-lg shadow-lg">
+    <div className="absolute top-12 right-0 z-50 bg-white border rounded-lg shadow-lg">
       <DateRangePicker
         onChange={handleSelect}
         moveRangeOnFirstSelection={false}
-        months={isDesktop ? 2 : 1}
+        months={1}
         ranges={state}
-        direction={isDesktop ? "horizontal" : "vertical"}
+        direction={!isDesktop ? "horizontal" : "vertical"}
       />
       <div className="flex justify-end p-4">
         <button

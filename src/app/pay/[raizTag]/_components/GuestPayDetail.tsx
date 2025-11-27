@@ -58,7 +58,7 @@ const GuestPayDetail = ({
         setPaymentError("");
       }
 
-      // ✅ Stop polling only when status is "complete" or "failed"
+      //  Stop polling only when status is "complete" or "failed"
       if (payinStatus === "complete" || payinStatus === "failed") {
         if (pollingRef.current) {
           clearInterval(pollingRef.current);

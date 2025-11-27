@@ -8,6 +8,7 @@ import ErrorMessage from "@/components/ui/ErrorMessage";
 import SelectField from "@/components/ui/SelectField";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
+import { WALLET_TYPES } from "@/constants/misc";
 
 interface Props {
   data: IBusinessPaymentData;
@@ -51,30 +52,56 @@ const SelectPayType = ({
 
     setRawAmount(formattedValue);
     actions.setField("amount", value);
+    if (paymentType === "transfer") {
+      setError(null);
+      return;
+    }
 
     const result = amountSchema.safeParse(value);
-    if (!result.success) {
-      setError(result.error.errors[0].message);
-    } else {
-      setError(null);
-    }
+    setError(!result.success ? result.error.errors[0].message : null);
   };
+
   const displayValue = () => {
     if (isFocused || !amount) return amount ? `$${rawAmount}` : "";
     const num = parseFloat(rawAmount);
     return isNaN(num) ? "" : `$${num.toFixed(2)}`;
   };
 
+  const allowedWalletTypeCodes = Object.keys(WALLET_TYPES)
+    .map(Number)
+    .filter((code) => [1, 2, 3].includes(code));
+
+  const isEmail = (value: string) => /\S+@\S+\.\S+/.test(value);
+
+  // --- Filter wallets for transfer payment ---
+  const availablepaymentOptsArr = data?.wallets
+    ?.filter((acct) => {
+      const allowedType = allowedWalletTypeCodes.includes(acct?.wallet_type?.wallet_type_code);
+      const notEmail = !isEmail(acct.account_number || "");
+      return allowedType && notEmail;
+    })
+    .map((acct) => ({
+      label: `${acct.wallet_type.currency !== "SBC"
+          ? acct.wallet_type.currency
+          : "Crypto"
+        } Transfer`,
+      value: acct.wallet_type.currency,
+    })) ?? [];
+
   const paymentTypes = [
-    { label: "Pay Locally", value: "local" },
-    // { label: "Pay with USD Card", value: "usd" },
+    { label: "Pay in African currency", value: "local" },
+    ...(availablepaymentOptsArr.length > 0
+      ? [{ label: "Transfer", value: "transfer" }]
+      : []),
   ];
+
+
   return (
     <section className="flex flex-col  h-full">
       <div className="mt-6 md:mt-10">
         <header className="flex items-center justify-between mt-2">
           <h2 className="text-raiz-gray-950 text-[23px] font-semibold  leading-10">
-            Pay {data?.wallets[0]?.wallet_name || ""}
+            Pay {data?.account_user?.username || ""}
           </h2>
           <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
             <path
@@ -162,13 +189,17 @@ const SelectPayType = ({
               <input
                 ref={inputRef}
                 autoFocus
-                className="outline-none h-[91px] bg-transparent w-fit xl:mx-auto text-center text-zinc-900 placeholder:text-zinc-900 text-3xl font-semibold leading-10"
+                className={`outline-none h-[91px] bg-transparent w-fit xl:mx-auto text-center 
+    text-zinc-900 placeholder:text-zinc-900 text-3xl font-semibold leading-10
+    ${paymentType === "transfer" ? "opacity-40 cursor-not-allowed" : ""}
+  `}
                 placeholder="0.00"
                 value={displayValue()}
                 onChange={handleAmountChange}
                 onFocus={() => setIsFocused(true)}
-                disabled={!!amountFromLink}
+                disabled={paymentType === "transfer" || !!amountFromLink}
               />
+
             </div>
             {error && <ErrorMessage message={error} />}
           </div>
@@ -190,30 +221,31 @@ const SelectPayType = ({
         </div>
         <div className="w-full py-5">
           <Button
-            disabled={!!error || !amount || !paymentType}
+            disabled={
+              !!error ||
+              (paymentType !== "transfer" && !amount) ||
+              !paymentType
+            }
             // loading={loading}
             onClick={goNext}
           >
             Continue
           </Button>
           <p className="text-[13px] text-raiz-gray-900  text-center mt-2">
-            Don&#39;t have Raiz App?{" "}
-            <Link
+            Don&#39;t have Raiz? <Link
               target="_blank"
               className="font-bold"
               href={"https://raizapp.onelink.me/RiOx/webdirect"}
             >
               Download
-            </Link>{" "}
-            | {"  "}
-            <Link
+            </Link> Raiz app |  <Link
               target="_blank"
               className="font-bold"
               href={"https://business.raiz.app/register"}
             >
               Sign up{" "}
-            </Link>{" "}
-            for Raiz Business
+            </Link>{" "} on Raiz Business
+
           </p>
         </div>
       </div>

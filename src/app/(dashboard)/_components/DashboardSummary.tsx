@@ -26,6 +26,8 @@ import Infos from "./Infos";
 import NGNAcctInfo from "./quick-links/acctInfo/NGNAcctInfo";
 import USDAcctInfo from "./quick-links/acctInfo/USDAcctInfo";
 import DashboardAnalytics from "./charts/DashboardAnalytics";
+import UsdTopUp from "./quick-links/topUp/UsdTopup/UsdTopUp";
+import { useTopupStore } from "@/store/TopUp";
 // import NgnSuccessModal from "./createNgnAcct/NgnSuccessModal";
 
 const DashboardSummary = () => {
@@ -33,6 +35,7 @@ const DashboardSummary = () => {
   const walletData = user?.business_account?.wallets;
   const { currency, actions: sendActions } = useSendStore();
   const { actions } = useSwapStore();
+  const { actions: topupActions } = useTopupStore();
   const { setShowBalance, showBalance } = useUserStore();
   const { selectedCurrency } = useCurrencyStore();
   const [openModal, setOpenModal] = useState<
@@ -71,6 +74,7 @@ const DashboardSummary = () => {
   const closeModal = () => {
     setOpenModal(null);
     sendActions.reset(selectedCurrency.name);
+    topupActions.reset();
   };
 
   const closeSwapModal = () => {
@@ -111,7 +115,11 @@ const DashboardSummary = () => {
       case "swap":
         return <Swap close={closeSwapModal} />;
       case "topUp":
-        return <TopUp close={closeModal} />;
+        return currency === "NGN" ? (
+          <TopUp close={closeModal} />
+        ) : (
+          <UsdTopUp close={closeModal} />
+        );
       case "createNGN":
         return (
           <CreateNgnAcct

@@ -90,7 +90,13 @@ const BillRow = ({
           onClick={handleAccept}
           className="w-1/2 h-10 px-5 py-2 bg-[#3c2875] rounded-3xl justify-center items-center gap-1.5 inline-flex"
         >
-          <svg width="17" height="16" viewBox="0 0 17 16" fill="none">
+          <svg
+            className="w-6 h-4"
+            width="17"
+            height="16"
+            viewBox="0 0 17 16"
+            fill="none"
+          >
             <path
               d="M11.2601 1.97336L5.24008 3.97336C1.19341 5.3267 1.19341 7.53336 5.24008 8.88003L7.02674 9.47336L7.62008 11.26C8.96674 15.3067 11.1801 15.3067 12.5267 11.26L14.5334 5.2467C15.4267 2.5467 13.9601 1.07336 11.2601 1.97336ZM11.4734 5.56003L8.94008 8.1067C8.84008 8.2067 8.71341 8.25336 8.58674 8.25336C8.46008 8.25336 8.33341 8.2067 8.23341 8.1067C8.04008 7.91336 8.04008 7.59336 8.23341 7.40003L10.7667 4.85336C10.9601 4.66003 11.2801 4.66003 11.4734 4.85336C11.6667 5.0467 11.6667 5.3667 11.4734 5.56003Z"
               fill="#F4F4F4"
@@ -126,6 +132,9 @@ const BillRequests = () => {
       const [, params] = queryKey as [string, IBillRequestParams];
       return FetchBillRequestApi(params);
     },
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
   });
   const closePopModal = () => setOpenModal(null);
   const openPayModal = () => setOpenModal("pay");

@@ -83,15 +83,21 @@ const PayWithBankTransfer = ({ close }: Props) => {
         <Button onClick={() => {}} className="mt-5 mb-4">
           I&apos;ve Sent the Money
         </Button>
-        <p className="text-[13px] text-raiz-gray-900  text-center">
-          Don&#39;t have raiz app?{" "}
-          <Link
+        <p className="text-[13px] text-raiz-gray-900  text-center mt-2">
+          Don&#39;t have Raiz? <Link
             target="_blank"
             className="font-bold"
             href={"https://raizapp.onelink.me/RiOx/webdirect"}
           >
             Download
-          </Link>
+          </Link> Raiz app |  <Link
+            target="_blank"
+            className="font-bold"
+            href={"https://business.raiz.app/register"}
+          >
+            Sign up{" "}
+          </Link>{" "} on Raiz Business
+
         </p>
       </div>
     </div>
