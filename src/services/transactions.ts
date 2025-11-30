@@ -596,7 +596,7 @@ export const confirmGuestStripeTopPaymentIntent = async ({ payment_intent, entit
   queryParams.append("payer_email", payer_email)
   queryParams.append("payment_description", payment_description)
   const res = await PublicAxios.post(
-    `/admin/transactions/topup/usd/confirm-intent/?${queryParams.toString()}`,
+    `/admin/transaction/topup/usd/confirm-intent/?${queryParams.toString()}`,
     {
       payment_intent,
       curreny: "USD",
