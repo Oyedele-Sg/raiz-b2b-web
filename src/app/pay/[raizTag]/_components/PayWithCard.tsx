@@ -11,7 +11,6 @@ import { loadStripe } from "@stripe/stripe-js";
 import {
   confirmStripePaymentIntent,
   createGuestStripePaymentIntent,
-  createStripePaymentIntent,
 } from "@/services/transactions";
 import { useMutation } from "@tanstack/react-query";
 import { useFormik } from "formik";
@@ -20,8 +19,6 @@ import { z } from "zod";
 import { nameRegex } from "@/app/(auth)/register/_components/validation";
 import { useGuestSendStore } from "@/store/GuestSend";
 import { GuestPaymentType } from "../PayUserClient";
-import { useTopupStore } from "@/store/TopUp";
-import StripePayment from "@/app/(dashboard)/_components/quick-links/topUp/UsdTopup/StripePayment";
 import GuestStripePayment from "./GuestStripePayment";
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISH_KEY || ""
@@ -130,11 +127,6 @@ const PayWithCard = ({ setScreen, data, amountFromLink }: Props) => {
     createPaymentIntentMutation.mutate({ amountInCents});
   };
 
-  const handleConfirm = (payment_intent_id: string) => {
-    confirmPaymentMutation.mutate({
-      payment_intent_id,
-    });
-  };
   const formik = useFormik({
     initialValues: {
       firstName: "",

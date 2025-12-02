@@ -5,14 +5,12 @@ import InputField from "@/components/ui/InputField";
 import { FormikProps } from "formik";
 import { formCardValues } from "./CardAmount";
 import {
-  PaymentElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
 import SideModalWrapper from "../../../(dashboard)/_components/SideModalWrapper";
 import Image from "next/image";
 import { toast } from "sonner";
-import Spinner from "@/components/ui/Spinner";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 
 interface Props {
@@ -35,7 +33,6 @@ const CardDetails = ({
   const stripe = useStripe();
   const elements = useElements();
   const [errMsg, setErrMsg] = useState("");
-  const [paymentElementReady, setPaymentElementReady] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -223,7 +220,7 @@ const CardDetails = ({
             <Button
               type="submit"
               loading={loading}
-              disabled={disableBtn || !formik.isValid || !stripe || !paymentElementReady}
+              disabled={disableBtn || !formik.isValid || !stripe }
             >
               Proceed to pay
             </Button>

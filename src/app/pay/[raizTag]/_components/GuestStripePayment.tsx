@@ -3,7 +3,7 @@ import SideWrapperHeader from "@/components/SideWrapperHeader";
 import Button from "@/components/ui/Button";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 import Spinner from "@/components/ui/Spinner";
-import { confirmGuestStripeTopPaymentIntent, confirmStripeTopPaymentIntent } from "@/services/transactions";
+import { confirmGuestStripeTopPaymentIntent} from "@/services/transactions";
 import { useGuestSendStore } from "@/store/GuestSend";
 import { useSendStore } from "@/store/Send";
 import { IBusinessPaymentData } from "@/types/services";

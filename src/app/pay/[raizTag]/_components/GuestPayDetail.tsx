@@ -7,7 +7,7 @@ import { useGuestSendStore } from "@/store/GuestSend";
 import { IBusinessPaymentData } from "@/types/services";
 import { useQuery } from "@tanstack/react-query";
 import { GetAfricaPayinStatus } from "@/services/business";
-import { GuestPayDetailsSteps, GuestPaymentType } from "../page";
+import { GuestPayDetailsSteps, GuestPaymentType } from "../PayUserClient";
 
 interface Props {
   close: () => void;
