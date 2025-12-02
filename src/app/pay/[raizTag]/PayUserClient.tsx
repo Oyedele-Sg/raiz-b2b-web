@@ -14,10 +14,13 @@ import { decryptData } from "@/lib/headerEncryption";
 import { useGuestSendStore } from "@/store/GuestSend";
 import PayDetails from "./_components/PayDetails";
 import { AnimatePresence } from "motion/react";
+import ZelleTopupInfo from "@/app/(dashboard)/_components/quick-links/topUp/UsdTopup/ZelleTopupInfo";
+import { useTopupStore } from "@/store/TopUp";
+import { toast } from "sonner";
 
 
 export type LocalPaymentMethod = "bankTransfer" | "mobileMoney";
-export type GuestPaymentType = "local" | "card" | "transfer";
+export type GuestPaymentType = "local" | "card" | "transfer" | "zelle";
 export type GuestPayDetailsSteps = "details" | "summary" | "status" | "receipt";
 
 const PayUserClient = () => {
@@ -33,7 +36,7 @@ const PayUserClient = () => {
   >();
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const { actions } = useGuestSendStore();
-
+const { actions: topupActions } = useTopupStore();
   const { data, isLoading, error } = useQuery({
     queryKey: ["business-payment-info"],
     queryFn: () => FetchPaymentInfoApi(params?.raizTag as string),
@@ -64,6 +67,8 @@ const PayUserClient = () => {
       setScreen("local");
     } else if (paymentType === "transfer") {
       setScreen("transfer");
+    } else if(paymentType === "zelle") {
+      setScreen("zelle")
     } else {
       setScreen("card")
     }
@@ -104,6 +109,14 @@ const PayUserClient = () => {
         </div>
       </section>
     );
+  }
+
+  const handleDone = () => {
+    setScreen(null);
+    actions.reset()
+    topupActions.reset()
+    setPaymentType(undefined)
+    setPaymentMethod(null)
   }
 
   return (
@@ -168,6 +181,25 @@ const PayUserClient = () => {
                     step={step}
                     setGuestPayType={setPaymentType}
                   />
+                </>
+              )}
+              {data && screen === "zelle" && (
+                <>
+                <SelectPayType
+                  data={data}
+                  goNext={handleGeneralNextStep}
+                  paymentType={paymentType}
+                  setPaymentType={setPaymentType}
+                  amountFromLink={amount}
+                />
+                <ZelleTopupInfo goBack={() => setScreen(null)} 
+               goNext={() => {
+                  handleDone();
+                  toast.success(
+                    "Zelle top-up submitted — funds will reflect once verified."
+                  );
+                }}
+                type="guest" />
                 </>
               )}
             </div>

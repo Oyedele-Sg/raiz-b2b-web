@@ -10,6 +10,9 @@ import Button from "@/components/ui/Button";
 import Link from "next/link";
 import { WALLET_TYPES } from "@/constants/misc";
 import { GuestPaymentType } from "../PayUserClient";
+import { useTopupStore } from "@/store/TopUp";
+import { useMutation } from "@tanstack/react-query";
+import { InitiateGuestZellePaymentApi } from "@/services/transactions";
 
 interface Props {
   data: IBusinessPaymentData;
@@ -31,6 +34,7 @@ const SelectPayType = ({
   const [rawAmount, setRawAmount] = useState(amount);
   const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
+ const { zelleInfo, actions: tActions} = useTopupStore();
   const amountSchema = z
     .string()
     .regex(/^\d*\.?\d{0,2}$/, "Enter a valid amount (max 2 decimal places)")
@@ -74,7 +78,6 @@ const SelectPayType = ({
 
   const isEmail = (value: string) => /\S+@\S+\.\S+/.test(value);
 
-  // --- Filter wallets for transfer payment ---
   const availablepaymentOptsArr = data?.wallets
     ?.filter((acct) => {
       const allowedType = allowedWalletTypeCodes.includes(acct?.wallet_type?.wallet_type_code);
@@ -94,6 +97,7 @@ const SelectPayType = ({
       ...(availablepaymentOptsArr.length > 0
       ? [{ label: "Transfer", value: "transfer" }]
       : []),
+      {label: "Pay with Zelle", value: "zelle"}
     // { label: "Pay in African currency", value: "local" },
   
   ];
@@ -108,6 +112,27 @@ const SelectPayType = ({
     return str;
   } 
 
+   const USDAcct = data?.wallets?.find(
+    (acct: { wallet_type: { currency: string } }) =>
+      acct.wallet_type.currency === "USD"
+  );
+
+   const zelleMutation = useMutation({
+     mutationFn: (payload: { expected_amount: number }) =>
+       InitiateGuestZellePaymentApi(USDAcct?.wallet_id || null, payload),
+     onSuccess: (res) => {
+       tActions.setZelleInfo(res);
+       goNext();
+     },
+   });
+
+  const handleNext = () => {
+    if(paymentType === "zelle") {
+zelleMutation.mutate({expected_amount: Number(amount)})
+    } else {
+      goNext()
+    }
+  }
 
   return (
     <section className="flex flex-col  h-full">
@@ -203,7 +228,7 @@ const SelectPayType = ({
                 ref={inputRef}
                 autoFocus
                 className={`outline-none h-[91px] bg-transparent w-fit xl:mx-auto text-center 
-    text-zinc-900 placeholder:text-zinc-900 text-3xl font-semibold leading-10
+    text-zinc-900 placeholder:text-zinc-900 !text-3xl font-semibold leading-10
     ${paymentType === "transfer" ? "opacity-40 cursor-not-allowed" : ""}
   `}
                 placeholder="0.00"
@@ -237,10 +262,10 @@ const SelectPayType = ({
             disabled={
               !!error ||
               (paymentType !== "transfer" && !amount) ||
-              !paymentType
+              !paymentType || zelleMutation.isPending
             }
-            // loading={loading}
-            onClick={goNext}
+            loading={zelleMutation.isPending}
+            onClick={handleNext}
           >
             Continue
           </Button>

@@ -9,16 +9,17 @@ import React from "react";
 interface Props {
   goBack: () => void;
   goNext: () => void;
+  type: "guest" | "top-up";
 }
 
-const ZelleTopupInfo = ({ goBack, goNext }: Props) => {
+const ZelleTopupInfo = ({ goBack, goNext, type }: Props) => {
   const { zelleInfo } = useTopupStore();
   return (
     <Overlay close={goBack} width="375px">
       <div className="flex flex-col  h-full py-8 px-5 ">
         <div className="text-center mb-4">
           <h3 className="text-zinc-900 text-xl font-bold leading-normal">
-            Top up via Zelle
+            {type === "guest" ? "Top up" : "Send"} via Zelle
           </h3>
           <p className="text-yellow-500 font-medium">Important:</p>
           <p className="text-zinc-900 text-xs leading-tight">

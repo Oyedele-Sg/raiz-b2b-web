@@ -70,6 +70,7 @@ const UsdTopUp = ({ close }: Props) => {
                     "Zelle top-up submitted — funds will reflect once verified."
                   );
                 }}
+                type="top-up"
               />
             )}
             {paymentOption === "debit-card" && (
