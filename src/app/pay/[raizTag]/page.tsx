@@ -2,14 +2,14 @@
 import { Metadata } from 'next';
 import PayUserClient from './PayUserClient';
 
-
 type Props = {
-  params: { raizTag: string };
+  params: Promise<{ raizTag: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { raizTag } = await params;
   return {
-    title: `Raiz Payment for ${params.raizTag}`,
+    title: `Raiz Payment for ${raizTag}`,
   };
 }
 

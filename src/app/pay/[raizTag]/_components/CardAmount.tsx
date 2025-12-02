@@ -1,16 +1,11 @@
 "use client";
-import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
-import { useSendStore } from "@/store/Send";
 import { IBusinessPaymentData } from "@/types/services";
-import React, { useRef, useState } from "react";
-import Image from "next/image";
-import { z } from "zod";
+import React, {  useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, useStripe } from "@stripe/react-stripe-js";
 import CardDetails from "./CardDetails";
 import InputField from "@/components/ui/InputField";
-import ErrorMessage from "@/components/ui/ErrorMessage";
 import { FormikProps } from "formik";
 import { useGuestSendStore } from "@/store/GuestSend";
 
@@ -35,14 +30,12 @@ export type formCardValues = {
 };
 
 const CardAmount = ({
-  data,
   loading,
   goNext,
   formik,
-  amountFromLink,
 }: Props) => {
-  const { amount, actions: guestActions } = useGuestSendStore();
-  const [error, setError] = useState<string | null>(null);
+  const { amount,} = useGuestSendStore();
+  // const [error, setError] = useState<string | null>(null);
   const [showPayModal, setShowPayModal] = useState(false);
   const stripe = useStripe();
 
@@ -99,7 +92,7 @@ const CardAmount = ({
                 />
                 <InputField
                    
-                    label="Purposee"
+                    label="Purpose"
                   placeholder="What is the purpose?"
                     {...formik.getFieldProps("purpose")}
                     status={
@@ -111,7 +104,7 @@ const CardAmount = ({
                 </form>
               </div>
              
-            {error && <ErrorMessage message={error} />}      
+            {/* {error && <ErrorMessage message={error} />}       */}
           </div>
         </div>
         <div className="w-full py-5">
@@ -140,7 +133,7 @@ const CardAmount = ({
             </div>
           </div> */}
           <Button
-            disabled={!!error || !amount || !stripe || loading}
+            disabled={ !amount || !stripe || loading}
             loading={loading}
             onClick={() => goNext({
               firstName: formik.values.firstName,
@@ -159,7 +152,7 @@ const CardAmount = ({
           close={() => setShowPayModal(false)}
           loading={loading}
           formik={formik}
-          disableBtn={!!error || !amount || !stripe || loading}
+          disableBtn={ !amount || !stripe || loading}
           goNext={goNext}
           clientSecret=""
         />
