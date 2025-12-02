@@ -90,11 +90,12 @@ const SelectPayType = ({
     })) ?? [];
 
   const paymentTypes = [
-    { label: "Pay in African currency", value: "local" },
     { label: "Pay with Card", value: "card" },
-    ...(availablepaymentOptsArr.length > 0
+      ...(availablepaymentOptsArr.length > 0
       ? [{ label: "Transfer", value: "transfer" }]
       : []),
+    // { label: "Pay in African currency", value: "local" },
+  
   ];
 
   const displayName = () => {
@@ -253,7 +254,7 @@ const SelectPayType = ({
             </Link> Raiz app |  <Link
               target="_blank"
               className="font-bold"
-              href={"https://business.raiz.app/register"}
+              href={"/register"}
             >
               Sign up{" "}
             </Link>{" "} on Raiz Business

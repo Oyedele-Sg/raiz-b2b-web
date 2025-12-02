@@ -183,6 +183,7 @@ const GetRaizedinfo = [
 const PaySuccess = ({ data, senderName }: Props) => {
   const [showReceipt, setShowReceipt] = useState(false);
   const { transactionDetail } = useSendStore();
+  console.log(transactionDetail)
 
   const [downloadLink, setDownloadLink] = useState(
     "https://raizapp.onelink.me/RiOx/webdirect"
@@ -217,12 +218,12 @@ const PaySuccess = ({ data, senderName }: Props) => {
             alt="success"
           />
           <div className="mb-10">
-            <h2 className="text-raiz-gray-950 text-[23px] font-semibold  leading-10">
+            <h2 className="text-raiz-gray-950 text-xl md:text-[23px] font-semibold  leading-10">
               Payment of {getCurrencySymbol(transactionDetail?.currency || "")}
               {transactionDetail?.transaction_amount.toLocaleString()} sent to{" "}
-              {data?.account_user?.username}
+              {`${data?.account_user?.first_name} ${data?.account_user?.last_name}`}
             </h2>
-            <p className="text-raiz-gray-700 font-[15px] ">
+            <p className="text-raiz-gray-700 text-sm md:font-[15px] ">
               Success! The store has received your payment{" "}
             </p>
           </div>
@@ -279,6 +280,7 @@ const PaySuccess = ({ data, senderName }: Props) => {
             data={transactionDetail}
             type="guest"
             senderName={senderName}
+            beneficiaryName={`${data?.account_user?.first_name} ${data?.account_user?.last_name}`}
           />
         </SideModalWrapper>
       )}

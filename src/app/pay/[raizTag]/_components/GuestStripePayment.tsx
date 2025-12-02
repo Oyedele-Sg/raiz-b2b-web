@@ -5,6 +5,7 @@ import ErrorMessage from "@/components/ui/ErrorMessage";
 import Spinner from "@/components/ui/Spinner";
 import { confirmGuestStripeTopPaymentIntent, confirmStripeTopPaymentIntent } from "@/services/transactions";
 import { useGuestSendStore } from "@/store/GuestSend";
+import { useSendStore } from "@/store/Send";
 import { IBusinessPaymentData } from "@/types/services";
 import {
   PaymentElement,
@@ -24,6 +25,7 @@ const GuestStripePayment = ({ goBack, goNext, data }: Props) => {
   const stripe = useStripe();
   const elements = useElements();
   const { stripeDetail, billingDetails } = useGuestSendStore()
+  const {actions} = useSendStore()
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const [paymentElementReady, setPaymentElementReady] = useState(false);
@@ -52,7 +54,7 @@ const GuestStripePayment = ({ goBack, goNext, data }: Props) => {
     }
     if (paymentIntent?.status === "succeeded") {
       try {
-        await confirmGuestStripeTopPaymentIntent({
+      const res =  await confirmGuestStripeTopPaymentIntent({
           payment_intent: paymentIntent.id,
           entity_id: data?.account_user?.entity_id,
           payer_first_name: billingDetails?.firstName || "",
@@ -62,6 +64,8 @@ const GuestStripePayment = ({ goBack, goNext, data }: Props) => {
         });
         // toast.success("Payment confirmed successfully!");
         goNext();
+        console.log(res)
+        actions.setTransactionDetail(res)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         console.error(error);
@@ -88,11 +92,12 @@ const GuestStripePayment = ({ goBack, goNext, data }: Props) => {
   }
 
   return (
-    <>
+    <div className="py-4">
       <SideWrapperHeader
         close={goBack}
         title="Enter your card detail"
         titleColor="text-zinc-900"
+        backArrow={false}
       />
       <form
         onSubmit={handleSubmit}
@@ -141,7 +146,7 @@ const GuestStripePayment = ({ goBack, goNext, data }: Props) => {
           </Button>
         </div>
       </form>
-    </>
+    </div>
   );
 };
 

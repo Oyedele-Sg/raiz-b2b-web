@@ -93,7 +93,7 @@ const PayWithBankTransfer = ({ close }: Props) => {
           </Link> Raiz app |  <Link
             target="_blank"
             className="font-bold"
-            href={"https://business.raiz.app/register"}
+           href={"/register"}
           >
             Sign up{" "}
           </Link>{" "} on Raiz Business

@@ -53,13 +53,13 @@ const CardAmount = ({
 
   return (
     <div
-      className="w-full flex flex-col h-full mt-11
+      className="w-full flex flex-col h-full
     "
     >
       <div className="flex flex-col h-full justify-between items-center w-full">
         <div className="w-full h-full">
           <div className="flex flex-col justify-center items-center">         
-            <div className="w-full my-10">
+            <div className="w-full">
               <form
                 onSubmit={handleSubmit}
                 className="flex flex-col h-full justify-between items-center"
@@ -114,7 +114,7 @@ const CardAmount = ({
             {error && <ErrorMessage message={error} />}      
           </div>
         </div>
-        <div className="w-full pb-5">
+        <div className="w-full py-5">
           {/* <div className=" p-3.5 mb-3 bg-gray-100 w-full rounded-lg outline outline-1 outline-offset-[-1px] outline-white inline-flex flex-col justify-center items-start gap-2">
             <div className="w-full flex justify-between items-center">
               <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
