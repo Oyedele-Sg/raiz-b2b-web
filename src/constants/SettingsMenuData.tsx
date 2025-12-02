@@ -79,7 +79,7 @@ export const SettingsMenus = [
   },
   {
     name: "About",
-    link: "https://www.raiz.app/about-us",
+    link: "https://www.raiz.app/about",
     icon: () => (
       <svg
         width="40"

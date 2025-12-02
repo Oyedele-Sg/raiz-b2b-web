@@ -48,7 +48,7 @@ const VerifyPage = () => {
   //   },
   // });
   return (
-    <section className="p-6 md:p-12 h-[calc(100vh-2rem)] md:h-[100vh]">
+    <section className="p-6 md:p-12 h-[calc(100vh-2rem)] md:h-full min-h-[100vh]">
       <div className="flex flex-col  md:flex-row  h-full gap-4">
         <Slider />
         <div className="py-4 px-0 md:px-3 xl:px-8 lg:w-[50%] xl:w-[46%] h-full flex flex-col justify-between gap-10 lg:gap-[60px]">

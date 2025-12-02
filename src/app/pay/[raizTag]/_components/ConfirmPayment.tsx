@@ -1,20 +1,18 @@
 import Button from "@/components/ui/Button";
 import ListDetailItem from "@/components/ui/ListDetailItem";
 import Overlay from "@/components/ui/Overlay";
-import { useSendStore } from "@/store/Send";
-import { getCurrencySymbol } from "@/utils/helpers";
+import { useGuestSendStore } from "@/store/GuestSend";
 import React from "react";
 
 interface Props {
   close: () => void;
-  fee: number;
   goNext: () => void;
   // handlePay: () => void;
   loading: boolean;
 }
 
-const ConfirmPayment = ({ close, fee, goNext, loading }: Props) => {
-  const { amount, currency } = useSendStore();
+const ConfirmPayment = ({ close,  goNext, loading }: Props) => {
+  const { amount, stripeDetail } = useGuestSendStore();
   const handleSend = () => {
     // handlePay();
     goNext();
@@ -30,13 +28,13 @@ const ConfirmPayment = ({ close, fee, goNext, loading }: Props) => {
           <div className="w-full flex flex-col gap-[15px]">
             <ListDetailItem
               title="Amount"
-              value={`${getCurrencySymbol(currency || "")}
+              value={`$
               ${amount.toLocaleString()}`}
             />
             <ListDetailItem
               title="Transaction fee"
-              value={`${getCurrencySymbol(currency || "")}
-              ${(fee / 100).toLocaleString()}`}
+              value={`$
+              ${((stripeDetail?.fee || 0) / 100).toLocaleString()}`}
             />
           </div>
           <div className="w-full flex flex-col gap-3">

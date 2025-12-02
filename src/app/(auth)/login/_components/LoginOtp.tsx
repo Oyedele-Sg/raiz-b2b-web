@@ -23,7 +23,7 @@ const LoginOtp = ({ setStep, from, email }: Props) => {
   const loginMutation = useMutation({
     mutationFn: (data: { email: string; otp: string }) => LoginOtpApi(data),
     onSuccess: (response) => {
-      SetItemToCookie("access_token", response?.access_token, 1 / 48);
+      SetItemToCookie("access_token", response?.access_token);
       qc.invalidateQueries({ queryKey: ["user"] });
       router.push("/");
     },

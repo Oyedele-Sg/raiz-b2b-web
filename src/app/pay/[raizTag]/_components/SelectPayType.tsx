@@ -1,6 +1,6 @@
 import { IBusinessPaymentData } from "@/types/services";
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
-import { GuestPaymentType } from "../page";
+
 import { useGuestSendStore } from "@/store/GuestSend";
 import { z } from "zod";
 import Avatar from "@/components/ui/Avatar";
@@ -9,6 +9,7 @@ import SelectField from "@/components/ui/SelectField";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
 import { WALLET_TYPES } from "@/constants/misc";
+import { GuestPaymentType } from "../PayUserClient";
 
 interface Props {
   data: IBusinessPaymentData;
@@ -89,11 +90,23 @@ const SelectPayType = ({
     })) ?? [];
 
   const paymentTypes = [
-    { label: "Pay in African currency", value: "local" },
-    ...(availablepaymentOptsArr.length > 0
+    { label: "Pay with Card", value: "card" },
+      ...(availablepaymentOptsArr.length > 0
       ? [{ label: "Transfer", value: "transfer" }]
       : []),
+    // { label: "Pay in African currency", value: "local" },
+  
   ];
+
+  const displayName = () => {
+    let str = "";
+    if (data?.account_user?.first_name || data?.account_user?.last_name) {
+      str = `${data?.account_user?.first_name || ""} ${data?.account_user?.last_name || ""} `;
+    } else {
+      str = `${data?.account_user?.username || ""}`;
+    }
+    return str;
+  } 
 
 
   return (
@@ -101,7 +114,7 @@ const SelectPayType = ({
       <div className="mt-6 md:mt-10">
         <header className="flex items-center justify-between mt-2">
           <h2 className="text-raiz-gray-950 text-[23px] font-semibold  leading-10">
-            Pay {data?.account_user?.username || ""}
+            Pay {displayName()}
           </h2>
           <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
             <path
@@ -241,7 +254,7 @@ const SelectPayType = ({
             </Link> Raiz app |  <Link
               target="_blank"
               className="font-bold"
-              href={"https://business.raiz.app/register"}
+              href={"/register"}
             >
               Sign up{" "}
             </Link>{" "} on Raiz Business

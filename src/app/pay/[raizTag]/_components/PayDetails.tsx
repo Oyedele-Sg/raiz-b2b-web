@@ -4,13 +4,14 @@ import Image from "next/image";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
 import { IBusinessPaymentData } from "@/types/services";
-import { GuestPaymentType } from "../page";
+
 import { toast } from "sonner";
 import CopyButton from "@/components/ui/CopyButton";
 import QRCode from "react-qr-code";
 import * as motion from "motion/react-client";
 import { AnimatePresence } from "motion/react";
 import { WALLET_TYPES } from "@/constants/misc";
+import { GuestPaymentType } from "../PayUserClient";
 
 interface Props {
   setScreen: Dispatch<SetStateAction<GuestPaymentType | "detail" | null>>;
@@ -72,6 +73,15 @@ const PayDetails = ({ setScreen, data }: Props) => {
   }
 
   const subSBCAcct = SBCAcct?.secondary_crypto_details?.find((acct) => acct.crypto_id === sbcType)
+  const displayName = () => {
+    let str = "";
+    if (data?.account_user?.first_name || data?.account_user?.last_name) {
+      str = `${data?.account_user?.first_name || ""} ${data?.account_user?.last_name || ""} `;
+    } else {
+      str = `${data?.account_user?.username || ""}`;
+    }
+    return str;
+  } 
   return (
     <>
      
@@ -94,7 +104,7 @@ const PayDetails = ({ setScreen, data }: Props) => {
           />
         </button>
         <h2 className="text-raiz-gray-950 font-semibold text-lg md:text-[23px] leading-normal md:leading-[40px]">
-          Pay {data?.account_user?.username || ""}
+          Pay {displayName()}
           </h2>
         </div>
         <p className="text-raiz-gray-700 text-sm md:text-base mt-1 font-[15px] ">
@@ -373,7 +383,7 @@ const PayDetails = ({ setScreen, data }: Props) => {
             </Link> Raiz app |  <Link
               target="_blank"
               className="font-bold"
-              href={"https://business.raiz.app/register"}
+            href={"/register"}
             >
               Sign up{" "}
             </Link>{" "} on Raiz Business

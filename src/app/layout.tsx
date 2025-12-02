@@ -93,7 +93,7 @@ const brSonoma = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Raiz B2B",
+  title: "Raiz Business",
   description:
     "Seamless banking, global transactions, and spending—all in one place.",
 };

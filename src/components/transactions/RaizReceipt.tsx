@@ -14,9 +14,10 @@ export interface IRaizReceipt {
   data: ITransaction;
   type?: "guest";
   senderName?: string;
+  beneficiaryName?: string
 }
 
-const RaizReceipt = ({ close, data, type, senderName }: IRaizReceipt) => {
+const RaizReceipt = ({ close, data, type, senderName , beneficiaryName}: IRaizReceipt) => {
   const receiptRef = useRef<HTMLDivElement>(null);
   const handleShareReceipt = async () => {
     if (!receiptRef.current) return;
@@ -73,8 +74,8 @@ const RaizReceipt = ({ close, data, type, senderName }: IRaizReceipt) => {
 
   const getBeneficiary = () => {
     let beneficiary = "";
-    if (type === "guest") {
-      return user?.business_account?.business_name;
+    if (type === "guest" && beneficiaryName) {
+      return beneficiaryName;
     }
     if (data?.transaction_type?.transaction_type === "credit") {
       beneficiary = user?.business_account?.business_name || "";
