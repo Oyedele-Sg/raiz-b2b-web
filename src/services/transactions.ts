@@ -604,3 +604,14 @@ export const confirmGuestStripeTopPaymentIntent = async ({ payment_intent, entit
   );
   return res?.data;
 };
+
+export async function InitiateGuestZellePaymentApi(
+  wallet_id: string | null,
+  payload: { expected_amount: number }
+) {
+  const response = await PublicAxios.post(
+    `/admin/transaction/topup/usd/zelle/initiate/?wallet_id=${wallet_id}`,
+    payload
+  );
+  return response.data;
+}
