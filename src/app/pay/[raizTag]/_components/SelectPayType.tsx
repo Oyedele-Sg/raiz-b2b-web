@@ -34,7 +34,7 @@ const SelectPayType = ({
   const [rawAmount, setRawAmount] = useState(amount);
   const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
- const { zelleInfo, actions: tActions} = useTopupStore();
+ const {  actions: tActions} = useTopupStore();
   const amountSchema = z
     .string()
     .regex(/^\d*\.?\d{0,2}$/, "Enter a valid amount (max 2 decimal places)")
