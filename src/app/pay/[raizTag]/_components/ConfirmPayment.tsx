@@ -3,7 +3,6 @@ import ListDetailItem from "@/components/ui/ListDetailItem";
 import Overlay from "@/components/ui/Overlay";
 import { useGuestSendStore } from "@/store/GuestSend";
 import React from "react";
-import Image from "next/image";
 
 interface Props {
   close: () => void;
