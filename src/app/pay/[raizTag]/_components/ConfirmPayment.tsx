@@ -18,7 +18,7 @@ const ConfirmPayment = ({ close, goNext, loading }: Props) => {
     goNext();
   };
 
-  const totalAmount = Number(amount) + (stripeDetail?.fee ?? 0);
+  const totalAmount = Number(amount) + (Number(stripeDetail?.fee)/100 || 0);
 
   return (
     <Overlay close={close} width="400px">
