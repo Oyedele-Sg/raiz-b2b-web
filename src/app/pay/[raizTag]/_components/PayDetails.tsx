@@ -18,7 +18,7 @@ interface Props {
   data: IBusinessPaymentData;
 }
 
-type CurrencyType = "NGN" | "SBC" | "USD"
+type CurrencyType = "NGN" | "SBC" | "USD" | "GBP"
 
 const PayDetails = ({ setScreen, data }: Props) => {
   const NGNAcct = data?.wallets?.find(
@@ -33,7 +33,7 @@ const PayDetails = ({ setScreen, data }: Props) => {
     (acct: { wallet_type: { currency: string } }) =>
       acct.wallet_type.currency === "SBC"
   );
- const allowedWalletTypeCodes = Object.keys(WALLET_TYPES)
+  const allowedWalletTypeCodes = Object.keys(WALLET_TYPES)
     .map(Number)
     .filter((code) => [1, 2, 3].includes(code));
 
@@ -47,8 +47,8 @@ const PayDetails = ({ setScreen, data }: Props) => {
     })
     .map((acct) => ({
       label: `${acct.wallet_type.currency !== "SBC"
-          ? acct.wallet_type.currency
-          : "Crypto"
+        ? acct.wallet_type.currency
+        : "Crypto"
         } Transfer`,
       value: acct.wallet_type.currency,
     })) ?? [];
@@ -81,10 +81,10 @@ const PayDetails = ({ setScreen, data }: Props) => {
       str = `${data?.account_user?.username || ""}`;
     }
     return str;
-  } 
+  }
   return (
     <>
-     
+
       <Image
         className="mt-10"
         src={"/icons/paylink.svg"}
@@ -97,14 +97,14 @@ const PayDetails = ({ setScreen, data }: Props) => {
           <button onClick={() => setScreen(null)}>
             <Image
               className="w-4 h-4 md:w-[18px] md:h-[18px]"
-            src={"/icons/arrow-left.svg"}
-            width={18.48}
-            height={18.48}
-            alt="back"
-          />
-        </button>
-        <h2 className="text-raiz-gray-950 font-semibold text-lg md:text-[23px] leading-normal md:leading-[40px]">
-          Pay {displayName()}
+              src={"/icons/arrow-left.svg"}
+              width={18.48}
+              height={18.48}
+              alt="back"
+            />
+          </button>
+          <h2 className="text-raiz-gray-950 font-semibold text-lg md:text-[23px] leading-normal md:leading-[40px]">
+            Pay {displayName()}
           </h2>
         </div>
         <p className="text-raiz-gray-700 text-sm md:text-base mt-1 font-[15px] ">
@@ -151,6 +151,42 @@ const PayDetails = ({ setScreen, data }: Props) => {
             <span>{opt.label}</span>
           </motion.button>
         ))}
+        <motion.button
+          onClick={() => handleType("GBP")}
+          className={`flex h-9 min-h-[36px] whitespace-nowrap items-center gap-1 py-2 px-[10px] border rounded-full text-sm bg-[#FCFCFD] flex-shrink-0 ${type === "GBP" ? "border-[#6F5B86] text-primary2 font-semibold" : "border-[#E4E0EA] text-[#6F5B86]"}`}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            scale: type === "GBP" ? 1.05 : 1,
+            backgroundColor: type === "GBP" ? "#F8F6FA" : "#FCFCFD"
+          }}
+          whileHover={{
+            scale: 1.05,
+            transition: { duration: 0.2 }
+          }}
+          whileTap={{ scale: 0.95 }}
+          transition={{
+            duration: 0.3,
+            delay: availablepaymentOptsArr?.length * 0.05,
+            type: "spring",
+            stiffness: 300,
+            damping: 20
+          }}
+        >
+          <motion.div
+            animate={{
+              rotate: type === "GBP" ? [0, -10, 10, 0] : 0
+            }}
+            transition={{
+              duration: 0.5,
+              delay: 0.1
+            }}
+          >
+            <Image src={`/icons/gbp.png`} alt="GBP" width={20} height={20} />
+          </motion.div>
+          <span>GBP</span>
+        </motion.button>
       </div>
       <AnimatePresence mode="wait">
         {type === "SBC" && (
@@ -240,16 +276,16 @@ const PayDetails = ({ setScreen, data }: Props) => {
                 Routing Number (ACH)
               </span>
               <div className="flex items-cen text-basetmd:er gap-2">
-              <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
-                {
-                  USDAcct?.routing?.find(
-                    (route) => route.routing_type_name === "ACH"
-                  )?.routing
-                }
-              </p>
-              <CopyButton value={USDAcct?.routing?.find(
-                    (route) => route.routing_type_name === "ACH"
-                  )?.routing || ""} />
+                <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
+                  {
+                    USDAcct?.routing?.find(
+                      (route) => route.routing_type_name === "ACH"
+                    )?.routing
+                  }
+                </p>
+                <CopyButton value={USDAcct?.routing?.find(
+                  (route) => route.routing_type_name === "ACH"
+                )?.routing || ""} />
               </div>
             </div>
             {/* Routing Number (WIRE) */}
@@ -258,13 +294,13 @@ const PayDetails = ({ setScreen, data }: Props) => {
                 Routing Number (WIRE)
               </span>
               <div className="flex items-cen text-basetmd:er gap-2">
-              <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
-                {
-                  USDAcct?.routing?.find(
-                    (route) => route.routing_type_name === "WIRE"
-                  )?.routing
-                }
-              </p>
+                <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
+                  {
+                    USDAcct?.routing?.find(
+                      (route) => route.routing_type_name === "WIRE"
+                    )?.routing
+                  }
+                </p>
                 <CopyButton value={USDAcct?.routing?.find(
                   (route) => route.routing_type_name === "WIRE"
                 )?.routing || ""} />
@@ -285,12 +321,12 @@ const PayDetails = ({ setScreen, data }: Props) => {
                 Address
               </span>
               <div className="flex text-l text-baseemd:ft gap-2">
-              <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
-                1801 Main St., Kansas City, MO 64108
-                {/* {USDAcct?.} */}
+                <p className="text-center justify-start text-zinc-900 text-lg font-semibold  leading-normal">
+                  1801 Main St., Kansas City, MO 64108
+                  {/* {USDAcct?.} */}
                 </p>
                 <CopyButton value="1801 Main St., Kansas City, MO 64108" />
-                </div>
+              </div>
             </div>
           </div>
         )}
@@ -315,7 +351,7 @@ const PayDetails = ({ setScreen, data }: Props) => {
                   {NGNAcct?.account_number || ""}
                 </p>
                 <CopyButton value={NGNAcct?.account_number || ""} />
-                
+
               </div>
             </div>
 
@@ -329,10 +365,10 @@ const PayDetails = ({ setScreen, data }: Props) => {
               </p>
             </div>
           </div>
-        )}    
+        )}
         {type === "SBC" && (
           <div className="p-7 bg-violet-100/60 rounded-[20px] inline-flex flex-col justify-center items-center gap-5 w-full my-[30px]">
-            
+
             <QRCode
               value={subSBCAcct?.qr_code || subSBCAcct?.address || ""}
               size={231}
@@ -341,15 +377,15 @@ const PayDetails = ({ setScreen, data }: Props) => {
             {/* Address */}
             <div className="w-full flex flex-col justify-center items-center">
               <p className="text-left w-full md:text-center justify-start text-gray-500 text-sm md:text-base font-normal leading-normal">
-               Deposit Address
+                Deposit Address
               </p>
               <div className="flex justify-between gap-2">
-                <p style={{overflowWrap: "anywhere"}} className="text-left wrap-anywhere justify-start text-zinc-900 text-sm font-semibold  leading-normal">
+                <p style={{ overflowWrap: "anywhere" }} className="text-left wrap-anywhere justify-start text-zinc-900 text-sm font-semibold  leading-normal">
                   {subSBCAcct?.address || ""}
                 </p>
                 <div className="size-4">
-                <CopyButton value={subSBCAcct?.address || ""} />
-</div>
+                  <CopyButton value={subSBCAcct?.address || ""} />
+                </div>
               </div>
             </div>
             <div className="w-full flex flex-col justify-center items-center">
@@ -359,8 +395,44 @@ const PayDetails = ({ setScreen, data }: Props) => {
               <p className="w-full md:text-center capitalize justify-start text-zinc-900 text-base md:text-lg font-semibold  leading-normal">
                 {subSBCAcct?.chain || ""}
               </p>
-              </div>
             </div>
+          </div>
+        )}
+        {type === "GBP" && (
+          <div className="p-7 bg-violet-100/60 rounded-[20px] inline-flex flex-col justify-center items-center gap-5 w-full my-[30px]">
+            <div className="w-full flex flex-col justify-center items-center">
+              <span className="text-center justify-start text-gray-500 text-sm md:text-base font-normal leading-normal">
+                Account Holder
+              </span>
+              <p className="text-center justify-start text-zinc-900 text-base md:text-lg font-semibold  leading-normal">
+                Vestafrik Technologies Limited
+              </p>
+            </div>
+             <div className="w-full flex flex-col justify-center items-center">
+              <span className="text-center justify-start text-gray-500 text-sm md:text-base font-normal leading-normal">
+                Account number
+              </span>
+              <p className="text-center justify-start text-zinc-900 text-base md:text-lg font-semibold  leading-normal">
+                35486872
+              </p>
+            </div>
+            <div className="w-full flex flex-col justify-center items-center">
+              <span className="text-center justify-start text-gray-500 text-sm md:text-base font-normal leading-normal">
+                Sort code
+              </span>
+              <p className="text-center justify-start text-zinc-900 text-base md:text-lg font-semibold  leading-normal">
+                60-84-64
+              </p>
+            </div>
+             <div className="w-full flex flex-col justify-center items-center">
+              <span className="text-center justify-start text-gray-500 text-sm md:text-base font-normal leading-normal">
+                Address
+              </span>
+              <p className="text-center justify-start text-zinc-900 text-base md:text-lg font-semibold  leading-normal">
+                Worship Square, 65 Clifton Street, London. EC2A 4JE. United Kingdom
+              </p>
+            </div>
+          </div>
         )}
         <div>
           {/* <Button
@@ -371,7 +443,7 @@ const PayDetails = ({ setScreen, data }: Props) => {
           <Button
             onClick={handlePaid}
             className="mt-5 mb-4">
-           I&apos;ve made payment
+            I&apos;ve made payment
           </Button>
           <p className="text-[13px] text-raiz-gray-900  text-center mt-2">
             Don&#39;t have Raiz? <Link
@@ -383,7 +455,7 @@ const PayDetails = ({ setScreen, data }: Props) => {
             </Link> Raiz app |  <Link
               target="_blank"
               className="font-bold"
-            href={"/register"}
+              href={"/register"}
             >
               Sign up{" "}
             </Link>{" "} on Raiz Business
