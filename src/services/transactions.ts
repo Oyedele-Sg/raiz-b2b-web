@@ -473,6 +473,7 @@ export const createStripePaymentIntent = async (
   };
 };
 
+
 export const confirmStripePaymentIntent = async (
   payment_intent_id: string,
   data: IBusinessPaymentData,
@@ -565,3 +566,52 @@ export const confirmStripeTopPaymentIntent = async (payment_intent: string) => {
   );
   return res?.data;
 };
+
+export const createGuestStripePaymentIntent = async ({
+  amountInCents,
+  entity_id,
+  sender_name,
+  sender_email,
+}: {
+  amountInCents: number;
+  entity_id: string;
+  sender_name: string;
+  sender_email: string;
+}) => {
+  const res = await PublicAxios.post(
+    `/admin/transaction/payins/africa/card/create-intent/?sender_name=${sender_name}&sender_email=${sender_email}&entity_id=${entity_id}`,
+    {
+      transaction_amount: amountInCents,
+      curreny: "USD",
+    }
+  );
+  return res.data
+};
+
+export const confirmGuestStripeTopPaymentIntent = async ({ payment_intent, entity_id, payer_first_name, payer_last_name, payer_email, payment_description }: { payment_intent: string, entity_id: string, payer_first_name: string, payer_last_name: string, payer_email: string, payment_description: string }) => {
+  const queryParams = new URLSearchParams()
+  queryParams.append("entity_id", entity_id)
+  queryParams.append("payer_first_name", payer_first_name)
+  queryParams.append("payer_last_name", payer_last_name)
+  queryParams.append("payer_email", payer_email)
+  queryParams.append("payment_description", payment_description)
+  const res = await PublicAxios.post(
+    `/admin/transaction/topup/usd/confirm-intent/?${queryParams.toString()}`,
+    {
+      payment_intent,
+      curreny: "USD",
+    }
+  );
+  return res?.data;
+};
+
+export async function InitiateGuestZellePaymentApi(
+  wallet_id: string | null,
+  payload: { expected_amount: number }
+) {
+  const response = await PublicAxios.post(
+    `/admin/transaction/topup/usd/zelle/initiate/?wallet_id=${wallet_id}`,
+    payload
+  );
+  return response.data;
+}

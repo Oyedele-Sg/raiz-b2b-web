@@ -1,44 +1,42 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Button from "@/components/ui/Button";
 import InputField from "@/components/ui/InputField";
 import { FormikProps } from "formik";
 import { formCardValues } from "./CardAmount";
 import {
-  CardNumberElement,
-  CardExpiryElement,
-  CardCvcElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
 import SideModalWrapper from "../../../(dashboard)/_components/SideModalWrapper";
-import InputLabel from "@/components/ui/InputLabel";
 import Image from "next/image";
 import { toast } from "sonner";
+import ErrorMessage from "@/components/ui/ErrorMessage";
 
 interface Props {
   close: () => void;
   loading: boolean;
   formik: FormikProps<formCardValues>;
   disableBtn: boolean;
-  goNext: (payment_method_id: string, formValues: formCardValues) => void;
+  goNext: ( formValues: formCardValues) => void;
+  clientSecret: string; // Add client secret prop
 }
-const CardDetails = ({ close, loading, formik, disableBtn, goNext }: Props) => {
+
+const CardDetails = ({
+  close,
+  loading,
+  formik,
+  disableBtn,
+  goNext,
+  clientSecret
+}: Props) => {
   const stripe = useStripe();
   const elements = useElements();
+  const [errMsg, setErrMsg] = useState("");
 
-  // const elementStyles = {
-  //   base: {
-  //     fontSize: "16px",
-  //     color: "#424770",
-  //     "::placeholder": { color: "#aab7c4" },
-  //   },
-  //   invalid: {
-  //     color: "#9e2146",
-  //   },
-  // };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const handleSubmit = async () => {
     if (!stripe || !elements) {
       toast.error("Stripe or elements not initialized");
       return;
@@ -53,33 +51,58 @@ const CardDetails = ({ close, loading, formik, disableBtn, goNext }: Props) => {
       return;
     }
 
-    const cardNumberElement = elements.getElement(CardNumberElement);
-    if (!cardNumberElement) {
-      toast.error("Card number element not found");
-      return;
-    }
-
     try {
-      const { paymentMethod, error } = await stripe.createPaymentMethod({
-        type: "card",
-        card: cardNumberElement,
-        billing_details: {
-          name: `${formik.values.firstName} ${formik.values.lastName}`,
-          email: formik.values.email,
-        },
-      });
-
-      if (error) {
-        toast.error(error.message || "Failed to create payment method");
+      // Submit the form to validate all fields
+      const { error: submitError } = await elements.submit();
+      if (submitError) {
+        setErrMsg(submitError.message || "");
         return;
       }
 
-      goNext(paymentMethod!.id, formik.values);
+      // Confirm the payment
+      const { error: stripeError, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        clientSecret: clientSecret,
+        redirect: "if_required",
+        confirmParams: {
+          payment_method_data: {
+            billing_details: {
+              name: `${formik.values.firstName} ${formik.values.lastName}`,
+              email: formik.values.email,
+            },
+          },
+        },
+      });
+
+      if (stripeError) {
+        setErrMsg(stripeError?.message || "");
+        toast.error(stripeError.message || "Payment failed");
+        return;
+      }
+
+      if (paymentIntent?.status === "succeeded") {
+        toast.success("Payment confirmed successfully!");
+        goNext(formik.values);
+      } else {
+        toast.info(`Payment status: ${paymentIntent?.status}`);
+      }
     } catch (err) {
-      toast.error("An error occurred while creating payment method");
+      toast.error("An error occurred while processing payment");
       console.error(err);
     }
   };
+
+  // if (!clientSecret || !stripe || !elements) {
+  //   return (
+  //     <SideModalWrapper close={close}>
+  //       <div className="flex flex-col gap-5 mt-10 justify-center items-center">
+  //         <Spinner />
+  //         <p>Loading stripe...</p>
+  //       </div>
+  //     </SideModalWrapper>
+  //   );
+  // }
+
   return (
     <SideModalWrapper close={close}>
       <div className="w-full h-full flex flex-col">
@@ -100,7 +123,7 @@ const CardDetails = ({ close, loading, formik, disableBtn, goNext }: Props) => {
               Send money through a debit card
             </p>
           </div>
-          <div className="w-10  h-10">
+          <div className="w-10 h-10">
             <svg width="40" height="41" viewBox="0 0 40 41" fill="none">
               <path
                 opacity="0.35"
@@ -122,8 +145,12 @@ const CardDetails = ({ close, loading, formik, disableBtn, goNext }: Props) => {
             </svg>
           </div>
         </div>
-        <div className="flex flex-col h-full justify-between items-center">
-          <div className="space-y-4 w-full mt-4  rounded-lg">
+
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col h-full justify-between items-center"
+        >
+          <div className="space-y-4 w-full mt-4 rounded-lg">
             <InputField
               placeholder="Enter first name"
               label="First Name"
@@ -156,74 +183,52 @@ const CardDetails = ({ close, loading, formik, disableBtn, goNext }: Props) => {
               }
               errorMessage={formik.touched.email && formik.errors.email}
             />
-            <>
-              <InputLabel content="Card Number" />
-              <CardNumberElement
+
+            {/* {!paymentElementReady && (
+              <div className="flex flex-col gap-5 mt-10 justify-center items-center w-full">
+                <Spinner />
+                <p>Loading payment form...</p>
+              </div>
+            )} */}
+
+            {/* <div className={!paymentElementReady ? "hidden" : "w-full"}>
+              <PaymentElement
                 options={{
-                  style: {
-                    base: {
-                      fontSize: "16px",
-                      color: "#424770",
-                      "::placeholder": { color: "#aab7c4" },
+                  terms: {
+                    card: "auto",
+                  },
+                  fields: {
+                    billingDetails: {
+                      email: "auto",
+                      phone: "auto",
+                      name: "auto",
+                      address: "auto",
                     },
-                    invalid: { color: "#9e2146" },
                   },
                 }}
-                className="p-[15px] h-[50px] text-sm text-raiz-gray-950  border bg-raiz-gray-100 focus:bg-white focus:border-raiz-gray-600 active:border-raiz-gray-600  outline-none rounded-lg leading-tight placeholder:text-raiz-gray-400 placeholder:text-sm"
+                onReady={() => setPaymentElementReady(true)}
+                onChange={() => {
+                  if (errMsg) setErrMsg("");
+                }}
               />
-            </>
-            <div className="flex justify-between gap-4 items-center">
-              <div className="w-full">
-                <label className="block text-sm font-medium text-gray-700">
-                  Expiry Date
-                </label>
-                <CardExpiryElement
-                  options={{
-                    style: {
-                      base: {
-                        fontSize: "16px",
-                        color: "#424770",
-                        "::placeholder": { color: "#aab7c4" },
-                      },
-                      invalid: { color: "#9e2146" },
-                    },
-                  }}
-                  className="p-[15px] h-[50px] text-sm text-raiz-gray-950  border bg-raiz-gray-100 focus:bg-white focus:border-raiz-gray-600 active:border-raiz-gray-600  outline-none rounded-lg leading-tight placeholder:text-raiz-gray-400 placeholder:text-sm"
-                />
-              </div>
-              <div className="w-full">
-                <label className="block text-sm font-medium text-gray-700">
-                  CVC
-                </label>
-                <CardCvcElement
-                  options={{
-                    style: {
-                      base: {
-                        fontSize: "16px",
-                        color: "#424770",
-                        "::placeholder": { color: "#aab7c4" },
-                      },
-                      invalid: { color: "#9e2146" },
-                    },
-                  }}
-                  className="p-[15px] h-[50px] text-sm text-raiz-gray-950  border bg-raiz-gray-100 focus:bg-white focus:border-raiz-gray-600 active:border-raiz-gray-600  outline-none rounded-lg leading-tight placeholder:text-raiz-gray-400 placeholder:text-sm"
-                />
-              </div>
-            </div>
+            </div> */}
+
+            {errMsg && <ErrorMessage message={errMsg} />}
           </div>
+
           <div className="flex flex-col gap-4 w-full my-3">
             <Button
-              onClick={handleSubmit}
+              type="submit"
               loading={loading}
-              disabled={disableBtn || !formik.isValid}
+              disabled={disableBtn || !formik.isValid || !stripe }
             >
               Proceed to pay
             </Button>
-            <Button variant="secondary" onClick={close}>
+            <Button type="button" variant="secondary" onClick={close}>
               Cancel
             </Button>
           </div>
-        </div>
+        </form>
       </div>
     </SideModalWrapper>
   );

@@ -1,6 +1,6 @@
 import { IBusinessPaymentData } from "@/types/services";
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
-import { GuestPaymentType } from "../page";
+
 import { useGuestSendStore } from "@/store/GuestSend";
 import { z } from "zod";
 import Avatar from "@/components/ui/Avatar";
@@ -9,6 +9,10 @@ import SelectField from "@/components/ui/SelectField";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
 import { WALLET_TYPES } from "@/constants/misc";
+import { GuestPaymentType } from "../PayUserClient";
+import { useTopupStore } from "@/store/TopUp";
+import { useMutation } from "@tanstack/react-query";
+import { InitiateGuestZellePaymentApi } from "@/services/transactions";
 
 interface Props {
   data: IBusinessPaymentData;
@@ -30,6 +34,7 @@ const SelectPayType = ({
   const [rawAmount, setRawAmount] = useState(amount);
   const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
+ const {  actions: tActions} = useTopupStore();
   const amountSchema = z
     .string()
     .regex(/^\d*\.?\d{0,2}$/, "Enter a valid amount (max 2 decimal places)")
@@ -73,7 +78,6 @@ const SelectPayType = ({
 
   const isEmail = (value: string) => /\S+@\S+\.\S+/.test(value);
 
-  // --- Filter wallets for transfer payment ---
   const availablepaymentOptsArr = data?.wallets
     ?.filter((acct) => {
       const allowedType = allowedWalletTypeCodes.includes(acct?.wallet_type?.wallet_type_code);
@@ -89,19 +93,53 @@ const SelectPayType = ({
     })) ?? [];
 
   const paymentTypes = [
-    { label: "Pay in African currency", value: "local" },
-    ...(availablepaymentOptsArr.length > 0
-      ? [{ label: "Transfer", value: "transfer" }]
+    { label: "Pay with Card", value: "card" },
+      ...(availablepaymentOptsArr.length > 0
+      ? [{ label: "Pay with Transfer", value: "transfer" }]
       : []),
+      {label: "Pay with Zelle", value: "zelle"}
+    // { label: "Pay in African currency", value: "local" },
+  
   ];
 
+  const displayName = () => {
+    let str = "";
+    if (data?.account_user?.account_name) {
+      str = `${data?.account_user?.account_name}`;
+    } else {
+      str = `${data?.account_user?.username || ""}`;
+    }
+    return str;
+  } 
+
+   const USDAcct = data?.wallets?.find(
+    (acct: { wallet_type: { currency: string } }) =>
+      acct.wallet_type.currency === "USD"
+  );
+
+   const zelleMutation = useMutation({
+     mutationFn: (payload: { expected_amount: number }) =>
+       InitiateGuestZellePaymentApi(USDAcct?.wallet_id || null, payload),
+     onSuccess: (res) => {
+       tActions.setZelleInfo(res);
+       goNext();
+     },
+   });
+
+  const handleNext = () => {
+    if(paymentType === "zelle") {
+zelleMutation.mutate({expected_amount: Number(amount)})
+    } else {
+      goNext()
+    }
+  }
 
   return (
     <section className="flex flex-col  h-full">
       <div className="mt-6 md:mt-10">
         <header className="flex items-center justify-between mt-2">
           <h2 className="text-raiz-gray-950 text-[23px] font-semibold  leading-10">
-            Pay {data?.account_user?.username || ""}
+            Pay {displayName()}
           </h2>
           <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
             <path
@@ -190,7 +228,7 @@ const SelectPayType = ({
                 ref={inputRef}
                 autoFocus
                 className={`outline-none h-[91px] bg-transparent w-fit xl:mx-auto text-center 
-    text-zinc-900 placeholder:text-zinc-900 text-3xl font-semibold leading-10
+    text-zinc-900 placeholder:text-zinc-900 !text-3xl font-semibold leading-10
     ${paymentType === "transfer" ? "opacity-40 cursor-not-allowed" : ""}
   `}
                 placeholder="0.00"
@@ -224,10 +262,10 @@ const SelectPayType = ({
             disabled={
               !!error ||
               (paymentType !== "transfer" && !amount) ||
-              !paymentType
+              !paymentType || zelleMutation.isPending
             }
-            // loading={loading}
-            onClick={goNext}
+            loading={zelleMutation.isPending}
+            onClick={handleNext}
           >
             Continue
           </Button>
@@ -241,7 +279,7 @@ const SelectPayType = ({
             </Link> Raiz app |  <Link
               target="_blank"
               className="font-bold"
-              href={"https://business.raiz.app/register"}
+              href={"/register"}
             >
               Sign up{" "}
             </Link>{" "} on Raiz Business

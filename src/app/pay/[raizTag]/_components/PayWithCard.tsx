@@ -10,15 +10,16 @@ import { toast } from "sonner";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   confirmStripePaymentIntent,
-  createStripePaymentIntent,
+  createGuestStripePaymentIntent,
 } from "@/services/transactions";
 import { useMutation } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
 import { nameRegex } from "@/app/(auth)/register/_components/validation";
-import { GuestPaymentType } from "../page";
 import { useGuestSendStore } from "@/store/GuestSend";
+import { GuestPaymentType } from "../PayUserClient";
+import GuestStripePayment from "./GuestStripePayment";
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISH_KEY || ""
 );
@@ -29,17 +30,13 @@ interface Props {
   amountFromLink?: string;
 }
 
-export type CardSteps = "amount" | "confirm" | "success";
+export type CardSteps = "amount" | "confirm" | "payment" | "success"
 
 const PayWithCard = ({ setScreen, data, amountFromLink }: Props) => {
   const [step, setStep] = useState<CardSteps>("amount");
   const { actions, purpose } = useSendStore();
-  const { amount, actions: guestActions } = useGuestSendStore();
-  const [billingDetails, setBillingDetails] = useState<formCardValues | null>(
-    null
-  );
+  const { amount, actions: guestActions, stripeDetail, billingDetails } = useGuestSendStore();
   const stripe = useStripe();
-  const [fee, setFee] = useState<number | null>(null);
   // const [paymentMethodId, setPaymentMethodId] = useState<string | null>(null);
 
   React.useEffect(() => {
@@ -50,27 +47,26 @@ const PayWithCard = ({ setScreen, data, amountFromLink }: Props) => {
 
   const goBack = () => {
     actions.reset("USD");
-    setBillingDetails(null);
+  guestActions.reset()
     setScreen(null);
   };
 
   const createPaymentIntentMutation = useMutation({
     mutationFn: async ({
       amountInCents,
-      payment_method_id,
     }: {
       amountInCents: number;
-      payment_method_id: string;
     }) => {
-      const response = await createStripePaymentIntent(
+      const response = await createGuestStripePaymentIntent({
         amountInCents,
-        payment_method_id,
-        data
-      );
-      return { ...response, payment_method_id };
+        entity_id: data?.account_user?.entity_id || "",
+        sender_name: `${billingDetails?.firstName} ${billingDetails?.lastName}`,
+        sender_email: billingDetails?.email || "",
+      });
+      return response
     },
     onSuccess: (data) => {
-      setFee(data.fee);
+     guestActions.setField("stripeDetail", data)
       setStep("confirm");
     },
     onError: (err: Error) => {
@@ -116,33 +112,27 @@ const PayWithCard = ({ setScreen, data, amountFromLink }: Props) => {
   });
 
   const handlePaymentIntent = (
-    payment_method_id: string,
     formValues: formCardValues
   ) => {
-    if (!amount || !stripe) {
-      toast.error("Please enter an amount and ensure Stripe is initialized");
+    if (!amount ) {
+      toast.error("Please enter an amount");
       return;
     }
-    if (!formValues.firstName || !formValues.lastName || !formValues.email) {
+    if (!formValues.firstName || !formValues.lastName || !formValues.email || !formValues.purpose) {
       toast.error("Please provide complete billing details.");
       return;
     }
-
-    setBillingDetails(formValues);
+    guestActions.setField("billingDetails", formValues); 
     const amountInCents = Math.round(parseFloat(amount) * 100);
-    createPaymentIntentMutation.mutate({ amountInCents, payment_method_id });
+    createPaymentIntentMutation.mutate({ amountInCents});
   };
 
-  const handleConfirm = (payment_intent_id: string) => {
-    confirmPaymentMutation.mutate({
-      payment_intent_id,
-    });
-  };
   const formik = useFormik({
     initialValues: {
       firstName: "",
       lastName: "",
       email: "",
+      purpose: ""
     },
     validationSchema: toFormikValidationSchema(
       z.object({
@@ -157,6 +147,9 @@ const PayWithCard = ({ setScreen, data, amountFromLink }: Props) => {
           .min(3, "Last name must be at least 3 characters")
           .regex(nameRegex, "Last name can only contain letters and hyphens"),
         email: z.string().email("Invalid email address"),
+        purpose: z
+            .string()
+            .min(3, { message: "Purpose must be at least 3 characters long" })
       })
     ),
     onSubmit: (values) => console.log("values", values),
@@ -169,7 +162,6 @@ const PayWithCard = ({ setScreen, data, amountFromLink }: Props) => {
           <CardAmount
             goNext={handlePaymentIntent}
             data={data}
-            fee={fee || 0}
             loading={createPaymentIntentMutation.isPending}
             formik={formik}
             amountFromLink={amountFromLink}
@@ -178,28 +170,41 @@ const PayWithCard = ({ setScreen, data, amountFromLink }: Props) => {
       case "confirm":
         return (
           <>
-            <div style={{ display: "none" }}>
+            <div >
               <CardAmount
                 goNext={handlePaymentIntent}
                 data={data}
-                fee={fee || 0}
                 loading={createPaymentIntentMutation.isPending}
                 formik={formik}
                 amountFromLink={amountFromLink}
               />
             </div>
             <ConfirmPayment
-              goNext={() =>
-                handleConfirm(
-                  createPaymentIntentMutation.data?.payment_intent_id || ""
-                )
-              }
+              // goNext={() =>
+              //   handleConfirm(
+              //     createPaymentIntentMutation.data?.payment_intent_id || ""
+              //   )
+              // }
+              goNext={() => setStep("payment")}
               close={() => setStep("amount")}
-              fee={fee || 0}
+         
               // handlePay={handlePaymentIntent}
               loading={confirmPaymentMutation.isPending}
             />
           </>
+        );
+      case "payment":
+        return (
+          <Elements
+            stripe={stripePromise}
+            options={{ clientSecret: stripeDetail?.client_secret }}
+          >
+            <GuestStripePayment
+              goBack={() => setStep("confirm")}
+              goNext={() => setStep("success")}
+              data={data}
+            />
+          </Elements>
         );
       case "success":
         return (

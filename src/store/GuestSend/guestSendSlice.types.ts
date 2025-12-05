@@ -1,5 +1,13 @@
 import { IIntCountry } from "@/constants/send";
 import { GuestPayStatusType } from "@/types/transactions";
+import { IStripeDetail } from "../TopUp/topupSlice.types";
+
+export type BillingDetailsType = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  purpose: string
+};
 
 export interface GuestSendState {
   country_code: string;
@@ -25,6 +33,8 @@ export interface GuestSendState {
   guestAccount: string;
   payout_currency: string;
   status: GuestPayStatusType | null;
+  stripeDetail: IStripeDetail | null;
+  billingDetails: BillingDetailsType | null;
 }
 
 export interface GuestSendActions {
@@ -60,6 +70,8 @@ export const initialGuestSendState: GuestSendState = {
   guestAccount: "",
   payout_currency: "",
   status: null,
+  stripeDetail: null,
+  billingDetails: null
 };
 
 export interface GuestSendSlice extends GuestSendState {
