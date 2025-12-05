@@ -2,7 +2,7 @@
 import Button from "@/components/ui/Button";
 import { getCurrencySymbol } from "@/utils/helpers";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import SideModalWrapper from "../../../(dashboard)/_components/SideModalWrapper";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
 import { useSendStore } from "@/store/Send";
@@ -183,25 +183,6 @@ const GetRaizedinfo = [
 const PaySuccess = ({ data, senderName }: Props) => {
   const [showReceipt, setShowReceipt] = useState(false);
   const { transactionDetail } = useSendStore();
-  console.log(transactionDetail)
-
-  const [downloadLink, setDownloadLink] = useState(
-    "https://raizapp.onelink.me/RiOx/webdirect"
-  );
-
-  useEffect(() => {
-    const userAgent = navigator.userAgent || navigator.platform || "";
-
-    if (/android/i.test(userAgent)) {
-      setDownloadLink(
-        "https://play.google.com/store/apps/details?id=com.raiz.application"
-      );
-    } else if (/iPad|iPhone|iPod/.test(userAgent)) {
-      setDownloadLink("https://apps.apple.com/us/app/raiz-mobile/id6473565462");
-    } else {
-      setDownloadLink("https://raizapp.onelink.me/RiOx/webdirect");
-    }
-  }, []);
 
   const closeReceipt = () => {
     setShowReceipt(false);
@@ -218,16 +199,16 @@ const PaySuccess = ({ data, senderName }: Props) => {
             alt="success"
           />
           <div className="mb-10">
-            <h2 className="text-raiz-gray-950 text-xl md:text-[23px] font-semibold  leading-10">
+            <h2 className="text-raiz-gray-950 text-xl md:text-[23px] font-semibold  md:leading-10">
               Payment of {getCurrencySymbol(transactionDetail?.currency || "")}
               {transactionDetail?.transaction_amount.toLocaleString()} sent to{" "}
-              {`${data?.account_user?.first_name} ${data?.account_user?.last_name}`}
+              {`${data?.account_user?.account_name}`}
             </h2>
             <p className="text-raiz-gray-700 text-sm md:font-[15px] ">
               Success! The store has received your payment{" "}
             </p>
           </div>
-          <h3 className="text-raiz-gray-950 text-lg font-bold  leading-[21.6px]">
+          <h3 className="text-raiz-gray-950 text-base font-semibold  leading-[21.6px]">
             Do more. Get more. Raiz AM.
           </h3>
           <p className="text-sm text-raiz-gray-950">
@@ -265,7 +246,7 @@ const PaySuccess = ({ data, senderName }: Props) => {
               </button>
             </div>
           </div> */}
-          <Link href={downloadLink} target="_blank">
+          <Link  href={"https://raizapp.onelink.me/RiOx/webdirect"} target="_blank">
             <Button variant="primary">Download Raiz App</Button>{" "}
           </Link>
           <Button variant="secondary" onClick={() => setShowReceipt(true)}>
@@ -280,7 +261,7 @@ const PaySuccess = ({ data, senderName }: Props) => {
             data={transactionDetail}
             type="guest"
             senderName={senderName}
-            beneficiaryName={`${data?.account_user?.first_name} ${data?.account_user?.last_name}`}
+            beneficiaryName={`${data?.account_user?.account_name}`}
           />
         </SideModalWrapper>
       )}

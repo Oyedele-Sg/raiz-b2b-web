@@ -539,6 +539,7 @@ export interface IIntSendPayload {
 
 export interface IBusinessPaymentData {
   account_user: {
+    account_name: string
     first_name: string | null;
     last_name: string | null;
     date_of_birth: string | null;

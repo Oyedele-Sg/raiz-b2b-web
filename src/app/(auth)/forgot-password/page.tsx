@@ -47,8 +47,8 @@ const ForgotPasswordPage = () => {
     }
   };
   return (
-    <section className="p-6 md:p-12 h-[calc(100vh-2rem)] md:h-full min-h-[100vh]">
-      <div className="flex flex-col  md:flex-row h-full gap-4">
+    <section className="p-6 md:p-12 lg:px-8 xl:px-12 h-[calc(100vh-2rem)] md:h-full min-h-[100vh]">
+      <div className="flex flex-col  md:flex-row h-full gap-12">
         <Slider />
         <AnimatedSection
           key="forgot-password"
