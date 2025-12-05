@@ -75,8 +75,8 @@ const PayDetails = ({ setScreen, data }: Props) => {
   const subSBCAcct = SBCAcct?.secondary_crypto_details?.find((acct) => acct.crypto_id === sbcType)
   const displayName = () => {
     let str = "";
-    if (data?.account_user?.first_name || data?.account_user?.last_name) {
-      str = `${data?.account_user?.first_name || ""} ${data?.account_user?.last_name || ""} `;
+    if (data?.account_user?.account_name) {
+      str = `${data?.account_user?.account_name}`;
     } else {
       str = `${data?.account_user?.username || ""}`;
     }

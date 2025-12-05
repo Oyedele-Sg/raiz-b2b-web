@@ -19,7 +19,7 @@ const ZelleTopupInfo = ({ goBack, goNext, type }: Props) => {
       <div className="flex flex-col  h-full py-8 px-5 ">
         <div className="text-center mb-4">
           <h3 className="text-zinc-900 text-xl font-bold leading-normal">
-            {type === "guest" ? "Top up" : "Send"} via Zelle
+            {type === "guest" ? "Send" : "Top up"} via Zelle
           </h3>
           <p className="text-yellow-500 font-medium">Important:</p>
           <p className="text-zinc-900 text-xs leading-tight">

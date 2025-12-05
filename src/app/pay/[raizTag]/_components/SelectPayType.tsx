@@ -95,7 +95,7 @@ const SelectPayType = ({
   const paymentTypes = [
     { label: "Pay with Card", value: "card" },
       ...(availablepaymentOptsArr.length > 0
-      ? [{ label: "Transfer", value: "transfer" }]
+      ? [{ label: "Pay with Transfer", value: "transfer" }]
       : []),
       {label: "Pay with Zelle", value: "zelle"}
     // { label: "Pay in African currency", value: "local" },
@@ -104,8 +104,8 @@ const SelectPayType = ({
 
   const displayName = () => {
     let str = "";
-    if (data?.account_user?.first_name || data?.account_user?.last_name) {
-      str = `${data?.account_user?.first_name || ""} ${data?.account_user?.last_name || ""} `;
+    if (data?.account_user?.account_name) {
+      str = `${data?.account_user?.account_name}`;
     } else {
       str = `${data?.account_user?.username || ""}`;
     }

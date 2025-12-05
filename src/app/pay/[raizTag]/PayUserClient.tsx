@@ -17,6 +17,7 @@ import { AnimatePresence } from "motion/react";
 import ZelleTopupInfo from "@/app/(dashboard)/_components/quick-links/topUp/UsdTopup/ZelleTopupInfo";
 import { useTopupStore } from "@/store/TopUp";
 import { toast } from "sonner";
+import Link from "next/link";
 
 
 export type LocalPaymentMethod = "bankTransfer" | "mobileMoney";
@@ -76,7 +77,7 @@ const { actions: topupActions } = useTopupStore();
 
   if ((error || !data) && !isLoading) {
     return (
-      <section className="p-6 md:p-12 h-[calc(100vh-2rem)] md:h-full min-h-[100vh] flex justify-center items-center">
+      <section className="p-6 md:p-12 lg:px-8 xl:px-12 h-[calc(100vh-2rem)] md:h-full min-h-[100vh] flex justify-center items-center">
         <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-6 w-full max-w-md text-center shadow-md">
           <div className="flex flex-col items-center gap-4">
             <svg
@@ -121,11 +122,13 @@ const { actions: topupActions } = useTopupStore();
 
   return (
    
-    <section className="p-6 md:p-12 h-[calc(100vh-2rem)] md:h-full min-h-[100vh]">
-      <div className="flex flex-col  lg:flex-row  h-full gap-4">
+    <section className="p-6 md:p-12 lg:px-8 xl:px-12 h-[calc(100vh-2rem)] md:h-full min-h-[100vh]">
+      <div className="flex flex-col  lg:flex-row  h-full gap-8">
         <Slider className="md:hidden lg:block"/>
         <div className="py-4 px-0 xl:px-8 lg:w-[50%] xl:w-[46%] h-full flex flex-col  ">
+         {/* <Link href="/" className="self-start"> */}
           <Image src={"/icons/Logo.svg"} width={91.78} height={32} alt="Logo" />
+          {/* </Link> */}
           {isLoading ? (
             <div className="flex justify-center items-center w-full mt-5">
               <Spinner />
