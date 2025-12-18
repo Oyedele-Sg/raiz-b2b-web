@@ -30,12 +30,17 @@ interface Props {
   amountFromLink?: string;
 }
 
-export type CardSteps = "amount" | "confirm" | "payment" | "success"
+export type CardSteps = "amount" | "confirm" | "payment" | "success";
 
 const PayWithCard = ({ setScreen, data, amountFromLink }: Props) => {
   const [step, setStep] = useState<CardSteps>("amount");
   const { actions, purpose } = useSendStore();
-  const { amount, actions: guestActions, stripeDetail, billingDetails } = useGuestSendStore();
+  const {
+    amount,
+    actions: guestActions,
+    stripeDetail,
+    billingDetails,
+  } = useGuestSendStore();
   const stripe = useStripe();
   // const [paymentMethodId, setPaymentMethodId] = useState<string | null>(null);
 
@@ -47,26 +52,22 @@ const PayWithCard = ({ setScreen, data, amountFromLink }: Props) => {
 
   const goBack = () => {
     actions.reset("USD");
-  guestActions.reset()
+    guestActions.reset();
     setScreen(null);
   };
 
   const createPaymentIntentMutation = useMutation({
-    mutationFn: async ({
-      amountInCents,
-    }: {
-      amountInCents: number;
-    }) => {
+    mutationFn: async ({ amountInCents }: { amountInCents: number }) => {
       const response = await createGuestStripePaymentIntent({
         amountInCents,
         entity_id: data?.account_user?.entity_id || "",
         sender_name: `${billingDetails?.firstName} ${billingDetails?.lastName}`,
         sender_email: billingDetails?.email || "",
       });
-      return response
+      return response;
     },
     onSuccess: (data) => {
-     guestActions.setField("stripeDetail", data)
+      guestActions.setField("stripeDetail", data);
       setStep("confirm");
     },
     onError: (err: Error) => {
@@ -111,20 +112,23 @@ const PayWithCard = ({ setScreen, data, amountFromLink }: Props) => {
     },
   });
 
-  const handlePaymentIntent = (
-    formValues: formCardValues
-  ) => {
-    if (!amount ) {
+  const handlePaymentIntent = (formValues: formCardValues) => {
+    if (!amount) {
       toast.error("Please enter an amount");
       return;
     }
-    if (!formValues.firstName || !formValues.lastName || !formValues.email || !formValues.purpose) {
+    if (
+      !formValues.firstName ||
+      !formValues.lastName ||
+      !formValues.email ||
+      !formValues.purpose
+    ) {
       toast.error("Please provide complete billing details.");
       return;
     }
-    guestActions.setField("billingDetails", formValues); 
+    guestActions.setField("billingDetails", formValues);
     const amountInCents = Math.round(parseFloat(amount) * 100);
-    createPaymentIntentMutation.mutate({ amountInCents});
+    createPaymentIntentMutation.mutate({ amountInCents });
   };
 
   const formik = useFormik({
@@ -132,7 +136,7 @@ const PayWithCard = ({ setScreen, data, amountFromLink }: Props) => {
       firstName: "",
       lastName: "",
       email: "",
-      purpose: ""
+      purpose: "",
     },
     validationSchema: toFormikValidationSchema(
       z.object({
@@ -148,8 +152,8 @@ const PayWithCard = ({ setScreen, data, amountFromLink }: Props) => {
           .regex(nameRegex, "Last name can only contain letters and hyphens"),
         email: z.string().email("Invalid email address"),
         purpose: z
-            .string()
-            .min(3, { message: "Purpose must be at least 3 characters long" })
+          .string()
+          .min(3, { message: "Purpose must be at least 3 characters long" }),
       })
     ),
     onSubmit: (values) => console.log("values", values),
@@ -170,7 +174,7 @@ const PayWithCard = ({ setScreen, data, amountFromLink }: Props) => {
       case "confirm":
         return (
           <>
-            <div >
+            <div>
               <CardAmount
                 goNext={handlePaymentIntent}
                 data={data}
@@ -187,7 +191,7 @@ const PayWithCard = ({ setScreen, data, amountFromLink }: Props) => {
               // }
               goNext={() => setStep("payment")}
               close={() => setStep("amount")}
-         
+              dollarRate={0}
               // handlePay={handlePaymentIntent}
               loading={confirmPaymentMutation.isPending}
             />
