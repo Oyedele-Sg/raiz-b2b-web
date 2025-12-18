@@ -46,9 +46,8 @@ const SideWrapperHeader = ({
         </button>
       )}
       <h5
-        className={`text-center ${
-          titleColor ? titleColor : "text-raiz-gray-50 "
-        }  font-bold  leading-tight `}
+        className={`text-sm w-full md:w-auto md:text-base text-center ${titleColor ? titleColor : "text-raiz-gray-50 "
+          }  font-bold  leading-tight `}
       >
         {title}
       </h5>

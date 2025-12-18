@@ -1,11 +1,12 @@
 import Overlay from "@/components/ui/Overlay";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { IIntCountry } from "@/constants/send";
 import { useGuestSendStore } from "@/store/GuestSend";
-import { useQuery } from "@tanstack/react-query";
-import { GetAfricaPayinCountriesApi } from "@/services/business";
-import { IntCountryType } from "@/types/services";
+// import { useQuery } from "@tanstack/react-query";
+// import { GetAfricaPayinCountriesApi } from "@/services/business";
+import { IntCountryType, IntCurrencyCode } from "@/types/services";
+import useCountryStore from "@/store/useCountryStore";
 
 interface Props {
   close: () => void;
@@ -13,12 +14,17 @@ interface Props {
 
 const GuestSelectCurrency = ({ close }: Props) => {
   const { actions } = useGuestSendStore();
+  // const [search, setSearch] = useState("");
+  const { countries, fetchCountries, loading: isLoading } = useCountryStore();
   const [search, setSearch] = useState("");
+  useEffect(() => {
+    fetchCountries();
+  }, [fetchCountries]);
 
-  const { data: countries, isLoading } = useQuery({
-    queryKey: ["afican-payin-countries"],
-    queryFn: GetAfricaPayinCountriesApi,
-  });
+  // const { data: countries, isLoading } = useQuery({
+  //   queryKey: ["afican-payin-countries"],
+  //   queryFn: GetAfricaPayinCountriesApi,
+  // });
 
   const countriesArr: IIntCountry[] = useMemo(
     () =>
@@ -26,8 +32,8 @@ const GuestSelectCurrency = ({ close }: Props) => {
         ?.map((each) => ({
           name: each.country_name,
           value: each.country_code as IntCountryType,
-          currency: each.currency,
-          logo: `/icons/flag-${each.country_code.toLowerCase()}.png`,
+          currency: each.currency as IntCurrencyCode,
+          logo: each.country_flag,
         }))
         .sort((a, b) => a.name.localeCompare(b.name)) || [],
     [countries]
@@ -65,6 +71,7 @@ const GuestSelectCurrency = ({ close }: Props) => {
             value={search}
             onChange={handleSearch}
             placeholder="Search"
+            autoFocus
             className="pl-10 h-full bg-[#fcfcfc] rounded-[20px] border border-raiz-gray-200 justify-start items-center gap-2 inline-flex w-full outline-none text-sm"
           />
         </div>

@@ -34,7 +34,7 @@ const SelectPayType = ({
   const [rawAmount, setRawAmount] = useState(amount);
   const [error, setError] = useState<string | null>(null);
   const [isFocused, setIsFocused] = useState(false);
- const {  actions: tActions} = useTopupStore();
+  const { actions: tActions } = useTopupStore();
   const amountSchema = z
     .string()
     .regex(/^\d*\.?\d{0,2}$/, "Enter a valid amount (max 2 decimal places)")
@@ -86,20 +86,20 @@ const SelectPayType = ({
     })
     .map((acct) => ({
       label: `${acct.wallet_type.currency !== "SBC"
-          ? acct.wallet_type.currency
-          : "Crypto"
+        ? acct.wallet_type.currency
+        : "Crypto"
         } Transfer`,
       value: acct.wallet_type.currency,
     })) ?? [];
 
   const paymentTypes = [
     { label: "Pay with Card", value: "card" },
-      ...(availablepaymentOptsArr.length > 0
+    ...(availablepaymentOptsArr.length > 0
       ? [{ label: "Pay with Transfer", value: "transfer" }]
       : []),
-      {label: "Pay with Zelle", value: "zelle"}
+    { label: "Pay with Zelle", value: "zelle" }
     // { label: "Pay in African currency", value: "local" },
-  
+
   ];
 
   const displayName = () => {
@@ -110,25 +110,25 @@ const SelectPayType = ({
       str = `${data?.account_user?.username || ""}`;
     }
     return str;
-  } 
+  }
 
-   const USDAcct = data?.wallets?.find(
+  const USDAcct = data?.wallets?.find(
     (acct: { wallet_type: { currency: string } }) =>
       acct.wallet_type.currency === "USD"
   );
 
-   const zelleMutation = useMutation({
-     mutationFn: (payload: { expected_amount: number }) =>
-       InitiateGuestZellePaymentApi(USDAcct?.wallet_id || null, payload),
-     onSuccess: (res) => {
-       tActions.setZelleInfo(res);
-       goNext();
-     },
-   });
+  const zelleMutation = useMutation({
+    mutationFn: (payload: { expected_amount: number }) =>
+      InitiateGuestZellePaymentApi(USDAcct?.wallet_id || null, payload),
+    onSuccess: (res) => {
+      tActions.setZelleInfo(res);
+      goNext();
+    },
+  });
 
   const handleNext = () => {
-    if(paymentType === "zelle") {
-zelleMutation.mutate({expected_amount: Number(amount)})
+    if (paymentType === "zelle") {
+      zelleMutation.mutate({ expected_amount: Number(amount) })
     } else {
       goNext()
     }
@@ -252,7 +252,7 @@ zelleMutation.mutate({expected_amount: Number(amount)})
             value={
               paymentType
                 ? paymentTypes.find((option) => option.value === paymentType) ||
-                  null
+                null
                 : null
             }
           />

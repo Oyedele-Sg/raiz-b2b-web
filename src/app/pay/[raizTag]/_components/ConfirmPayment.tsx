@@ -2,6 +2,7 @@ import Button from "@/components/ui/Button";
 import ListDetailItem from "@/components/ui/ListDetailItem";
 import Overlay from "@/components/ui/Overlay";
 import { useGuestSendStore } from "@/store/GuestSend";
+import { formatAmount, getCurrencySymbol } from "@/utils/helpers";
 import React from "react";
 
 interface Props {
@@ -9,21 +10,21 @@ interface Props {
   goNext: () => void;
   // handlePay: () => void;
   loading: boolean;
+  dollarRate: number
 }
 
-const ConfirmPayment = ({ close, goNext, loading }: Props) => {
-  const { amount, stripeDetail } = useGuestSendStore();
+const ConfirmPayment = ({ close, goNext, loading, dollarRate }: Props) => {
+  const { amount, stripeDetail, guestLocalCurrency } = useGuestSendStore();
   const handleSend = () => {
     // handlePay();
     goNext();
   };
-
-  const totalAmount = Number(amount) + (Number(stripeDetail?.fee)/100 || 0);
-
+  const parsedAmount = Number(amount);
+  const totalAmount = dollarRate + (Number(stripeDetail?.fee) / 100 || 0);
   return (
     <Overlay close={close} width="400px">
       <div className="flex flex-col  h-full py-8 px-5 w-full">
-        <div className="flex flex-col items-center justify-center mb-4 text-zinc-900">
+        <div className="flex flex-col items-center justify-center mb-6 text-zinc-900">
           <div className="w-12 h-12 mb-4 flex mx-auto items-center justify-center bg-violet-100 bg-opacity-60 rounded-3xl">
             <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect width="48" height="48" rx="24" fill="#EAECFF" fillOpacity="0.6" />
@@ -44,10 +45,9 @@ const ConfirmPayment = ({ close, goNext, loading }: Props) => {
             </svg>
           </div>
           <p className="text-center text-xl font-bold leading-normal">
-            $
-            {totalAmount.toLocaleString()}
+            ${formatAmount(Number(totalAmount) || 0)}
           </p>
-          <p className="text-center   text-[13px] font-normal  leading-tight">
+          <p className="text-center   text-[13px] font-normal my-1 leading-tight">
             Send Summary
           </p>
         </div>
@@ -60,15 +60,21 @@ const ConfirmPayment = ({ close, goNext, loading }: Props) => {
               border
             /> */}
             <ListDetailItem
-              title="Amount"
-              value={`$
-              ${amount.toLocaleString()}`}
+              title={`Entered Amount (${guestLocalCurrency?.currency || "USD"})`}
+              value={`${getCurrencySymbol(guestLocalCurrency?.currency || "$")}
+              ${formatAmount(parsedAmount || 0)}`}
               border
             />
             <ListDetailItem
               title="Transaction fee"
               value={`$
               ${((stripeDetail?.fee || 0) / 100).toLocaleString()}`}
+              border
+            />
+            <ListDetailItem
+              title="You're sending"
+              value={`$
+              ${formatAmount(dollarRate)}`}
             />
           </div>
           <div className="w-full flex flex-col mt-2 gap-3">

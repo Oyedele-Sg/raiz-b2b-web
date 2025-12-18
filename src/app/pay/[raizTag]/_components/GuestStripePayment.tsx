@@ -3,7 +3,7 @@ import SideWrapperHeader from "@/components/SideWrapperHeader";
 import Button from "@/components/ui/Button";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 import Spinner from "@/components/ui/Spinner";
-import { confirmGuestStripeTopPaymentIntent} from "@/services/transactions";
+import { confirmGuestStripeTopPaymentIntent } from "@/services/transactions";
 import { useGuestSendStore } from "@/store/GuestSend";
 import { useSendStore } from "@/store/Send";
 import { IBusinessPaymentData } from "@/types/services";
@@ -17,15 +17,15 @@ import { toast } from "sonner";
 
 interface Props {
   goBack: () => void;
-    goNext: () => void;
-    data: IBusinessPaymentData;
+  goNext: () => void;
+  data: IBusinessPaymentData;
 }
 
 const GuestStripePayment = ({ goBack, goNext, data }: Props) => {
   const stripe = useStripe();
   const elements = useElements();
   const { stripeDetail, billingDetails } = useGuestSendStore()
-  const {actions} = useSendStore()
+  const { actions } = useSendStore()
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const [paymentElementReady, setPaymentElementReady] = useState(false);
@@ -54,7 +54,7 @@ const GuestStripePayment = ({ goBack, goNext, data }: Props) => {
     }
     if (paymentIntent?.status === "succeeded") {
       try {
-      const res =  await confirmGuestStripeTopPaymentIntent({
+        const res = await confirmGuestStripeTopPaymentIntent({
           payment_intent: paymentIntent.id,
           entity_id: data?.account_user?.entity_id,
           payer_first_name: billingDetails?.firstName || "",
@@ -101,7 +101,7 @@ const GuestStripePayment = ({ goBack, goNext, data }: Props) => {
       />
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col h-full justify-between items-center w-full"
+        className="flex flex-col h-full justify-between gap-8 items-center w-full"
       >
         {!paymentElementReady && (
           <div className="flex flex-col gap-5 mt-10 justify-center items-center w-full">
@@ -114,7 +114,7 @@ const GuestStripePayment = ({ goBack, goNext, data }: Props) => {
             <PaymentElement
               options={{
                 terms: {
-                  card: "auto", // Show terms based on setup_future_usage
+                  card: "auto",
                 },
                 fields: {
                   billingDetails: {

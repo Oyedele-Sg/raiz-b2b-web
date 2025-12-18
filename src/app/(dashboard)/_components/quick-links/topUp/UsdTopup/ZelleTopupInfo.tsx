@@ -3,6 +3,7 @@ import Button from "@/components/ui/Button";
 import ListDetailItem from "@/components/ui/ListDetailItem";
 import Overlay from "@/components/ui/Overlay";
 import { useTopupStore } from "@/store/TopUp";
+import { formatAmount } from "@/utils/helpers";
 import dayjs from "dayjs";
 import React from "react";
 
@@ -31,7 +32,7 @@ const ZelleTopupInfo = ({ goBack, goNext, type }: Props) => {
           <ListDetailItem
             border
             title="Amount"
-            value={`$${zelleInfo?.expected_amount || 0}`}
+            value={`$${formatAmount(zelleInfo?.expected_amount || 0)}`}
             copyable
           />
           <ListDetailItem

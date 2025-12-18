@@ -126,3 +126,5 @@ export const WALLET_TYPES = {
   4: "Naira virtual wallet",
   5: "USD Holding Wallet",
 }
+
+

@@ -17,7 +17,7 @@ export interface IRaizReceipt {
   beneficiaryName?: string
 }
 
-const RaizReceipt = ({ close, data, type, senderName , beneficiaryName}: IRaizReceipt) => {
+const RaizReceipt = ({ close, data, type, senderName, beneficiaryName }: IRaizReceipt) => {
   const receiptRef = useRef<HTMLDivElement>(null);
   const handleShareReceipt = async () => {
     if (!receiptRef.current) return;
@@ -96,7 +96,7 @@ const RaizReceipt = ({ close, data, type, senderName , beneficiaryName}: IRaizRe
       <div className="relative mt-10">
         <div
           ref={receiptRef}
-          className="relative flex flex-col items-center justify-center text-zinc-900 border-t border-r border-l rounded-t-xl border-stone-700/30 overflow-visible"
+          className="relative flex flex-col items-center justify-center text-zinc-900 border-t border-r border-l rounded-b-xl rounded-t-xl border-stone-700/30 overflow-visible"
         >
           <Image
             className="absolute -top-6 -translate-x-1/2 left-1/2" // Keep original logo positioning
@@ -169,13 +169,12 @@ const RaizReceipt = ({ close, data, type, senderName , beneficiaryName}: IRaizRe
             <div className="flex justify-between items-center border-t border-zinc-200 pt-[18px]">
               <span className="text-xs font-normal leading-tight">Status</span>
               <span
-                className={`${
-                  data?.transaction_status?.transaction_status === "completed"
-                    ? "text-green-600"
-                    : data?.transaction_status?.transaction_status === "failed"
+                className={`${data?.transaction_status?.transaction_status === "completed"
+                  ? "text-green-600"
+                  : data?.transaction_status?.transaction_status === "failed"
                     ? "text-red-600"
                     : "text-orange-400"
-                } text-sm font-semibold leading-snug capitalize`}
+                  } text-sm font-semibold leading-snug capitalize`}
               >
                 {data?.transaction_status?.transaction_status}
               </span>

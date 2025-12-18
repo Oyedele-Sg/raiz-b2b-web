@@ -475,32 +475,30 @@ export type IntCountryType =
   | "BJ" // Benin
   | "CD"; // Democratic Republic of Congo
 
-export type IntCurrrencyCode =
+export type IntCurrencyCode =
+  | "USD" // United States
+  | "NGN" // Nigeria
   | "GHS" // Ghana
-  | "AUD" // Australia
-  | "EUR" // Austria , Andorra, Belgium, Germany, Czech Republic, Bulgaria, France, Estonia, Spain, Netherlands, Portugal, Italy, Ireland, Finland, Greece, Latvia, Lithuania, Slovakia
-  | "DKK" // Denmark (Danish Krone)
-  | "SGD" // Singapore
-  | "CNY" // China
   | "KES" // Kenya
   | "UGX" // Uganda
-  | "NGN" // Nigeria
   | "TZS" // Tanzania
   | "ZMW" // Zambia
   | "MWK" // Malawi
-  | "GBP" // United Kingdom
-  | "XOF" // Burkina Faso (CFA Franc, West African)
-  | "CDF" // Cameroon (CFA Franc, Central African)
-  | "XOF" // Senegal (CFA Franc, West African)
   | "RWF" // Rwanda
   | "GNF" // Guinea
-  | "XOF" // Mali (CFA Franc, West African)
-  | "XOF" // Togo (CFA Franc, West African)
+
+  | "GBP" // United Kingdom
+  | "EUR" // Eurozone (Germany, France, Italy, Spain, Netherlands, etc.)
+  | "DKK" // Denmark
+  | "AUD" // Australia
+  | "SGD" // Singapore
+  | "CNY" // China
   | "AED" // United Arab Emirates
-  | "EUR" // France
-  | "XOF" // Ivory Coast (CFA Franc, West African)
-  | "XOF" // Benin (CFA Franc, West African)
-  | "CDF"; // Democratic Republic of Congo (CFA Franc, Central African)
+
+  | "XOF" // West African CFA Franc (Benin, Burkina Faso, Ivory Coast, Mali, Niger, Senegal, Togo)
+  | "XAF" // Central African CFA Franc (Cameroon, Central African Republic, Chad, Congo, Equatorial Guinea, Gabon)
+  | "CDF"; // Democratic Republic of Congo
+
 
 export interface IIntBeneficiaryPayload {
   customer_email: string | null;
