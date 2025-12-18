@@ -318,7 +318,7 @@ export const fetchPublicIP = async (): Promise<string | null> => {
     const response = await axios.get("https://api.ipify.org?format=json");
     return response.data.ip;
   } catch (err) {
-    console.log("ip ERRRROR IP",err)
+    console.log("ip ERRRROR IP", err)
     return null;
   }
 };
@@ -343,7 +343,7 @@ export const formatAmount = (
     formatterOptions.currency = currency.toUpperCase();
   }
 
-  return value.toLocaleString("en-US", formatterOptions);
+  return value?.toLocaleString("en-US", formatterOptions);
 };
 
 export const downloadInvoice = async (

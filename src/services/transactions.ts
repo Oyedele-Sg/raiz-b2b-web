@@ -15,7 +15,7 @@ import {
   IIntBeneficiariesResponse,
   IIntBeneficiaryPayload,
   IIntSendPayload,
-  IntCurrrencyCode,
+  IntCurrencyCode,
   IP2pBeneficiariesParams,
   IP2PTransferPayload,
   IP2pTransferResponse,
@@ -31,7 +31,11 @@ import {
   IUsBeneficiaryPayload,
   VolumeAndActivityData,
 } from "@/types/services";
-import { ITransactionClass } from "@/types/transactions";
+import {
+  INgnTempPaymentLinkPayload,
+  IRate,
+  ITransactionClass,
+} from "@/types/transactions";
 
 export const FetchTransactionReportApi = async (
   params: ITransactionParams
@@ -446,7 +450,7 @@ export const GenerateStatementApi = async (params: {
   return response?.data;
 };
 
-export const GetMinAmountApi = async (currency: IntCurrrencyCode) => {
+export const GetMinAmountApi = async (currency: IntCurrencyCode) => {
   const response = await AuthAxios.get(
     `/business/transactions/remittance/account-types/minimum-amount/?currency=${currency}`
   );
@@ -473,7 +477,6 @@ export const createStripePaymentIntent = async (
   };
 };
 
-
 export const confirmStripePaymentIntent = async (
   payment_intent_id: string,
   data: IBusinessPaymentData,
@@ -482,7 +485,8 @@ export const confirmStripePaymentIntent = async (
     lastName: string;
     email: string;
   },
-  purpose: string
+  purpose: string,
+  currency: IntCurrencyCode
 ) => {
   const params = {
     entity_id: data?.account_user?.entity_id,
@@ -496,7 +500,7 @@ export const confirmStripePaymentIntent = async (
     "/admin/transaction/topup/usd/confirm-intent/",
     {
       payment_intent: payment_intent_id,
-      currency: "USD",
+      currency,
     },
     { params }
   );
@@ -572,34 +576,50 @@ export const createGuestStripePaymentIntent = async ({
   entity_id,
   sender_name,
   sender_email,
-}: {
+}: // currency
+{
   amountInCents: number;
   entity_id: string;
   sender_name: string;
   sender_email: string;
+  // currency: IntCurrencyCode;
 }) => {
   const res = await PublicAxios.post(
     `/admin/transaction/payins/africa/card/create-intent/?sender_name=${sender_name}&sender_email=${sender_email}&entity_id=${entity_id}`,
     {
       transaction_amount: amountInCents,
-      curreny: "USD",
+      currency: "USD",
     }
   );
-  return res.data
+  return res.data;
 };
 
-export const confirmGuestStripeTopPaymentIntent = async ({ payment_intent, entity_id, payer_first_name, payer_last_name, payer_email, payment_description }: { payment_intent: string, entity_id: string, payer_first_name: string, payer_last_name: string, payer_email: string, payment_description: string }) => {
-  const queryParams = new URLSearchParams()
-  queryParams.append("entity_id", entity_id)
-  queryParams.append("payer_first_name", payer_first_name)
-  queryParams.append("payer_last_name", payer_last_name)
-  queryParams.append("payer_email", payer_email)
-  queryParams.append("payment_description", payment_description)
+export const confirmGuestStripeTopPaymentIntent = async ({
+  payment_intent,
+  entity_id,
+  payer_first_name,
+  payer_last_name,
+  payer_email,
+  payment_description,
+}: {
+  payment_intent: string;
+  entity_id: string;
+  payer_first_name: string;
+  payer_last_name: string;
+  payer_email: string;
+  payment_description: string;
+}) => {
+  const queryParams = new URLSearchParams();
+  queryParams.append("entity_id", entity_id);
+  queryParams.append("payer_first_name", payer_first_name);
+  queryParams.append("payer_last_name", payer_last_name);
+  queryParams.append("payer_email", payer_email);
+  queryParams.append("payment_description", payment_description);
   const res = await PublicAxios.post(
     `/admin/transaction/topup/usd/confirm-intent/?${queryParams.toString()}`,
     {
       payment_intent,
-      curreny: "USD",
+      currency: "USD",
     }
   );
   return res?.data;
@@ -615,3 +635,37 @@ export async function InitiateGuestZellePaymentApi(
   );
   return response.data;
 }
+
+export const GetAllRates = async () => {
+  const response = await PublicAxios.get(`/business/transactions/rates/all/`, {
+    silent: true,
+  } as CustomAxiosRequestConfig);
+  return response.data as IRate[];
+};
+
+export const CreateNgnTempPaymentLink = async (
+  params: INgnTempPaymentLinkPayload
+) => {
+  const queryParams = Object.fromEntries(
+    Object.entries(params).filter(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      ([_, value]) => value !== undefined && value !== null
+    )
+  );
+  const response = await PublicAxios.post(
+    `/transactions/topup/ngn/temp/`,
+    null,
+    {
+      params: queryParams,
+    }
+  );
+  return response.data;
+};
+
+export const GetUsdAmountTempPaymentLink = async (amount: string) => {
+  const response = await PublicAxios.get(
+    `/transactions/topup/ngn/temp/?ngn_amount=${amount}`,
+    { silent: true } as CustomAxiosRequestConfig
+  );
+  return response.data;
+};

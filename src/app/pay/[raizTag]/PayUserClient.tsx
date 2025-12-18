@@ -36,7 +36,7 @@ const PayUserClient = () => {
   >();
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const { actions } = useGuestSendStore();
-const { actions: topupActions } = useTopupStore();
+  const { actions: topupActions } = useTopupStore();
   const { data, isLoading, error } = useQuery({
     queryKey: ["business-payment-info"],
     queryFn: () => FetchPaymentInfoApi(params?.raizTag as string),
@@ -67,7 +67,7 @@ const { actions: topupActions } = useTopupStore();
       setScreen("local");
     } else if (paymentType === "transfer") {
       setScreen("transfer");
-    } else if(paymentType === "zelle") {
+    } else if (paymentType === "zelle") {
       setScreen("zelle")
     } else {
       setScreen("card")
@@ -120,12 +120,12 @@ const { actions: topupActions } = useTopupStore();
   }
 
   return (
-   
+
     <section className="p-6 md:p-12 lg:px-8 xl:px-12 h-[calc(100vh-2rem)] md:h-full min-h-[100vh]">
       <div className="flex flex-col  lg:flex-row  h-full gap-8">
-        <Slider className="md:hidden lg:block"/>
+        <Slider className="md:hidden lg:block" />
         <div className="py-4 px-0 xl:px-8 lg:w-[50%] xl:w-[46%] h-full flex flex-col  ">
-         {/* <Link href="/" className="self-start"> */}
+          {/* <Link href="/" className="self-start"> */}
           <Image src={"/icons/Logo.svg"} width={91.78} height={32} alt="Logo" />
           {/* </Link> */}
           {isLoading ? (
@@ -133,84 +133,84 @@ const { actions: topupActions } = useTopupStore();
               <Spinner />
             </div>
           ) : (
-              <AnimatePresence>
-            <div className="flex flex-col h-full">
-              {data && !screen && (
-                <SelectPayType
-                  data={data}
-                  goNext={handleGeneralNextStep}
-                  paymentType={paymentType}
-                  setPaymentType={setPaymentType}
-                  amountFromLink={amount}
-                />
-              )}
-              {data && screen === "local" && (
-                <PayLocalAmount
-                  data={data}
-                  goBack={() => setScreen(null)}
-                  goNext={() => setScreen("detail")}
-                  paymentMethod={paymentMethod}
-                  setPaymentMethod={setPaymentMethod}
-                  amountFromLink={amount}
-                />
-              )}
-              {data && screen === "transfer" && (
-                <PayDetails data={data} setScreen={setScreen} />
-              )}
-              {data && screen === "card" && (
-                <PayWithCard
-                  setScreen={setScreen}
-                  data={data}
-                  amountFromLink={amount}
-                />
-              )}
-              {data && screen === "detail" && (
-                <>
-                  {step === "details" && (
-                    <PayLocalAmount
-                      data={data}
-                      goBack={() => setScreen(null)}
-                      goNext={() => setScreen("detail")}
-                      paymentMethod={paymentMethod}
-                      setPaymentMethod={setPaymentMethod}
-                    />
-                  )}
-                  <GuestPayDetail
-                    goBack={() => setScreen("local")}
-                    close={() => setScreen(null)}
+            <AnimatePresence>
+              <div className="flex flex-col h-full">
+                {data && !screen && (
+                  <SelectPayType
                     data={data}
-                    setStep={setStep}
-                    step={step}
-                    setGuestPayType={setPaymentType}
+                    goNext={handleGeneralNextStep}
+                    paymentType={paymentType}
+                    setPaymentType={setPaymentType}
+                    amountFromLink={amount}
                   />
-                </>
-              )}
-              {data && screen === "zelle" && (
-                <>
-                <SelectPayType
-                  data={data}
-                  goNext={handleGeneralNextStep}
-                  paymentType={paymentType}
-                  setPaymentType={setPaymentType}
-                  amountFromLink={amount}
-                />
-                <ZelleTopupInfo goBack={() => setScreen(null)} 
-               goNext={() => {
-                  handleDone();
-                  toast.success(
-                    "Zelle top-up submitted — funds will reflect once verified."
-                  );
-                }}
-                type="guest" />
-                </>
-              )}
-            </div>
+                )}
+                {data && screen === "local" && (
+                  <PayLocalAmount
+                    data={data}
+                    goBack={() => setScreen(null)}
+                    goNext={() => setScreen("detail")}
+                    paymentMethod={paymentMethod}
+                    setPaymentMethod={setPaymentMethod}
+                    amountFromLink={amount}
+                  />
+                )}
+                {data && screen === "transfer" && (
+                  <PayDetails data={data} setScreen={setScreen} />
+                )}
+                {data && screen === "card" && (
+                  <PayWithCard
+                    setScreen={setScreen}
+                    data={data}
+                    amountFromLink={amount}
+                  />
+                )}
+                {data && screen === "detail" && (
+                  <>
+                    {step === "details" && (
+                      <PayLocalAmount
+                        data={data}
+                        goBack={() => setScreen(null)}
+                        goNext={() => setScreen("detail")}
+                        paymentMethod={paymentMethod}
+                        setPaymentMethod={setPaymentMethod}
+                      />
+                    )}
+                    <GuestPayDetail
+                      goBack={() => setScreen("local")}
+                      close={() => setScreen(null)}
+                      data={data}
+                      setStep={setStep}
+                      step={step}
+                      setGuestPayType={setPaymentType}
+                    />
+                  </>
+                )}
+                {data && screen === "zelle" && (
+                  <>
+                    <SelectPayType
+                      data={data}
+                      goNext={handleGeneralNextStep}
+                      paymentType={paymentType}
+                      setPaymentType={setPaymentType}
+                      amountFromLink={amount}
+                    />
+                    <ZelleTopupInfo goBack={() => setScreen(null)}
+                      goNext={() => {
+                        handleDone();
+                        toast.success(
+                          "Zelle top-up submitted — funds will reflect once verified."
+                        );
+                      }}
+                      type="guest" />
+                  </>
+                )}
+              </div>
             </AnimatePresence>
           )}
         </div>
       </div>
-      </section>
-      
+    </section>
+
   );
 };
 

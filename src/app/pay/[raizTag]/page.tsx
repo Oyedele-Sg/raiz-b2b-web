@@ -1,6 +1,7 @@
 
 import { Metadata } from 'next';
-import PayUserClient from './PayUserClient';
+// import PayUserClient from './PayUserClient';
+import NewPayUserClient from './NewPayUserClient';
 
 type Props = {
   params: Promise<{ raizTag: string }>;
@@ -14,5 +15,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default function PayUserPage() {
-  return <PayUserClient />;
+  // return <PayUserClient />;
+  return <NewPayUserClient />;
 }
