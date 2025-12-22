@@ -485,8 +485,7 @@ export const confirmStripePaymentIntent = async (
     lastName: string;
     email: string;
   },
-  purpose: string,
-  currency: IntCurrencyCode
+  purpose: string
 ) => {
   const params = {
     entity_id: data?.account_user?.entity_id,
@@ -500,7 +499,7 @@ export const confirmStripePaymentIntent = async (
     "/admin/transaction/topup/usd/confirm-intent/",
     {
       payment_intent: payment_intent_id,
-      currency,
+      currency: "USD",
     },
     { params }
   );
