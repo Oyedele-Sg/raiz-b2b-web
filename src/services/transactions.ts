@@ -486,7 +486,6 @@ export const confirmStripePaymentIntent = async (
     email: string;
   },
   purpose: string
-  // currency: IntCurrencyCode
 ) => {
   const params = {
     entity_id: data?.account_user?.entity_id,
