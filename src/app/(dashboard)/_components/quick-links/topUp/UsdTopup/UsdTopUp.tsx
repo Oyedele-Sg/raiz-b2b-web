@@ -31,7 +31,7 @@ const stripePromise = loadStripe(
 );
 
 const UsdTopUp = ({ close }: Props) => {
-  const [step, setStep] = useState<UsdTopupType>("amount");
+  const [step, setStep] = useState<UsdTopupType>("type");
   const { paymentOption, actions, stripeDetail } = useTopupStore();
   const qc = useQueryClient();
   const handleDone = () => {
@@ -42,21 +42,22 @@ const UsdTopUp = ({ close }: Props) => {
   };
   const displayScreen = () => {
     switch (step) {
-      case "amount":
-        return <TopupAmount goNext={() => setStep("type")} close={close} />;
       case "type":
         return (
           <>
-            <TopupAmount goNext={() => setStep("type")} close={close} />
+            {/* <TopupAmount goNext={() => setStep("type")} close={close} /> */}
             <TopupTypeModal
               goBack={() => {
-                setStep("amount");
+                // setStep("amount");
                 actions.setPaymentOption(null);
+                close();
               }}
-              goNext={() => setStep("detail")}
+              goNext={() => setStep("amount")}
             />
           </>
         );
+      case "amount":
+        return <TopupAmount goNext={() => setStep("detail")} close={close} />;
       case "detail":
         return (
           <>

@@ -1,3 +1,4 @@
+import { IIntCountry } from "@/constants/send";
 import { PaymentStatusType } from "@/types/transactions";
 
 export type TopupPaymentOptions = "zelle" | "debit-card";
@@ -35,6 +36,7 @@ export interface TopupState {
   status: PaymentStatusType | null;
   zelleInfo: IZelleInfo | null;
   stripeDetail: IStripeDetail | null;
+  topupCurrency: IIntCountry | null;
 }
 
 export interface TopupActions {
@@ -44,6 +46,7 @@ export interface TopupActions {
   setStatus: (status: PaymentStatusType | null) => void;
   setZelleInfo: (zelleInfo: IZelleInfo | null) => void;
   setStripeDetail: (s: IStripeDetail | null) => void;
+  setTopupCurrency: (currency: IIntCountry | null) => void;
   reset: () => void;
 }
 
@@ -54,6 +57,7 @@ export const initialTopupState: TopupState = {
   status: null,
   zelleInfo: null,
   stripeDetail: null,
+  topupCurrency: null,
 };
 
 export interface TopupSlice extends TopupState {

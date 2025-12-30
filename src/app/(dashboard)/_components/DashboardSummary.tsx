@@ -115,11 +115,10 @@ const DashboardSummary = () => {
       case "swap":
         return <Swap close={closeSwapModal} />;
       case "topUp":
-        return currency === "NGN" ? (
-          <TopUp close={closeModal} />
-        ) : (
-          <UsdTopUp close={closeModal} />
-        );
+        return currency === "NGN" && <TopUp close={closeModal} />;
+      // ) : (
+      //   <UsdTopUp close={closeModal} />
+      // );
       case "createNGN":
         return (
           <CreateNgnAcct
@@ -295,7 +294,10 @@ const DashboardSummary = () => {
       {/* <SalesReport /> */}
       <DashboardAnalytics />
       <AnimatePresence>
-        {openModal !== null && openModal !== "selectAcct" ? (
+        {openModal !== null &&
+        openModal !== "selectAcct" &&
+        currency === "NGN" &&
+        openModal !== "topUp" ? (
           <SideModalWrapper
             close={closeModal}
             wrapperStyle={
@@ -318,6 +320,9 @@ const DashboardSummary = () => {
           openNgnModal={openNGNModal}
           openCryptoModal={openCryptoModal}
         />
+      )}
+      {openModal === "topUp" && currency !== "NGN" && (
+        <UsdTopUp close={closeModal} />
       )}
       {showAcctInfo && selectedCurrency ? (
         selectedCurrency.name === "NGN" ? (
