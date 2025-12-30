@@ -135,10 +135,15 @@ const GuestPayWithCard = ({ data, amountFromLink }: Props) => {
       setStep("success");
     },
   });
+  const amountInCents = dollarRate * 100;
 
   const handlePaymentIntent = (formValues: formCardValues) => {
     if (!amount) {
       toast.error("Please enter an amount");
+      return;
+    }
+    if (amountInCents <= 100) {
+      toast.error("Minimum payment amount is $1.00");
       return;
     }
     if (
@@ -151,7 +156,7 @@ const GuestPayWithCard = ({ data, amountFromLink }: Props) => {
       return;
     }
     guestActions.setField("billingDetails", formValues);
-    const amountInCents = dollarRate * 100;
+
     createPaymentIntentMutation.mutate({
       amountInCents: Number(Math.round(amountInCents)),
     });

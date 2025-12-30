@@ -82,6 +82,8 @@ const DashboardSummary = () => {
     actions.reset();
   };
 
+  const canSwap = NGNAcct && USDAcct;
+
   const handleActionButton = (
     action: "send" | "request" | "swap" | "topUp"
   ) => {
@@ -255,23 +257,24 @@ const DashboardSummary = () => {
           </Button>
           <Button
             onClick={() => {
-              handleActionButton("swap");
-              if (!NGNAcct && !USDAcct) {
+              if (!canSwap) {
                 toast.info("You must have a second wallet to use this feature");
+                return;
+              }
+              setOpenModal("swap");
+
+              if (selectedCurrency.name === ACCOUNT_CURRENCIES.NGN.name) {
+                actions.switchSwapWallet(
+                  ACCOUNT_CURRENCIES.NGN.name,
+                  ACCOUNT_CURRENCIES.USD.name,
+                  walletData
+                );
               } else {
-                if (selectedCurrency.name === ACCOUNT_CURRENCIES.NGN.name) {
-                  actions.switchSwapWallet(
-                    ACCOUNT_CURRENCIES.NGN.name,
-                    ACCOUNT_CURRENCIES.USD.name,
-                    walletData
-                  );
-                } else {
-                  actions.switchSwapWallet(
-                    ACCOUNT_CURRENCIES.USD.name,
-                    ACCOUNT_CURRENCIES.NGN.name,
-                    walletData
-                  );
-                }
+                actions.switchSwapWallet(
+                  ACCOUNT_CURRENCIES.USD.name,
+                  ACCOUNT_CURRENCIES.NGN.name,
+                  walletData
+                );
               }
             }}
             className="h-10 w-[115px] xl:w-[138px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
