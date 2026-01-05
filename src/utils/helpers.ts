@@ -318,7 +318,7 @@ export const fetchPublicIP = async (): Promise<string | null> => {
     const response = await axios.get("https://api.ipify.org?format=json");
     return response.data.ip;
   } catch (err) {
-    console.log("ip ERRRROR IP", err)
+    console.log("ip ERRRROR IP", err);
     return null;
   }
 };
@@ -486,9 +486,34 @@ export const blobToBase64 = (blob: Blob): Promise<string> => {
 export const sanitizeAddressField = (value: string): string => {
   if (!value) return value;
   // Normalize accented characters (é → e, à → a, etc.)
-  const normalized = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const normalized = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   // Keep only allowed characters: a-zA-Z0-9\s\-'&.,#/
-  const sanitized = normalized.replace(/[^a-zA-Z0-9\s\-'&.,#/]/g, '');
+  const sanitized = normalized.replace(/[^a-zA-Z0-9\s\-'&.,#/]/g, "");
   // Clean up multiple spaces
-  return sanitized.replace(/\s+/g, ' ').trim();
+  return sanitized.replace(/\s+/g, " ").trim();
 };
+
+export const toMinorUnitWithDecimals = (value: number, decimals = 2) => {
+  const factor = 10 ** decimals;
+  return Math.round((value + Number.EPSILON) * factor);
+};
+
+const currencyMinorUnits: Record<string, number> = {
+  USD: 2,
+  EUR: 2,
+  GBP: 2,
+  NGN: 2,
+  JPY: 0,
+  KWD: 3,
+};
+
+export const toMinorUnitByCurrency = (
+  value: number,
+  currency: string,
+  fallbackDecimals = 2
+) => {
+  const dec = currencyMinorUnits[currency?.toUpperCase()] ?? fallbackDecimals;
+  return toMinorUnitWithDecimals(value, dec);
+};
+
+export const toMinorUnit = (value: number) => toMinorUnitWithDecimals(value, 2);

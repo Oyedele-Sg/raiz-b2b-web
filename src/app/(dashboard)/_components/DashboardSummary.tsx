@@ -21,12 +21,12 @@ import { usePathname } from "next/navigation";
 import SelectAccount from "./SelectAccount";
 import CreateNgnAcct from "./createNgnAcct/CreateNgnAcct";
 import CreateCryptoWallet from "./crypto/dashboard/CreateCryptoWallet";
-import TopUp from "./quick-links/topUp/TopUp";
+import TopUp from "./topUp/TopUp";
 import Infos from "./Infos";
-import NGNAcctInfo from "./quick-links/acctInfo/NGNAcctInfo";
-import USDAcctInfo from "./quick-links/acctInfo/USDAcctInfo";
+import NGNAcctInfo from "./acctInfo/NGNAcctInfo";
+import USDAcctInfo from "./acctInfo/USDAcctInfo";
 import DashboardAnalytics from "./charts/DashboardAnalytics";
-import UsdTopUp from "./quick-links/topUp/UsdTopup/UsdTopUp";
+import UsdTopUp from "./topUp/UsdTopup/UsdTopUp";
 import { useTopupStore } from "@/store/TopUp";
 // import NgnSuccessModal from "./createNgnAcct/NgnSuccessModal";
 

@@ -12,6 +12,7 @@ import {
 } from "@stripe/react-stripe-js";
 import React, { useState } from "react";
 import { toast } from "sonner";
+import SideModalWrapper from "../../SideModalWrapper";
 
 interface Props {
   goBack: () => void;
@@ -79,7 +80,7 @@ const StripePayment = ({ goBack, goNext }: Props) => {
   }
 
   return (
-    <>
+    <SideModalWrapper close={goBack}>
       <SideWrapperHeader
         close={goBack}
         title="Enter your card detail"
@@ -132,7 +133,7 @@ const StripePayment = ({ goBack, goNext }: Props) => {
           </Button>
         </div>
       </form>
-    </>
+    </SideModalWrapper>
   );
 };
 

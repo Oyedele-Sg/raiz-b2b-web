@@ -10,14 +10,18 @@ import GuestSelectCurrency from "@/app/pay/[raizTag]/_components/GuestSelectCurr
 import useCountryStore from "@/store/useCountryStore";
 import { IIntCountry } from "@/constants/send";
 import { IntCountryType, IntCurrencyCode } from "@/types/services";
-import { formatAmount, getCurrencySymbol } from "@/utils/helpers";
+import {
+  formatAmount,
+  getCurrencySymbol,
+  toMinorUnitByCurrency,
+} from "@/utils/helpers";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   createStripeTopPaymentIntent,
   GetAllRates,
   InitiateZelleTopApi,
 } from "@/services/transactions";
-import SideModalWrapper from "../../../SideModalWrapper";
+import SideModalWrapper from "../../SideModalWrapper";
 import { useUser } from "@/lib/hooks/useUser";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
 
@@ -117,7 +121,8 @@ const TopupAmount = ({ close, goNext }: Props) => {
   });
 
   const DebitCardMutation = useMutation({
-    mutationFn: () => createStripeTopPaymentIntent(Number(amount) * 100 || 0),
+    mutationFn: () =>
+      createStripeTopPaymentIntent(toMinorUnitByCurrency(dollarRate, "USD")),
     onSuccess: (res) => {
       actions.setStripeDetail(res);
       goNext();
@@ -179,23 +184,25 @@ const TopupAmount = ({ close, goNext }: Props) => {
               onFocus={() => setIsFocused(true)}
             />
           </div>
-          <button
-            onClick={() => setShowCurrencyModal(true)}
-            className="text-sm flex  justify-center mx-auto text-raiz-gray-950 hover:text-gray-800 bg-[#E6EBFF99] px-4 py-2 rounded-[16px]"
-          >
-            Change:{" "}
-            <span className="font-semibold">
-              {" "}
-              ({topupCurrency?.currency || "USD"})
-            </span>
-            <Image
-              className="ml-1.5"
-              src="/icons/arrow-down.svg"
-              alt="arrow-down"
-              width={16}
-              height={16}
-            />
-          </button>
+          {paymentOption === "debit-card" && (
+            <button
+              onClick={() => setShowCurrencyModal(true)}
+              className="text-sm flex  justify-center mx-auto text-raiz-gray-950 hover:text-gray-800 bg-[#E6EBFF99] px-4 py-2 rounded-[16px]"
+            >
+              Change:{" "}
+              <span className="font-semibold">
+                {" "}
+                ({topupCurrency?.currency || "USD"})
+              </span>
+              <Image
+                className="ml-1.5"
+                src="/icons/arrow-down.svg"
+                alt="arrow-down"
+                width={16}
+                height={16}
+              />
+            </button>
+          )}
         </div>
         <div className="w-full py-6">
           <div className=" p-3.5 mb-3 bg-gray-100 w-full rounded-lg outline outline-1 outline-offset-[-1px] outline-white inline-flex flex-col justify-center items-start gap-2">
@@ -212,7 +219,7 @@ const TopupAmount = ({ close, goNext }: Props) => {
           </div>
           <Button
             disabled={!!error || !amount}
-            // loading={loading}
+            loading={DebitCardMutation.isPending}
             onClick={handleNext}
           >
             Continue
@@ -232,3 +239,6 @@ const TopupAmount = ({ close, goNext }: Props) => {
 };
 
 export default TopupAmount;
+function toMinorUnit(dollarRate: number): number {
+  throw new Error("Function not implemented.");
+}
