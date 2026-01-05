@@ -85,7 +85,7 @@ const NGNPalmPayAcct = ({
     mutationFn: (data: INgnTempPaymentLinkPayload) =>
       CreateNgnTempPaymentLink(data),
     onSuccess: (data) => {
-      window.open(data.checkout_url);
+      window.location.href = data.checkout_url;
       formik.resetForm();
       actions.reset();
       setRawAmount("");
