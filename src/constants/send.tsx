@@ -4,7 +4,7 @@ import BeneficiaryForm from "@/app/(dashboard)/_components/send/usd/bankTransfer
 import FrBeneficiaryForm from "@/app/(dashboard)/_components/send/usd/bankTransfer/toGlobal/FrBeneficiaryForm";
 // import GbBeneficiaryForm from "@/app/(dashboard)/_components/send/usd/bankTransfer/toGlobal/GbBeneficiaryForm";
 import { IUSDSendOptions } from "@/types/misc";
-import { FormField, IntCountryType } from "@/types/services";
+import { FormField, IntCountryType, IntCurrencyCode } from "@/types/services";
 import { ComponentType, ReactNode } from "react";
 import Image from "next/image";
 
@@ -41,7 +41,7 @@ export interface IIntCountry {
   name: string;
   value: IntCountryType;
   logo: string;
-  currency?: string;
+  currency?: IntCurrencyCode;
 }
 
 export const usdSendOptions: Options[] = [

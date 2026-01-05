@@ -15,7 +15,7 @@ import RaizReceipt from "@/components/transactions/RaizReceipt";
 import InternationalSendSummary from "@/components/transactions/InternationalSendSummary";
 import InternationalSendMoney from "@/components/transactions/InternationalSendMoney";
 import InternationPayout from "../toInternational/InternationalPayout";
-import { IInitialPayoutResponse, IntCurrrencyCode } from "@/types/services";
+import { IInitialPayoutResponse, IntCurrencyCode } from "@/types/services";
 import { toast } from "sonner";
 
 interface Props {
@@ -74,7 +74,7 @@ const ToGlobal = ({ close, bankType }: Props) => {
       intBeneficiary?.foreign_payout_beneficiary?.beneficiary_currency,
     ],
     queryFn: ({ queryKey }) => {
-      const [, currencyCode] = queryKey as [string, IntCurrrencyCode];
+      const [, currencyCode] = queryKey as [string, IntCurrencyCode];
       return GetMinAmountApi(currencyCode);
     },
     enabled: !!intBeneficiary?.foreign_payout_beneficiary?.beneficiary_currency,

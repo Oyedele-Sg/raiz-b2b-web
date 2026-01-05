@@ -1,8 +1,9 @@
 "use client";
 import Button from "@/components/ui/Button";
 import { getCurrencySymbol } from "@/utils/helpers";
-import Image from "next/image";
-import React, {  useState } from "react";
+// import Image from "next/image";
+import { motion } from "motion/react";
+import React, { useEffect, useState } from "react";
 import SideModalWrapper from "../../../(dashboard)/_components/SideModalWrapper";
 import RaizReceipt from "@/components/transactions/RaizReceipt";
 import { useSendStore } from "@/store/Send";
@@ -188,33 +189,81 @@ const PaySuccess = ({ data, senderName }: Props) => {
     setShowReceipt(false);
   };
 
+  useEffect(() => {
+    const container = document.getElementById("payment-scroll-container");
+
+    if (container) {
+      container.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  }, []);
+
   return (
-    <div className="w-full flex flex-col h-full mt-11 ">
+    <div className="w-full flex flex-col h-full md:mt-11 ">
       <div className="flex flex-col justify-between h-full  w-full">
         <div>
-          <Image
-            src={"/icons/success.svg"}
-            width={40}
-            height={40}
-            alt="success"
-          />
-          <div className="mb-10">
-            <h2 className="text-raiz-gray-950 text-xl md:text-[23px] font-semibold  md:leading-10">
-              Payment of {getCurrencySymbol(transactionDetail?.currency || "")}
-              {transactionDetail?.transaction_amount.toLocaleString()} sent to{" "}
+          <motion.svg
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{
+              type: "spring",
+              stiffness: 260,
+              damping: 20,
+              duration: 0.6,
+            }}
+            className={`mx-auto my-3`}
+          >
+            {/* Badge background */}
+            <motion.path
+              d="M19.9998 1.66669L23.7548 5.85752L29.1665 4.16669L30.3873 9.61252L35.8332 10.8334L34.1665 16.245L38.3332 20L34.1665 23.755L35.8332 29.1667L30.3873 30.3875L29.1665 35.8334L23.7548 34.1425L19.9998 38.3334L16.2448 34.1425L10.8332 35.8334L9.61234 30.3875L4.1665 29.1667L5.83317 23.755L1.6665 20L5.83317 16.245L4.1665 10.8334L9.61234 9.61252L10.8332 4.16669L16.2448 5.85752L19.9998 1.66669Z"
+              fill="#8BC34A"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{
+                delay: 0.2,
+                type: "spring",
+                stiffness: 200,
+                damping: 15,
+              }}
+            />
+
+            {/* Checkmark */}
+            <motion.path
+              d="M28.8351 12.1683L17.5001 23.4992L12.8318 18.8342L10.501 21.165L17.5001 28.1675L31.1651 14.4992L28.8351 12.1683Z"
+              fill="#CCFF90"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 1 }}
+              transition={{
+                delay: 0.5,
+                duration: 0.5,
+                ease: "easeInOut",
+              }}
+            />
+          </motion.svg>
+          <div className="mb-4 md:mb-10 text-center w-full">
+            <h2 className="text-raiz-gray-950 text-lg text-center  font-semibold  md:leading-10">
+              {getCurrencySymbol(transactionDetail?.currency || "")}
+              {transactionDetail?.transaction_amount.toLocaleString()} Sent to{" "}
               {`${data?.account_user?.account_name}`}
             </h2>
-            <p className="text-raiz-gray-700 text-sm md:font-[15px] ">
-              Success! The store has received your payment{" "}
+            <p className="text-raiz-gray-700 text-sm text-center ">
+              Success! The user has received your payment{" "}
             </p>
           </div>
-          <h3 className="text-raiz-gray-950 text-base font-semibold  leading-[21.6px]">
+          {/* <h3 className="text-raiz-gray-950 text-base font-semibold  leading-[21.6px]">
             Do more. Get more. Raiz AM.
           </h3>
           <p className="text-sm text-raiz-gray-950">
             Check out everything you unlock with the app. 🌟💰
-          </p>
-          <div className="flex flex-col mt-8  gap-4 xl:gap-6 p-[30px] rounded-[20px] bg-[rgba(234,236,255,0.60)]">
+          </p> */}
+          <div className="flex flex-col mt-4 md:mt-8  gap-4 xl:gap-6 p-5 md:p-[30px] rounded-[20px] border-2 border-[#F3F1F6] bg-white">
             {GetRaizedinfo.map((each, index) => (
               <div key={index} className="flex gap-4">
                 {each.svg}
@@ -246,7 +295,10 @@ const PaySuccess = ({ data, senderName }: Props) => {
               </button>
             </div>
           </div> */}
-          <Link  href={"https://raizapp.onelink.me/RiOx/webdirect"} target="_blank">
+          <Link
+            href={"https://raizapp.onelink.me/RiOx/webdirect"}
+            target="_blank"
+          >
             <Button variant="primary">Download Raiz App</Button>{" "}
           </Link>
           <Button variant="secondary" onClick={() => setShowReceipt(true)}>
