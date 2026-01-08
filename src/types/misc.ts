@@ -1,4 +1,5 @@
 import { ACCOUNT_CURRENCIES } from "@/constants/misc";
+import { CurrencyTypeKey } from "@/store/Swap/swapSlice.types";
 import { ReactNode } from "react";
 
 export interface ISidebarMenuItem {
@@ -111,3 +112,10 @@ export interface IBank {
 }
 
 export type IChain = "tron" | "ethereum" | "polygon" | "bsc";
+
+export interface SwapPairResult {
+  fromCurrency: CurrencyTypeKey;
+  toCurrency: CurrencyTypeKey;
+  isValid: boolean;
+  message?: string;
+}

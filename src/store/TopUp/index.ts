@@ -20,6 +20,7 @@ export const useTopupStore = create<TopupSlice>((set) => ({
       })),
     setZelleInfo: (zelleInfo) => set(() => ({ zelleInfo })),
     setStripeDetail: (stripeDetail) => set(() => ({ stripeDetail })),
+    setTopupCurrency: (currency) => set(() => ({ topupCurrency: currency })),
     reset: () => set(initialTopupState),
   },
 }));

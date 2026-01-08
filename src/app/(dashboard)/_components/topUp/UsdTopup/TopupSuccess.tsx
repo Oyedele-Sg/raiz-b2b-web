@@ -3,7 +3,7 @@ import Overlay from "@/components/ui/Overlay";
 import React from "react";
 import Image from "next/image";
 import { useTopupStore } from "@/store/TopUp";
-import { formatAmount } from "@/utils/helpers";
+import { formatAmount, getCurrencySymbol } from "@/utils/helpers";
 import Button from "@/components/ui/Button";
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 }
 
 const TopupSuccess = ({ close }: Props) => {
-  const { amount } = useTopupStore();
+  const { amount, topupCurrency } = useTopupStore();
   return (
     <Overlay close={() => {}}>
       <div className="w-full h-full bg-gradient-to-l from-indigo-900 to-violet-600 rounded-[36px]  shadow-[0px_1px_2px_0px_rgba(0,0,0,0.30)] inline-flex flex-col justify-center items-center">
@@ -24,7 +24,9 @@ const TopupSuccess = ({ close }: Props) => {
               alt="Success"
             />
             <h4 className="mt-[15px] text-gray-100 text-xl font-bold leading-relaxed">
-              {`Top up of $${formatAmount(Number(amount))} was successful`}
+              {`Top up of ${getCurrencySymbol(
+                topupCurrency?.currency || "USD"
+              )}${formatAmount(Number(amount))} was successful`}
             </h4>
             <p className="text-gray-100 mt-3 text-xs font-normal leading-tight text-wrap">
               Account credited successfully.

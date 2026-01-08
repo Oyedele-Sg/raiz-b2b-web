@@ -3,6 +3,7 @@ import Button from "@/components/ui/Button";
 import ListDetailItem from "@/components/ui/ListDetailItem";
 import Overlay from "@/components/ui/Overlay";
 import { useTopupStore } from "@/store/TopUp";
+import { formatAmount, getCurrencySymbol } from "@/utils/helpers";
 import React from "react";
 
 interface Props {
@@ -11,7 +12,7 @@ interface Props {
 }
 
 const StripeCheckoutSummary = ({ goNext, goBack }: Props) => {
-  const { amount, stripeDetail } = useTopupStore();
+  const { amount, stripeDetail, topupCurrency } = useTopupStore();
   const handleSend = () => {
     goNext();
   };
@@ -25,16 +26,17 @@ const StripeCheckoutSummary = ({ goNext, goBack }: Props) => {
           <div className="w-full flex flex-col gap-[15px]">
             <ListDetailItem
               title="Amount"
-              value={`$
-              ${amount.toLocaleString()}`}
+              value={`${getCurrencySymbol(topupCurrency?.currency || "USD")}
+              ${formatAmount(Number(amount))}`}
             />
+
             <ListDetailItem
               title="Transaction fee"
               value={`$
               ${((stripeDetail?.fee || 0) / 100).toLocaleString()}`}
             />
           </div>
-          <div className="w-full flex flex-col gap-3">
+          <div className="w-full mt-4 flex flex-col gap-3">
             <Button
               onClick={handleSend}
               //   loading={loading}

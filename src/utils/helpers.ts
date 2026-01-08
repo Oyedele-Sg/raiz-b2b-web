@@ -1,13 +1,14 @@
 import { months, tiers } from "@/constants/misc";
 import { toast } from "sonner";
 import * as CryptoJS from "crypto-js";
-import { ICurrencyName } from "@/types/misc";
-import { IUser } from "@/types/user";
+import { ICurrencyName, SwapPairResult } from "@/types/misc";
+import { IUser, IWallet } from "@/types/user";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import axios from "axios";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { CurrencyTypeKey } from "@/store/Swap/swapSlice.types";
 
 dayjs.extend(utc);
 
@@ -318,7 +319,7 @@ export const fetchPublicIP = async (): Promise<string | null> => {
     const response = await axios.get("https://api.ipify.org?format=json");
     return response.data.ip;
   } catch (err) {
-    console.log("ip ERRRROR IP", err)
+    console.log("ip ERRRROR IP", err);
     return null;
   }
 };
@@ -486,9 +487,142 @@ export const blobToBase64 = (blob: Blob): Promise<string> => {
 export const sanitizeAddressField = (value: string): string => {
   if (!value) return value;
   // Normalize accented characters (é → e, à → a, etc.)
-  const normalized = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const normalized = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   // Keep only allowed characters: a-zA-Z0-9\s\-'&.,#/
-  const sanitized = normalized.replace(/[^a-zA-Z0-9\s\-'&.,#/]/g, '');
+  const sanitized = normalized.replace(/[^a-zA-Z0-9\s\-'&.,#/]/g, "");
   // Clean up multiple spaces
-  return sanitized.replace(/\s+/g, ' ').trim();
+  return sanitized.replace(/\s+/g, " ").trim();
+};
+
+export const toMinorUnitWithDecimals = (value: number, decimals = 2) => {
+  const factor = 10 ** decimals;
+  return Math.round((value + Number.EPSILON) * factor);
+};
+
+const currencyMinorUnits: Record<string, number> = {
+  USD: 2,
+  EUR: 2,
+  GBP: 2,
+  NGN: 2,
+  JPY: 0,
+  KWD: 3,
+};
+
+export const toMinorUnitByCurrency = (
+  value: number,
+  currency: string,
+  fallbackDecimals = 2
+) => {
+  const dec = currencyMinorUnits[currency?.toUpperCase()] ?? fallbackDecimals;
+  return toMinorUnitWithDecimals(value, dec);
+};
+
+export const toMinorUnit = (value: number) => toMinorUnitWithDecimals(value, 2);
+
+export const determineSwapPair = (
+  currentCurrency: CurrencyTypeKey,
+  wallets: IWallet[]
+): SwapPairResult => {
+  const availableCurrencies = wallets.map((w) => w.wallet_type.currency);
+
+  // Check what wallets the user has
+  const hasUSD = availableCurrencies.includes("USD");
+  const hasNGN = availableCurrencies.includes("NGN");
+  const hasSBC = availableCurrencies.includes("SBC");
+
+  switch (currentCurrency) {
+    case "USD":
+      // USD can swap to NGN or SBC (prioritize NGN if both exist)
+      if (hasNGN) {
+        return {
+          fromCurrency: "USD",
+          toCurrency: "NGN",
+          isValid: true,
+        };
+      } else if (hasSBC) {
+        return {
+          fromCurrency: "USD",
+          toCurrency: "SBC",
+          isValid: true,
+        };
+      }
+      return {
+        fromCurrency: "USD",
+        toCurrency: "NGN",
+        isValid: false,
+        message: "You need an NGN or SBC wallet to swap from USD",
+      };
+
+    case "NGN" as CurrencyTypeKey:
+      // NGN can only swap to USD
+      if (hasUSD) {
+        return {
+          fromCurrency: "NGN",
+          toCurrency: "USD",
+          isValid: true,
+        };
+      }
+      return {
+        fromCurrency: "NGN",
+        toCurrency: "USD",
+        isValid: false,
+        message: "You need a USD wallet to swap from NGN",
+      };
+
+    case "SBC":
+      // SBC can only swap to USD (NOT to NGN)
+      if (hasUSD) {
+        return {
+          fromCurrency: "SBC",
+          toCurrency: "USD",
+          isValid: true,
+        };
+      }
+      return {
+        fromCurrency: "SBC",
+        toCurrency: "USD",
+        isValid: false,
+        message: "You need a USD wallet to swap from SBC",
+      };
+
+    default:
+      return {
+        fromCurrency: currentCurrency,
+        toCurrency: "USD",
+        isValid: false,
+        message: "Invalid currency selected",
+      };
+  }
+};
+
+export const getAvailableSwapDestinations = (
+  fromCurrency: CurrencyTypeKey,
+  wallets: IWallet[]
+): CurrencyTypeKey[] => {
+  const availableCurrencies = wallets.map(
+    (w) => w.wallet_type.currency as CurrencyTypeKey
+  );
+
+  switch (fromCurrency) {
+    case "USD":
+      // USD can swap to both NGN and SBC
+      return availableCurrencies.filter(
+        (c): c is CurrencyTypeKey => c === "NGN" || c === "SBC"
+      );
+
+    case "NGN":
+      // NGN can only swap to USD
+      return availableCurrencies.filter(
+        (c): c is CurrencyTypeKey => c === "USD"
+      );
+
+    case "SBC":
+      // SBC can only swap to USD (not NGN)
+      return availableCurrencies.filter(
+        (c): c is CurrencyTypeKey => c === "USD"
+      );
+
+    default:
+      return [];
+  }
 };

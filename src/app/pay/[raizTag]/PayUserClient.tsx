@@ -14,10 +14,9 @@ import { decryptData } from "@/lib/headerEncryption";
 import { useGuestSendStore } from "@/store/GuestSend";
 import PayDetails from "./_components/PayDetails";
 import { AnimatePresence } from "motion/react";
-import ZelleTopupInfo from "@/app/(dashboard)/_components/quick-links/topUp/UsdTopup/ZelleTopupInfo";
+import ZelleTopupInfo from "@/app/(dashboard)/_components/topUp/UsdTopup/ZelleTopupInfo";
 import { useTopupStore } from "@/store/TopUp";
 import { toast } from "sonner";
-
 
 export type LocalPaymentMethod = "bankTransfer" | "mobileMoney";
 export type GuestPaymentType = "local" | "card" | "transfer" | "zelle";
@@ -68,9 +67,9 @@ const PayUserClient = () => {
     } else if (paymentType === "transfer") {
       setScreen("transfer");
     } else if (paymentType === "zelle") {
-      setScreen("zelle")
+      setScreen("zelle");
     } else {
-      setScreen("card")
+      setScreen("card");
     }
   };
 
@@ -113,14 +112,13 @@ const PayUserClient = () => {
 
   const handleDone = () => {
     setScreen(null);
-    actions.reset()
-    topupActions.reset()
-    setPaymentType(undefined)
-    setPaymentMethod(null)
-  }
+    actions.reset();
+    topupActions.reset();
+    setPaymentType(undefined);
+    setPaymentMethod(null);
+  };
 
   return (
-
     <section className="p-6 md:p-12 lg:px-8 xl:px-12 h-[calc(100vh-2rem)] md:h-full min-h-[100vh]">
       <div className="flex flex-col  lg:flex-row  h-full gap-8">
         <Slider className="md:hidden lg:block" />
@@ -194,14 +192,16 @@ const PayUserClient = () => {
                       setPaymentType={setPaymentType}
                       amountFromLink={amount}
                     />
-                    <ZelleTopupInfo goBack={() => setScreen(null)}
+                    <ZelleTopupInfo
+                      goBack={() => setScreen(null)}
                       goNext={() => {
                         handleDone();
                         toast.success(
                           "Zelle top-up submitted — funds will reflect once verified."
                         );
                       }}
-                      type="guest" />
+                      type="guest"
+                    />
                   </>
                 )}
               </div>
@@ -210,7 +210,6 @@ const PayUserClient = () => {
         </div>
       </div>
     </section>
-
   );
 };
 
