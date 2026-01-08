@@ -8,7 +8,7 @@ import { useCurrencyStore } from "@/store/useCurrencyStore";
 import NgnSend from "./send/naira/NgnSend";
 import UsdSend from "./send/usd/UsdSend";
 import Button from "@/components/ui/Button";
-import { findWalletByCurrency } from "@/utils/helpers";
+import { determineSwapPair, findWalletByCurrency } from "@/utils/helpers";
 import { useUser } from "@/lib/hooks/useUser";
 import Request from "./request/Request";
 import { useSendStore } from "@/store/Send";
@@ -28,6 +28,7 @@ import USDAcctInfo from "./acctInfo/USDAcctInfo";
 import DashboardAnalytics from "./charts/DashboardAnalytics";
 import UsdTopUp from "./topUp/UsdTopup/UsdTopUp";
 import { useTopupStore } from "@/store/TopUp";
+import { CurrencyTypeKey } from "@/store/Swap/swapSlice.types";
 // import NgnSuccessModal from "./createNgnAcct/NgnSuccessModal";
 
 const DashboardSummary = () => {
@@ -84,15 +85,42 @@ const DashboardSummary = () => {
 
   const canSwap = NGNAcct && USDAcct;
 
-  const handleActionButton = (
-    action: "send" | "request" | "swap" | "topUp"
-  ) => {
+  // console.log("cuteenqwallet", currentWallet);
+
+  const handleActionButton = (action: "send" | "request" | "topUp") => {
     if (!currentWallet) {
       toast.warning(
         "You do not have a wallet for this currency. Create one first!"
       );
     } else {
       setOpenModal(action);
+    }
+  };
+
+  const handleSwapClick = () => {
+    if (!walletData || walletData.length < 2) {
+      toast.warning("You need at least two wallets to use swap");
+      return;
+    }
+
+    // Determine the appropriate swap pair based on current currency
+    const swapPair = determineSwapPair(
+      selectedCurrency.name as CurrencyTypeKey,
+      walletData
+    );
+
+    if (!swapPair.isValid) {
+      toast.warning(swapPair.message || "Cannot perform this swap");
+      return;
+    }
+
+    // Use the combined store's validation
+    const success = actions.switchSwapWallet(swapPair.toCurrency, walletData);
+
+    if (success) {
+      setOpenModal("swap");
+    } else {
+      toast.error("This swap pair is not allowed. Please swap through USD.");
     }
   };
 
@@ -255,27 +283,7 @@ const DashboardSummary = () => {
             </span>
           </Button>
           <Button
-            onClick={() => {
-              if (!canSwap) {
-                toast.info("You must have a second wallet to use this feature");
-                return;
-              }
-              setOpenModal("swap");
-
-              if (selectedCurrency.name === ACCOUNT_CURRENCIES.NGN.name) {
-                actions.switchSwapWallet(
-                  ACCOUNT_CURRENCIES.NGN.name,
-                  ACCOUNT_CURRENCIES.USD.name,
-                  walletData
-                );
-              } else {
-                actions.switchSwapWallet(
-                  ACCOUNT_CURRENCIES.USD.name,
-                  ACCOUNT_CURRENCIES.NGN.name,
-                  walletData
-                );
-              }
-            }}
+            onClick={handleSwapClick}
             className="h-10 w-[115px] xl:w-[138px] px-[18px] py-2  rounded-3xl justify-center items-center gap-1.5 inline-flex"
           >
             <svg width="21" height="20" viewBox="0 0 21 20" fill="none">
@@ -299,8 +307,7 @@ const DashboardSummary = () => {
       <AnimatePresence>
         {openModal !== null &&
         openModal !== "selectAcct" &&
-        currency === "NGN" &&
-        openModal !== "topUp" ? (
+        (openModal !== "topUp" || currency === "NGN") ? (
           <SideModalWrapper
             close={closeModal}
             wrapperStyle={

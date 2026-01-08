@@ -9,6 +9,7 @@ import { useSwapStore } from "@/store/Swap";
 import { ACCOUNT_CURRENCIES } from "@/constants/misc";
 import SwapPayment from "./SwapPayment";
 import SwapStatusModal from "./SwapStatusModal";
+import { formatAmount } from "@/utils/helpers";
 // import RaizReceipt from "@/components/transactions/RaizReceipt";
 
 export type SwapStep = "detail" | "confirmation" | "pay" | "status" | "receipt";
@@ -57,23 +58,27 @@ const Swap = ({ close }: Props) => {
   const rate =
     swapToCurrency === ACCOUNT_CURRENCIES.NGN.name
       ? exchangeRateData?.sell_rate || 0
-      : exchangeRateData?.buy_rate || 0;
+      : swapToCurrency === ACCOUNT_CURRENCIES.USD.name
+      ? exchangeRateData?.buy_rate || 0
+      : 1;
 
   const recipientAmount = exchangeRateData
-    ? swapToCurrency === "NGN"
+    ? swapToCurrency === ACCOUNT_CURRENCIES.NGN.name
       ? Number(
           Number(amount || 0) * Number(exchangeRateData.buy_rate)
         ).toLocaleString(undefined, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         }) || "1.00"
-      : Number(Number(amount || 0) / exchangeRateData.sell_rate).toLocaleString(
+      : swapToCurrency === ACCOUNT_CURRENCIES.USD.name
+      ? Number(Number(amount || 0) / exchangeRateData.sell_rate).toLocaleString(
           undefined,
           {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           }
         ) || "1.00"
+      : formatAmount(Number(amount))
     : "0.00";
 
   const handleDone = () => {

@@ -104,7 +104,7 @@ const CryptoSwapDetail = ({
             <div className="flex flex-col  items-center">
               <input
                 autoFocus
-                className="outline-none h-[91px] bg-transparent w-fit xl:mx-auto text-center text-zinc-900 placeholder:text-zinc-900 text-3xl font-semibold leading-10"
+                className="outline-none h-[91px] bg-transparent w-full xl:mx-auto text-center text-zinc-900 placeholder:text-zinc-900 text-3xl font-semibold leading-10"
                 placeholder="0.00"
                 value={displayValue()}
                 onChange={handleAmountChange}
