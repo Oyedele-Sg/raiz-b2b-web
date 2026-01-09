@@ -12,7 +12,7 @@ import {
   TooltipItem,
 } from "chart.js";
 import { IoIosArrowDown } from "react-icons/io";
-import { DateOption } from "@/app/(dashboard)/_components/quick-links/analytics/page";
+import { DateOption } from "@/app/(dashboard)/_components/analytics/page";
 import dayjs from "dayjs";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
 import Skeleton from "react-loading-skeleton";

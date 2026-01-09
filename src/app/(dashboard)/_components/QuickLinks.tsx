@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import NGNAcctInfo from "./acctInfo/NGNAcctInfo";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
 import USDAcctInfo from "./acctInfo/USDAcctInfo";
-// import SelectCardModal from "./quick-links/cards/SelectCardModal";
 import TopUp from "./topUp/TopUp";
 import Analytics from "./analytics/page";
 import { findWalletByCurrency } from "@/utils/helpers";
