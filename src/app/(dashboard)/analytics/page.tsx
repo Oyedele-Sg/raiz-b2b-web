@@ -14,9 +14,10 @@ import Skeleton from "react-loading-skeleton";
 import Image from "next/image";
 import EmptyList from "@/components/ui/EmptyList";
 import { IoIosArrowDown } from "react-icons/io";
-import RangeModal from "../_components/quick-links/analytics/RangeModal";
+
 import DateRange from "../transactions/_components/DateRange";
 import AnalyticsChart from "@/components/charts/AnalyticsChart";
+import RangeModal from "../_components/analytics/RangeModal";
 
 export interface DateOption {
   label: string;

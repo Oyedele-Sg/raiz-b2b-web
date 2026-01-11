@@ -12,7 +12,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import dayjs from "dayjs";
-import Analytics from "./quick-links/analytics/page";
+import Analytics from "./analytics/page";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
 
 export type PeriodTitle =
