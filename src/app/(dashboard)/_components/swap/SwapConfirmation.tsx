@@ -68,7 +68,7 @@ const SwapConfirmation = ({
             value={
               loading
                 ? "Loading..."
-                : `$1(USD) = ₦${exchangeRate?.toFixed(2) || 1}`
+                : `$1(USD) = ${swapToCurrency}${exchangeRate?.toFixed(2) || 1}`
             }
             border
           />
@@ -90,7 +90,7 @@ const SwapConfirmation = ({
           </div>
         </div>
         <div className="flex flex-col gap-[15px] w-full mt-[28px]">
-          <Button disabled={loading} onClick={goNext}>
+          <Button disabled={loading || timeLeft === 0} onClick={goNext}>
             Confirm Swap
           </Button>
           <Button variant="secondary" onClick={goBack}>
