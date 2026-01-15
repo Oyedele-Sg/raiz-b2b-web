@@ -4,7 +4,10 @@ import SwapDetail from "./SwapDetail";
 import SwapConfirmation from "./SwapConfirmation";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { GetExchangeRate } from "@/services/transactions";
+import {
+  GetExchangeRate,
+  GetIntTransactionFeeApi,
+} from "@/services/transactions";
 import { useSwapStore } from "@/store/Swap";
 import { ACCOUNT_CURRENCIES } from "@/constants/misc";
 import SwapPayment from "./SwapPayment";
@@ -86,6 +89,12 @@ const Swap = ({ close }: Props) => {
     close();
   };
 
+  const { data: cryptoFee, isLoading: cryptoFeeLoading } = useQuery({
+    queryKey: ["transactions-fee", amount],
+    queryFn: () => GetIntTransactionFeeApi(Number(amount), "CRYPTO_SWAP"),
+    enabled: !!amount,
+  });
+
   const displayScreen = () => {
     switch (step) {
       case "detail":
@@ -99,6 +108,7 @@ const Swap = ({ close }: Props) => {
             recipientAmount={recipientAmount}
             timeLeft={timeLeft}
             loading={isLoading || isFetching}
+            cryptoFee={cryptoFee}
           />
         );
       case "confirmation":
@@ -113,6 +123,7 @@ const Swap = ({ close }: Props) => {
               recipientAmount={recipientAmount}
               timeLeft={timeLeft}
               loading={isLoading}
+              cryptoFee={cryptoFee}
             />
             <SwapConfirmation
               goBack={() => setStep("detail")}
@@ -121,6 +132,7 @@ const Swap = ({ close }: Props) => {
               recipientAmount={recipientAmount}
               timeLeft={timeLeft}
               loading={isLoading}
+              cryptoFee={cryptoFee}
             />
           </>
         );
