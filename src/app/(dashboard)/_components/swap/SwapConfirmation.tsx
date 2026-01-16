@@ -14,6 +14,7 @@ interface Props {
   recipientAmount: string;
   timeLeft: number;
   loading: boolean;
+  cryptoFee?: number;
 }
 
 const SwapConfirmation = ({
@@ -23,6 +24,7 @@ const SwapConfirmation = ({
   loading,
   exchangeRate,
   goNext,
+  cryptoFee,
 }: Props) => {
   const { amount, swapFromCurrency, swapToCurrency } = useSwapStore();
 
@@ -72,6 +74,14 @@ const SwapConfirmation = ({
             }
             border
           />
+          {swapFromCurrency === "SBC" ||
+            (swapToCurrency === "SBC" && (
+              <ListDetailItem
+                title="Fees"
+                value={`$${cryptoFee?.toLocaleString()}` || 0}
+                border
+              />
+            ))}
           <div
             className={`flex text-zinc-900 justify-between gap-4 items-start pb-3    `}
           >

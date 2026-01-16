@@ -34,6 +34,7 @@ const CryptoSwapDetail = ({
     swapToCurrency,
     swapFromWallet,
     swapToWallet,
+    swapFromCurrency,
     coinType,
   } = useCryptoSwapStore();
   const [showCurrency, setShowCurrency] = useState(false);
@@ -81,11 +82,11 @@ const CryptoSwapDetail = ({
   };
   const displayValue = () => {
     if (isFocused || !amount)
-      return amount ? `${getCurrencySymbol(coinType || "")}${rawAmount}` : "";
+      return amount ? `${getCurrencySymbol(swapFromCurrency)}${rawAmount}` : "";
     const num = parseFloat(rawAmount);
     return isNaN(num)
       ? ""
-      : `${getCurrencySymbol(coinType || "")}${num.toFixed(2)}`;
+      : `${getCurrencySymbol(swapFromCurrency)}${num.toFixed(2)}`;
   };
 
   return (
@@ -118,7 +119,7 @@ const CryptoSwapDetail = ({
                 <span className="text-zinc-900 text-xs font-bold leading-tight">
                   ${swapFromWallet?.account_balance.toLocaleString()}{" "}
                 </span>
-                <span>({selectedCurrency.name})</span>
+                <span>({swapFromCurrency})</span>
               </p>
             </div>
           </div>
