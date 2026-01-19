@@ -24,7 +24,8 @@ interface Props {
 const Swap = ({ close }: Props) => {
   const [step, setStep] = useState<SwapStep>("detail");
   const [timeLeft, setTimeLeft] = useState<number>(119);
-  const { amount, swapToCurrency, status, actions } = useSwapStore();
+  const { amount, swapToCurrency, status, actions, swapFromCurrency } =
+    useSwapStore();
   const [paymentError, setPaymentError] = useState("");
 
   const {
@@ -58,31 +59,55 @@ const Swap = ({ close }: Props) => {
     return () => clearInterval(timerId);
   }, [timeLeft, refetch]);
 
-  const rate =
-    swapToCurrency === ACCOUNT_CURRENCIES.NGN.name
-      ? exchangeRateData?.sell_rate || 0
-      : swapToCurrency === ACCOUNT_CURRENCIES.USD.name
-      ? exchangeRateData?.buy_rate || 0
-      : 1;
+  const getRate = () => {
+    if (swapToCurrency === ACCOUNT_CURRENCIES.NGN.name) {
+      return exchangeRateData?.sell_rate || 0;
+    }
 
-  const recipientAmount = exchangeRateData
-    ? swapToCurrency === ACCOUNT_CURRENCIES.NGN.name
-      ? Number(
-          Number(amount || 0) * Number(exchangeRateData.buy_rate)
-        ).toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        }) || "1.00"
-      : swapToCurrency === ACCOUNT_CURRENCIES.USD.name
-      ? Number(Number(amount || 0) / exchangeRateData.sell_rate).toLocaleString(
+    if (swapToCurrency === ACCOUNT_CURRENCIES.USD.name) {
+      if (swapFromCurrency === ACCOUNT_CURRENCIES.SBC.name) {
+        return 1;
+      }
+      return exchangeRateData?.buy_rate || 0;
+    }
+  };
+
+  const rate = getRate();
+
+  const getRecipientAmount = () => {
+    if (!exchangeRateData) return "0.00";
+
+    const safeAmount = Number(amount || 0);
+
+    if (swapToCurrency === ACCOUNT_CURRENCIES.NGN.name) {
+      return (
+        Number(safeAmount * Number(exchangeRateData.buy_rate)).toLocaleString(
           undefined,
           {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           }
         ) || "1.00"
-      : formatAmount(Number(amount))
-    : "0.00";
+      );
+    }
+    if (swapToCurrency === ACCOUNT_CURRENCIES.USD.name) {
+      if (swapFromCurrency === ACCOUNT_CURRENCIES.SBC.name) {
+        return formatAmount(safeAmount * 1);
+      }
+      return (
+        Number(safeAmount / Number(exchangeRateData.sell_rate)).toLocaleString(
+          undefined,
+          {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }
+        ) || "1.00"
+      );
+    }
+    return formatAmount(safeAmount);
+  };
+
+  const recipientAmount = getRecipientAmount();
 
   const handleDone = () => {
     actions.reset();
