@@ -227,7 +227,7 @@ const Sidebar = () => {
         </svg>
       ),
       title: "Setup In Progress",
-      description: "KYC pending, We're verifying your information.",
+      description: "KYB pending. Check your email to complete  verification",
       bg: "bg-[#f2f4e9]/60",
     },
     {
