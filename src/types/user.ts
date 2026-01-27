@@ -152,3 +152,22 @@ export interface ISearchedUser {
   username: string;
   selfie_image: string | null;
 }
+
+export interface IKYBLinksStatus {
+  entity_id: string;
+  kyc_id: string;
+  customer_id: string;
+  tos_link: string;
+  kyc_link: string;
+  kyc_status:
+    | "not_started"
+    | "pending"
+    | "in_progress"
+    | "approved"
+    | "rejected"
+    | string;
+  tos_status: "pending" | "accepted" | "rejected" | string;
+  entity_kyc_id: string;
+  created_at: string; // ISO date string
+  updated_at: string; // ISO date string
+}

@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import { useUser } from "@/lib/hooks/useUser";
 import { sanitizeAddressField } from "@/utils/helpers";
 
-
 const nigerianRegNumberRegex = /^(RC|BN|IT|LP)?[\s-]*\d{4,9}$/i;
 const libraries: Libraries = ["places"];
 const BusinessSchema = z.object({
@@ -41,7 +40,7 @@ const BusinessVerificationModal = ({ close }: { close: () => void }) => {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API || "",
     libraries,
   });
-  const {user} = useUser()
+  const { user } = useUser();
   const isNigerian =
     user?.business_account?.entity?.country?.country_name?.toLowerCase() ===
     "nigeria";
@@ -55,10 +54,10 @@ const BusinessVerificationModal = ({ close }: { close: () => void }) => {
         "Account registration successful. You'll receive an email from our banking partner regarding the next step for your onboarding"
       );
       qc.invalidateQueries({ queryKey: ["user"] });
+      qc.invalidateQueries({ queryKey: ["KYB-links"] });
       close();
     },
   });
-
 
   const getEffectiveSchema = () =>
     BusinessSchema.refine(
@@ -75,7 +74,6 @@ const BusinessVerificationModal = ({ close }: { close: () => void }) => {
         path: ["business_registration_number"],
       }
     );
-
 
   const formik = useFormik<BusinessFormValues>({
     initialValues: {
@@ -235,7 +233,12 @@ const BusinessVerificationModal = ({ close }: { close: () => void }) => {
         />
       </div>
       <Button
-        disabled={!formik.dirty || !formik.values.city || !formik.values.state || BusinessVerificationMutation.isPending}
+        disabled={
+          !formik.dirty ||
+          !formik.values.city ||
+          !formik.values.state ||
+          BusinessVerificationMutation.isPending
+        }
         loading={BusinessVerificationMutation.isPending}
         type="submit"
       >
