@@ -29,6 +29,7 @@ import DashboardAnalytics from "./charts/DashboardAnalytics";
 import UsdTopUp from "./topUp/UsdTopup/UsdTopUp";
 import { useTopupStore } from "@/store/TopUp";
 import { CurrencyTypeKey } from "@/store/Swap/swapSlice.types";
+import AccountUpgrade from "./AccountUpgrade";
 // import NgnSuccessModal from "./createNgnAcct/NgnSuccessModal";
 
 const DashboardSummary = () => {
@@ -53,6 +54,8 @@ const DashboardSummary = () => {
   const pathName = usePathname();
   const NGNAcct = findWalletByCurrency(user, "NGN");
   const USDAcct = findWalletByCurrency(user, "USD");
+  const verificationStatus =
+    user?.business_account?.business_verifications?.[0]?.verification_status;
 
   // const currentWallet = useMemo(() => {
   //   if (!user || !user?.business_account?.wallets || !selectedCurrency?.name)
@@ -301,9 +304,18 @@ const DashboardSummary = () => {
       </div>
 
       {/* <CustomersInfo /> */}
-      <Infos />
+
+      {verificationStatus !== "completed" ? (
+        <AccountUpgrade />
+      ) : (
+        <>
+          <Infos />
+          <DashboardAnalytics />
+        </>
+      )}
+
       {/* <SalesReport /> */}
-      <DashboardAnalytics />
+
       <AnimatePresence>
         {openModal !== null &&
         openModal !== "selectAcct" &&

@@ -23,12 +23,17 @@ import { toast } from "sonner";
 // import dynamic from "next/dynamic";
 import SetTransactionPin from "@/app/(dashboard)/_components/transaction-pin/SetTransactionPin";
 import {
+  convertToTitle,
   findWalletByCurrency,
   getTierInfo,
   truncateString,
 } from "@/utils/helpers";
 import PaymentLinkModal from "../modals/PaymentLinkModal";
-import { CreateUSDWalletApi } from "@/services/business";
+import {
+  CheckBrigdeVerificationStatusApi,
+  CreateUSDWalletApi,
+  GetKYBLinksApi,
+} from "@/services/business";
 import Spinner from "../ui/Spinner";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
 import Avatar from "../ui/Avatar";
@@ -36,6 +41,7 @@ import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 import Rewards from "@/app/(dashboard)/_components/rewards/Rewards";
 import FeedbacksModal from "../modals/FeedbacksModal";
 import BusinessVerificationModal from "@/app/(dashboard)/_components/BusinessVerificationModal";
+import Button from "../ui/Button";
 
 const Sidebar = () => {
   const { user, refetch } = useUser();
@@ -148,6 +154,38 @@ const Sidebar = () => {
     queryKey: ["reward-points"],
     queryFn: FetchUserRewardsApi,
   });
+
+  const CheckBridgeVerification = useMutation({
+    mutationFn: CheckBrigdeVerificationStatusApi,
+    onSuccess: (response) => {
+      qc.invalidateQueries({ queryKey: ["KYB-links"] });
+      if (response === "completed") {
+        refetch();
+      }
+      toast.info(`Your verification status is ${convertToTitle(response)}`);
+    },
+  });
+
+  const { data } = useQuery({
+    queryKey: ["KYB-links"],
+    queryFn: GetKYBLinksApi,
+    refetchOnWindowFocus: true,
+  });
+
+  const tosPending = data?.tos_status === "pending";
+  const tosApproved = data?.tos_status === "approved";
+  const kycNotStarted = data?.kyc_status === "not_started";
+  const kycAwaitingUbo = data?.kyc_status === "awaiting_ubo";
+
+  const handleAcceptTOS = () => {
+    window.open(data?.tos_link, "_blank");
+    // optional immediate refetch
+    setTimeout(() => {
+      qc.invalidateQueries({ queryKey: ["KYB-links"] });
+      CheckBridgeVerification.mutate();
+    }, 5000);
+  };
+
   const { currentTier } = getTierInfo(pointsData?.point || 0);
   const NGNAcct = findWalletByCurrency(user, "NGN");
   const USDAcct = findWalletByCurrency(user, "USD");
@@ -180,22 +218,22 @@ const Sidebar = () => {
       title: "Complete account set up",
       description: "Complete Account Set Up and Get unlimited access",
       action: (
-        <div className="flex items-center gap-3">
-          {/* <a
-            href="#"
-            className="text-raiz-gray-500 text-xs xl:text-sm font-bold"
-          >
-            Learn more
-          </a> */}
+        <div className=" w-full">
           <button
             onClick={() => setShowModal("acctSetup")}
-            className="text-primary2 text-xs xl:text-sm font-bold"
+            className="px-6 py-2.5 w-full flex items-center gap-3 justify-center  bg-white border-2 border-[#F8F7FA] text-[#3C2875] font-bold rounded-3xl text-sm hover:bg-gray-50 transition-colors  disabled:opacity-50"
           >
-            Verify Now
+            <span>Get Started</span>
+            <Image
+              src={"/icons/long-arrow-right.svg"}
+              alt="right"
+              width={20}
+              height={20}
+            />
           </button>
         </div>
       ),
-      bg: "bg-[#eaecff]/40",
+      bg: "bg-[#FFF3E666]",
     },
     {
       condition: verificationStatus === "pending",
@@ -226,12 +264,55 @@ const Sidebar = () => {
           />
         </svg>
       ),
-      title: "Setup In Progress",
-      description: "KYB pending. Check your email to complete  verification",
+      title: "Complete Account Setup",
+      description: "Complete Account Set Up and Get unlimited access ",
       bg: "bg-[#f2f4e9]/60",
+      action: (
+        <>
+          {verificationStatus === "pending" && tosPending && (
+            <button
+              onClick={handleAcceptTOS}
+              disabled={tosApproved || !data?.tos_status}
+              className="px-4 xl:px-0 py-2.5 w-full flex items-center gap-3 justify-center  bg-white border-2 border-[#F8F7FA] text-[#3C2875] font-bold rounded-3xl  hover:bg-gray-50 transition-colors  disabled:opacity-50"
+            >
+              <span className="text-xs xl:text-sm">
+                {tosApproved ? "Accepted" : "Review & Accept"}
+              </span>
+              <Image
+                src={"/icons/long-arrow-right.svg"}
+                alt="right"
+                width={20}
+                height={20}
+                className="hidden xl:block"
+              />
+            </button>
+          )}
+
+          {verificationStatus === "pending" && tosApproved && kycNotStarted && (
+            <button
+              onClick={() => window.open(data?.kyc_link)}
+              disabled={!tosApproved || !kycNotStarted}
+              className="px-6 py-2.5 w-full flex items-center gap-3 justify-center  bg-white border-2 border-[#F8F7FA] text-[#3C2875] font-bold rounded-3xl text-sm hover:bg-gray-50 transition-colors  disabled:opacity-50"
+            >
+              {kycAwaitingUbo ? "Awaiting UBOs" : "Start KYB"}
+              <Image
+                src={"/icons/long-arrow-right.svg"}
+                alt="right"
+                width={20}
+                height={20}
+              />
+            </button>
+          )}
+          {kycAwaitingUbo && (
+            <span className="text-xs text-raiz-gray-500">
+              Awaiting UBOs verification
+            </span>
+          )}
+        </>
+      ),
     },
     {
-      condition: verificationStatus !== "not_started" && !hasTransactionPin,
+      condition: verificationStatus === "completed" && !hasTransactionPin,
       icon: (
         <svg
           width="30"
