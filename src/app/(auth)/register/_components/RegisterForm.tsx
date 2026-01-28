@@ -72,10 +72,6 @@ const RegisterForm = () => {
       console.log("Signup successful:", response);
       handleNavigate("next");
     },
-    onError: (error) => {
-      console.log("Signup failed:", error);
-      formik.setErrors({ confirmPassword: "Signup failed. Please try again." });
-    },
   });
 
   const verifyOtpMutation = useMutation({
