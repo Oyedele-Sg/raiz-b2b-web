@@ -50,16 +50,7 @@ const TopupTypeModal = ({ goBack, goNext }: Props) => {
 
   const handleNext = (type: TopupPaymentOptions) => {
     actions.setPaymentOption(type);
-
-    if (type === "zelle") {
-      if (!currentWallet?.wallet_id) {
-        console.error("No wallet found");
-        return;
-      }
-      zelleMutation.mutate({ expected_amount: Number(amount) || 0 });
-    } else {
-      DebitCardMutation.mutate();
-    }
+    goNext();
   };
 
   const isLoading = zelleMutation.isPending;

@@ -5,7 +5,7 @@ import { CreateUSDWalletApi } from "@/services/business";
 import { useCurrencyStore } from "@/store/useCurrencyStore";
 import { findWalletByCurrency } from "@/utils/helpers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { ReactNode, useState } from "react";
+import { ReactNode, useState } from "react";
 import { toast } from "sonner";
 import Image from "next/image";
 import CreateNgnAcct from "./createNgnAcct/CreateNgnAcct";
@@ -49,79 +49,7 @@ const Infos = () => {
 
   const statuses = [
     {
-      condition: verificationStatus === "not_started",
-      icon: (
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-          <path
-            d="M15.9997 2.66699C12.333 2.66699 9.33301 5.66699 9.33301 9.33366V12.0003H11.9997V9.33366C11.9997 7.13366 13.7997 5.33366 15.9997 5.33366C18.1997 5.33366 19.9997 7.13366 19.9997 9.33366V12.0003H22.6663V9.33366C22.6663 5.66699 19.6663 2.66699 15.9997 2.66699Z"
-            fill="#424242"
-          />
-          <path
-            d="M23.9997 29.3333H7.99967C6.53301 29.3333 5.33301 28.1333 5.33301 26.6667V14.6667C5.33301 13.2 6.53301 12 7.99967 12H23.9997C25.4663 12 26.6663 13.2 26.6663 14.6667V26.6667C26.6663 28.1333 25.4663 29.3333 23.9997 29.3333Z"
-            fill="#FB8C00"
-          />
-          <path
-            d="M16 18.6665C15.4696 18.6665 14.9609 18.8772 14.5858 19.2523C14.2107 19.6274 14 20.1361 14 20.6665C14 21.1969 14.2107 21.7056 14.5858 22.0807C14.9609 22.4558 15.4696 22.6665 16 22.6665C16.5304 22.6665 17.0391 22.4558 17.4142 22.0807C17.7893 21.7056 18 21.1969 18 20.6665C18 20.1361 17.7893 19.6274 17.4142 19.2523C17.0391 18.8772 16.5304 18.6665 16 18.6665Z"
-            fill="#C76E00"
-          />
-        </svg>
-      ),
-      title: "Complete account set up",
-      description:
-        "Complete your account setup and verification to unlock full, unlimited access to all available features and services.",
-      action: (
-        <div className="flex items-center gap-3">
-          {/* <a
-            href="#"
-            className="text-raiz-gray-500 text-xs xl:text-sm font-bold"
-          >
-            Learn more
-          </a> */}
-          <button
-            onClick={() => setShowModal("acctSetup")}
-            className="text-primary2 text-xs xl:text-sm font-bold"
-          >
-            Verify Now
-          </button>
-        </div>
-      ),
-      bg: "bg-[#eaecff]/40",
-    },
-    {
-      condition: verificationStatus === "pending",
-      icon: (
-        <svg
-          width="32"
-          height="32"
-          viewBox="0 0 32 32"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            opacity="0.5"
-            d="M16 29.3335C22.6274 29.3335 28 23.9609 28 17.3335C28 10.7061 22.6274 5.3335 16 5.3335C9.37258 5.3335 4 10.7061 4 17.3335C4 23.9609 9.37258 29.3335 16 29.3335Z"
-            fill="#CEBF36"
-          />
-          <path
-            d="M14.1147 19.2186C13.5253 18.6292 11.1907 15.0879 9.27335 12.1226C8.63068 11.1292 9.79601 9.96389 10.7893 10.6052C13.7547 12.5226 17.296 14.8586 17.8853 15.4466C18.9267 16.4879 18.9267 18.1759 17.8853 19.2172C16.844 20.2599 15.156 20.2599 14.1147 19.2186Z"
-            fill="#568C21"
-          />
-          <path
-            d="M18 1.3335C17.4853 1.3335 14.5147 1.3335 14 1.3335C12.896 1.3335 12 2.2295 12 3.3335C12 4.4375 12.896 5.3335 14 5.3335C14.5147 5.3335 17.4853 5.3335 18 5.3335C19.104 5.3335 20 4.4375 20 3.3335C20 2.2295 19.104 1.3335 18 1.3335Z"
-            fill="#568C21"
-          />
-          <path
-            d="M27.4148 6.86119C27.0508 6.49719 26.8361 6.28252 26.4721 5.91852C25.6908 5.13719 24.4241 5.13719 23.6441 5.91852C22.8641 6.69985 22.8628 7.96652 23.6441 8.74652C24.0081 9.11052 24.2228 9.32519 24.5868 9.68919C25.3681 10.4705 26.6348 10.4705 27.4148 9.68919C28.1948 8.90919 28.1948 7.64252 27.4148 6.86119Z"
-            fill="#568C21"
-          />
-        </svg>
-      ),
-      title: "Setup In Progress",
-      description: "KYC pending, We're verifying your information.",
-      bg: "bg-[#f2f4e9]/60",
-    },
-    {
-      condition: verificationStatus !== "not_started" && !hasTransactionPin,
+      condition: verificationStatus === "completed" && !hasTransactionPin,
       icon: (
         <svg
           width="30"

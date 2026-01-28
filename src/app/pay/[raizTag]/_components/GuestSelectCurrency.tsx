@@ -10,9 +10,10 @@ import useCountryStore from "@/store/useCountryStore";
 
 interface Props {
   close: () => void;
+  onSelect?: (selectedCurrency: IIntCountry) => void;
 }
 
-const GuestSelectCurrency = ({ close }: Props) => {
+const GuestSelectCurrency = ({ close, onSelect }: Props) => {
   const { actions } = useGuestSendStore();
   // const [search, setSearch] = useState("");
   const { countries, fetchCountries, loading: isLoading } = useCountryStore();
@@ -44,7 +45,11 @@ const GuestSelectCurrency = ({ close }: Props) => {
   };
 
   const handleSelect = (selectedCurrency: IIntCountry) => {
-    actions.setField("guestLocalCurrency", selectedCurrency);
+    if (onSelect) {
+      onSelect(selectedCurrency);
+    } else {
+      actions.setField("guestLocalCurrency", selectedCurrency);
+    }
     close();
   };
 

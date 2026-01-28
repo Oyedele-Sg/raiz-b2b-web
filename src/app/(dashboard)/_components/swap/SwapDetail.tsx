@@ -6,7 +6,7 @@ import { z } from "zod";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
 import SelectCurrencyModal from "./SelectCurrencyModal";
-import { findWalletByCurrency, getCurrencySymbol } from "@/utils/helpers";
+import { getCurrencySymbol } from "@/utils/helpers";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 import { useUser } from "@/lib/hooks/useUser";
 import { toast } from "sonner";
@@ -18,6 +18,7 @@ interface Props {
   recipientAmount: string;
   timeLeft: number;
   loading: boolean;
+  cryptoFee?: number;
 }
 
 const SwapDetail = ({
@@ -27,6 +28,7 @@ const SwapDetail = ({
   recipientAmount,
   timeLeft,
   loading,
+  cryptoFee,
 }: Props) => {
   const { user } = useUser();
   const { selectedCurrency } = useCurrencyStore();
@@ -42,6 +44,7 @@ const SwapDetail = ({
   const [showCurrency, setShowCurrency] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [rawAmount, setRawAmount] = useState("");
+
   const amountSchema = z
     .string()
     .regex(/^\d*\.?\d{0,2}$/, "Enter a valid amount (max 2 decimal places)")
@@ -83,7 +86,6 @@ const SwapDetail = ({
     }
   };
 
-  const NGNAcct = findWalletByCurrency(user, "NGN");
   const displayValue = () => {
     if (isFocused || !amount)
       return amount ? `${getCurrencySymbol(swapFromCurrency)}${rawAmount}` : "";
@@ -100,13 +102,49 @@ const SwapDetail = ({
   };
 
   const handleNext = () => {
-    if (!NGNAcct) {
-      toast.warning("You have to have both an NGN and a USD account to swap");
+    // Validate that both wallets exist
+    if (!swapFromWallet || !swapToWallet) {
+      toast.warning("Both source and destination wallets are required");
       return;
-    } else {
-      goNext();
     }
+
+    // Additional validation for specific swap pairs if needed
+    if (!actions.isValidSwapPair(swapFromCurrency, swapToCurrency)) {
+      toast.error("This swap pair is not allowed");
+      return;
+    }
+
+    goNext();
   };
+
+  // Dynamic rate display based on currency pair
+  const getRateDisplay = () => {
+    // For USD-based pairs
+    if (swapFromCurrency === "USD" || swapToCurrency === "USD") {
+      const baseCurrency =
+        swapFromCurrency === "USD" ? swapFromCurrency : swapToCurrency;
+      const quoteCurrency =
+        swapFromCurrency === "USD" ? swapToCurrency : swapFromCurrency;
+
+      return {
+        base: `${getCurrencySymbol(baseCurrency)}1 (${baseCurrency})`,
+        quote: `${getCurrencySymbol(quoteCurrency)}${
+          exchangeRate?.toFixed(2) || 1
+        }`,
+      };
+    }
+
+    // Default fallback
+    return {
+      base: "$1 (USD)",
+      quote: `₦${exchangeRate?.toFixed(2) || 1}`,
+    };
+  };
+
+  const rateDisplay = getRateDisplay();
+
+  console.log(rateDisplay);
+
   return (
     <div>
       <SideWrapperHeader
@@ -114,19 +152,20 @@ const SwapDetail = ({
         close={close}
         titleColor="text-zinc-900"
       />
-      <div className="flex flex-col justify-between h-[85vh] ">
-        <div className="mt-5 ">
-          <h6 className="text-center justify-start text-zinc-900 text-base font-normal  leading-normal">
+      <div className="flex flex-col justify-between h-[85vh]">
+        <div className="mt-5">
+          <h6 className="text-center justify-start text-zinc-900 text-base font-normal leading-normal">
             How much do you want to swap?
           </h6>
-          <div className="flex flex-col  items-center">
+          <div className="flex flex-col items-center">
             <input
               autoFocus
-              className="outline-none h-[91px] bg-transparent w-fit xl:mx-auto text-center text-zinc-900 placeholder:text-zinc-900 text-3xl font-semibold leading-10"
+              className="outline-none h-[91px] bg-transparent w-full xl:mx-auto text-center text-zinc-900 placeholder:text-zinc-900 text-3xl font-semibold leading-10"
               placeholder="0.00"
               value={displayValue()}
               onChange={handleAmountChange}
               onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
             />
             {error && amount && <ErrorMessage message={error} />}
           </div>
@@ -134,13 +173,15 @@ const SwapDetail = ({
             <p className="text-zinc-900 text-xs font-normal leading-tight">
               Balance:
               <span className="text-zinc-900 text-xs font-bold leading-tight">
+                {" "}
                 {getCurrencySymbol(swapFromCurrency)}
                 {swapFromWallet?.account_balance.toLocaleString()}{" "}
               </span>
-              <span>({selectedCurrency.name})</span>
+              <span>({swapFromCurrency})</span>
             </p>
           </div>
         </div>
+
         <div className="pb-5">
           <p className="text-zinc-900 text-sm font-medium mb-3 font-brSonoma leading-normal">
             Swap Destination
@@ -156,11 +197,11 @@ const SwapDetail = ({
                     : "bsc"
                 }.svg`}
                 width={24}
-                height={14}
-                alt=""
+                height={24}
+                alt={swapToCurrency}
               />
               <span className="text-zinc-900 text-sm font-normal leading-tight">
-                {swapToWallet?.wallet_type?.wallet_type_name}
+                {swapToWallet?.wallet_type?.wallet_type_name || swapToCurrency}
               </span>
             </div>
             <button
@@ -170,31 +211,44 @@ const SwapDetail = ({
               Change
             </button>
           </div>
-          <div className="mt-11  p-3.5 mb-3 bg-gray-100 w-full rounded-lg outline outline-1 outline-offset-[-1px] outline-white inline-flex flex-col justify-center items-start gap-2">
+
+          <div className="mt-11 p-3.5 mb-3 bg-gray-100 w-full rounded-lg outline outline-1 outline-offset-[-1px] outline-white inline-flex flex-col justify-center items-start gap-2">
             {/* Recipient gets */}
             <div className="w-full flex justify-between items-center">
               <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
-                Recipient gets:
+                You get:
               </span>
               <div className="h-0.5 w-[50%] px-4 bg-white"></div>
-              <span className="text-zinc-900  text-xs font-semibold leading-none">
+              <span className="text-zinc-900 text-xs font-semibold leading-none">
                 {recipientAmount
                   ? `${getCurrencySymbol(swapToCurrency)}${recipientAmount}`
                   : "Calculating..."}
               </span>
             </div>
+            {(swapFromCurrency === "SBC" || swapToCurrency === "SBC") && (
+              <div className="w-full flex justify-between items-center">
+                <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
+                  Fee:
+                </span>
+                <div className="h-0.5 w-[75%] px-4 bg-white"></div>
+                <span className="text-zinc-900  text-xs font-semibold leading-none">
+                  {loading ? "..." : `$${cryptoFee?.toFixed(2) || "0.00"}`}
+                </span>
+              </div>
+            )}
 
             {/* Rate */}
             <div className="w-full flex justify-between items-center">
               <span className="text-cyan-700 text-xs font-normal font-brSonoma leading-normal">
-                $1(USD)
+                {rateDisplay.base}
               </span>
               <div className="h-0.5 w-[75%] px-4 bg-white"></div>
-              <span className="text-zinc-900  text-xs font-semibold leading-none">
-                ₦{exchangeRate?.toFixed(2) || 1}
+              <span className="text-zinc-900 text-xs font-semibold leading-none">
+                {rateDisplay.quote}
               </span>
             </div>
           </div>
+
           <div className="p-5 mb-3 bg-indigo-100 bg-opacity-60 rounded-[20px] inline-flex justify-start items-start gap-2 w-full">
             <Image
               src={"/icons/timer.svg"}
@@ -204,14 +258,16 @@ const SwapDetail = ({
             />
             <p className="text-zinc-900 text-xs leading-tight">
               Confirm swap in the next{" "}
-              <span className=" font-semibold"> {formatTime(timeLeft)}</span>
+              <span className="font-semibold">{formatTime(timeLeft)}</span>
             </p>
           </div>
+
           <Button disabled={loading || !!error || !amount} onClick={handleNext}>
             {loading ? "Fetching rates..." : "Continue"}
           </Button>
         </div>
       </div>
+
       {showCurrency && (
         <SelectCurrencyModal close={() => setShowCurrency(false)} />
       )}

@@ -1,7 +1,7 @@
 "use client";
 import { AnimatePresence } from "motion/react";
 import React from "react";
-import SideModalWrapper from "../../SideModalWrapper";
+import SideModalWrapper from "../SideModalWrapper";
 import Image from "next/image";
 // import AnalyticsChart from "@/components/charts/AnalyticsChart";
 // import { IoIosArrowDown } from "react-icons/io";

@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import SideModalWrapper from "../../SideModalWrapper";
+import SideModalWrapper from "../SideModalWrapper";
 import { AnimatePresence } from "motion/react";
 import Image from "next/image";
 import { copyToClipboard, findWalletByCurrency } from "@/utils/helpers";
