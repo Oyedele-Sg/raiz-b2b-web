@@ -243,8 +243,8 @@ const AccountUpgrade = () => {
                 {kycAwaitingUbo && (
                   <p className="text-raiz-gray-500 text-sm mt-1 leading-relaxed">
                     {" "}
-                    Note: All UBOs provided have been sent a verification link
-                    to their emails
+                    Note: Verification links have been sent to the email
+                    addresses of all UBOs provided.
                   </p>
                 )}
               </div>
