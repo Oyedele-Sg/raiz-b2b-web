@@ -18,6 +18,7 @@ export const useUser = () => {
     isSuccess,
     isError,
     refetch,
+    isRefetching,
   } = useQuery<IUser, AxiosError>({
     queryKey: ["user"],
     queryFn: FetchUserApi,
@@ -46,6 +47,7 @@ export const useUser = () => {
     updateUser,
     clearUser,
     refetch,
+    isRefetching,
   };
 };
 
