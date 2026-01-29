@@ -30,10 +30,11 @@ import UsdTopUp from "./topUp/UsdTopup/UsdTopUp";
 import { useTopupStore } from "@/store/TopUp";
 import { CurrencyTypeKey } from "@/store/Swap/swapSlice.types";
 import AccountUpgrade from "./AccountUpgrade";
+import Loading from "@/app/loading";
 // import NgnSuccessModal from "./createNgnAcct/NgnSuccessModal";
 
 const DashboardSummary = () => {
-  const { user, refetch } = useUser();
+  const { user, refetch, isLoading } = useUser();
   const walletData = user?.business_account?.wallets;
   const { currency, actions: sendActions } = useSendStore();
   const { actions } = useSwapStore();
@@ -305,7 +306,11 @@ const DashboardSummary = () => {
 
       {/* <CustomersInfo /> */}
 
-      {verificationStatus !== "completed" ? (
+      {isLoading ? (
+        <div className="flex justify-center items-center h-[50vh]">
+          <Loading />
+        </div>
+      ) : verificationStatus !== "completed" ? (
         <AccountUpgrade />
       ) : (
         <>
