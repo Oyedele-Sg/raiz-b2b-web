@@ -150,10 +150,11 @@ export async function P2PDebitApi({
 
 export const GetTransactionFeeApi = async (
   amount: number,
-  transfer_type: "NGN" | "USD" | "WIRE"
+  transfer_type: "NGN" | "USD" | "WIRE",
+  usd_beneficiary_id?: string
 ): Promise<number> => {
   const response = await AuthAxios.get(
-    `/business/transactions/charges/get/usd/?amount=${amount}&transfer_type=${transfer_type}`
+    `/business/transactions/charges/get/usd/?amount=${amount}&transfer_type=${transfer_type}&usd_beneficiary_id=${usd_beneficiary_id}`
   );
   return response?.data;
 };
