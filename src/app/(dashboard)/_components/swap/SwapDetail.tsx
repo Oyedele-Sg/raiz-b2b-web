@@ -143,8 +143,6 @@ const SwapDetail = ({
 
   const rateDisplay = getRateDisplay();
 
-  console.log(rateDisplay);
-
   return (
     <div>
       <SideWrapperHeader
@@ -221,7 +219,7 @@ const SwapDetail = ({
               <div className="h-0.5 w-[50%] px-4 bg-white"></div>
               <span className="text-zinc-900 text-xs font-semibold leading-none">
                 {recipientAmount
-                  ? `${getCurrencySymbol(swapToCurrency)}${recipientAmount}`
+                  ? `${getCurrencySymbol(swapToCurrency)}${exchangeRate}`
                   : "Calculating..."}
               </span>
             </div>
