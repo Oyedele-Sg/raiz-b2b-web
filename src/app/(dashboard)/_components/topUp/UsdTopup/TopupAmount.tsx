@@ -218,8 +218,13 @@ const TopupAmount = ({ close, goNext }: Props) => {
             </div>
           </div>
           <Button
-            disabled={!!error || !amount}
-            loading={DebitCardMutation.isPending}
+            disabled={
+              !!error ||
+              !amount ||
+              DebitCardMutation.isPending ||
+              zelleMutation.isPending
+            }
+            loading={DebitCardMutation.isPending || zelleMutation.isPending}
             onClick={handleNext}
           >
             Continue

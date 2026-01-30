@@ -63,6 +63,7 @@ const AccountUpgrade = () => {
 
   const kycNotStarted = data?.kyc_status === "not_started";
   const kycAwaitingUbo = data?.kyc_status === "awaiting_ubo";
+  const kycUnderReview = data?.kyc_status === "under_review";
 
   const step1Status =
     verificationStatus === "not_started"
@@ -238,6 +239,8 @@ const AccountUpgrade = () => {
                     ? "KYB Completed"
                     : kycAwaitingUbo
                     ? "Awaiting UBOs"
+                    : kycUnderReview
+                    ? "KYB Under Review"
                     : "Start KYB Process"}
                 </button>
                 {kycAwaitingUbo && (

@@ -1,7 +1,7 @@
 import { IIntCountry } from "@/constants/send";
 import { PaymentStatusType } from "@/types/transactions";
 
-export type TopupPaymentOptions = "zelle" | "debit-card";
+export type TopupPaymentOptions = "zelle" | "debit-card" | "bank-transfer";
 export interface ICardDetails {
   cardNumber: string;
   expiryDate: string;
