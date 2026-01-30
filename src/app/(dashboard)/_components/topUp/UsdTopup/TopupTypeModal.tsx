@@ -50,6 +50,8 @@ const TopupTypeModal = ({ goBack, goNext }: Props) => {
 
   const handleNext = (type: TopupPaymentOptions) => {
     actions.setPaymentOption(type);
+    if (type === "bank-transfer") {
+    }
     goNext();
   };
 
@@ -124,7 +126,7 @@ const TopupTypeModal = ({ goBack, goNext }: Props) => {
                 : "Top up from Zelle"}
             </p>
           </div>
-          <div
+          {/* <div
             role="button"
             onClick={() =>
               !isCardLoading && !isLoading && handleNext("debit-card")
@@ -172,6 +174,44 @@ const TopupTypeModal = ({ goBack, goNext }: Props) => {
             </p>
             <p className="text-center text-zinc-900 text-xs font-normal leading-tight">
               Top up from a card
+            </p>
+          </div> */}
+          <div
+            role="button"
+            onClick={() =>
+              !isLoading && !isCardLoading && handleNext("bank-transfer")
+            }
+            className={`border ${
+              paymentOption === "bank-transfer"
+                ? "border-indigo-900"
+                : "border-zinc-200"
+            } rounded-[20px] cursor-pointer flex flex-col justify-center items-center w-full pt-[19px] pb-[21px] transition-all  "hover:border-indigo-900 hover:bg-indigo-50`}
+          >
+            <div className="flex justify-between w-full px-[30px] mb-5">
+              <span />
+              {paymentOption === "bank-transfer" ? (
+                <div className="w-[30px] h-[30px] flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-indigo-900"></div>
+                </div>
+              ) : (
+                <Image
+                  width={30}
+                  height={30}
+                  src={"/icons/us-bank.svg"}
+                  alt="bank"
+                />
+              )}
+              <Radio
+                checked={paymentOption === "bank-transfer"}
+                onChange={() => handleNext("bank-transfer")}
+                // readOnly={isLoading || isCardLoading}
+              />
+            </div>
+            <p className="text-zinc-900 text-sm font-bold leading-none">
+              Bank Transfer
+            </p>
+            <p className="text-center text-zinc-900 text-xs font-normal leading-tight">
+              Top up from bank transfer
             </p>
           </div>
         </div>
