@@ -12,6 +12,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import StripePayment from "./StripePayment";
 import TopupSuccess from "./TopupSuccess";
 import { toast } from "sonner";
+import TopUp from "../TopUp";
 
 interface Props {
   close: () => void;
@@ -100,6 +101,11 @@ const UsdTopUp = ({ close }: Props) => {
         break;
     }
   };
+
+  if (paymentOption === "bank-transfer") {
+    return <TopUp close={close} />;
+  }
+
   return <>{displayScreen()}</>;
 };
 

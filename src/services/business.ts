@@ -98,7 +98,7 @@ export const FetchTransactionReportCategoryApi = async (
 export const FetchPaymentInfoApi = async (
   userName: string
 ): Promise<IBusinessPaymentData> => {
-  const response = await AuthAxios.get(
+  const response = await PublicAxios.get(
     `/admin/account_user/payment-information/${userName}/`
   );
   return response?.data;
